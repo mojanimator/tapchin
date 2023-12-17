@@ -1,0 +1,159 @@
+[2023-11-30 21:26:47] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:210)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(274): Illuminate\\Log\\LogManager->error('Route [login] n...', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(481): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(136): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#6 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#8 {main}
+"} 
+[2023-11-30 21:26:47] laravel.ERROR: Route [login] not defined. {"exception":"[object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [login] not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:467)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(826): Illuminate\\Routing\\UrlGenerator->route('login', Array, true)
+#1 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(46): route('login')
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(160): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#8 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#10 {main}
+"} 
+[2023-11-30 21:31:41] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:210)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(274): Illuminate\\Log\\LogManager->error('Illuminate\\\\Rout...', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(454): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(TypeError))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(157): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(TypeError))
+#6 D:\\_laravelProjects\\koodkabootar\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#7 {main}
+"} 
+[2023-11-30 21:31:41] laravel.ERROR: Illuminate\Routing\UrlGenerator::__construct(): Argument #2 ($request) must be of type Illuminate\Http\Request, null given, called in D:\_laravelProjects\koodkabootar\vendor\laravel\framework\src\Illuminate\Routing\RoutingServiceProvider.php on line 67 {"exception":"[object] (TypeError(code: 0): Illuminate\\Routing\\UrlGenerator::__construct(): Argument #2 ($request) must be of type Illuminate\\Http\\Request, null given, called in D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RoutingServiceProvider.php on line 67 at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:121)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RoutingServiceProvider.php(67): Illuminate\\Routing\\UrlGenerator->__construct(Object(Illuminate\\Routing\\RouteCollection), NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(885): Illuminate\\Routing\\RoutingServiceProvider->Illuminate\\Routing\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(770): Illuminate\\Container\\Container->build(Object(Closure))
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(856): Illuminate\\Container\\Container->resolve('url', Array, true)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(706): Illuminate\\Foundation\\Application->resolve('url', Array)
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(841): Illuminate\\Container\\Container->make('url', Array)
+#6 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(120): Illuminate\\Foundation\\Application->make('url', Array)
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(992): app('Illuminate\\\\Cont...')
+#8 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(46): url('login')
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#10 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#11 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#12 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(383): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#13 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(153): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#14 D:\\_laravelProjects\\koodkabootar\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#15 {main}
+"} 
+[2023-11-30 21:52:52] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:210)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(274): Illuminate\\Log\\LogManager->error('Route [login] n...', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(481): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(136): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#6 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#8 {main}
+"} 
+[2023-11-30 21:52:52] laravel.ERROR: Route [login] not defined. {"exception":"[object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [login] not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:467)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(826): Illuminate\\Routing\\UrlGenerator->route('login', Array, true)
+#1 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(46): route('login')
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(160): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#8 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#10 {main}
+"} 
+[2023-11-30 21:52:59] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:210)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(274): Illuminate\\Log\\LogManager->error('Route [/login] ...', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(481): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(136): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(Symfony\\Component\\Routing\\Exception\\RouteNotFoundException))
+#6 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#8 {main}
+"} 
+[2023-11-30 21:52:59] laravel.ERROR: Route [/login] not defined. {"exception":"[object] (Symfony\\Component\\Routing\\Exception\\RouteNotFoundException(code: 0): Route [/login] not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\UrlGenerator.php:467)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(826): Illuminate\\Routing\\UrlGenerator->route('/login', Array, true)
+#1 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(46): route('/login')
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#6 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(160): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#8 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#10 {main}
+"} 
+[2023-12-01 18:28:31] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php:210)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(135): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(122): Illuminate\\Log\\LogManager->get(NULL)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Log\\LogManager.php(645): Illuminate\\Log\\LogManager->driver()
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Exceptions\\Handler.php(274): Illuminate\\Log\\LogManager->error('Target class [a...', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(481): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Illuminate\\Contracts\\Container\\BindingResolutionException))
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(136): Illuminate\\Foundation\\Http\\Kernel->reportException(Object(Illuminate\\Contracts\\Container\\BindingResolutionException))
+#6 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#8 {main}
+"} 
+[2023-12-01 18:28:31] laravel.ERROR: Target class [auth] does not exist. {"exception":"[object] (Illuminate\\Contracts\\Container\\BindingResolutionException(code: 0): Target class [auth] does not exist. at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php:891)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(770): Illuminate\\Container\\Container->build('auth')
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(856): Illuminate\\Container\\Container->resolve('auth', Array, true)
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(706): Illuminate\\Foundation\\Application->resolve('auth', Array)
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(841): Illuminate\\Container\\Container->make('auth', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(120): Illuminate\\Foundation\\Application->make('auth', Array)
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(161): app('Illuminate\\\\Cont...')
+#6 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(147): auth()
+#7 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#8 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#10 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#11 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(160): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#12 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#13 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#14 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#15 {main}
+
+[previous exception] [object] (ReflectionException(code: -1): Class \"auth\" does not exist at D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php:889)
+[stacktrace]
+#0 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(889): ReflectionClass->__construct('auth')
+#1 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(770): Illuminate\\Container\\Container->build('auth')
+#2 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(856): Illuminate\\Container\\Container->resolve('auth', Array, true)
+#3 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(706): Illuminate\\Foundation\\Application->resolve('auth', Array)
+#4 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(841): Illuminate\\Container\\Container->make('auth', Array)
+#5 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(120): Illuminate\\Foundation\\Application->make('auth', Array)
+#6 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\helpers.php(161): app('Illuminate\\\\Cont...')
+#7 D:\\_laravelProjects\\koodkabootar\\config\\fortify.php(147): auth()
+#8 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(70): require('D:\\\\_laravelProj...')
+#9 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles(Object(Illuminate\\Foundation\\Application), Object(Illuminate\\Config\\Repository))
+#10 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(242): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap(Object(Illuminate\\Foundation\\Application))
+#11 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(176): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#12 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(160): Illuminate\\Foundation\\Http\\Kernel->bootstrap()
+#13 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Http\\Kernel.php(134): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(Illuminate\\Http\\Request))
+#14 D:\\_laravelProjects\\koodkabootar\\public\\index.php(52): Illuminate\\Foundation\\Http\\Kernel->handle(Object(Illuminate\\Http\\Request))
+#15 D:\\_laravelProjects\\koodkabootar\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('D:\\\\_laravelProj...')
+#16 {main}
+"} 
