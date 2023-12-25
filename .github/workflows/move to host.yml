@@ -11,7 +11,7 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: ftp.tapchin.ir
+          server: ftp.2sport.ir
           protocol: ftps
           port: 21
           username: qrimagec
