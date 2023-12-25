@@ -11,10 +11,10 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: ftp.2sport.ir
+          server: ftp.tapchin.ir
           protocol: ftps
           port: 21
-          username: qrimagec
+          username: sportir
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /tapchin.ir/
           dangerous-clean-slate: false
