@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Auth\RequestGuard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use Laravel\Sanctum\Sanctum;
 
 class LoginRequest extends FortifyLoginRequest
 {
@@ -41,7 +43,7 @@ class LoginRequest extends FortifyLoginRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate($guard = 'web'): void
     {
 
         $this->ensureIsNotRateLimited();
@@ -49,12 +51,14 @@ class LoginRequest extends FortifyLoginRequest
         $loginCol = filter_var($this->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         $errorMessage = __('error_auth');
-        if (!Auth::attemptWhen(
+
+
+        if (!Auth::guard($guard)->attemptWhen(
             [
                 $loginCol => $this->login,
                 'password' => $this->password,
 //                 fn (Builder $query) => $query->has('activeSubscription'),
-            ], function (User $user) use ($errorMessage) {
+            ], function ($user) use ($errorMessage) {
             if ($user->is_block) {
                 $errorMessage = __('user_is_blocked');
                 return false;

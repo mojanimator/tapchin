@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Admin;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -62,6 +63,18 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        $guard = 'web';
+        if ($request->route()->getName() == 'admin.login')
+            $guard = 'admin';
+
+
+        $request->authenticate($guard);
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route($guard == 'admin' ? 'admin.panel.index' : 'panel.index'));
+
+
         return $this->loginPipeline($request)->then(function ($request) {
             return to_route(auth()->user()?->isAdmin() ? 'panel.admin.index' : 'panel.index');
         });

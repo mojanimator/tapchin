@@ -30,7 +30,16 @@ class Variable
 
     const MARKETS = ['bazaar', 'myket', 'playstore', 'site'];
     const GATEWAYS = ['bazaar', 'myket', 'nextpay'];
-    const ROLES = ['us', 'ad', 'go', 'op'];
+
+    const USER_ROLES = ['us'];
+    const ADMIN_ACCESS = ['all'];
+    const GRADES = [1, 2];
+
+    const  USER_STATUSES = [
+        ["name" => 'inactive', "color" => 'gray'],
+        ["name" => 'active', "color" => 'success'],
+        ["name" => 'block', "color" => 'danger'],
+    ];
     const  TICKET_STATUSES = [
         ["name" => 'review', "color" => 'danger'],
         ["name" => 'closed', "color" => 'gray'],
@@ -124,11 +133,9 @@ class Variable
     static function getAdmins()
     {
         return [
-            ['id' => 1, 'fullname' => 'حسن نژاد', 'phone' => '09132258738', 'telegram_id' => '1021078930', 'wallet_active' => false,
-                'role' => 'us', 'email' => 'jafar.hasannejhad@gmail.com', 'password' => Hash::make('o9132258738'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true, 'ref_id' => 'metakar'
-            ],
-            ['id' => 2, 'fullname' => 'رجبی', 'phone' => '09018945844', 'telegram_id' => '72534783', 'wallet_active' => false,
-                'role' => 'ad', 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true, 'ref_id' => 'develowper'
+
+            ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844',
+                'access' => json_encode('all'), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];
     }

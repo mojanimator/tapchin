@@ -3,6 +3,9 @@ defineProps({
   type: {
     type: String,
     default: 'button',
+  }, classes: {
+    type: String,
+    default: 'button',
   },
 });
 </script>
@@ -10,8 +13,12 @@ defineProps({
 <template>
   <button
       :type="type"
-      class="inline-flex items-center cursor-pointer  justify-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold   text-primary-700   shadow-sm hover:bg-primary-50 transition-all duration-300  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150"
-  >
+      class="  relative group text-primary-500  ">
+    <div :class="classes"
+         class="absolute bg-white  start-0 top-0 w-full h-full rounded-lg  -skew-x-12 duration-300 group-hover:bg-gray-200   z-[-1]">
+
+    </div>
+
     <slot/>
   </button>
 </template>

@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
 
-    Route::any('register', function () {
 
-        return redirect('/login');
-    })->name('register');
 //
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');

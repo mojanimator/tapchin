@@ -35,7 +35,8 @@ class HandleInertiaRequests extends Middleware
         $socials = Setting::where('key', 'like', 'social_%')->get();
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => $request->user(),
+                'user' =>
+                    auth('sanctum')->user(),
             ],
             'isAdmin' => in_array(optional($request->user())->role, ['ad', 'go']),
 

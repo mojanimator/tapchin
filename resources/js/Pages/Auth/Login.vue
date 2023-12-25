@@ -14,14 +14,16 @@ defineProps({
   status: String,
 });
 let showPassword = ref(false);
+
 const form = useForm({
   login: '',
   password: '',
   remember: false,
+
 });
 
 const submit = () => {
-  form.post(route('login'), {
+  form.post(route().current('admin.login-form') ? route('admin.login') : route('login'), {
     onFinish: () => form.reset('password'),
   });
 };
@@ -100,15 +102,15 @@ const submit = () => {
         </Link>
       </div>
 
-      <div class="    mt-4">
+      <div class=" relative   mt-4">
 
-        <PrimaryButton class="w-full    " :class="{ 'opacity-25': form.processing }"
+        <PrimaryButton class="w-full   " :class="{ 'opacity-25': form.processing }"
                        :disabled="form.processing">
-          <span class=" text-lg w-full">  {{ __('signin') }}</span>
+          <span class=" text-lg    ">  {{ __('signin') }}</span>
         </PrimaryButton>
 
       </div>
-      <div v-if="false" class="w-full mt-5">
+      <div class="w-full mt-5">
         <span>{{ __('not_have_account?') }}</span>
         <Link
             v-if="canResetPassword"

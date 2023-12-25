@@ -33,7 +33,7 @@ const focusNext = (elem) => {
 
 <template>
   <div>
-    <div class="flex items-center">
+    <div class="flex items-center ">
       <InputLabel :for="id" :value="placeholder"/>
       <span v-if="verified==0" class="text-danger text-xs mx-1">({{ __('not_verified') }})</span>
       <span v-else-if="verified==1" class="text-success text-xs mx-1">({{ __('verified') }})</span>
@@ -44,7 +44,7 @@ const focusNext = (elem) => {
           <label for="checkbox-verify" class="sr-only"> </label>
         </span>
     </div>
-    <div class="relative mb-1 mt-2 flex flex-wrap items-stretch">
+    <div class="relative mb-1 mt-2 flex flex-wrap items-stretch ">
 
 
         <span v-if="$slots.prepend"

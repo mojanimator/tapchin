@@ -14,21 +14,21 @@ class CreateProvinceCountyTable extends Migration
      */
     public function up()
     {
-        Schema::create('province', function (Blueprint $table) {
+        Schema::create('provinces', function (Blueprint $table) {
             $table->smallInteger('id')->unsigned()->unique();
             $table->string('name', 50);
 
         });
 
-        Schema::create('county', function (Blueprint $table) {
+        Schema::create('counties', function (Blueprint $table) {
             $table->smallInteger('id')->unsigned()->unique();;
             $table->smallInteger('province_id')->unsigned();
             $table->string('name', 50);
 
-            $table->foreign('province_id')->references('id')->on('province');
+            $table->foreign('province_id')->references('id')->on('provinces');
         });
 
-        DB::table('province')->insert([
+        DB::table('provinces')->insert([
             ['id' => 1, 'name' => 'آذربایجان شرقی'],
             ['id' => 2, 'name' => 'آذربایجان غربی'],
             ['id' => 3, 'name' => 'اردبیل'],
@@ -62,7 +62,7 @@ class CreateProvinceCountyTable extends Migration
             ['id' => 31, 'name' => 'یزد'],
         ]);
 
-        DB::table('county')->insert([
+        DB::table('counties')->insert([
             ['id' => 1, 'province_id' => 1, 'name' => 'آذرشهر'],
             ['id' => 2, 'province_id' => 1, 'name' => 'اسکو'],
             ['id' => 3, 'province_id' => 1, 'name' => 'اهر'],

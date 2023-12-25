@@ -53,14 +53,7 @@ class RegisteredUserController extends Controller
             'ref_id' => User::makeRefCode($request->phone),
             'password' => Hash::make($request->password),
         ]);
-        if ($user && $request->accesses)
-            Hire::create([
-                'fullname' => $user->fullname,
-                'phone' => $user->phone,
-                'owner_id' => $user->id,
-                'access_request' => join(',', $request->accesses),
-                'status' => 'review',
-            ]);
+
         event(new Registered($user));
 
         Auth::login($user);

@@ -47,6 +47,7 @@ use App\Models\User;
 use App\Models\Video;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -65,6 +66,10 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/cache', function () {
+    Artisan::call('optimize:clear');
+    echo Artisan::output();
+});
 Route::get('test', function () {
 
 
@@ -94,8 +99,6 @@ Route::get('/', function (Request $request) {
         session(['ref' => $r]);
     }
     return Inertia::render('Main', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
         'heroText' => \App\Models\Setting::getValue('hero_main_page'),
         'slides' => \App\Models\Slider::where('is_active', true)->get(),
         'articles' => \App\Models\Article::where('status', 'active')->orderBy('id', 'desc')->take(12)->get(),
@@ -160,99 +163,6 @@ Route::middleware(['auth:sanctum',
 
 
     /**  Admin Panel **/
-    Route::middleware(['can:create,App\Models\User,App\Models\User,""',])->prefix('admin')->group(function ($route) {
-
-        Route::get('', [PanelController::class, 'admin'])->name('panel.admin.index');
-        PanelController::makeInertiaRoute('get', 'setting/index', 'panel.admin.setting.index', 'Panel/Admin/Setting/Index',
-            [
-
-            ]);
-        PanelController::makeInertiaRoute('get', 'slider/index', 'panel.admin.slider.index', 'Panel/Admin/Slider/Index',
-            [
-
-            ]);
-        PanelController::makeInertiaRoute('get', 'slider/create', 'panel.admin.slider.create', 'Panel/Admin/Slider/Create',
-            [
-                'sliderRatio' => Variable::RATIOS['slider'],
-            ]);
-
-        PanelController::makeInertiaRoute('get', 'notification/index', 'panel.admin.notification.index', 'Panel/Admin/Notification/Index',
-            [
-
-            ]);
-        PanelController::makeInertiaRoute('get', 'notification/create', 'panel.admin.notification.create', 'Panel/Admin/Notification/Create',
-            [
-
-            ]);
-
-        PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.admin.ticket.index', 'Panel/Ticket/Index',
-            [
-                'statuses' => Variable::TICKET_STATUSES
-
-            ]);
-        PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.admin.ticket.create', 'Panel/Ticket/Create',
-            [
-                'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
-            ]);
-
-        PanelController::makeInertiaRoute('get', 'user/index', 'panel.admin.user.index', 'Panel/User/Index',
-            [
-
-            ]);
-        PanelController::makeInertiaRoute('get', 'user/create', 'panel.admin.user.create', 'Panel/User/Create',
-            [
-            ]);
-
-        PanelController::makeInertiaRoute('get', 'message/index', 'panel.admin.message.index', 'Panel/Admin/Message/Index',
-            [
-                'statuses' => Variable::MESSAGE_STATUSES,
-            ]);
-        PanelController::makeInertiaRoute('get', 'message/create', 'panel.admin.message.create', 'Panel/Admin/Message/Create',
-            [
-            ]);
-        PanelController::makeInertiaRoute('get', 'article/index', 'panel.admin.article.index', 'Panel/Admin/Article/Index',
-            [
-                'categories' => Article::categories('parents'),
-                'statuses' => Variable::STATUSES
-            ]
-        );
-        PanelController::makeInertiaRoute('get', 'article/create', 'panel.admin.article.create', 'Panel/Admin/Article/Create',
-            [
-                'categories' => Category::all(),
-                'statuses' => Variable::STATUSES,
-            ]
-        );
-        Route::post('article/create', [ArticleController::class, 'create'])->name('panel.admin.article.create');
-        Route::get('article/search', [ArticleController::class, 'searchPanel'])->name('panel.admin.article.search');
-        Route::patch('article/update', [ArticleController::class, 'update'])->name('panel.admin.article.update');
-        Route::get('article/{article}', [ArticleController::class, 'edit'])->name('panel.admin.article.edit');
-
-        Route::patch('message/update', [MessageController::class, 'update'])->name('panel.admin.message.update');
-        Route::post('message/create', [MessageController::class, 'create'])->name('panel.admin.message.create');
-        Route::get('message/search', [MessageController::class, 'searchPanel'])->name('panel.admin.message.search');
-        Route::get('message/{message}', [MessageController::class, 'edit'])->name('panel.admin.message.edit');
-
-        Route::get('slider/edit/{slider}', [SliderController::class, 'edit'])->name('panel.admin.slider.edit');
-        Route::post('slider/create', [SliderController::class, 'create'])->name('panel.admin.slider.create');
-        Route::get('slider/search', [SliderController::class, 'searchPanel'])->name('panel.admin.slider.search');
-        Route::patch('slider/update', [SliderController::class, 'update'])->name('panel.admin.slider.update');
-        Route::get('setting/search', [SettingController::class, 'searchPanel'])->name('panel.admin.setting.search');
-        Route::patch('setting/update', [SettingController::class, 'update'])->name('panel.admin.setting.update');
-        Route::delete('setting/delete/{setting}', [SettingController::class, 'delete'])->name('panel.admin.setting.delete');
-        Route::get('user/search', [UserController::class, 'searchPanel'])->name('panel.admin.user.search');
-        Route::get('user/create', [UserController::class, 'new'])->name('panel.admin.user.new');
-        Route::post('user/create', [UserController::class, 'create'])->name('panel.admin.user.create');
-        Route::get('user/edit/{site}', [UserController::class, 'edit'])->name('panel.admin.user.edit');
-        Route::patch('user/update', [UserController::class, 'update'])->name('panel.admin.user.update');
-        Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.admin.ticket.edit');
-        Route::patch('ticket/update', [TicketController::class, 'update'])->name('panel.admin.ticket.update');
-        Route::post('ticket/create', [TicketController::class, 'create'])->name('panel.admin.ticket.create');
-        Route::get('notification/{notification}', [NotificationController::class, 'edit'])->name('panel.admin.notification.edit');
-        Route::patch('notification/update', [NotificationController::class, 'update'])->name('panel.admin.notification.update');
-        Route::post('notification/create', [NotificationController::class, 'create'])->name('panel.admin.notification.create');
-
-
-    });
 });
 
 
@@ -308,5 +218,7 @@ Route::get('language/{language}', function ($language) {
     return;
 })->name('language');
 
+
 //
-//require __DIR__ . '/auth.php';
+require __DIR__ . '/auth.php';
+require __DIR__ . '/admin.php';
