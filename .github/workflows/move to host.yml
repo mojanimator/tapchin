@@ -16,7 +16,7 @@ jobs:
           port: 21
           username: sportir
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /tapchin.ir/
+          server-dir: /tapchin/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
