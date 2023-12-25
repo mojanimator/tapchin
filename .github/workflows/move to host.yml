@@ -1,5 +1,5 @@
 on: push
-name: hamsignal app changes
+name: tapchin app changes
 jobs:
   web-deploy:
     name: Deploy
@@ -11,17 +11,16 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: ftp.qr-image-creator.com
+          server: ftp.tapchin.ir
           protocol: ftps
           port: 21
           username: qrimagec
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /tapchin/
+          server-dir: /tapchin.ir/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
             vendor/**
-            public/**
             server.php
