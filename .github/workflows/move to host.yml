@@ -13,7 +13,7 @@ jobs:
         with:
           server: ftp.tapchin.ir
           protocol: ftps
-          port: 22
+          port: 21
           username: sportir
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /tapchin.ir/
