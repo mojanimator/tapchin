@@ -156,7 +156,7 @@ class Variable
             ['key' => 'social_whatsapp', 'value' => '00989351414815', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_email', 'value' => 'info@tapchin.ir', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_phone', 'value' => '09351414815', "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'social_address', 'value' => 'گیلان - رشت', "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'social_address', 'value' => __('social_address'), "created_at" => \Carbon\Carbon::now(),],
 
         ];
     }
