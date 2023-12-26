@@ -29,7 +29,7 @@
               {{ heroText }}
             </p>
             <!--                        search-->
-            <div v-if="false" class="w-full mx-auto mt-2  ">
+            <div class="w-full mx-auto mt-2  ">
               <div class="relative  px-6 mx-auto  ">
                 <div
                     class="absolute top-0 bottom-0 start-0 flex items-center opacity-60  ps-10  ">
@@ -42,9 +42,10 @@
                   </svg>
                   <span class="absolute border-gray-300  border-s top-0 bottom-0 my-2 ms-6"></span>
                 </div>
-                <input id="search-toggle" type="search" :placeholder="__('hero_search_placeholder')"
+                <input id="search-toggle" type="search" v-model=" search"
+                       :placeholder="__('hero_search_placeholder')"
                        class="placeholder-gray-400 border-transparent block w-full py-3 ps-12 pe-4 font-bold text-gray-700 bg-gray-100 rounded-lg shadow-lg focus:outline-none focus:bg-white"
-                       onkeyup="updateSearchResults(this.value);">
+                       onkeyup="updateSearchResults(  );">
 
               </div>
 
@@ -59,7 +60,7 @@
                   __('reg_order')
                 }}
               </SecondaryButton>
-              <PrimaryButton @click="params.type='referral';recaptchaExpired() "
+              <PrimaryButton @click="params.type='request_agency';recaptchaExpired() "
                              data-te-toggle="modal"
                              data-te-target="#messageModal" classes="skew-x-[12deg] "
                              data-te-ripple-init class="mx-2 p-2 grow  ">{{
@@ -157,8 +158,8 @@
       </Transition>
 
 
-      <div
-          class=" flex flex-col justify-center   rounded-lg  overflow-hidden h-72 lg:h-72    w-fit mx-auto     ">
+      <div v-if="$page.props.articles.length>0"
+           class=" flex flex-col justify-center   rounded-lg  overflow-hidden h-72 lg:h-72    w-fit mx-auto     ">
         <Link :href="route('article.index')" class="text-lg text-primary-500 font-bold p-2 hover:text-primary-400">
           {{ __('articles') }}
         </Link>
@@ -380,6 +381,7 @@ import {Modal} from "tw-elements";
 export default {
   data() {
     return {
+      search: null,
       siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
       showRecaptcha: true,
       loadingTimeout: 30000, // 30 seconds
@@ -437,6 +439,38 @@ export default {
     this.modal = new Modal(modalEl);
   },
   methods: {
+    updateSearchResults() {
+      if (!this.search) return;
+      this.loading = true;
+      this.params.phone = f2e(this.params.phone);
+      window.axios.get(route('main.search'),
+          {params: {search: this.search}})
+          .then((response) => {
+            if (response.data && response.data.message) {
+              this.modal.hide();
+              this.showToast('success', response.data.message);
+              this.params = {errors: {}, fullname: null, phone: null, description: null, recaptcha: null};
+              this.recaptchaExpired();
+
+            }
+
+
+          })
+
+          .catch((error) => {
+            this.error = this.getErrors(error);
+            if (error.response && error.response.data) {
+              // this.log(error.response)
+              this.params.errors = error.response.data.errors;
+
+            }
+            this.showToast('danger', this.error);
+          })
+          .finally(() => {
+            // always executed
+            this.loading = false;
+          });
+    },
     addRefOrder() {
       this.loading = true;
       this.params.phone = f2e(this.params.phone);

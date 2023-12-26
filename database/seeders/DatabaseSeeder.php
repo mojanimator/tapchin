@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
+use App\Models\Agency;
 use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;
@@ -24,6 +25,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
@@ -41,6 +43,13 @@ class DatabaseSeeder extends Seeder
         if (DB::connection()->getDriverName() == 'mysql')
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
+
+        $this->createAdmins(20);
+        $this->createAgencies(20);
+
+
+        return;
+
         $this->createSites(50);
         $this->createBusinesses(50);
         $this->createPodcasts(50);
@@ -57,7 +66,64 @@ class DatabaseSeeder extends Seeder
         // ]);
     }
 
-    private function createPayments($count = 30)
+    private function createAdmins($count = 30)
+    {
+
+        DB::table('admins')->truncate();
+
+        for ($i = 0; $i < $count; $i++) {
+            $phone = $this->faker->numerify("09#########");
+            DB::table('admins')->insert([
+                [
+                    'id' => 2,
+                    'name' => $this->faker->name,
+                    'phone' => $phone,
+                    'phone_verified' => true,
+                    'password' => Hash::make($phone),
+                    'status' => 'active',
+                    'role' => 'owner',
+                    'access' => 'all',
+                ]
+            ]);
+        }
+
+    }
+
+    private
+    function createAgencies()
+    {
+        'access',
+        'type',
+        'owner_id',
+        'province_id',
+        'county_id',
+        'address',
+        DB::table('agencies')->truncate();
+        //section agencies
+        DB::table('agencies')->insert([
+            [
+                'name' => 'نمایندگی جنوب ایران',
+                'access' => json_encode([1, 2, 3, 4, 5, 6, 7, 8]),
+                'type' => 1,
+                'owner_id' => 2,
+            ]
+        ]);
+        foreach (DB::table('provinces')->get() as $province) {
+            Agency::create(
+                [
+
+                ]);
+            $counties = DB::table('counties')->where('province_id', $province->id)->inRandomOrder()->take($this->faker->numberBetween(0, 3));
+            foreach ($counties as $county) {
+
+            }
+
+        }
+
+    }
+
+    private
+    function createPayments($count = 30)
     {
         User::whereNotNull('id')->update(['wallet' => 0]);
         DB::table('payments')->truncate();
@@ -108,7 +174,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createNotifications($count = 30)
+    private
+    function createNotifications($count = 30)
     {
 
         DB::table('notifications')->truncate();
@@ -132,7 +199,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createArticles($count = 30)
+    private
+    function createArticles($count = 30)
     {
         File::deleteDirectory("storage/app/public/articles");
         File::makeDirectory("storage/app/public/articles");
@@ -181,7 +249,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createBanners($count = 30)
+    private
+    function createBanners($count = 30)
     {
         File::deleteDirectory("storage/app/public/banners");
         File::makeDirectory("storage/app/public/banners");
@@ -208,7 +277,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createVideos($count = 30)
+    private
+    function createVideos($count = 30)
     {
         File::deleteDirectory("storage/app/public/videos");
         File::makeDirectory("storage/app/public/videos");
@@ -235,7 +305,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createPodcasts($count = 30)
+    private
+    function createPodcasts($count = 30)
     {
         File::deleteDirectory("storage/app/public/podcasts");
         File::makeDirectory("storage/app/public/podcasts");
@@ -263,7 +334,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createBusinesses($count = 30)
+    private
+    function createBusinesses($count = 30)
     {
         File::deleteDirectory("storage/app/public/businesses");
         File::makeDirectory("storage/app/public/businesses");
@@ -300,7 +372,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function createSites($count = 30)
+    private
+    function createSites($count = 30)
     {
         File::deleteDirectory("storage/app/public/sites");
         File::makeDirectory("storage/app/public/sites");
@@ -331,7 +404,8 @@ class DatabaseSeeder extends Seeder
         }
     }
 
-    private function makeFile($type, $id, $extension = '.jpg')
+    private
+    function makeFile($type, $id, $extension = '.jpg')
     {
         $allFiles = array_filter(Storage::allFiles("public/faker/$type"), fn($e) => !$extension || str_contains($e, $extension));
 
@@ -356,7 +430,8 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function makeGallery($type, $id)
+    private
+    function makeGallery($type, $id)
     {
         $fakeFiles = Storage::allFiles("public/faker/$type");
         if (!File::exists("storage/app/public/$type/$id")) {

@@ -571,5 +571,9 @@
   "your_message_send_successfully": "پیام شما با موفقیت ارسال شد. نتیجه به اطلاع شما خواهد رسید",
   "edit_slider_item": "ویرایش اسلاید",
   "request_agency": "دریافت نمایندگی",
+  "zone_agency": "نمایندگی منطقه",
+  "province_agency": "نمایندگی انحصاری استان",
+  "branch_agency": "نمایندگی شعبات استان",
+  "branch": "شعبه",
   "": ""
 }

@@ -25,7 +25,6 @@ class Admin extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'fullname',
         'email',
         'email_verified_at',
@@ -34,9 +33,7 @@ class Admin extends Authenticatable
         'ref_id',
         'push_id',
         'telegram_id',
-        'eitaa_id',
         'bale_id',
-        'soroush_id',
         'is_active',
         'is_block',
         'wallet_active',
@@ -44,6 +41,7 @@ class Admin extends Authenticatable
         'role',
         'access',
         'card',
+        'sheba',
         'notifications',
         'wallet',
         'meta_wallet',

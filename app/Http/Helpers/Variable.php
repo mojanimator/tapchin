@@ -32,6 +32,14 @@ class Variable
     const GATEWAYS = ['bazaar', 'myket', 'nextpay'];
 
     const USER_ROLES = ['us'];
+    const ADMIN_ROLES = ['owner', 'admin'];
+    const AGENCY_TYPES = [
+        ['name' => 'central', 'code' => 0],
+        ['name' => 'zone_agency', 'code' => 1],
+        ['name' => 'province_agency', 'code' => 2],
+        ['name' => 'branch_agency', 'code' => 3],
+        ['name' => 'branch', 'code' => 4],
+    ];
     const ADMIN_ACCESS = ['all'];
     const GRADES = [1, 2];
 
@@ -134,8 +142,8 @@ class Variable
     {
         return [
 
-            ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844',
-                'access' => json_encode('all'), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
+            ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844', 'status' => 'active',
+                'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];
     }
@@ -144,10 +152,10 @@ class Variable
     {
         return [
             ['key' => 'hero_main_page', 'value' => __('hero_main_page'), "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'social_telegram', 'value' => 'hasannejhad', "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'social_whatsapp', 'value' => '00989132258738', "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'social_email', 'value' => 'info@koodkabotar.com', "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'social_phone', 'value' => '09132258738', "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'social_telegram', 'value' => 'lord2095', "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'social_whatsapp', 'value' => '00989351414815', "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'social_email', 'value' => 'info@tapchin.ir', "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'social_phone', 'value' => '09351414815', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_address', 'value' => 'گیلان - رشت', "created_at" => \Carbon\Carbon::now(),],
 
         ];

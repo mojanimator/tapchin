@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->boolean('phone_verified')->default(false);
             $table->string('password', 200)->nullable();
             $table->string('telegram_id', 50)->nullable();
-            $table->string('eitaa_id', 50)->nullable();
             $table->string('bale_id', 50)->nullable();
             $table->string('soroush_id', 50)->nullable();
             $table->enum('role', \App\Http\Helpers\Variable::USER_ROLES)->default(\App\Http\Helpers\Variable::USER_ROLES[0]);
