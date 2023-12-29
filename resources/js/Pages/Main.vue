@@ -367,6 +367,8 @@ import {
   FolderPlusIcon,
   Bars2Icon,
   StarIcon,
+  TruckIcon,
+  MapPinIcon,
 
 
 } from "@heroicons/vue/24/solid";
@@ -418,6 +420,8 @@ export default {
     StarIcon,
     ArticleSlider,
     Link,
+    TruckIcon,
+    MapPinIcon,
   },
   // mixins: [Mixin],
   setup(props) {

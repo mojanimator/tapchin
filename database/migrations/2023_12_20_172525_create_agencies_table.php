@@ -22,7 +22,10 @@ return new class extends Migration {
             $table->unsignedSmallInteger('province_id')->nullable();
             $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();
+            $table->boolean('has_shop')->default(false);
             $table->string('address', 2048)->nullable();
+            $table->string('location', 50)->default(null);
+
             $table->timestamps();
         });
     }

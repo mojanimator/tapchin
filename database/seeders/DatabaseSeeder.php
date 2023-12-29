@@ -72,16 +72,16 @@ class DatabaseSeeder extends Seeder
         DB::table('admins')->truncate();
 
         for ($i = 0; $i < $count; $i++) {
-            $phone = $this->faker->numerify("09#########");
+            $phone = $this->faker->numerify("091########");
             DB::table('admins')->insert([
                 [
-                    'id' => 2,
+//                    'id' => 2,
                     'name' => $this->faker->name,
                     'phone' => $phone,
                     'phone_verified' => true,
                     'password' => Hash::make($phone),
                     'status' => 'active',
-                    'role' => 'owner',
+                    'role' => $i < 15 ? 'owner' : 'admin',
                     'access' => 'all',
                 ]
             ]);
@@ -90,14 +90,9 @@ class DatabaseSeeder extends Seeder
     }
 
     private
-    function createAgencies()
+    function createAgencies($count = 30)
     {
-        'access',
-        'type',
-        'owner_id',
-        'province_id',
-        'county_id',
-        'address',
+
         DB::table('agencies')->truncate();
         //section agencies
         DB::table('agencies')->insert([
@@ -106,8 +101,21 @@ class DatabaseSeeder extends Seeder
                 'access' => json_encode([1, 2, 3, 4, 5, 6, 7, 8]),
                 'type' => 1,
                 'owner_id' => 2,
+                'province_id' => 13,
+                'county_id' => 170,
+                'address' => 'کوی کارگر',
+            ],
+            [
+                'name' => 'نمایندگی مرکز ایران',
+                'access' => json_encode([9, 10, 11, 12, 13, 14, 15, 16]),
+                'type' => 1,
+                'owner_id' => 3,
+                'province_id' => 8,
+                'county_id' => 103,
+                'address' => 'میدان آزادی',
             ]
         ]);
+
         foreach (DB::table('provinces')->get() as $province) {
             Agency::create(
                 [

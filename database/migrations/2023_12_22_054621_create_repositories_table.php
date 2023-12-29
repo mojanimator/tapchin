@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->unsignedSmallInteger('county_id')->nullable();
             $table->foreign('county_id')->references('id')->on('provinces')->onDelete('no action');
             $table->string('address', 2048)->nullable();
+            $table->string('location', 50)->nullable();
             $table->timestamps();
         });
     }

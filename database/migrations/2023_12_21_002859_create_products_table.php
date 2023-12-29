@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->unsignedInteger('price')->default(0);
             $table->unsignedInteger('auction_price')->default(0);
             $table->boolean('in_auction')->default(false);
+            $table->text('description')->default(null);
             $table->timestamps();
 
         });
