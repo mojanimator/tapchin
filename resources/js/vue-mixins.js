@@ -103,6 +103,13 @@ export default {
                     return this.__(el.name);
             return '';
         },
+        getPack(id) {
+            if (id == null || usePage().props.packs == null) return '';
+            for (const el of usePage().props.packs)
+                if (el.id == id)
+                    return this.__(el.name);
+            return '';
+        },
         getStatus(type, id) {
             if (id == null || type == null || (usePage().props[`statuses`] == null && usePage().props[type] == null)) return {
                 name: '',
@@ -233,7 +240,19 @@ export default {
 
                 behavior: "smooth",
             });
-        }
+        },
+        getUserCityId() {
+            let selecteds = usePage().props.user_location;
+            if (selecteds == null || selecteds.length == 0) return null;
+            return selecteds[selecteds.length - 1].id;
+
+        },
+        getUserProvinceId() {
+            let selecteds = usePage().props.user_location;
+            if (selecteds == null || selecteds.length == 0) return null;
+            return selecteds[0].id;
+
+        },
     },
 
 

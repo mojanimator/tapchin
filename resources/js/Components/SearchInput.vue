@@ -31,7 +31,7 @@ const focusNext = (elem) => {
 
 <template>
   <div>
-    <div class=" flex items-center  ">
+    <div class=" flex items-center rounded border border-neutral-300  ">
       <div class="relative  px-1 mx-auto  ">
         <div
             class="absolute top-0 bottom-0 start-4 flex items-center opacity-60     ">
@@ -47,7 +47,7 @@ const focusNext = (elem) => {
         <input id="search-toggle" :value="modelValue" type="search"
                @input="$emit('update:modelValue', $event.target.value)"
                :placeholder="__('hero_search_placeholder')"
-               class="placeholder-gray-400 border-transparent block w-full py-3 ps-12 pe-4 font-bold text-gray-700 bg-gray-100 rounded-lg shadow-lg focus:outline-none focus:bg-white"
+               class="placeholder-gray-400 border-transparent block w-full py-2 ps-12 pe-4 font-bold text-gray-700 bg-gray-100 rounded-lg  focus:outline-none focus:bg-white"
                @search="$emit('search' )">
 
       </div>

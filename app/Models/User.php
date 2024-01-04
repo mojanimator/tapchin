@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Helpers\Util;
+use App\Http\Helpers\Variable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Termwind\Components\Dd;
 
 class User extends Authenticatable
 {
@@ -33,6 +35,7 @@ class User extends Authenticatable
         'phone_verified',
         'ref_id',
         'push_id',
+        'city_id',
         'telegram_id',
         'bale_id',
         'is_active',
@@ -109,6 +112,39 @@ class User extends Authenticatable
 //                break;
         }
         return $ref;
+    }
+
+    public static function getLocation($cities)
+    {
+
+        $user = auth('sanctum')->user();
+        $res = [
+            ['id' => 904, 'name' => 'تهران'],
+            ['id' => 1, 'name' => 'تهران'],
+            ['id' => 61, 'name' => 'تجریش'],
+        ];
+        $city = $cities->where('id', optional($user)->city_id ?? session('city_id', Variable::CITY_ID))->first();
+        if ($city) {
+            if ($city->level == 1)
+                $res = [['id' => $city->id, 'name' => $city->name]];
+            elseif ($city->level == 2) {
+                $city0 = $cities->where('id', $city->parent_id)->first();
+                $res = [
+                    ['id' => optional($city0)->id, 'name' => optional($city0)->name],
+                    ['id' => $city->id, 'name' => $city->name],
+                ];
+            } elseif ($city->level == 3) {
+                $city1 = $cities->where('id', $city->parent_id)->first();
+                $city0 = $city1 ? $cities->where('id', $city1->parent_id)->first() : null;
+                $res = [
+                    ['id' => optional($city0)->id, 'name' => optional($city0)->name],
+                    ['id' => optional($city1)->id, 'name' => optional($city1)->name],
+                    ['id' => $city->id, 'name' => $city->name],
+                ];
+            }
+        }
+        session()->put('city_id', $res[count($res) - 1]['id']);
+        return $res;
     }
 
     public function isAdmin()

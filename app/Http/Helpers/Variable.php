@@ -136,6 +136,7 @@ class Variable
         ["name" => 'inactive', "color" => 'danger'],
     ];
     const NOTIFICATION_LIMIT = 5;
+    const CITY_ID = 61; //تجریش
     const RATIOS = ['slider' => 1.8];
 
     static function getAdmins()

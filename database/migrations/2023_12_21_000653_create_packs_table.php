@@ -15,6 +15,10 @@ return new class extends Migration {
         Schema::create('packs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 200);
+            $table->unsignedInteger('weight')->default(0); //gram
+            $table->unsignedInteger('height')->default(0); //cm
+            $table->unsignedInteger('width')->default(0); //cm
+            $table->unsignedInteger('length')->default(0); //cm
             $table->unsignedInteger('price')->default(0);
             $table->timestamps();
         });

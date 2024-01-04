@@ -167,4 +167,13 @@ class UserController extends Controller
         return back()->with($res);
     }
 
+    public function updateLocation(Request $request)
+    {
+        if (!is_numeric($request->city_id)) return;
+        session()->put('city_id', $request->city_id);
+        $user = auth('sanctum')->user();
+        if ($user)
+            $user->update(['city_id' => $request->city_id]);
+    }
+
 }

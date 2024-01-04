@@ -3,8 +3,13 @@
 namespace App\Http\Middleware;
 
 use App\Http\Helpers\Variable;
+use App\Models\City;
+use App\Models\Pack;
+use App\Models\PProduct;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
@@ -33,6 +38,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $socials = Setting::where('key', 'like', 'social_%')->get();
+        $cities = City::orderby('name')->get();
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' =>
@@ -67,6 +73,11 @@ class HandleInertiaRequests extends Middleware
             ],
             'extra' => fn() => $request->session()->get('extra'),
             'pageItems' => Variable::PAGINATE,
+            'cities' => $cities,
+            'is_auction' => Setting::getValue('is_auction'),
+            'packs' => Pack::get(),
+            'p_products' => PProduct::select('id', 'name')->get(),
+            'user_location' => User::getLocation($cities),
             'socials' => [
                 'whatsapp' => "https://wa.me/" . optional($socials->where('key', 'social_whatsapp')->first())->value,
                 'telegram' => "https://t.me/" . optional($socials->where('key', 'social_telegram')->first())->value,

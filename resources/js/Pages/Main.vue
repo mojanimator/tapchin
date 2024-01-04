@@ -53,18 +53,16 @@
             </div>
             <div class=" z-10 p-3    flex  items-center">
 
-              <SecondaryButton @click="params.type='order';recaptchaExpired() "
-                               data-te-toggle="modal"
-                               data-te-target="#messageModal"
-                               data-te-ripple-init class="mx-2 p-2 grow">{{
-                  __('reg_order')
+              <SecondaryButton @click="$inertia.visit(route('shop.index'))"
+                               class="mx-2 p-2 grow">{{
+                  __('shop')
                 }}
               </SecondaryButton>
               <PrimaryButton @click="params.type='request_agency';recaptchaExpired() "
                              data-te-toggle="modal"
                              data-te-target="#messageModal" classes="skew-x-[12deg] "
                              data-te-ripple-init class="mx-2 p-2 grow  ">{{
-                  __('request_agency')
+                  __('agency')
                 }}
               </PrimaryButton>
             </div>
@@ -441,6 +439,7 @@ export default {
 
     const modalEl = document.getElementById('messageModal');
     this.modal = new Modal(modalEl);
+
   },
   methods: {
     updateSearchResults() {

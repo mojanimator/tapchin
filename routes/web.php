@@ -15,10 +15,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PodcastController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectItemController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\TextController;
@@ -72,7 +74,6 @@ Route::get('/cache', function () {
 });
 Route::get('test', function () {
 
-
     return;
     return \Illuminate\Support\Facades\Artisan::call('store:transactions');
     return (new ArticleController())->search(new Request([]));
@@ -93,6 +94,8 @@ Route::get('storage/banners')->name('storage.banners');
 Route::get('storage/articles')->name('storage.articles');
 Route::get('storage/tickets')->name('storage.tickets');
 Route::get('storage/slides')->name('storage.slides');
+Route::get('storage/pproducts')->name('storage.pproducts');
+Route::get('storage/products')->name('storage.products');
 
 Route::get('/', function (Request $request) {
     if ($r = $request->ref) {
@@ -111,10 +114,6 @@ Route::get('/', function (Request $request) {
         ],
         'section2Header' => __('our_benefits'),
         'section2' => [
-            ['header' => 'کود کبوتر فله', 'sub' => 'کودی است که بعد از جمع آوری به صورت فله به فروش می رسد', 'icon' => 'StarIcon'],
-            ['header' => 'کود کبوتر پاک شده', 'sub' => 'در کود کبوتر پاک شده کلیه آشغالها جدا شده و به صورت یکدست دانه بندی شده عرضه می شود', 'icon' => 'StarIcon'],
-            ['header' => 'کود کبوتر آسیاب شده', 'sub' => 'کود کبوتر آسیاب شده و به صورت پودری سریعتر و بهتر در آب حل می شود', 'icon' => 'StarIcon'],
-            ['header' => 'کود کبوتر گرانولی', 'sub' => 'در کشت و صنعت و باغهای بزگ برای پخش کود کبوتر بهتر است از گرانولی کود کبوتر استفاده شود.', 'icon' => 'StarIcon'],
         ],
         'carouselImages' => [],
         'counts' => [
@@ -212,6 +211,13 @@ Route::get('/article/search', [ArticleController::class, 'search'])->name('artic
 Route::post('article/view', [ArticleController::class, 'increaseView'])->name('article.view');
 Route::get('article/{article}', [ArticleController::class, 'view'])->name('article');
 
+Route::get('/product/search', [ProductController::class, 'search'])->name('product.search');
+Route::get('/product/{product}', [ProductController::class, 'view'])->name('product.view');
+
+
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+
+Route::post('/update_location', [UserController::class, 'updateLocation'])->name('user.update_location');
 
 Route::get('language/{language}', function ($language) {
     session()->put('locale', $language);

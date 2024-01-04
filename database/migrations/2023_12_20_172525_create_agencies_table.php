@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Helpers\Variable;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,11 +21,13 @@ return new class extends Migration {
             $table->unsignedBigInteger('owner_id')->nullable();
             $table->foreign('owner_id')->references('id')->on('admins')->onDelete('no action');
             $table->unsignedSmallInteger('province_id')->nullable();
-            $table->foreign('province_id')->references('id')->on('provinces')->onDelete('no action');
+            $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();
+            $table->foreign('county_id')->references('id')->on('cities')->onDelete('no action');
             $table->boolean('has_shop')->default(false);
             $table->string('address', 2048)->nullable();
-            $table->string('location', 50)->default(null);
+            $table->string('location', 50)->nullable();
+            $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
 
             $table->timestamps();
         });

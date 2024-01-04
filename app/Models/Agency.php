@@ -14,10 +14,12 @@ class Agency extends Model
         'name',
         'access',
         'type',
+        'has_shop',
         'owner_id',
         'province_id',
         'county_id',
         'address',
+        'status',
     ];
     protected $casts = [
         'access' => 'array'

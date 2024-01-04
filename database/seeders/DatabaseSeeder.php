@@ -10,11 +10,16 @@ use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\County;
 use App\Models\Doc;
 use App\Models\Notification;
+use App\Models\Pack;
 use App\Models\Payment;
 use App\Models\Podcast;
+use App\Models\PProduct;
+use App\Models\Product;
+use App\Models\Repository;
 use App\Models\Site;
 use App\Models\Transaction;
 use App\Models\User;
@@ -46,6 +51,9 @@ class DatabaseSeeder extends Seeder
 
         $this->createAdmins(20);
         $this->createAgencies(20);
+        $this->createPacks(20);
+        $this->createRepositories(20);
+        $this->createProducts(20);
 
 
         return;
@@ -76,13 +84,13 @@ class DatabaseSeeder extends Seeder
             DB::table('admins')->insert([
                 [
 //                    'id' => 2,
-                    'name' => $this->faker->name,
+                    'fullname' => $this->faker->name,
                     'phone' => $phone,
                     'phone_verified' => true,
                     'password' => Hash::make($phone),
                     'status' => 'active',
                     'role' => $i < 15 ? 'owner' : 'admin',
-                    'access' => 'all',
+                    'access' => json_encode(['all']),
                 ]
             ]);
         }
@@ -94,38 +102,283 @@ class DatabaseSeeder extends Seeder
     {
 
         DB::table('agencies')->truncate();
+
+
         //section agencies
+        $provinces1 = City::where('level', 1)->inRandomOrder()->take(5)->pluck('id');
+        $provinces2 = City::where('level', 1)->whereNotIn('id', $provinces1)->inRandomOrder()->take(5)->pluck('id');
         DB::table('agencies')->insert([
             [
+                'id' => 1,
                 'name' => 'نمایندگی جنوب ایران',
-                'access' => json_encode([1, 2, 3, 4, 5, 6, 7, 8]),
-                'type' => 1,
+                'access' => json_encode($provinces1),
+                'has_shop' => false,
+                'type' => Variable::AGENCY_TYPES[1]['code'],
                 'owner_id' => 2,
-                'province_id' => 13,
-                'county_id' => 170,
+                'province_id' => City::where('level', 1)->where('name', 'خوزستان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اهواز')->first()->id,
                 'address' => 'کوی کارگر',
+                'status' => 'active',
             ],
             [
+                'id' => 2,
                 'name' => 'نمایندگی مرکز ایران',
-                'access' => json_encode([9, 10, 11, 12, 13, 14, 15, 16]),
-                'type' => 1,
+                'access' => json_encode($provinces2),
+                'has_shop' => false,
+                'type' => Variable::AGENCY_TYPES[1]['code'],
                 'owner_id' => 3,
-                'province_id' => 8,
-                'county_id' => 103,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'میدان آزادی',
-            ]
+                'status' => 'active',
+
+            ],
+            [
+                'id' => 3,
+                'name' => 'نمایندگی انحصاری اصفهان',
+                'access' => json_encode([City::where('level', 1)->where('name', 'اصفهان')->first()->id]),
+                'has_shop' => false,
+                'type' => Variable::AGENCY_TYPES[2]['code'],
+                'owner_id' => 4,
+                'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
+                'address' => 'سه راه سیمین',
+                'status' => 'active',
+
+            ],
+            [
+                'id' => 4,
+                'name' => 'نمایندگی انحصاری تهران',
+                'access' => json_encode([City::where('level', 1)->where('name', 'تهران')->first()->id]),
+                'has_shop' => false,
+                'type' => Variable::AGENCY_TYPES[2]['code'],
+                'owner_id' => 5,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'میدان آرژانتین',
+                'status' => 'active',
+
+            ],
+
+            [
+                'id' => 5,
+                'name' => 'نمایندگی شعبه فیروزکوه',
+                'access' => null,
+                'has_shop' => true,
+                'type' => Variable::AGENCY_TYPES[3]['code'],
+                'owner_id' => 6,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'فیروزکوه')->first()->id,
+                'address' => 'فیروزکوه',
+                'status' => 'active',
+
+            ],
+            [
+                'id' => 6,
+                'name' => 'نمایندگی شعبه اسلامشهر',
+                'access' => null,
+                'has_shop' => true,
+                'type' => Variable::AGENCY_TYPES[3]['code'],
+                'owner_id' => 7,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اسلام‌شهر')->first()->id,
+                'address' => 'اسلامشهر',
+                'status' => 'active',
+
+            ],
+            [
+                'id' => 7,
+                'name' => 'نمایندگی شعبه اصفهان',
+                'access' => null,
+                'has_shop' => true,
+                'type' => Variable::AGENCY_TYPES[3]['code'],
+                'owner_id' => 8,
+                'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
+                'address' => 'میدان شهدا',
+                'status' => 'active',
+
+            ],
+            [
+                'id' => 8,
+                'name' => 'نمایندگی شعبه شهرضا',
+                'access' => null,
+                'has_shop' => true,
+                'type' => Variable::AGENCY_TYPES[3]['code'],
+                'owner_id' => 9,
+                'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'شاهین‌شهر')->first()->id,
+                'address' => 'میدان شهدا',
+                'status' => 'active',
+
+            ],
+
         ]);
 
-        foreach (DB::table('provinces')->get() as $province) {
-            Agency::create(
-                [
 
+    }
+
+    private function createPacks($count = 30)
+    {
+
+        DB::table('packs')->truncate();
+        //section agencies
+        DB::table('packs')->insert([
+            [
+
+                'name' => 'جعبه چوبی',
+                'weight' => 500,
+                'height' => 50,
+                'length' => 80,
+                'width' => 60,
+                'price' => 0,
+
+            ],
+            [
+                'name' => 'جعبه پلاستیکی',
+                'weight' => 350,
+                'height' => 50,
+                'length' => 80,
+                'width' => 60,
+                'price' => 0,
+
+            ],
+            [
+                'name' => 'گونی',
+                'weight' => 100,
+                'height' => 150,
+                'length' => 80,
+                'width' => 60,
+                'price' => 0,
+            ],
+        ]);
+    }
+
+    private function createRepositories($count = 30)
+    {
+
+
+        DB::table('repositories')->truncate();
+        //section agencies
+        DB::table('repositories')->insert([
+            [
+                'id' => 1,
+                'name' => 'انبار فیروزکوه',
+                'agency_id' => 5,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'فیروزکوه')->first()->id,
+                'address' => 'فیروزکوه',
+                'location' => null,
+                'status' => 'active',
+                'cities' => json_encode([11, 15, 19, 104, 107, 154, 175, 180, 182, 209, 226, 290, 298, 392, 61]),
+            ],
+            [
+                'id' => 2,
+                'name' => 'انبار اسلامشهر',
+                'agency_id' => 6,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اسلام‌شهر')->first()->id,
+                'address' => 'اسلامشهر',
+                'location' => null,
+                'status' => 'active',
+                'cities' => json_encode([182, 209, 226, 290, 298, 392, 412, 440, 462, 500, 519, 539, 566, 683, 684, 685, 686, 61]),
+
+
+            ],
+            [
+                'id' => 3,
+                'name' => 'انبار اصفهان',
+                'agency_id' => 7,
+                'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
+                'address' => 'خیابان مشتاق',
+                'location' => null,
+                'status' => 'active',
+                'cities' => json_encode([598, 213, 599, 482, 600, 486, 601, 202, 123, 1052, 319, 306, 1543]),
+
+            ],
+            [
+                'id' => 4,
+                'name' => 'انبار شهرضا',
+                'agency_id' => 8,
+                'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
+                'address' => 'میدان شهدا',
+                'location' => null,
+                'status' => 'active',
+                'cities' => json_encode([618, 617, 1042, 530, 615, 67, 614, 613, 612, 465, 1077]),
+
+            ],
+
+        ]);
+    }
+
+    private function createProducts($count = 30)
+    {
+        DB::table('p_products')->truncate();
+        DB::table('products')->truncate();
+        File::deleteDirectory("storage/app/public/products");
+        File::makeDirectory("storage/app/public/products");
+
+        $repoIds = [1, 2, 3, 4];
+        $prods = [
+            'انگور',
+            'لیمو',
+            'تمشک',
+            'پرتقال',
+            'آناناس',
+            'گلابی',
+            'بلوبری',
+            'انجیر',
+            'توت فرنگی',
+            'طالبی',
+            'سیب',
+            'زردآلو',
+            'لیمو ترش',
+            'گیلاس',
+            'کیوی',
+        ];
+        foreach ($prods as $prod) {
+            $packs = Pack::inRandomOrder()->take(2)->pluck('id');
+            $pp = PProduct::create([
+                'name' => $prod,
+            ]);
+            foreach (Repository::whereIn('id', $repoIds)->get() as $repo) {
+                $p = Product::create([
+                    'name' => $pp->name,
+                    'parent_id' => $pp->id,
+                    'grade' => $this->faker->randomElement(Variable::GRADES),
+                    'agency_id' => $repo->agency_id,
+                    'repo_id' => $repo->id,
+                    'pack_id' => $packs[0],
+                    'in_repo' => $this->faker->numberBetween(0, 50),
+                    'in_shop' => $this->faker->numberBetween(0, 50),
+                    'price' => $this->faker->randomElement([10000, 5000, 3000, 22000, 12000]),
+                    'auction_price' => 0,
+                    'in_auction' => false,
+                    'weight' => $this->faker->randomElement([5.5, 10, 15, 20]),
+                    'description' => $this->faker->realText($this->faker->numberBetween(256, 512)),
                 ]);
-            $counties = DB::table('counties')->where('province_id', $province->id)->inRandomOrder()->take($this->faker->numberBetween(0, 3));
-            foreach ($counties as $county) {
+                $this->makeGallery("products", $pp->id, $p->id);
 
+                $p = Product::create([
+                    'name' => $pp->name,
+                    'parent_id' => $pp->id,
+                    'grade' => $this->faker->randomElement(Variable::GRADES),
+                    'agency_id' => $repo->agency_id,
+                    'repo_id' => $repo->id,
+                    'pack_id' => $packs[1],
+                    'in_repo' => $this->faker->numberBetween(0, 50),
+                    'in_shop' => $this->faker->numberBetween(0, 50),
+                    'price' => $this->faker->randomElement([10000, 5000, 3000, 22000, 12000]),
+                    'auction_price' => 0,
+                    'in_auction' => false,
+                    'weight' => $this->faker->randomElement([2.5, 10, 15, 20]),
+                    'description' => $this->faker->realText($this->faker->numberBetween(256, 512)),
+                ]);
+
+                $this->makeGallery("products", $pp->id, $p->id);
             }
-
         }
 
     }
@@ -343,6 +596,28 @@ class DatabaseSeeder extends Seeder
     }
 
     private
+    function makeGallery($type, $parent, $id)
+    {
+        if (!File::exists("storage/app/public/$type/$id")) {
+//            Storage::makeDirectory("public/$type", 766);
+            File::makeDirectory(Storage::path("public/$type/$id"), $mode = 0755,);
+        }
+        $path = storage_path("app/public/faker/$type/$parent.jpg");
+
+        $file = new UploadedFile(
+            $path,
+            '1.' . File::extension($path),
+            File::mimeType($path),
+            null,
+            true
+
+        );
+        copy($file->path(), (storage_path("app/public/$type/$id/1.jpg")   /*. $file->extension()*/));
+
+
+    }
+
+    private
     function createBusinesses($count = 30)
     {
         File::deleteDirectory("storage/app/public/businesses");
@@ -438,14 +713,15 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private
-    function makeGallery($type, $id)
+
+    function makeGallery2($type, $id)
     {
         $fakeFiles = Storage::allFiles("public/faker/$type");
         if (!File::exists("storage/app/public/$type/$id")) {
 //            Storage::makeDirectory("public/$type", 766);
             File::makeDirectory(Storage::path("public/$type/$id"), $mode = 0755,);
         }
+
         $rand = [1, 2, 3, 4][array_rand([1, 2, 3, 4])];
 
         for ($i = 0; $i < $rand; $i++) {

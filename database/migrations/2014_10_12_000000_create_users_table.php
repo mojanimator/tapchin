@@ -21,6 +21,9 @@ return new class extends Migration {
             $table->string('phone', 20)->nullable();
             $table->boolean('phone_verified')->default(false);
             $table->string('password', 200)->nullable();
+            $table->unsignedSmallInteger('city_id')->nullable();
+            $table->foreign('city_id')->references('id')->on('cities');
+
             $table->string('telegram_id', 50)->nullable();
             $table->string('bale_id', 50)->nullable();
             $table->string('soroush_id', 50)->nullable();

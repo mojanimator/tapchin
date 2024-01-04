@@ -1,4 +1,4 @@
-.panel {
+* {
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -11,7 +11,7 @@
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #aaa;
+    background: #10b981;
     border-radius: 5px;
   }
 

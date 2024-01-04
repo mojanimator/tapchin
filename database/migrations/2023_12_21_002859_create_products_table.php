@@ -20,9 +20,14 @@ return new class extends Migration {
             $table->enum('grade', \App\Http\Helpers\Variable::GRADES)->nullable();
             $table->unsignedInteger('pack_id')->nullable();
             $table->foreign('pack_id')->references('id')->on('packs')->onDelete('no action');
-            $table->unsignedInteger('in_stock')->default(0);
+            $table->unsignedBigInteger('agency_id')->nullable();
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+            $table->unsignedBigInteger('repo_id')->nullable();
+            $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
+            $table->unsignedInteger('in_repo')->default(0);
             $table->unsignedInteger('in_shop')->default(0);
             $table->unsignedInteger('price')->default(0);
+            $table->unsignedDecimal('weight', 7, 3)->default(0); //kg
             $table->unsignedInteger('auction_price')->default(0);
             $table->boolean('in_auction')->default(false);
             $table->text('description')->default(null);
