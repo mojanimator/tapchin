@@ -102,7 +102,7 @@
 
             </div>
             <div class="flex items-center text-sm">
-              <div>{{ __('weight') + ` : ${p.weight}` }}</div>
+              <div>{{ __('weight') + ` : ${parseFloat(p.weight)}` }}</div>
               <div class="text-sm text-neutral-500 mx-2">{{ __('kg') }}</div>
 
             </div>
@@ -121,7 +121,7 @@
 
 
               </div>
-              <div v-if=" p.in_auction" class="flex items-center ">
+              <div v-if=" p.in_auction==true" class="flex items-center ">
                 <ArrowTrendingUpIcon class="  rotate-180 text-neutral-500 mx-2"/>
                 <span> {{ asPrice(p.auction_price) }}</span>
 
