@@ -24,14 +24,17 @@
           @swiper=""
           @slideChange=""
           class="w-full p-3 ">
-        <swiper-slide
-            class="flex max-w-[3.5rem] flex-col rounded p-1 mb-4  items-center hover:cursor-pointer hover:bg-gray-50 hover:scale-[105%]"
-            v-for="p in $page.props.p_products">
+        <swiper-slide @click=" toggleArray(p.id ,params.parent_ids);getData(0)"
+                      :class="{'bg-primary-500 hover:bg-primary-400':params.parent_ids.filter((e)=>e==p.id).length>0}"
+                      class="flex max-w-[3.5rem] flex-col rounded p-1 mb-4  items-center hover:cursor-pointer hover:bg-gray-50 hover:scale-[105%]"
+                      v-for="p in $page.props.p_products">
           <div>
             <Image classes="rounded-full h-12 w-12 border-primary-500 border"
                    :src="route('storage.pproducts')+`/${p.id}.jpg`"></Image>
           </div>
-          <div class="text-xs text-center text-neutral-500">{{ replaceAll(p.name, ' ', "‌") }}</div>
+          <div :class="{'text-white':params.parent_ids.filter((e)=>e==p.id).length>0}"
+               class="text-xs text-center text-neutral-500">{{ replaceAll(p.name, ' ', "‌") }}
+          </div>
         </swiper-slide>
       </swiper>
     </section>
@@ -173,6 +176,7 @@ export default {
         p_products: [],
         order_by: null,
         dir: null,
+        parent_ids: [],
         province_id: this.getUserProvinceId(),
         city_id: this.getUserCityId(),
       },
@@ -257,6 +261,7 @@ export default {
         }
       };
     },
+
   }
 
 }

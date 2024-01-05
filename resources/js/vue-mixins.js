@@ -253,6 +253,22 @@ export default {
             return selecteds[0].id;
 
         },
+        toggleArray(item, array = []) {
+
+            let i = null;
+            for (let idx in array) {
+                if (array[idx] == item) {
+                    i = idx;
+                    break;
+                }
+            }
+            if (i != null)
+                array.splice(i, 1);
+            else
+                array.push(item);
+            console.log(array);
+            return array;
+        },
     },
 
 

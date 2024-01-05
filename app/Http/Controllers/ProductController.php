@@ -51,6 +51,7 @@ class ProductController extends Controller
             'products.weight as weight',
             'products.in_auction as in_auction',
             'products.in_shop as in_shop',
+            'products.parent_id as parent_id',
             'repositories.province_id as province_id',
         )
             ->orderBy('products.updated_at', 'DESC')//
