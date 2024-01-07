@@ -40,56 +40,15 @@
     </section>
 
 
-    <section v-if="false" class="flex justify-center  p-4   py-4  ">
-      <!--      <div class=" w-80 p-3   mx-2  bg-white rounded-lg     lg:flex md:hidden sm:hidden xs:hidden"></div>-->
-      <div
-          class="   flex flex-wrap  justify-center gap-4">
-        <Link v-for="(d,idx) in products" :href="route('article',d.id)"
-              class="  flex-col relative items-stretch cursor-pointer hover:scale-[101%] duration-300 rounded-lg overflow-hidden shadow-lg">
-          <Image :src="route('storage.articles')+`/${d.id}.jpg`" classes="object-cover rounded-lg h-48   w-full"/>
-          <div class="absolute text-gray-500 rounded-full p-4 mx-4 top-[10rem] bg-white   shadow-lg">
-            <PencilIcon class="w-5 h-5 "/>
-          </div>
-          <div v-if="false "
-               class="absolute  rounded-lg text-white bg-rose-500  p-1 px-2 m-2  end-0 top-0    shadow-lg">
-            {{ `${d.view} ⭐️` }}
-          </div>
-
-          <div class="p-2 mt-4  text-gray-700">{{ cropText(d.title, 30) }}</div>
-          <div class="px-2 py-2 text-sm   text-gray-400">{{ cropText(d.author, 30) }}</div>
-          <hr class="border-gray-200  ">
-          <div class="flex justify-start  items-center p-4 text-sm text-gray-500">
-            <div class="flex items-center">
-              <!--              <EyeIcon class="w-4 h-4"/>-->
-              <span class="px-1">{{ __('view') }}:</span>
-              <span class="px-1">{{ d.view }}</span>
-            </div>
-            <div v-if="false" class=" border-s   py-4"></div>
-            <!--            <div v-if="!hasWallet()" class="flex items-center">-->
-            <!--              &lt;!&ndash;              <EyeIcon class="w-4 h-4"/>&ndash;&gt;-->
-            <!--              <span class="px-1">{{ __('reward') }}:</span>-->
-            <!--              <span class="px-1">{{ $page.props.site_view_meta_reward }} {{ __('meta') }}</span>-->
-            <!--            </div>-->
-            <!--            <div class="flex items-center">-->
-            <!--              <EyeIcon class="w-4 h-4"/>-->
-            <!--              <span class="px-1">{{ __('location') }}:</span>-->
-            <!--              <span class="px-1">{{ getDuration(d.duration) }} </span>-->
-            <!--            </div>-->
-
-          </div>
-        </Link>
-      </div>
-    </section>
-
-    <section v-if="products.length>0" class="container-lg  mx-auto">
+    <section v-if="products.length>0" class="container-lg  mx-auto  ">
 
       <div
-          class="  mt-6   gap-y-6 gap-x-2 grid   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
+          class="  mt-6   gap-y-3 gap-x-2 grid   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
 
-        <Link v-for="(p,idx) in products" :href="route('product.view',p.id)"
-              class="bg-white  shadow-md rounded   flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
+        <Link v-for="(p,idx) in products" :href="route('product.view',{id:p.id,name:p.name})"
+              class="bg-white  shadow-md rounded-lg   flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
           <Image
-              classes=" overflow-hidden md:mx-auto max-w-16 md:max-w-[20rem] max-h-32 sm:max-h-64 rounded-t-lg mx-2 -mt-4"
+              classes="  overflow-hidden md:mx-auto max-w-16 md:max-w-[20rem] max-h-32 sm:max-h-64 rounded-b-lg mx-2  "
               :src="route('storage.products')+`/${p.id}/1.jpg`"></Image>
           <div class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
             <div class="flex items-center justify-between">

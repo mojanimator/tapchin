@@ -28,8 +28,8 @@ export default {
             return document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 
         },
-        showWalletChargeDialog() {
-            this.emitter.emit('showWalletChargeDialog', null);
+        updateCart(cart) {
+            this.emitter.emit('updateCart', cart);
         },
         showToast(type, message) {
             this.emitter.emit('showToast', {type, message});

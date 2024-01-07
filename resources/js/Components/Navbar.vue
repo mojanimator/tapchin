@@ -1,5 +1,5 @@
 <template>
-  <nav class="fixed w-full z-30 top-0">
+  <nav class="fixed w-full z-30 top-0 ">
     <div class="max-w-7xl  mx-auto   px-2 lg:px-4">
       <div class="flex justify-between">
         <div class="flex space-x-4">
@@ -55,6 +55,7 @@
         </div>
         <!-- Secondary Navbar items -->
         <div class="   flex items-center space-x-3   ">
+          <CartButton/>
           <UserButton/>
           <!--          <LanguageButton/>-->
         </div>
@@ -79,7 +80,7 @@
       <button @click="scrollTo('footer') " class="nav-item " :class="navClasses('page.contact_us')">
         {{ __('contact_us') }}
       </button>
-<!--      <Link :href="route('page.contact_us')" class="nav-ite " :class="navClasses('page.contact_us')">-->
+      <!--      <Link :href="route('page.contact_us')" class="nav-ite " :class="navClasses('page.contact_us')">-->
       <!--        {{ __('contact_us') }}-->
       <!--      </Link>-->
     </div>
@@ -90,6 +91,7 @@
 <script>
 
 import LanguageButton from "@/Components/LanguageButton.vue";
+import CartButton from "@/Components/CartButton.vue";
 import UserButton from "@/Components/UserButton.vue";
 import {Head, Link} from '@inertiajs/vue3';
 import {Bars3Icon, UserIcon} from "@heroicons/vue/24/outline";
@@ -98,7 +100,14 @@ import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 export default {
   components: {
     ApplicationLogo,
-    LanguageButton, UserButton, Bars3Icon, UserIcon, Link, Head
+    LanguageButton,
+    UserButton,
+    Bars3Icon,
+    UserIcon,
+    Link,
+    Head,
+    CartButton,
+
   },
   props: ['theme'],
   data() {
@@ -126,6 +135,7 @@ export default {
       var scrollpos = window.scrollY;
       var nav = document.getElementsByTagName("nav")[0];
       var links = document.querySelectorAll(".nav-item");
+      var buttons = document.querySelectorAll(".btn");
       if (this.theme == 'light') {
         nav.classList.remove("bg-transparent");
         nav.classList.add("bg-white");
@@ -136,6 +146,14 @@ export default {
         for (let el of links) {
           el.classList.remove("text-white");
           el.classList.add("text-primary-500");
+        }
+        for (let el of buttons) {
+          el.classList.remove("bg-white");
+          el.classList.add("bg-primary-500");
+          el.classList.remove("text-primary-500");
+          el.classList.add("text-white");
+          el.classList.remove("border-primary-500");
+          el.classList.add("border-white");
         }
         return;
       } else {
@@ -149,7 +167,14 @@ export default {
           el.classList.add("text-white");
           el.classList.remove("text-primary-500");
         }
-
+        for (let el of buttons) {
+          el.classList.remove("bg-white");
+          el.classList.add("bg-primary-500");
+          el.classList.remove("text-primary-500");
+          el.classList.add("text-white");
+          el.classList.remove("border-primary-500");
+          el.classList.add("border-white");
+        }
 
       }
 
@@ -171,6 +196,14 @@ export default {
             el.classList.remove("text-white");
             el.classList.add("text-primary-500");
           }
+          for (let el of buttons) {
+            el.classList.add("bg-white");
+            el.classList.remove("bg-primary-500");
+            el.classList.add("text-primary-500");
+            el.classList.remove("text-white");
+            el.classList.add("border-primary-500");
+            el.classList.remove("border-white");
+          }
         } else {
           nav.classList.add("bg-transparent");
           nav.classList.remove("bg-white");
@@ -182,7 +215,14 @@ export default {
             el.classList.add("text-white");
             el.classList.remove("text-primary-500");
           }
-
+          for (let el of buttons) {
+            el.classList.remove("bg-white");
+            el.classList.add("bg-primary-500");
+            el.classList.remove("text-primary-500");
+            el.classList.add("text-white");
+            el.classList.remove("border-primary-500");
+            el.classList.add("border-white");
+          }
 
         }
       });

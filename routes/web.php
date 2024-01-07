@@ -212,7 +212,7 @@ Route::post('article/view', [ArticleController::class, 'increaseView'])->name('a
 Route::get('article/{article}', [ArticleController::class, 'view'])->name('article');
 
 Route::get('/product/search', [ProductController::class, 'search'])->name('product.search');
-Route::get('/product/{product}', [ProductController::class, 'view'])->name('product.view');
+Route::get('/product/{id}/{name}', [ProductController::class, 'view'])->name('product.view');
 
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');

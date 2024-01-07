@@ -24,4 +24,9 @@ class Product extends Model
         'weight',
         'description',
     ];
+
+    public function repository()
+    {
+        return $this->belongsTo(Repository::class, 'repo_id');
+    }
 }

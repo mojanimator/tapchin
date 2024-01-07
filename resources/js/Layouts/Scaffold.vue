@@ -85,6 +85,7 @@ export default {
         this.$refs.alert.show(e.type, e.message);
     });
 
+
     this.emitter.on('showDialog', (e) => {
       this.log(e);
       if (this.$refs.modal)

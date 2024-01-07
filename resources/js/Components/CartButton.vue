@@ -65,9 +65,9 @@
 
     </div>
     <Link v-else :href="profileLink( )"
-          class="flex mx-1 btn  border    font-medium
-            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out   border-white p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
-      <UserIcon class=" h-5 w-5"/>
+          class="flex btn mx-1 nav-item  border  text-white     font-medium
+            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out border-white p-2 rounded-lg   rounded-lg hover:bg-primary-400 hover:text-white">
+      <ShoppingCartIcon class=" h-5 w-5"/>
 
     </Link>
 
@@ -77,19 +77,39 @@
 
 <script>
 import {Link} from '@inertiajs/vue3';
-import {UserIcon, ChevronDownIcon, ArrowRightOnRectangleIcon} from "@heroicons/vue/24/outline";
+import {
+  UserIcon,
+  ChevronDownIcon,
+  ArrowRightOnRectangleIcon,
+  ShoppingCartIcon,
+} from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue";
+import mitt from 'mitt'
 
+export const emitter = mitt()
 export default {
 
   data() {
     return {chevronRotate: false, chevronShow: false, user: this.$page.props.auth.user}
   },
-  components: {Link, UserIcon, ChevronDownIcon, Image, ArrowRightOnRectangleIcon},
+  components: {
+    Link,
+    UserIcon,
+    ChevronDownIcon,
+    Image,
+    ArrowRightOnRectangleIcon,
+    ShoppingCartIcon,
+  },
   props: {},
   setup(props) {
 
 
+  },
+  mounted() {
+    this.emitter.on('updateCart', (e) => {
+      if (this.$refs.alert)
+        this.$refs.alert.show(e.type, e.message);
+    });
   },
   computed: {
     selectable_locale() {
@@ -115,6 +135,7 @@ export default {
         return this.route('panel.index');
       else return this.route('login');
     },
+
   }
 }
 

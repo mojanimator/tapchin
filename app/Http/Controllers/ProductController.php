@@ -4,9 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
+    public
+    function view(Request $request, $id)
+    {
+        $data = Product::where('id', $id)->with('repository')->first();
+
+        return Inertia::render('Product/View', [
+            'back_link' => url()->previous(),
+            'data' => $data,
+        ]);
+
+    }
+
     public
     function search(Request $request)
     {
