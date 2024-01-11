@@ -60,6 +60,7 @@ import Alert from "@/Components/Alert.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
 import mitt from 'mitt'
 import favicon from "@/../images/logo.png";
+import {Dropdown, initTE, Modal} from "tw-elements";
 
 export const emitter = mitt()
 export default {
@@ -74,7 +75,14 @@ export default {
     Head, Link, Navbar, Footer, Alert, Dialog, Toast, LoadingIcon,
   },
   mounted() {
+
     window.tailwindElements();
+
+    if (!window.Dropdown) {
+      window.Dropdown = Dropdown;
+      initTE({Dropdown}, {allowReinits: true});
+    }
+
     this.emitter.on('showToast', (e) => {
       if (this.$refs.toast)
         this.$refs.toast.show(e.type, e.message);

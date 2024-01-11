@@ -53,6 +53,7 @@ class DatabaseSeeder extends Seeder
         $this->createAgencies(20);
         $this->createPacks(20);
         $this->createRepositories(20);
+        $this->createShippingMethods(20);
         $this->createProducts(20);
 
 
@@ -270,7 +271,7 @@ class DatabaseSeeder extends Seeder
                 'address' => 'فیروزکوه',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode([11, 15, 19, 104, 107, 154, 175, 180, 182, 209, 226, 290, 298, 392, 61]),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [392, 61])),
             ],
             [
                 'id' => 2,
@@ -281,7 +282,7 @@ class DatabaseSeeder extends Seeder
                 'address' => 'اسلامشهر',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode([182, 209, 226, 290, 298, 392, 412, 440, 462, 500, 519, 539, 566, 683, 684, 685, 686, 61]),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(25)->inRandomOrder()->pluck('id')->toArray(), [686, 61])),
 
 
             ],
@@ -294,7 +295,7 @@ class DatabaseSeeder extends Seeder
                 'address' => 'خیابان مشتاق',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode([598, 213, 599, 482, 600, 486, 601, 202, 123, 1052, 319, 306, 1543]),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),
 
             ],
             [
@@ -306,8 +307,60 @@ class DatabaseSeeder extends Seeder
                 'address' => 'میدان شهدا',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode([618, 617, 1042, 530, 615, 67, 614, 613, 612, 465, 1077]),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 1)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),
 
+            ],
+
+        ]);
+    }
+
+    private function createShippingMethods($count = 30)
+    {
+
+
+        DB::table('shipping_methods')->truncate();
+        //section agencies
+        DB::table('shipping_methods')->insert([
+            [
+                'id' => 2,
+                'repo_id' => 1,
+                'products' => null,
+                'cities' => null,
+                'per_weight_price' => 5000,
+                'base_price' => 10000,
+                'free_from_price' => null,
+                'description' => '',
+                'name' => 'پخش فیروزکوه',
+            ], [
+                'id' => 3,
+                'repo_id' => 1,
+                'products' => json_encode(Product::where('repo_id', 1)->inRandomOrder()->take(4)->pluck('id')->toArray()),
+                'cities' => json_encode(collect(Repository::where('id', 1)->first()->cities)->shuffle()->take(10)),
+                'per_weight_price' => 0,
+                'base_price' => 12000,
+                'free_from_price' => null,
+                'description' => '',
+                'name' => 'پخش فیروزکوه',
+            ], [
+                'id' => 4,
+                'repo_id' => 1,
+                'products' => json_encode(Product::where('repo_id', 1)->inRandomOrder()->take(6)->pluck('id')->toArray()),
+                'cities' => null,
+                'per_weight_price' => 0,
+                'base_price' => 15000,
+                'free_from_price' => null,
+                'description' => '',
+                'name' => 'پخش ویژه فیروزکوه',
+            ], [
+                'id' => 5,
+                'repo_id' => 2,
+                'products' => null,
+                'cities' => json_encode(collect(Repository::where('id', 1)->first()->cities)->shuffle()->take(10)),
+                'per_weight_price' => 4000,
+                'base_price' => 14000,
+                'free_from_price' => null,
+                'description' => '',
+                'name' => 'پخش اسلامشهر',
             ],
 
         ]);

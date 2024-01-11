@@ -1,77 +1,16 @@
 <template>
   <div class="flex items-center ">
-    <div v-if=" user">
 
-      <div class="group flex relative dropdown text-start">
-        <!-- Dropdown toggle button -->
-        <button
-            type="button"
-            id="dropdownUser"
-            data-te-dropdown-toggle-ref
-            aria-expanded="false"
-            data-te-ripple-init
-            data-te-ripple-color="light"
-            @click="chevronShow=!chevronShow" @mouseover="chevronRotate=true;chevronShow=true"
-            @mouseleave="chevronRotate=false"
-            class="relative btn z-10 flex items-center p-2 text-sm text-gray-600 bg-white border border-transparent rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring dark:text-white dark:bg-gray-800 focus:outline-none">
-                    <span :class=" chevronRotate?'rotate-90':'' " class="transition duration-500"><ChevronDownIcon
-                        class="h-5 w-5"/> </span>
-          <span class="mx-1"> {{ user.phone || user.email }}</span>
-        </button>
-
-        <!-- Dropdown menu -->
-        <ul v-if="  chevronShow" @mouseover="chevronRotate=true" @mouseleave="chevronRotate=false"
-            class="flex-col    bg-white  border shadow-xl rounded-lg transform scale-0 group-hover:scale-100  absolute end-0 top-10
-                    transition duration-200 ease-in-out origin-top overflow-hidden   ">
-          <li>
-            <Link href="#"
-                  class="flex px-6   py-4  justify-around      text-sm text-gray-600 transition-colors duration-200 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
-              <Image classes=" flex-shrink-0  object-cover mx-1 rounded-full w-9 h-9"
-                     :src="route('storage.users')+`/${user.id}.jpg`"
-                     alt="jane avatar"
-                     type="user"/>
-
-              <div class="flex-col  mx-1  ">
-                <h1 class="    text-sm font-semibold text-gray-700 dark:text-gray-200">
-                  {{ user.fullname }}</h1>
-                <div class="   text-sm text-gray-500 dark:text-gray-400 ">{{ user.phone || user.email }}
-                </div>
-              </div>
-            </Link>
-          </li>
-          <li>
-            <hr class="border-gray-200 dark:border-gray-700  ">
-          </li>
-          <li>
-            <Link :href="isAdmin()?route('panel.admin.index'):route('panel.index')"
-                  class="flex px-4 py-4 text-sm text-gray-600 capitalize transition-colors duration-200 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
-              {{ __('dashboard') }}
-            </Link>
-          </li>
-          <li>
-            <hr class="border-gray-200 dark:border-gray-700 ">
-          </li>
-          <li>
-            <button @click="logout" class=" w-full flex ">
-              <div class="flex items-center justify-center  m-3 px-4 py-2  w-full  hover:scale-110 focus:outline-none      rounded font-bold cursor-pointer
-        hover:bg-red-700 hover:text-red-100  bg-red-100 text-red-500  border duration-200 ease-in-out border-red-600 transition">
-                {{ __('signout') }}
-                <ArrowRightOnRectangleIcon class="h-5 w-5 text-red-500  "/>
-              </div>
-            </button>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-    <Link v-else :href="profileLink( )"
-          class="flex btn mx-1 nav-item  border  text-white     font-medium
-            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out border-white p-2 rounded-lg   rounded-lg hover:bg-primary-400 hover:text-white">
+    <Link :href="route('checkout.cart')"
+          class="flex mx-1 btn  border relative   font-medium
+            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out   p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
       <ShoppingCartIcon class=" h-5 w-5"/>
+      <div
+          class="absolute px-2 text-sm bottom-[-.5rem] start-[-.5rem] border border-white  rounded-md text-white bg-rose-500">
+        {{ this.qty }}
 
+      </div>
     </Link>
-
-
   </div>
 </template>
 
@@ -90,7 +29,11 @@ export const emitter = mitt()
 export default {
 
   data() {
-    return {chevronRotate: false, chevronShow: false, user: this.$page.props.auth.user}
+    return {
+      user: this.$page.props.auth.user,
+      cart: this.$page.props.cart,
+      qty: 0,
+    }
   },
   components: {
     Link,
@@ -106,35 +49,25 @@ export default {
 
   },
   mounted() {
-    this.emitter.on('updateCart', (e) => {
-      if (this.$refs.alert)
-        this.$refs.alert.show(e.type, e.message);
+    this.emitter.on('updateCart', (cart) => {
+      this.cart = cart;
+      this.$page.props.cart = cart;
+      this.setCartQty();
     });
-  },
-  computed: {
-    selectable_locale() {
-      if (this.$page.locale == 'fa') {
-        return 'en';
-      }
-      if (this.$page.locale == 'en') {
-        return 'ar';
-      }
-      return 'fa'
-    },
 
+    this.setCartQty();
   },
+  computed: {},
   watch: {},
   methods: {
-    logout() {
-      axios.post(route('logout')).then(() => {
-        location.reload()
-      })
-    },
-    profileLink() {
-      if (this.$page.props.auth.user)
-        return this.route('panel.index');
-      else return this.route('login');
-    },
+    setCartQty() {
+      this.qty = 0;
+      if (this.cart && this.cart.items && this.cart.items.length > 0)
+        for (let idx in this.cart.items) {
+          if (this.cart.items[idx].qty && this.cart.items[idx].qty > 0)
+            this.qty += this.cart.items[idx].qty;
+        }
+    }
 
   }
 }

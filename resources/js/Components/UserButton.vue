@@ -66,7 +66,7 @@
     </div>
     <Link v-else :href="profileLink( )"
           class="flex mx-1 btn  border    font-medium
-            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out   border-white p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
+            focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out     p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
       <UserIcon class=" h-5 w-5"/>
 
     </Link>

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Helpers\Variable;
+use App\Models\Cart;
 use App\Models\City;
 use App\Models\Pack;
 use App\Models\PProduct;
@@ -73,6 +74,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'extra' => fn() => $request->session()->get('extra'),
             'pageItems' => Variable::PAGINATE,
+            'cart' => Cart::getData(),
             'cities' => $cities,
             'is_auction' => Setting::getValue('is_auction'),
             'packs' => Pack::get(),

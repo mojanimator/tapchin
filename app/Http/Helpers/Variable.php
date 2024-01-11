@@ -42,6 +42,15 @@ class Variable
     ];
     const ADMIN_ACCESS = ['all'];
     const GRADES = [1, 2];
+    const ORDER_STATUS = [
+        ['name' => 'pending', 'color' => 'gray'],
+        ['name' => 'processing', 'color' => 'teal'], //after pay,stock remove
+        ['name' => 'sending', 'color' => 'lemon'],
+        ['name' => 'delivered', 'color' => 'success'],
+        ['name' => 'failed', 'color' => 'danger'],
+        ['name' => 'canceled', 'color' => 'red'], //stock return
+        ['name' => 'refunded', 'color' => 'black'],
+    ];
 
     const  USER_STATUSES = [
         ["name" => 'inactive', "color" => 'gray'],
@@ -162,5 +171,22 @@ class Variable
         ];
     }
 
+    public static function getDefaultShippingMethods()
+    {
+        return [
+            [
+                'id' => 1,
+                'repo_id' => null,
+                'products' => null,
+                'cities' => null,
+                'per_weight_price' => 0,
+                'base_price' => 0,
+                'free_from_price' => null,
+                'description' => 'مشتری با مراجعه به انبار، کالای خود را دریافت می نماید',
+                'name' => 'دریافت حضوری از انبار',
+            ],
+
+        ];
+    }
 
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BusinessController;
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\HireController;
@@ -42,6 +43,7 @@ use App\Models\County;
 use App\Models\Notification;
 use App\Models\Podcast;
 use App\Models\Province;
+use App\Models\Repository;
 use App\Models\Setting;
 use App\Models\Site;
 use App\Models\Text;
@@ -73,7 +75,7 @@ Route::get('/cache', function () {
     echo Artisan::output();
 });
 Route::get('test', function () {
-
+    return collect(Repository::where('id', 1)->first()->cities)->shuffle()->take(10)->mapWithKeys(fn($e) => [(int)$e => random_int(1, 100)]);
     return;
     return \Illuminate\Support\Facades\Artisan::call('store:transactions');
     return (new ArticleController())->search(new Request([]));
@@ -214,8 +216,10 @@ Route::get('article/{article}', [ArticleController::class, 'view'])->name('artic
 Route::get('/product/search', [ProductController::class, 'search'])->name('product.search');
 Route::get('/product/{id}/{name}', [ProductController::class, 'view'])->name('product.view');
 
+Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
 
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/checkout/cart', [ShopController::class, 'cartPage'])->name('checkout.cart');
 
 Route::post('/update_location', [UserController::class, 'updateLocation'])->name('user.update_location');
 

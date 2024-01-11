@@ -44,7 +44,7 @@ const focusNext = (elem) => {
           <label for="checkbox-verify" class="sr-only"> </label>
         </span>
     </div>
-    <div class="relative mb-1 mt-2 flex flex-wrap items-stretch ">
+    <div class="relative   flex flex-wrap items-stretch ">
 
 
         <span v-if="$slots.prepend"

@@ -18,4 +18,8 @@ class Repository extends Model
         'location',
         'cities',
     ];
+
+    protected $casts = [
+        'cities' => 'array',
+    ];
 }

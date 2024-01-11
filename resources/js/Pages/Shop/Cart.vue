@@ -53,7 +53,8 @@
                 :src="route('storage.products')+`/${p.id}/1.jpg`"></Image>
 
             <div class="hidden sm:flex min-w-[36%]   mx-auto">
-              <CartItemButton :key="p.id" class=" " :product-id="p.id"/>
+              <CartItemButton class=" " :product-id="p.id"
+                              :in-cart="$page.props.cart[p.id]?$page.props.cart[p.id].qty:0"/>
             </div>
             <div class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
               <div class="flex items-center justify-between">
@@ -99,7 +100,8 @@
                 <TomanIcon class="w-4 h-4 mx-2"/>
               </div>
               <div class="flex sm:hidden min-w-[36%]   me-auto">
-                <CartItemButton :key="p.id" class=" " :product-id="p.id"/>
+                <CartItemButton class=" " :product-id="p.id"
+                                :in-cart="$page.props.cart[p.id]?$page.props.cart[p.id].qty:0"/>
               </div>
             </div>
           </article>

@@ -376,7 +376,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
 
 } from "@heroicons/vue/24/outline";
-import {Modal} from "tw-elements";
+import {Dropdown, initTE, Modal} from "tw-elements";
 
 export default {
   data() {
@@ -439,7 +439,6 @@ export default {
 
     const modalEl = document.getElementById('messageModal');
     this.modal = new Modal(modalEl);
-
   },
   methods: {
     updateSearchResults() {

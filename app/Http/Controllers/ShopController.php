@@ -12,7 +12,16 @@ class ShopController extends Controller
     function index()
     {
         return Inertia::render('Shop/Index', [
-            ''
+
+        ]);
+
+    }
+
+    public
+    function cartPage()
+    {
+        return Inertia::render('Shop/Cart', [
+
         ]);
 
     }
