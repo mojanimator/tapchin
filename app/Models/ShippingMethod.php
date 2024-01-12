@@ -10,4 +10,10 @@ class ShippingMethod extends Model
     use HasFactory;
 
     protected $table = 'shipping_methods';
+
+
+    protected $casts = [
+        'products' => 'array',
+        'cities' => 'array',
+    ];
 }

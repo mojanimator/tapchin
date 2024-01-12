@@ -10,8 +10,16 @@ class CartItem extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
+        'repo_id',
         'cart_id',
         'product_id',
+        'shipping_id',
         'qty',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

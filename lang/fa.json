@@ -116,7 +116,7 @@
   "item_not_found": "آیتم یافت نشد",
   "item_not_found_or_inactive": "آیتم یافت نشد یا غیر فعال است",
   "access_denied": "دسترسی غیرمجاز است",
-  "validator.max_items": "حداکثر تعداد مجاز $s %s است. تعداد فعلی:%s",
+  "validator.max_items": "حداکثر تعداد مجاز %s %s است. تعداد فعلی:%s",
   "validator.max_len": "حداکثر طول مجاز %s %s است. طول فعلی:%s",
   "validator.min_len": "حداقل طول مجاز %s است. طول فعلی:%s",
   "validator.min_images": "حداقل %s تصویر ضروری است",
@@ -584,6 +584,13 @@
   "enter_count_and_accept": "تعداد مورد نظر را وارد و تایید کنید",
   "accept": "تایید",
   "product_not_found": "محصول یافت نشد",
+  "repository_not_found": "نمایندگی محصول یافت نشد",
+  "select_city_from": "ابتدا شهر مورد نظر خود را انتخاب نمایید",
+  "repository_not_support_city": "این نمایندگی شهر شما را پشتیبانی نمی کند",
   "cart_updated": "لیست خرید بروزرسانی شد",
+  "requested_qty": "تعداد درخواستی",
+  "product": "محصول",
+  "repo_self_receive": "مراجعه حضوری به انبار",
+  "address": "آدرس",
   "": ""
 }

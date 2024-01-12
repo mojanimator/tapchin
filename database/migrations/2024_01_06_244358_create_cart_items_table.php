@@ -14,12 +14,15 @@ return new class extends Migration {
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
+            $table->string('name', 300)->nullable();
             $table->unsignedBigInteger('shipping_id')->nullable();
             $table->foreign('shipping_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->unsignedBigInteger('cart_id')->nullable();
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('no action');
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('no action');
+            $table->unsignedBigInteger('repo_id')->nullable();
+            $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
             $table->unsignedInteger('qty')->nullable();
 
             $table->timestamps();

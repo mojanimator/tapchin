@@ -17,11 +17,9 @@ return new class extends Migration {
             $table->increments('id');
             $table->string('name', 100);
             $table->boolean('is_active')->default(true);
-            $table->integer('parent_id')->unsigned()->nullable();
-            $table->smallInteger('type')->unsigned()->nullable();
-            $table->timestamps();
-            $table->unique(array('name', 'type'));
+            $table->unsignedInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('no action');
+            $table->timestamps();
         });
 
         \Illuminate\Support\Facades\DB::table('categories')->insert(Variable::CATEGORIES);

@@ -5,9 +5,9 @@
           class="flex mx-1 btn  border relative   font-medium
             focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out   p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
       <ShoppingCartIcon class=" h-5 w-5"/>
-      <div
-          class="absolute px-2 text-sm bottom-[-.5rem] start-[-.5rem] border border-white  rounded-md text-white bg-rose-500">
-        {{ this.qty }}
+      <div v-show="qty && qty>0"
+           class="absolute px-2 text-sm bottom-[-.5rem] start-[-.5rem] border border-white  rounded-md text-white bg-rose-500">
+        {{ qty }}
 
       </div>
     </Link>

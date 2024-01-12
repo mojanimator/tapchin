@@ -319,6 +319,8 @@ class DatabaseSeeder extends Seeder
 
 
         DB::table('shipping_methods')->truncate();
+        DB::table('shipping_methods')->insert(\App\Http\Helpers\Variable::getDefaultShippingMethods());
+
         //section agencies
         DB::table('shipping_methods')->insert([
             [

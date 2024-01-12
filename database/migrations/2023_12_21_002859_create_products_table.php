@@ -24,6 +24,8 @@ return new class extends Migration {
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
             $table->unsignedBigInteger('repo_id')->nullable();
             $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
+            $table->unsignedInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
             $table->unsignedInteger('in_repo')->default(0);
             $table->unsignedInteger('in_shop')->default(0);
             $table->unsignedInteger('price')->default(0);

@@ -266,7 +266,7 @@ export default {
                 array.splice(i, 1);
             else
                 array.push(item);
-            console.log(array);
+
             return array;
         },
     },

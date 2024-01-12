@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 200);
             $table->json('categories')->nullable();
+            $table->unsignedInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
             $table->json('tags')->nullable();
             $table->timestamps();
         });
