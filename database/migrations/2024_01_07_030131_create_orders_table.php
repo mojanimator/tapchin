@@ -22,8 +22,8 @@ return new class extends Migration {
             $table->foreign('county_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('district_id')->nullable();
             $table->foreign('district_id')->references('id')->on('cities')->onDelete('no action');
-            $table->string('fullname', 200)->nullable();
-            $table->string('phone', 20)->nullable();
+            $table->string('receiver_fullname', 200)->nullable();
+            $table->string('receiver_phone', 20)->nullable();
             $table->string('postal_code', 20)->nullable();
             $table->string('address', 2048)->nullable();
             $table->enum('status', array_column(Variable::ORDER_STATUS, 'name'))->index();
