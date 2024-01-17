@@ -67,7 +67,7 @@ export default {
       if (this.cart && this.cart.items && this.cart.items.length > 0)
         for (let idx in this.cart.items) {
           if (this.cart.items[idx].qty && this.cart.items[idx].qty > 0)
-            this.qty += this.cart.items[idx].qty;
+            this.qty += parseInt(this.cart.items[idx].qty);
         }
     },
     update(params) {
