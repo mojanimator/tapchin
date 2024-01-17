@@ -29,11 +29,11 @@
         </div>
         <div class="flex items-center py-1 ">
           <UserIcon class="w-4 h-4  text-primary-600"/>
-          <div class="mx-1 text-neutral-700"> {{ selectedAddress.fullname }}</div>
+          <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_fullname }}</div>
         </div>
         <div class="flex items-center py-1">
           <PhoneIcon class="w-4 h-4 text-primary-600"/>
-          <div class="mx-1 text-neutral-700"> {{ selectedAddress.phone }}</div>
+          <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_phone }}</div>
         </div>
         <div class="flex items-center py-1">
           <HomeIcon class="w-4 h-4 text-primary-600"/>
@@ -139,11 +139,11 @@
                         </div>
                         <div class="flex items-center py-1 ">
                           <UserIcon class="w-4 h-4  text-primary-600"/>
-                          <div class="mx-1 text-neutral-700"> {{ address.fullname }}</div>
+                          <div class="mx-1 text-neutral-700"> {{ address.receiver_fullname }}</div>
                         </div>
                         <div class="flex items-center py-1">
                           <PhoneIcon class="w-4 h-4 text-primary-600"/>
-                          <div class="mx-1 text-neutral-700"> {{ address.phone }}</div>
+                          <div class="mx-1 text-neutral-700"> {{ address.receiver_phone }}</div>
                         </div>
                         <div class="flex items-center py-1">
                           <HomeIcon class="w-4 h-4 text-primary-600"/>
@@ -243,9 +243,9 @@
                         type="text"
                         :placeholder="`${__('fullname')} *`"
                         classes="  "
-                        v-model="mapAddress.fullname"
+                        v-model="mapAddress.receiver_fullname"
                         autocomplete="fullname"
-                        :error=" errors.fullname?errors.fullname[0]:null">
+                        :error=" errors.receiver_fullname?errors.receiver_fullname[0]:null">
                       <template v-slot:prepend>
                         <div class="p-3">
                           <UserIcon class="h-5 w-5"/>
@@ -258,9 +258,9 @@
                         type="text"
                         :placeholder="`${__('phone')} *`"
                         classes="  "
-                        v-model="mapAddress.phone"
+                        v-model="mapAddress.receiver_phone"
                         autocomplete="phone"
-                        :error=" errors.phone?errors.phone[0]:null">
+                        :error=" errors.receiver_phone?errors.receiver_phone[0]:null">
                       <template v-slot:prepend>
                         <div class="p-3">
                           <PhoneIcon class="h-5 w-5"/>
@@ -394,8 +394,8 @@ export default {
       this.loading = true;
       if (params.postal_code)
         params.postal_code = this.f2e(params.postal_code)
-      if (params.phone)
-        params.phone = this.f2e(params.phone)
+      if (params.receiver_phone)
+        params.receiver_phone = this.f2e(params.receiver_phone)
       window.axios.patch(route('profile.update'), params,
           {})
           .then((response) => {
