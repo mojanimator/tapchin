@@ -411,11 +411,11 @@ export default {
           })
 
           .catch((error) => {
-            this.error = this.getErrors(error);
+            let e = this.getErrors(error);
             if (error.response && error.response.data) {
               this.errors = error.response.data.errors || {};
             }
-            this.showToast('danger', this.error);
+            this.showToast('danger', e);
 
           })
           .finally(() => {
