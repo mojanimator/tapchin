@@ -287,7 +287,7 @@ export default {
               this.cart = response.data.cart;
             }
             if (params.next) {
-              if (this.cart.errors.length > 0)
+              if (this.cart.errors.length > 0 && this.page != 'cart')
                 this.showToast('danger', this.__('please_correct_errors'));
               else if (response.data.url)
                 window.location = response.data.url;
