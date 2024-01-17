@@ -33,7 +33,8 @@
 
           <AddressSelector v-show="cart.need_address ||  page=='shipping'" :editable="page=='shipping'" class=" "
                            @change="update({address_idx:$event})"
-                           :preload="cart.address"/>
+                           :error="cart.errors &&   cart.errors.filter((e)=>e.type=='address').length>0?cart.errors.filter((e)=>e.type=='address')[0].message :null"
+                           :preload="(cart.address)"/>
 
           <div v-show="!cart.need_address &&  page=='payment' && cart.items.length>0"
                class="text-neutral-500 font-bold py-2">
@@ -215,7 +216,7 @@ export default {
   data() {
     return {
       page: 'cart',
-      cart: this.$page.props.cart,
+      cart: null,
       loading: false,
       modules: [Navigation, Pagination, Scrollbar, A11y],
     }
@@ -253,7 +254,7 @@ export default {
       this.page = 'payment';
 
     // this.getCart();
-
+    this.update();
     this.emitter.on('updateCart', (cart) => {
       this.cart = cart;
     });
@@ -277,7 +278,7 @@ export default {
       window.axios.patch(route('cart.update'), params,
           {})
           .then((response) => {
-            if (response.data && response.data.message) {
+            if (response.data && response.data.message && params.length > 0) {
               this.showToast('success', response.data.message);
             }
 

@@ -5,9 +5,9 @@
     <!--    <template v-slot:button>-->
 
     <!--    </template>-->
-    <div
-        class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-100 text-gray-500"
-        @click="clicked"
+    <div :class="{'bg-danger-100':error}"
+         class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-100 text-gray-500"
+         @click="clicked"
     >
       <div v-if="selectedAddress">
         <div class="flex items-center py-3 text-sm">
@@ -37,6 +37,9 @@
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.postal_code }}</div>
         </div>
         <div v-if="editable" class="text-primary-500 text-end">{{ __('edit_address') }}</div>
+      </div>
+      <div v-else-if="error" class="text-red-500 font-bold">
+        {{ error }}
       </div>
       <div v-else>
         <MapPinIcon class="h-4 w-4 mx-1"/>
@@ -115,7 +118,7 @@
                       <div class="flex flex-col hover:bg-gray-100 cursor-pointer border rounded p-2">
                         <div class="w-full ">
                           <PrimaryButton
-                              @click="showDialog('danger',__('remove_item?'), __('ok') , edit,{cmnd:'remove-address',idx:idx} )"
+                              @click.stop="showDialog('danger',__('remove_item?'), __('ok') , edit,{cmnd:'remove-address',idx:idx} )"
                               class="bg-red-500 hover:bg-red-400 text-sm">
                             <TrashIcon class="w-4 h-4 mx-4"/>
                           </PrimaryButton>
@@ -328,7 +331,7 @@ export default {
 
     }
   },
-  props: ['id', 'label', 'data', 'modelValue', 'editable'],
+  props: ['id', 'label', 'data', 'modelValue', 'editable', 'error'],
   emits: ['change'],
   components: {
     PrimaryButton,
@@ -354,11 +357,11 @@ export default {
     const modalEl = document.getElementById('locationModal');
     this.modal = new Modal(modalEl);
 
-    // this.log(this.preload);
     if (this.$page.props.auth.user) {
       this.addresses = this.$page.props.auth.user.addresses;
     }
     this.emitter.on('updateCart', (cart) => {
+
       if (cart.address)
         this.selectedAddress = cart.address;
     });

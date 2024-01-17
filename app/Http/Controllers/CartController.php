@@ -94,6 +94,7 @@ class CartController extends Controller
         }
         $cart->address = $address;
 
+
 //        $productRepositories = Repository::whereIn('id', $cartItems->pluck('product.repo_id'))->get();
 
         $beforeQty = 0;
@@ -240,6 +241,10 @@ class CartController extends Controller
                 $default['error_message'] = $errorMessage;
             }
             $shipments[$idx] = ['method_id' => $methodId, 'cart_item' => $cartItem, 'shipping' => $default, 'repo_name' => $repo->name, 'error_message' => $errorMessage];
+
+        }
+        if ($needAddress && $address == null) {
+            $errors[] = ['key' => 'address', 'type' => 'address', 'message' => sprintf(__('validator.required'), __('address'))];
 
         }
         $cart->errors = $errors ?? [];
