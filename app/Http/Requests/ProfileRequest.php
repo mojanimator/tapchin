@@ -80,12 +80,12 @@ class ProfileRequest extends FormRequest
             $counties = City::where('parent_id', $this->county_id)->pluck('id');
             $tmp = array_merge($tmp, [
                 'address' => ['required', 'max:2048',],
-                'fullname' => ['required', 'max:100',],
+                'receiver_fullname' => ['required', 'max:100',],
                 'province_id' => ['required', 'numeric',],
                 'county_id' => ['required', 'numeric',],
                 'district_id' => [Rule::requiredIf(count($counties) > 0), Rule::in($counties)],
                 'postal_code' => ['required', 'numeric',],
-                'phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/'],
+                'receiver_phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/'],
             ]);
         }
         return $tmp;
@@ -136,6 +136,14 @@ class ProfileRequest extends FormRequest
             'district_id.in' => sprintf(__("validator.invalid"), __('district/city')),
             'postal_code.required' => sprintf(__("validator.required"), __('postal_code')),
             'postal_code.numeric' => sprintf(__("validator.numeric"), __('postal_code')),
+
+            'receiver_fullname.required' => sprintf(__("validator.required"), __('fullname')),
+            'receiver_fullname.max' => sprintf(__("validator.max_len"), __('fullname'), 100, mb_strlen($this->receiver_fullname)),
+            'receiver_fullname.min' => sprintf(__("validator.min_len"), 3, mb_strlen($this->receiver_fullname)),
+
+            'receiver_phone.required' => sprintf(__("validator.required"), __('phone')),
+            'receiver_phone.unique' => sprintf(__("validator.unique"), __('phone')),
+            'receiver_phone.numeric' => sprintf(__("validator.numeric"), __('phone')),
 
         ];
     }
