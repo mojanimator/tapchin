@@ -9,7 +9,7 @@
          class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-100 text-gray-500"
          @click="clicked"
     >
-      <div v-else-if="error" class="text-red-500 font-bold">
+      <div v-if="error" class="text-red-500 font-bold">
         {{ error }}
       </div>
       <div v-else-if="selectedAddress">
@@ -41,7 +41,6 @@
         </div>
         <div v-if="editable" class="text-primary-500 text-end">{{ __('edit_address') }}</div>
       </div>
-
       <div v-else>
         <MapPinIcon class="h-4 w-4 mx-1"/>
         {{ __('select_address') }}
