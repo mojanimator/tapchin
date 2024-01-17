@@ -62,12 +62,8 @@ class ProfileController extends Controller
                 return back()->with($res);
             case 'add-address':
                 $address = $request->all();
-                $addresses = $user->addresses ?? [];
-                $address['_fullname'] = $address['fullname'];
-                $address['_phone'] = $address['phone'];
                 unset($address['cmnd']);
-                unset($address['fullname']);
-                unset($address['phone']);
+                $addresses = $user->addresses ?? [];
                 $addresses[] = $address;
                 $user->addresses = $addresses;
                 $user->update(['addresses' => $addresses]);
