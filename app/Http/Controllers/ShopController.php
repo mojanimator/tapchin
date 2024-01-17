@@ -25,4 +25,20 @@ class ShopController extends Controller
         ]);
 
     }
+
+    public
+    function shippingPage()
+    {
+        return Inertia::render('Shop/Cart', [
+
+        ]);
+
+    }   public
+    function paymentPage()
+    {
+        return Inertia::render('Shop/Cart', [
+
+        ]);
+
+    }
 }

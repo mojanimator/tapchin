@@ -31,8 +31,8 @@ const focusNext = (elem) => {
 
 <template>
   <div>
-    <div class=" flex items-center rounded border border-neutral-300  ">
-      <div class="relative  px-1 mx-auto  ">
+    <div class="     rounded border border-neutral-300  ">
+      <div class="relative    mx-auto  ">
         <div
             class="absolute top-0 bottom-0 start-4 flex items-center opacity-60  hover:cursor-pointer   ">
           <svg @click="$emit('search' )"

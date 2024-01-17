@@ -3,18 +3,12 @@
 namespace App\Http\Helpers;
 
 use App\Models\Payment;
-use App\Models\Transaction;
-use App\Models\User;
-use Exception;
-use GuzzleHttp\Exception\ConnectException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Inertia\Inertia;
+use Mockery\Exception;
 
 class Pay
 {
-    const  GATEWAY = Variable::BANK_GATEWAY;
-
+    const BANK_DEFAULT = 'zarinpal';
     const LINKS = [
         'nextpay' => [
             'PAY' => 'https://nextpay.org/nx/gateway/payment/',
@@ -23,315 +17,169 @@ class Pay
 
         ],
     ];
-    const PAYMENT_LINK = self::LINKS[self::GATEWAY]['PAY'];
-    const TOKEN_LINK = self::LINKS[self::GATEWAY]['TOKEN'];
-    const VERIFY_LINK = self::LINKS[self::GATEWAY]['VERIFY'];
+    const ERROR_MESSAGE = 'مشکلی در پرداخت پیش آمد';
+    const ERROR_CONFIRM_MESSAGE = 'مشکلی در تایید پرداخت پیش آمد';
 
-    public static function makeUrl($order_id, $amount, $phone, $fullname, $user_id, $for_type, $market, $data_id = null, $coupon = null)
+    static function makeUri($orderId, $price, $payerName, $phone, $mail, $description, $userId, $bank = null)
     {
+        $bank = $bank ?? Variable::$BANK ?? self::BANK_DEFAULT;
 
-        switch (self::GATEWAY) {
-            case    'nextpay':
-                $params = ['api_key' => env('NEXTPAY_API'),
-                    'order_id' => $order_id,
-                    'amount' => $amount,
-                    'callback_uri' => route('payment.confirm'),
-                    'currency' => 'IRT',
-                    'customer_phone' => $phone,
-                    'payer_name' => $fullname,
-                    'auto_verify' => false,
-                    'custom_json_fields' => json_encode(['user_id' => $user_id, 'data_id' => $data_id, 'type' => $for_type, 'coupon' => $coupon]),];
-                try {
-                    $response = Http::post(self::TOKEN_LINK, $params);
-                } catch (Exception $e) {
-                    return response()->json(['errors' => ['error' => [__('check_network_and_retry')]]], 422);
+//        $data = (object)$data;
+        try {
+            switch ($bank) {
+                case    'nextpay':
+                    $params = [
+                        'api_key' => env('NEXPAY_TOKEN'),
+                        'order_id' => $orderId,
+                        'amount' => $price,
+                        'callback_uri' => env('APP_URL') . "/api/payment/done",
+                        'currency' => 'IRR',
+                        'customer_phone' => $phone,
+                        'payer_name' => $payerName,
+                        'auto_verify' => false,
+                        'custom_json_fields' => json_encode(['user_id' => $userId, 'type' => $description,]),];
+                    try {
+                        $response = Http::post(self::LINKS['nextpay']['TOKEN'], $params);
+                    } catch (Exception $e) {
+                        return ['status' => 'danger', 'message' => self::ERROR_MESSAGE];
 
-                }
-                $response = $response->object() ?? null;
+                    }
+                    $response = $response->object() ?? null;
 
-                if ($response && $response->code == -1) { //send user to bank page
-                    Payment::create([
-                        'title' => __('charge') . " $amount " . __('currency'),
+                    if ($response && $response->code == -1) { //send user to bank page
+                        return ['status' => 'success', 'order_id' => $orderId, 'url' => self::LINKS['nextpay']['PAY'] . $response->trans_id];
 
-                        'order_id' => $order_id,
-                        'type' => $for_type,
-                        'owner_id' => $user_id,
-                        'gateway' => self::GATEWAY,
-                        'market' => $market,
-                        'amount' => $amount,
-                    ]);
-                    return response()->json(['url' => self::PAYMENT_LINK . $response->trans_id, 'message' => __('redirecting_to_payment')], 200);
-                } else {
-                    if (!$response)
-                        return response()->json(['errors' => ['error' => [__('check_network_and_retry')]]], 422);
+                    } else {
+                        if (!$response)
+                            return ['status' => 'danger', 'message' => self::ERROR_MESSAGE];
 
-                    $message = self::MESSAGES[self::GATEWAY][$response->code];
+                        $message = self::MESSAGES['nextpay'][$response->code];
 
-                    return response()->json(['errors' => ['error' => [$message]]], 422);
+                        return ['status' => 'danger', 'message' => $message];
 
-                }
-                break;
-//        return redirect(self::PAYMENT_LINK);
-        }
-    }
 
-    public static function confirm(Request $request)
-    {
+                    }
+                    break;
+                case 'payping':
+                    $response = Http::withHeaders(['authorization' => 'Bearer ' . env('PAYPING_TOKEN'), 'Content-Type' => 'application/json',])
+                        ->post("https://api.payping.ir/v2/pay",
+                            [
+                                'clientRefId' => $orderId,
+                                'Amount' => $price,
+                                'ReturnUrl' => env('APP_URL') . "/api/payment/done",
+                                'payerName' => $payerName,
+                                'payerIdentity' => $phone,
+                                'mail' => $mail,
+                                'description' => $description,
+                            ]);
 
-        $market = $request->market;
-        $user = auth()->user();
-
-        $payment = null;
-        if (isset($market) && $market == 'bazaar' || $market == 'myket') {
-            $orderId = "{$user->id}-" . floor(microtime(true) * 1000);
-
-            $payment = Payment::create([
-                'title' => __('charge') . " $request->amount " . __('currency'),
-                'transaction_id' => $request->token_id,
-                'order_id' => $orderId,
-                'type' => $request->type,
-                'amount' => $request->amount,
-                'owner_id' => $user->id,
-                'coupon' => $request->coupon,
-                'is_success' => true,
-                'market' => $market,
-            ]);
-
-            $payment->code = 0;//success
-        }
-
-        if (!isset($market) || $market == 'site') {
-            //nextpay
-            if (isset($request->np_status)) {
-                if ($request->np_status == 'Unsuccessful') {
-                    Payment::where("order_id", $request->order_id)->delete();
-                    $res = ['flash_status' => 'danger', 'flash_message' => __('pay_failed')];
-                    return back()->with($res);
-
-                } else {
-                    $payment = self::nextpayConfirm($request);
-                }
+                    $data = json_decode($response->body());
+                    if ($response->status() == 200)
+                        return ['status' => 'success', 'order_id' => $orderId, 'url' => "https://api.payping.ir/v2/pay/gotoipg/$data->code"];
+                    elseif ($response->status() == 400)
+                        return ['status' => 'danger', 'message' => $data];
+                    else
+                        return ['status' => 'danger', 'message' => $response->status()];
+                    break;
+                case 'zarinpal':
+                    $data = array(
+                        "merchant_id" => env('ZARINPAL_TOKEN'),
+                        "amount" => $price,
+                        "callback_url" => env('APP_URL') . "/api/payment/done",
+                        "description" => $description,
+                        "mobile" => $phone,
+                        "email" => $mail,
+                        "order_id" => "$orderId",
+//                        "metadata" => ["order_id" => $orderId, "email" => $mail, 'fullname' => $payerName, "mobile" => $phone],
+                    );
+                    $response = Http::withHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json', /*,'Content-Length' => strlen(json_encode($data)),*/])
+                        ->withUserAgent('ZarinPal Rest Api v4')
+                        ->post("https://api.zarinpal.com/pg/v4/payment/request.json",
+                            $data);
+                    $result = json_decode($response->body(), true);
+                    if (empty($result['errors']) && $result['data']['code'] == 100)
+                        return ['status' => 'success', 'order_id' => $result['data']["authority"], 'url' => "https://www.zarinpal.com/pg/StartPay/" . $result['data']["authority"]];
+                    elseif (!empty($result['errors']))
+                        return ['status' => 'danger', 'message' => $result['errors']['message']];
+                    else
+                        return ['status' => 'danger', 'message' => $response->status()];
+                    break;
             }
-
-            if ($payment && $payment->code == 0) { //verify success
-
-                $user = $user ?? User::find($payment->user_id);
-
-                $tmp = explode('_', $payment->type);
-                if (!$user /*|| count($tmp) < 2*/) {
-                    $res = ['flash_status' => 'danger', 'flash_message' => __('pay_failed')];
-                    return back()->with($res);
-                }
-//                $payType = $tmp[1]; //charge
-                $user->wallet += $payment->amount;
-                $user->save();
-                $transaction = Transaction::create([
-                    'source_id' => $payment->id,
-                    'title' => $payment->title,
-                    'type' => $payment->type,
-                    'amount' => $payment->amount,
-                    'owner_id' => $payment->owner_id,
-                    'coupon' => $payment->coupon,
-                ]);
-                Telegram::log(null, 'transaction_created', $transaction);
-
-//                if (!auth()->user())
-//                    auth()->login($user);
-
-                //response json to application
-                if ($payment->gateway == 'bazaar' || $payment->gateway == 'myket')
-                    return response()->json(['status' => 'success']);
-
-
-                return Inertia::render('Payment/Factor', [
-                    'payment' => $payment,
-                    'title' => __('charge') . " $payment->amount " . __('currency'),
-                    'time' => "$payment->created_at",
-                    'amount' => "$payment->amount",
-                    'status' => $payment->is_success ? 'success' : 'danger',
-                    'url' => route('/'),
-                    'order_id' => "$payment->order_id",
-                    'track_id' => "$payment->transaction_id",
-                    'message' => __('success_payment'),
-
-                ]);
-            } else {
-
-                if ($payment && ($payment->gateway == 'bazaar' || $payment->gateway == 'myket'))
-                    return response()->json(['status' => 'danger']);
-
-                return Inertia::render('Payment/Factor', [
-                    'payment' => [],
-                    'message' => __('fail_payment'),
-                    'status' => 'danger',
-                    'title' => '---',
-                    'time' => null,
-                    'amount' => $request->amount ?? '---',
-                    'url' => route('/'),
-                    'order_id' => '---',
-                    'track_id' => '---',
-                ]);
-            }
+        } catch (\Exception $e) {
+            return ['status' => 'danger', 'message' => 'مشکلی در دریافت لینک پرداخت پیش آمد'];
         }
-    }
-
-    public static function nextpayConfirm($result)
-    {
-
-        $params = [
-            'api_key' => env('NEXTPAY_API'),
-            'trans_id' => $result->trans_id,
-//            'order_id' => $result->order_id,
-            'amount' => $result->amount,
-            'currency' => 'IRT',
-        ];
-        if (!Payment::where("order_id", $result->order_id)->exists()) return null;
-
-        $response = Http::post(self::LINKS['nextpay']['VERIFY'], $params);
-        $response = $response->object() ?? null;
-
-        if (!$response) return null;
-        if ($response && $response->code == 0) { //verify success
-            $payment = Payment::where('order_id', $response->order_id)->first();
-            if (!$payment)
-                return null;
-            else {
-
-//                $payment->amount = $response->amount;
-                $payment->transaction_id = $response->Shaparak_Ref_Id;
-//                $payment->card_holder = $response->card_holder;
-                $payment->is_success = true;
-                $payment->info = $response->custom;
-                $payment->save();
-                $payment->custom = $response->custom;
-                $payment->code = $response->code;
-                return $payment;
-            }
-        }
-        return null;
 
     }
 
-    public
-    function IAPPurchase(Request $request)
+    static function confirmPay($request, $bank = null)
     {
-
-        $type = $request->type;
-        $id = $request->id;
-        $month = $request->month;
-        $coupon = $request->coupon;
-        $phone = $request->phone;
-        $market = $request->market;
-        $price = $request->price;
-
-        $user = auth()->user() ?: auth('api')->user();
-        if ($user && !$phone)
-            $phone = $user->phone;
-        if (!$user)
-            $user = \App\Models\User::where('phone', $phone)->first();
-        if (!$user)
-            return response()->json(['errors' => ['error' => ['کاربر نامعتبر است']]], 422);
-
-        $order_id = uniqid();
-        while (\App\Models\Payment::where('order_id', $order_id)->exists())
-            $order_id = uniqid();
-        $v = $price ?: Setting::firstOrNew(['key' => "${type}_${month}_price"])->value;
-        $price = $v != null ? $v : -1;
-
-        if ($price == -1)
-            return response()->json(['errors' => ['error' => ['نوع اشتراک نامعتبر است']]], 422);
-
-        $c = \App\Models\Coupon::where('code', $coupon)->first();
-        $price = self::makeDiscount($price, $c);
-
-        if (strpos($type, 'player') !== false)
-            $data = Player::find($id);
-        elseif (strpos($type, 'coach') !== false)
-            $data = Coach::find($id);
-        elseif (strpos($type, 'club') !== false)
-            $data = Club::find($id);
-        elseif (strpos($type, 'shop') !== false)
-            $data = Shop::find($id);
-
-        if (!isset($data))
-            return response()->json(['errors' => ['error' => ['موردی یافت نشد.']]], 422);
-
-        if ($price == 0) {
-            $now = \Carbon\Carbon::now();
+        $bank = $bank ?? Variable::$BANK ?? self::BANK_DEFAULT;
+//        $data = (object)$data;
+        try {
+            switch ($bank) {
+                case 'nextpay':
+                    if (isset($request->np_status)) {
+                        if ($request->np_status == 'Unsuccessful') {
+                            return ['status' => 'danger', 'message' => self::ERROR_CONFIRM_MESSAGE];
+                        } else {
+                            $params = [
+                                'api_key' => env('NEXPAY_TOKEN'),
+                                'trans_id' => $request->trans_id,
+                                'amount' => $request->amount,
+                                'currency' => 'IRR',
+                            ];
+                            if (!Payment::where("order_id", $request->order_id)->exists())
+                                return ['status' => 'danger', 'message' => self::ERROR_CONFIRM_MESSAGE];
 
 
-            $time = $data->expires_at != null && $now->timestamp < $data->expires_at ? \Carbon\Carbon::parse($data->expires_at)->addDays($month * 30) : $now->addDays($month * 30);
-            $data->active = false;
-            $data->expires_at = $time;
-            $data->save();
+                            $response = Http::post(self::LINKS['nextpay']['VERIFY'], $params);
+                            $response = $response->object() ?? null;
 
-            if ($c && $c->user_id != null && $c->user_id == $user->id && $c->used_at == null) {
-                $c->used_at = \Carbon\Carbon::now();
-                $c->save();
+                            if (!$response) return ['status' => 'danger', 'message' => self::ERROR_CONFIRM_MESSAGE];
+                            if ($response && $response->code == 0) { //verify success
+                                return ['status' => 'success', 'order_id' => $response->order_id, 'info' => json_encode($response)];
+                            }
+                            return ['status' => 'danger', 'message' => self::ERROR_CONFIRM_MESSAGE];
+                        }
+                    }
+                    break;
+                case 'idpay':
+                    $response = Http::withHeaders(['X-API-KEY' => env('IDPAY_TOKEN'), 'Content-Type' => 'application/json',])
+                        ->post(
+                            "https://api.idpay.ir/v1.1/payment/verify",
+                            [
+                                'id' => $request->id,
+                                'order_id' => $request->order_id,
+                            ]
+                        );
+                    break;
+                case 'zarinpal':
+                    $result = [];
+                    if ($request && $request->Status == 'OK') {
+                        $data = array(
+                            "merchant_id" => env('ZARINPAL_TOKEN'),
+                            "amount" => (Payment::where('order_id', $request->Authority)->first())->amount,
+                            "authority" => $request->Authority,
+                        );
+                        $response = Http::withHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json',])
+                            ->withUserAgent('ZarinPal Rest Api v4')
+                            ->post('https://api.zarinpal.com/pg/v4/payment/verify.json',
+                                $data);
+                        $result = json_decode($response->body(), true);
+                    }
+                    if (empty($result['errors']) && $result['data']['code'] == 100)
+                        return ['status' => 'success', 'order_id' => $request->Authority, 'info' => $response->body()];
+                    elseif (!empty($result['errors']))
+                        return ['status' => 'danger', 'message' => $result['errors']['message']];
+                    else
+                        return ['status' => 'danger', 'message' => $response->status()];
+                    break;
             }
-            $payment = \App\Models\Payment::create([
-                'agency_id' => $user->agency_id,
-                'province_id' => $data->province_id,
-                'token_id' => null,
-                'order_id' => $order_id,
-                'amount' => 0,
-                'user_id' => $user->id,
-                'pay_for' => "${type}_${month}",
-                'pay_for_id' => $id,
-                'created_at' => $now,
-                'coupon_id' => isset($c->id) ? $c->id : null,
-
-            ]);
-            (new SMS())->deleteActivationSMS($phone);
-//            \App\Models\Ref::where('invited_id', $user->id)->where('invited_purchase_type', null)->update(['invited_purchase_type' => array_flip(Helper::$refMap)[$type], 'invited_purchase_months' => $month]);
-            Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'payment', $payment);
-            redirect("/panel/$type/edit/$id")->with('success-alert', 'پرداخت شما با موفقیت انجام شد و در صف فعالسازی قرار گرفت');
-            return response()->json(['url' => url("panel/$type/edit/$id")], 200);
-
+        } catch (\Exception $e) {
+            return ['status' => 'danger', 'message' => 'مشکلی در دریافت لینک پرداخت پیش آمد'];
         }
 
-
-        if ($market == 'bazaar') {
-
-            $token = $this->getCafeBazaarDiscountToken([
-                'sku' => "${type}_${month}_price",
-                'price' => $price * 10
-            ]);
-
-            return response()->json([
-                'dynamicPriceToken' => $token,
-                'sku' => "${type}_${month}_price",
-                'rsa' => env('BAZAAR_RSA'),
-                'agency_id' => $user->agency_id,
-                'province_id' => $data->province_id,
-                'order_id' => $order_id,
-                'pay_for' => "${type}_${month}",
-                'pay_for_id' => $id,
-                'coupon_id' => isset($c->id) ? $c->id : null,
-                'market' => 'bazaar',
-                'amount' => $price,
-            ], 200);
-
-        } else {
-
-            return \NextPay::makePay((object)[
-                'payer_name' => $user->name ? $user->name . ' ' . $user->family : $user->username,
-                'customer_phone' => $user->phone,
-                'phone' => $phone,
-                'order_id' => $order_id,
-                'amount' => $price,
-                'data_id' => $id,
-                'user_id' => $user->id,
-                'pay_for' => "${type}_${month}",
-                'data_province_id' => $data->province_id,
-                'coupon_id' => isset($c->id) ? $c->id : null,
-                'user_agency_id' => $user->agency_id,
-                'market' => $market,
-            ]);
-
-        }
     }
-
 
     const MESSAGES = [
         'nextpay' => [

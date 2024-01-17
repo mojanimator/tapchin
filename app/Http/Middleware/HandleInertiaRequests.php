@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $socials = Setting::where('key', 'like', 'social_%')->get();
-        $cities = City::orderby('name')->get();
+        Variable::$CITIES = City::orderby('name')->get();
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' =>
@@ -75,11 +75,11 @@ class HandleInertiaRequests extends Middleware
             'extra' => fn() => $request->session()->get('extra'),
             'pageItems' => Variable::PAGINATE,
             'cart' => Cart::getData(),
-            'cities' => $cities,
+            'cities' => Variable::$CITIES,
             'is_auction' => Setting::getValue('is_auction'),
             'packs' => Pack::get(),
             'p_products' => PProduct::select('id', 'name')->get(),
-            'user_location' => User::getLocation($cities),
+            'user_location' => User::getLocation(Variable::$CITIES),
             'socials' => [
                 'whatsapp' => "https://wa.me/" . optional($socials->where('key', 'social_whatsapp')->first())->value,
                 'telegram' => "https://t.me/" . optional($socials->where('key', 'social_telegram')->first())->value,

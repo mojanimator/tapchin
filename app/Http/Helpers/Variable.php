@@ -148,12 +148,35 @@ class Variable
     const CITY_ID = 61; //تجریش
     const RATIOS = ['slider' => 1.8];
 
+    static $CITIES = [];
+    public static $BANK = 'zarinpal';
+
+    static function getPaymentMethods()
+    {
+        return [
+            ['name' => __('bank_payment'), 'selected' => true]
+        ];
+    }
+
     static function getAdmins()
     {
         return [
 
             ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844', 'status' => 'active',
                 'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
+            ],
+        ];
+    }
+
+    static function getUsers()
+    {
+        return [
+
+            ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844', 'status' => 'active', 'ref_id' => 'develowper',
+                'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
+            ],
+            ['id' => 2, 'fullname' => 'داریوش بهشتی', 'phone' => '09351414815', 'status' => 'active', 'ref_id' => 'dabel',
+                'access' => json_encode(['all']), 'email' => null, 'password' => Hash::make('Dd20552055'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];
     }
@@ -167,6 +190,7 @@ class Variable
             ['key' => 'social_email', 'value' => 'info@tapchin.ir', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_phone', 'value' => '09351414815', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_address', 'value' => __('social_address'), "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_reserve_minutes', 'value' => 30, "created_at" => \Carbon\Carbon::now(),],
 
         ];
     }

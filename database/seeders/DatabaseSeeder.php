@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
 
+        $this->createUsers(20);
         $this->createAdmins(20);
         $this->createAgencies(20);
         $this->createPacks(20);
@@ -75,10 +76,20 @@ class DatabaseSeeder extends Seeder
         // ]);
     }
 
+    private function createUsers($count = 30)
+    {
+
+        DB::table('users')->truncate();
+        \Illuminate\Support\Facades\DB::table('users')->insert(\App\Http\Helpers\Variable::getUsers());
+
+
+    }
+
     private function createAdmins($count = 30)
     {
 
         DB::table('admins')->truncate();
+        \Illuminate\Support\Facades\DB::table('admins')->insert(\App\Http\Helpers\Variable::getAdmins());
 
         for ($i = 0; $i < $count; $i++) {
             $phone = $this->faker->numerify("091########");

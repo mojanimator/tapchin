@@ -53,7 +53,7 @@
                 :src="route('storage.products')+`/${p.id}/1.jpg`"></Image>
 
             <div class="hidden sm:flex min-w-[36%]   mx-auto">
-              <CartItemButton :key="p.id" class=" " :product-id="p.id"/>
+              <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
             </div>
             <div class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
               <div class="flex items-center justify-between">
@@ -99,7 +99,7 @@
                 <TomanIcon class="w-4 h-4 mx-2"/>
               </div>
               <div class="flex sm:hidden min-w-[36%]   me-auto">
-                <CartItemButton :key="p.id" class=" " :product-id="p.id"/>
+                <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
               </div>
             </div>
           </article>
@@ -107,7 +107,12 @@
         </div>
       </div>
     </section>
-
+    <section v-else-if="!loading   "
+             class="font-bold text-rose-500  mt-8 justify-center  flex flex-col items-center   ">
+      <div>
+        {{ __('no_product_in_selected_city') }}
+      </div>
+    </section>
     <LoadingIcon v-show="loading" ref="loader" type="linear"/>
   </Scaffold>
 

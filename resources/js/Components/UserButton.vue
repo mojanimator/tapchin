@@ -7,13 +7,10 @@
         <button
             type="button"
             id="dropdownUser"
-            data-te-dropdown-toggle-ref
-            aria-expanded="false"
-            data-te-ripple-init
-            data-te-ripple-color="light"
+
             @click="chevronShow=!chevronShow" @mouseover="chevronRotate=true;chevronShow=true"
             @mouseleave="chevronRotate=false"
-            class="relative btn z-10 flex items-center p-2 text-sm text-gray-600 bg-white border border-transparent rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring dark:text-white dark:bg-gray-800 focus:outline-none">
+            class="relative btn z-10 flex items-center p-2 text-sm text-gray-600 bg-white border border-primary-500 rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring dark:text-white dark:bg-gray-800 focus:outline-none">
                     <span :class=" chevronRotate?'rotate-90':'' " class="transition duration-500"><ChevronDownIcon
                         class="h-5 w-5"/> </span>
           <span class="mx-1"> {{ user.phone || user.email }}</span>

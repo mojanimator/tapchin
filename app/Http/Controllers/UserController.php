@@ -84,9 +84,10 @@ class UserController extends Controller
     {
 
         $id = $request->id;
-        $user = User::find($id);
+        $user = isset($id) ? User::find($id) : auth('sanctum')->user();
         $cmnd = $request->cmnd;
-        $this->authorize('edit', [User::class, $user]);
+        if (isset($id))
+            $this->authorize('edit', [User::class, $user]);
 
         switch ($cmnd) {
             case   'upload-img':
@@ -141,7 +142,12 @@ class UserController extends Controller
                 $user->wallet = $request->wallet;
                 $user->save();
                 return response()->json(['message' => __('updated_successfully'), 'wallet' => $user->wallet,], Variable::SUCCESS_STATUS);
-
+            case 'add-address':
+                $address = $request->address;
+                $addresses = $user->addresses ?? [];
+                $addresses[] = $address;
+                $user->update(['addresses' => $addresses]);
+                return response()->json(['message' => __('updated_successfully'), 'addresses' => $user->addresses], Variable::SUCCESS_STATUS);
 
         }
         if ($request->password)

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip', 45)->nullable();
+            $table->unsignedTinyInteger('address_idx')->nullable();
             $table->timestamp('last_activity')->index();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('no action');

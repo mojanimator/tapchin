@@ -22,6 +22,9 @@
             <!--              {{ __('home') }}-->
             <!--            </Link>-->
 
+            <Link :href="route('shop.index')" class="nav-item" :class="navClasses('shop')">
+              {{ __('shop') }}
+            </Link>
             <Link :href="route('article.index')" class="nav-item" :class="navClasses('article')">
               {{ __('articles') }}
             </Link>
@@ -74,6 +77,9 @@
         {{ __('home') }}
       </Link>
 
+      <Link :href="route('shop.index')" class="nav-ite" :class="navClasses('shop')">
+        {{ __('shop') }}
+      </Link>
       <Link :href="route('article.index')" class="nav-ite" :class="navClasses('article')">
         {{ __('articles') }}
       </Link>

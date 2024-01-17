@@ -14,7 +14,7 @@ return new class extends Migration {
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 300)->nullable();
+            $table->string('name', 200)->nullable();
             $table->unsignedBigInteger('shipping_id')->nullable();
             $table->foreign('shipping_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->unsignedBigInteger('cart_id')->nullable();

@@ -10,6 +10,7 @@ use App\Models\DataTransaction;
 use App\Models\Hire;
 use App\Models\Message;
 use App\Models\Notification;
+use App\Models\Payment;
 use App\Models\Podcast;
 use App\Models\Project;
 use App\Models\ProjectItem;
@@ -56,28 +57,6 @@ class PanelController extends Controller
         $role = optional($user)->role;
 
         $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->where('owner_id', optional($user)->id)->groupBy('status')->get();
-        $availableOrders = ProjectItem::select('item_type as type', DB::raw('COUNT(*) AS count'))->whereStatus('order')->whereOperatorId(null)->groupBy('item_type')->get();
-        $myOrders = Project::select('status', DB::raw('COUNT(*) AS count'))->whereOwnerId($user->id)->groupBy('status')->get();
-        $myWorkingProjects = ProjectItem::select('status', DB::raw('COUNT(*) AS count'))->whereOperatorId($user->id)->groupBy('status')->get();
-
-        $params = [
-            'transactions' => Transaction::select('type', DB::raw('COUNT(*) AS count'))->where('owner_id', optional($user)->id)->groupBy('type')->get(),
-            'tickets' => array_map(function ($el) use ($tickets) {
-                return ['title' => $el['name'], 'value' => optional($tickets->where('status', $el['name'])->first())->count ?? 0];
-            }, Variable::TICKET_STATUSES),
-            'items' => $this->ownedItemsCount($user->id),
-            'hasAdvertise' => DataTransaction::where('owner_id', $user->id)->exists(),
-            'availableOrders' => collect(Variable::PROJECT_ITEMS)->map(function ($el) use ($availableOrders) {
-                return ['title' => $el['name'], 'color' => $el['color'], 'value' => optional($availableOrders->where('type', $el['name'])->first())->count ?? 0];
-            }),
-            'myOrders' => collect(Variable::PROJECT_STATUSES)->map(function ($el) use ($myOrders) {
-                return ['title' => $el['name'], 'color' => $el['color'], 'value' => optional($myOrders->where('status', $el['name'])->first())->count ?? 0];
-            }),
-            'myWorkingProjects' => collect(Variable::PROJECT_STATUSES)->map(function ($el) use ($myWorkingProjects) {
-                return ['title' => $el['name'], 'color' => $el['color'], 'value' => optional($myWorkingProjects->where('status', $el['name'])->first())->count ?? 0];
-            })
-        ];
-
 
         return Inertia::render('Panel', $params);
     }
@@ -182,7 +161,8 @@ class PanelController extends Controller
         if ($to)
             $to = $to->toCarbon()->endOfDay()/*->setTimezone(new \DateTimeZone('Asia/Tehran'))*/
             ;
-        $query = DataTransaction::query();
+
+        $query = User::query();
 
 
         if ($user_id)
@@ -190,21 +170,21 @@ class PanelController extends Controller
 
 
         if ($type == 'user') {
-            $query = UserTransaction::query();
+            $query = User::query();
 
         } //  meta transactions
         if ($type == ('data')) {
-            $query = DataTransaction::query();
+            $query = Payment::query();
 
 
         } //  money transactions
 
         if ($user_id)
-            $query = $query->where('owner_id', $user_id);
+            $query = $query->where('id', $user_id);
         if ($from)
-            $query = $query->where('date', '>=', $from);
+            $query = $query->where('created_at', '>=', $from);
         if ($to)
-            $query = $query->where('date', '<=', $to);
+            $query = $query->where('created_at', '<=', $to);
 
         $result = $query->get()->groupBy(function ($data) use ($timestamp) {
             if ($timestamp == 'm')

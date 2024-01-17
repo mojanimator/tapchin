@@ -16,9 +16,21 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip', 45)->nullable();
+            $table->unsignedSmallInteger('province_id')->nullable();
+            $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
+            $table->unsignedSmallInteger('county_id')->nullable();
+            $table->foreign('county_id')->references('id')->on('cities')->onDelete('no action');
+            $table->unsignedSmallInteger('district_id')->nullable();
+            $table->foreign('district_id')->references('id')->on('cities')->onDelete('no action');
+            $table->string('fullname', 200)->nullable();
+            $table->string('phone', 20)->nullable();
+            $table->string('postal_code', 20)->nullable();
+            $table->string('address', 2048)->nullable();
             $table->enum('status', array_column(Variable::ORDER_STATUS, 'name'))->index();
-
+            $table->unsignedInteger('total_items')->default(0);
+            $table->unsignedBigInteger('total_price')->default(0);
+            $table->unsignedBigInteger('total_items_price')->default(0);
+            $table->unsignedBigInteger('total_shipping_price')->default(0);
             $table->timestamps();
         });
     }

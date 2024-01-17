@@ -14,6 +14,7 @@ class Cart extends Model
         'ip',
         'last_activity',
         'order_id',
+        'address_idx',
     ];
 
     public static function getData()

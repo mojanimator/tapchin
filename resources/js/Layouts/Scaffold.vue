@@ -95,7 +95,6 @@ export default {
 
 
     this.emitter.on('showDialog', (e) => {
-      this.log(e);
       if (this.$refs.modal)
         this.$refs.modal.show(e.type, e.message, e.button, e.action, e.items);
     });

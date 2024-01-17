@@ -8,14 +8,15 @@
             <slot name="append"></slot>
         </span>
 
-      <span class="grow ">
+      <span class="grow " dir="ltr">
             <select :id="id" class=" " :value="modelValue" @change="$emit('update:modelValue', $event.target.value)"
+
                     :name="id"
                     data-te-select-filter="true"
                     data-te-select-search-placeholder="..."
                     data-te-select-clear-button="true"
                     data-te-select-size="lg"
-                    data-te-class-select-input="peer rounded-e border border-neutral-300 text-gray-700 text-start block min-h-[auto] w-full bg-transparent outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-gray-200 dark:placeholder:text-gray-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0 cursor-pointer data-[te-input-disabled]:bg-[#e9ecef] data-[te-input-disabled]:cursor-default group-data-[te-was-validated]/validation:mb-4 dark:data-[te-input-disabled]:bg-zinc-600"
+                    data-te-class-select-input="border rounded border-neutral-300 text-gray-700 text-center block min-h-[auto] w-full bg-transparent outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-gray-200 dark:placeholder:text-gray-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0 cursor-pointer data-[te-input-disabled]:bg-[#e9ecef] data-[te-input-disabled]:cursor-default group-data-[te-was-validated]/validation:mb-4 dark:data-[te-input-disabled]:bg-zinc-600"
                     data-te-class-select-dropdown-container="z-[1070]"
                     data-te-class-select-filter-input="relative m-0 text-end block w-full min-w-0 flex-auto rounded border border-solid border-gray-300 bg-transparent bg-clip-padding px-3 py-1.5 text-base font-normal text-gray-700 transition duration-300 ease-in-out motion-reduce:transition-none focus:border-blue-600 focus:text-gray-700 focus:shadow-te-blue focus:outline-none dark:text-gray-200 dark:placeholder:text-gray-200"
                     data-te-class-select-wrapper=""
@@ -31,13 +32,14 @@
                     data-te-select-class="text-center"
                     data-te-select-init>
                 <option value="" hidden></option>
-                <option class="text-end" v-for="d in data" :value="d.id"> {{ __(d.name) }}</option>
+                <option class="text-start" v-for="d in data" :value="d.id"> {{ __(d.name) }}</option>
 
             </select>
         <!--            <label data-te-select-label-ref> {{ label }}</label>-->
 </span>
 
     </div>
+    <InputError class="mt-1" :message="error"/>
   </div>
 </template>
 
@@ -45,6 +47,7 @@
 <script>
 import {Select, initTE} from "tw-elements";
 import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 
 export default {
   data() {
@@ -52,20 +55,20 @@ export default {
       selected: null,
     }
   },
-  props: ['id', 'label', 'data', 'modelValue'],
+  props: ['id', 'label', 'data', 'modelValue', 'error'],
   emits: ['update:modelValue'],
-  components: {InputLabel},
+  components: {InputLabel, InputError},
   mounted() {
+    // this.log(this.modelValue);
+    initTE({Select})
 
-    // initTE({Select})
-
-    // if (!window.Select) {
-    // this.$forceUpdate();
-    // this.$nextTick(function () {
-    //     initTE({Select})
-    //     window.Select = Select;
-    // });
-    // }
+    if (!window.Select) {
+      this.$forceUpdate();
+      this.$nextTick(function () {
+        initTE({Select})
+        window.Select = Select;
+      });
+    }
 
   }
 }

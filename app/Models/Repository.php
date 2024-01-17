@@ -17,9 +17,17 @@ class Repository extends Model
         'address',
         'location',
         'cities',
+        'allow_visit',
+        'phone',
     ];
 
     protected $casts = [
         'cities' => 'array',
+        'allow_visit' => 'boolean',
     ];
+
+    public function shippingMethods()
+    {
+        return $this->hasMany(ShippingMethod::class, 'repo_id');
+    }
 }

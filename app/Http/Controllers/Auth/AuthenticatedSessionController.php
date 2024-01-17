@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Admin;
+use App\Models\Cart;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -71,8 +72,9 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate($guard);
 
         $request->session()->regenerate();
+        Cart::where('ip', $request->ip())->whereNull('user_id')->update(['user_id' => auth($guard)->id()]);
 
-        return redirect()->intended(route($guard == 'admin' ? 'admin.panel.index' : 'panel.index'));
+        return redirect()->intended(/*route($guard == 'admin' ? 'admin.panel.index' : 'panel.index')*/);
 
 
         return $this->loginPipeline($request)->then(function ($request) {

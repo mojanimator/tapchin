@@ -23,7 +23,9 @@ return new class extends Migration {
             $table->unsignedSmallInteger('county_id')->nullable();
             $table->foreign('county_id')->references('id')->on('cities')->onDelete('no action');
             $table->string('address', 2048)->nullable();
+            $table->string('phone', 20)->nullable();
             $table->string('location', 50)->nullable();
+            $table->boolean('allow_visit')->default(true);
             $table->json('cities')->nullable();
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();

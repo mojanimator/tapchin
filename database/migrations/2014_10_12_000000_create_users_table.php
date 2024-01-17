@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Helpers\Variable;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,6 +31,8 @@ return new class extends Migration {
             $table->enum('role', \App\Http\Helpers\Variable::USER_ROLES)->default(\App\Http\Helpers\Variable::USER_ROLES[0]);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_block')->default(false);
+            $table->enum('status', array_column(Variable::USER_STATUSES, 'name'))->default(array_column(Variable::USER_STATUSES, 'name')[0]);
+
             $table->boolean('wallet_active')->default(false);
             $table->integer('notifications')->unsigned()->default(0);
             $table->unsignedInteger('wallet')->default(0);
@@ -39,12 +42,13 @@ return new class extends Migration {
             $table->string('push_id', 20)->nullable();
             $table->timestamp('expires_at')->nullable()->default(null);
             $table->json('settings')->nullable()->default(null);
+            $table->json('addresses')->nullable();
             $table->string('access', 20)->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
         });
 
-//        \Illuminate\Support\Facades\DB::table('users')->insert(\App\Http\Helpers\Variable::getAdmins());
+//        \Illuminate\Support\Facades\DB::table('users')->insert(\App\Http\Helpers\Variable::getUsers());
     }
 
     /**

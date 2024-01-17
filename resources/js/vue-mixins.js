@@ -247,6 +247,11 @@ export default {
             return selecteds[selecteds.length - 1].id;
 
         },
+        getCityName(id) {
+            if (!id) return;
+            let res = usePage().props.cities.filter((e) => e.id == id);
+            return res && res.length > 0 ? res[0].name : null;
+        },
         getUserProvinceId() {
             let selecteds = usePage().props.user_location;
             if (selecteds == null || selecteds.length == 0) return null;

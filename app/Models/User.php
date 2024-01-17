@@ -48,6 +48,7 @@ class User extends Authenticatable
         'notifications',
         'wallet',
         'meta_wallet',
+        'addresses',
         'settings',
         'expires_at',
         'created_at',
@@ -74,7 +75,13 @@ class User extends Authenticatable
         'is_active' => 'boolean',
         'is_block' => 'boolean',
         'wallet_active' => 'boolean',
+        'addresses' => 'array',
     ];
+
+    public function financials()
+    {
+        return $this->belongsTo(UserFinancial::class, 'user_id');
+    }
 
     public static function makeRefCode2()
     {

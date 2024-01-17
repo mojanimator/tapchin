@@ -48,7 +48,7 @@ class UserRequest extends FormRequest
         if ($this->cmnd)
 
             $tmp = array_merge($tmp, [
-                'img' => ['required_if:cmnd,upload-img', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::SITE_ALLOWED_MIMES)],
+                'img' => ['required_if:cmnd,upload-img', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::BANNER_ALLOWED_MIMES)],
                 'wallet' => ['required_if:cmnd,wallet', 'numeric', 'gt:0'],
 
             ]);
@@ -80,7 +80,7 @@ class UserRequest extends FormRequest
 
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),
-            'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::SITE_ALLOWED_MIMES)),
+            'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
 
             'password.required' => sprintf(__("validator.required"), __('password')),
 

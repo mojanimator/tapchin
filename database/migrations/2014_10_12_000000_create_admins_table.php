@@ -38,7 +38,7 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        \Illuminate\Support\Facades\DB::table('admins')->insert(\App\Http\Helpers\Variable::getAdmins());
+//        \Illuminate\Support\Facades\DB::table('admins')->insert(\App\Http\Helpers\Variable::getAdmins());
     }
 
     /**

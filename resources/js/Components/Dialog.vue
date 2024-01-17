@@ -14,7 +14,7 @@
   <!-- Modal -->
   <div
       data-te-modal-init
-      class="fixed left-0 top-0 backdrop-blur z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+      class="fixed left-0 top-0 backdrop-blur z-[10550] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
       id="modal"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"

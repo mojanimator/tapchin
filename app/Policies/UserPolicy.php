@@ -156,10 +156,10 @@ class UserPolicy
     public function update(User $user, $item, $abort = true, $data = null)
     {
 
-        if (!$user->is_active) {
+        if ( $user->status=='inactive') {
             return abort(403, __("user_is_inactive"));
         }
-        if ($user->is_block) {
+        if ($user->status=='block') {
             return abort(403, __("user_is_blocked"));
         }
 

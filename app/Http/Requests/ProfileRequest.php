@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
 use Illuminate\Validation\Rules\File;
 use App\Http\Helpers\Variable;
 use App\Models\Business;
@@ -36,7 +37,8 @@ class ProfileRequest extends FormRequest
         $request = $this;
         $tmp = [];
         $phoneChanged = optional($user)->phone != $this->phone;
-        $roles = array_column(Variable::ACCESS, 'role');
+
+        $roles = Variable::USER_ROLES;
         if (!$this->cmnd || $this->cmnd == 'register')
             $tmp = array_merge($tmp, [
                 'accesses' => ['nullable', 'array', 'max:' . count($roles),],
@@ -55,7 +57,7 @@ class ProfileRequest extends FormRequest
 
         if ($this->cmnd == 'upload-img')
             $tmp = array_merge($tmp, [
-                'img' => ['required', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::SITE_ALLOWED_MIMES)],
+                'img' => ['required', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::BANNER_ALLOWED_MIMES)],
 
             ]);
         if ($this->cmnd == 'password-reset') {
@@ -71,17 +73,27 @@ class ProfileRequest extends FormRequest
             ]);
         }
         if ($this->cmnd == 'register')
-
             $tmp = array_merge($tmp, [
                 'password' => ['required', 'min:6', 'confirmed', 'regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/'],
-
-
             ]);
+        if ($this->cmnd == 'add-address') {
+            $counties = City::where('parent_id', $this->county_id)->pluck('id');
+            $tmp = array_merge($tmp, [
+                'address' => ['required', 'max:2048',],
+                'fullname' => ['required', 'max:100',],
+                'province_id' => ['required', 'numeric',],
+                'county_id' => ['required', 'numeric',],
+                'district_id' => [Rule::requiredIf(count($counties) > 0), Rule::in($counties)],
+                'postal_code' => ['required', 'numeric',],
+                'phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/'],
+            ]);
+        }
         return $tmp;
     }
 
     public function messages()
     {
+
 
         return [
 
@@ -106,7 +118,7 @@ class ProfileRequest extends FormRequest
 
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),
-            'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::SITE_ALLOWED_MIMES)),
+            'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
 
             'password.required' => sprintf(__("validator.required"), __('password')),
             'password.regex' => sprintf(__("validator.password_regex"),),
@@ -115,6 +127,15 @@ class ProfileRequest extends FormRequest
             'new_password.min' => sprintf(__("validator.min_len"), 6, mb_strlen($this->new_password)),
             'new_password.regex' => sprintf(__("validator.password_regex"),),
             'new_password.confirmed' => sprintf(__("validator.password_confirmed"),),
+
+
+            'address.max' => sprintf(__("validator.max_len"), __('address'), 2048, mb_strlen($this->address)),
+            'province_id.required' => sprintf(__("validator.required"), __('province')),
+            'county_id.required' => sprintf(__("validator.required"), __('county')),
+            'district_id.required' => sprintf(__("validator.required"), __('district/city')),
+            'district_id.in' => sprintf(__("validator.invalid"), __('district/city')),
+            'postal_code.required' => sprintf(__("validator.required"), __('postal_code')),
+            'postal_code.numeric' => sprintf(__("validator.numeric"), __('postal_code')),
 
         ];
     }

@@ -40,7 +40,7 @@ class ProfileController extends Controller
     public function update(ProfileRequest $request)
     {
         $request->user()->fill($request->validated());
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         switch ($request->cmnd) {
             case   'upload-img':
@@ -59,6 +59,30 @@ class ProfileController extends Controller
                 SMSHelper::deleteCode($user->phone);
                 $user->save();
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+                return back()->with($res);
+            case 'add-address':
+                $address = $request->all();
+                unset($address['cmnd']);
+                $addresses = $user->addresses ?? [];
+                $addresses[] = $address;
+                $user->update(['addresses' => $addresses]);
+                $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+                if ($request->wantsJson())
+                    return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
+                return back()->with($res);
+            case 'remove-address':
+                $idx = $request->idx;
+                $addresses = $user->addresses ?? [];
+                if (!is_int($idx) || count($addresses) <= $idx) {
+                    if ($request->wantsJson())
+                        return response()->json(['message' => __('response_error')], Variable::ERROR_STATUS);
+                    return back()->withErrors(['message' => __('response_error')]);
+                }
+                array_splice($addresses, $idx, 1);
+                $user->update(['addresses' => $addresses]);
+                $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+                if ($request->wantsJson())
+                    return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
                 return back()->with($res);
         }
         if (!$request->user()->isDirty()) return back();

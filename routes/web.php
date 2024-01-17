@@ -13,6 +13,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PodcastController;
@@ -181,6 +182,7 @@ Route::middleware('throttle:6,1')->group(function () {
 Route::middleware(['auth:sanctum',
     config('jetstream.auth_session'),
     'verified'])->group(function () {
+//    Route::patch('/user', [UserController::class, 'update'])->name('user.update');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -197,6 +199,11 @@ Route::middleware(['auth:sanctum',
 
     Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.ticket.edit');
     Route::patch('ticket/update', [TicketController::class, 'update'])->name('ticket.update');
+
+
+    Route::get('/checkout/shipping', [ShopController::class, 'shippingPage'])->name('checkout.shipping');
+    Route::get('/checkout/payment', [ShopController::class, 'paymentPage'])->name('checkout.payment');
+    Route::post('/order/create', [OrderController::class, 'create'])->name('order.create');
 
 });
 

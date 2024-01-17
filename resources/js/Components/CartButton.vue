@@ -49,6 +49,8 @@ export default {
 
   },
   mounted() {
+    this.update();
+
     this.emitter.on('updateCart', (cart) => {
       this.cart = cart;
       this.$page.props.cart = cart;
@@ -67,7 +69,38 @@ export default {
           if (this.cart.items[idx].qty && this.cart.items[idx].qty > 0)
             this.qty += this.cart.items[idx].qty;
         }
-    }
+    },
+    update(params) {
+      this.isLoading(true);
+      this.loading = true;
+      window.axios.patch(route('cart.update'), params,
+          {})
+          .then((response) => {
+            if (response.data && response.data.message && params) {
+              this.showToast('success', response.data.message);
+            }
+
+            if (response.data.cart) {
+              this.updateCart(response.data.cart)
+            }
+
+            this.show = false;
+          })
+
+          .catch((error) => {
+            this.error = this.getErrors(error);
+            if (error.response && error.response.data) {
+
+            }
+            this.showToast('danger', this.error);
+
+          })
+          .finally(() => {
+            // always executed
+            this.loading = false;
+            this.isLoading(false);
+          });
+    },
 
   }
 }

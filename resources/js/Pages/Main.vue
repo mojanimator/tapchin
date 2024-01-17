@@ -53,18 +53,20 @@
             </div>
             <div class=" z-10 p-3    flex  items-center">
 
-              <SecondaryButton @click="$inertia.visit(route('shop.index'))"
-                               class="mx-2 p-2 grow">{{
-                  __('shop')
-                }}
-              </SecondaryButton>
-              <PrimaryButton @click="params.type='request_agency';recaptchaExpired() "
-                             data-te-toggle="modal"
-                             data-te-target="#messageModal" classes="skew-x-[12deg] "
-                             data-te-ripple-init class="mx-2 p-2 grow  ">{{
+              <ButtonSkew @click="$inertia.visit(route('shop.index'))"
+                          class="mx-2 p-2 grow  " classes="bg-white text-primary-500">
+                <span class="text-primary-500 group-hover:text-white  ">  {{
+                    __('shop')
+                  }}</span>
+
+              </ButtonSkew>
+              <ButtonSkew @click="params.type='request_agency';recaptchaExpired() "
+                          data-te-toggle="modal"
+                          data-te-target="#messageModal" classes="skew-x-[12deg] "
+                          data-te-ripple-init class="mx-2 p-2 grow  ">{{
                   __('agency')
                 }}
-              </PrimaryButton>
+              </ButtonSkew>
             </div>
           </div>
 
@@ -346,6 +348,7 @@ import Scaffold from "@/Layouts/Scaffold.vue";
 import {Head, Link} from '@inertiajs/vue3';
 import heroImage from '@/../images/hero.jpg';
 import {loadScript} from "vue-plugin-load-script";
+import ButtonSkew from "@/Components/ButtonSkew.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
@@ -420,6 +423,7 @@ export default {
     Link,
     TruckIcon,
     MapPinIcon,
+    ButtonSkew,
   },
   // mixins: [Mixin],
   setup(props) {
@@ -439,6 +443,8 @@ export default {
 
     const modalEl = document.getElementById('messageModal');
     this.modal = new Modal(modalEl);
+
+    this.updateCart();
   },
   methods: {
     updateSearchResults() {
