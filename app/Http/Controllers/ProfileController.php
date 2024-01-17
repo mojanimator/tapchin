@@ -67,7 +67,7 @@ class ProfileController extends Controller
                 $addresses[] = $address;
                 $user->addresses = $addresses;
                 $user->save();
-                $user->update(['addresses' => $addresses]);
+                $user->update(['addresses' => json_encode($addresses)]);
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                 if ($request->wantsJson())
                     return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
