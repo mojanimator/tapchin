@@ -65,7 +65,9 @@ class ProfileController extends Controller
                 unset($address['cmnd']);
                 $addresses = $user->addresses ?? [];
                 $addresses[] = $address;
-                $user->update(['addresses' => $addresses]);
+                $user->addresses = $addresses;
+                $user->save();
+//                $user->update(['addresses' => $addresses]);
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                 if ($request->wantsJson())
                     return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
@@ -79,7 +81,8 @@ class ProfileController extends Controller
                     return back()->withErrors(['message' => __('response_error')]);
                 }
                 array_splice($addresses, $idx, 1);
-                $user->update(['addresses' => $addresses]);
+                $user->addresses = $addresses;
+                $user->save();
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                 if ($request->wantsJson())
                     return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
