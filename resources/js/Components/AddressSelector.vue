@@ -392,6 +392,10 @@ export default {
     edit(params = {}) {
       this.errors = {};
       this.loading = true;
+      if (params.postal_code)
+        params.postal_code = this.f2e(params.postal_code)
+      if (params.phone)
+        params.phone = this.f2e(params.phone)
       window.axios.patch(route('profile.update'), params,
           {})
           .then((response) => {
