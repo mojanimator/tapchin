@@ -98,7 +98,7 @@
                 </div>
                 <TomanIcon class="w-4 h-4 mx-2"/>
               </div>
-              <div class="flex sm:hidden min-w-[36%]   me-auto">
+              <div class="flex sm:hidden  min-w-[100%] xs:min-w-[70%]   me-auto">
                 <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
               </div>
             </div>
