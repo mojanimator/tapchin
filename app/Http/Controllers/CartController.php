@@ -89,7 +89,7 @@ class CartController extends Controller
             $cart->save();
         }
         $addressIdx = $addressIdx ?? $cart->address_idx;
-        $addressIdx = $addressIdx != null ? intval($addressIdx) || null;
+        $addressIdx = $addressIdx != null ? intval($addressIdx) : null;
         $address = null;
         if ($user && is_int($addressIdx) && $addressIdx >= 0 && count($addresses) > $addressIdx) {
             $address = $addresses[$addressIdx];
