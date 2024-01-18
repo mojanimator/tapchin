@@ -66,6 +66,7 @@ class ProductController extends Controller
             'products.in_shop as in_shop',
             'products.parent_id as parent_id',
             'repositories.province_id as province_id',
+
         )
             ->orderBy('products.updated_at', 'DESC')//
             //            ->orderByRaw("IF(articles.charge >= articles.view_fee, articles.view_fee, articles.id) DESC")

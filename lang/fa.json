@@ -626,7 +626,7 @@
   "repo_not_support_location": "این انبار آدرس شما را پشتیبانی نمی کند",
   "please_correct_errors": "لطفا خطاهای موجود را برطرف نمایید",
   "problem_in_create_order": "مشکلی در ثبت سفارش پیش آمد",
-  "you_selected_self_receive": "شما مراجعه حضوری به انبار را انتخاب کرده اید",
+  "you_selected_self_receive": "در سفارش شما محصولات نیاز به مراجعه حضوری به انبار وجود دارد",
   "payment_method": "روش پرداخت",
   "bank_payment": "پرداخت بانکی",
   "redirect_to_payment_page": "در حال انتقال به صفحه پرداخت",

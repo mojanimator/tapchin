@@ -17,7 +17,7 @@
 
       <div class="flex items-center justify-center  w-full h-full  ">
         <div class="flex justify-center items-center space-x-1 text-sm text-gray-700">
-          <LoadingIcon type="line-dot" class=" fill-primary"/>
+          <LoadingIcon type="line-dot" class=" fill-primary-500"/>
 
         </div>
       </div>

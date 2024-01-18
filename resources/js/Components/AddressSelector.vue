@@ -6,13 +6,18 @@
 
     <!--    </template>-->
     <div :class="{'bg-danger-100':error}"
-         class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-100 text-gray-500"
+         class="rounded   flex flex-col items-start border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-100 text-gray-500"
          @click="clicked"
     >
-      <div v-if="error" class="text-red-500 font-bold">
-        {{ error }}
-      </div>
-      <div v-else-if="selectedAddress">
+
+      <div v-if="selectedAddress" class="  w-full">
+        <div class="  end-0 top-0  flex">
+          <PrimaryButton
+              @click.stop=" selectedAddress=null;addAddressToCart(null) "
+              class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
+            <TrashIcon class="w-4 h-4 "/>
+          </PrimaryButton>
+        </div>
         <div class="flex items-center py-3 text-sm">
           <MapIcon class="w-4 h-4  text-primary-600"/>
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.address }}</div>
@@ -44,6 +49,9 @@
       <div v-else>
         <MapPinIcon class="h-4 w-4 mx-1"/>
         {{ __('select_address') }}
+      </div>
+      <div v-if="error" class="text-red-500 font-bold">
+        {{ error }}
       </div>
     </div>
 
@@ -332,7 +340,7 @@ export default {
     }
   },
   props: ['id', 'label', 'data', 'modelValue', 'editable', 'error'],
-  emits: ['change'],
+  emits: ['change', 'updateCart'],
   components: {
     PrimaryButton,
     InputLabel,
@@ -362,8 +370,7 @@ export default {
     }
     this.emitter.on('updateCart', (cart) => {
 
-      if (cart.address)
-        this.selectedAddress = cart.address;
+      this.selectedAddress = cart.address;
     });
     // initTE({Select})
 
@@ -410,7 +417,7 @@ export default {
               this.show = 'addresses';
 
             }
-
+            this.$emit('change', null);
 
           })
 

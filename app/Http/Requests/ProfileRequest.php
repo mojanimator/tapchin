@@ -144,6 +144,7 @@ class ProfileRequest extends FormRequest
             'receiver_phone.required' => sprintf(__("validator.required"), __('phone')),
             'receiver_phone.unique' => sprintf(__("validator.unique"), __('phone')),
             'receiver_phone.numeric' => sprintf(__("validator.numeric"), __('phone')),
+            'receiver_phone.digits' => sprintf(__("validator.digits"), __('phone'), 11),
 
         ];
     }

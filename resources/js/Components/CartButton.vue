@@ -64,6 +64,18 @@ export default {
   methods: {
     setCartQty() {
       this.qty = 0;
+
+      if (this.cart && this.cart.shipments && this.cart.shipments.length > 0)
+        for (let idx in this.cart.shipments) {
+          for (let id in this.cart.shipments[idx].items) {
+
+            if (this.cart.shipments[idx].items[id].cart_item.qty && this.cart.shipments[idx].items[id].cart_item.qty > 0)
+              this.qty += parseInt(this.cart.shipments[idx].items[id].cart_item.qty);
+            break;
+
+          }
+        }
+
       if (this.cart && this.cart.items && this.cart.items.length > 0)
         for (let idx in this.cart.items) {
           if (this.cart.items[idx].qty && this.cart.items[idx].qty > 0)

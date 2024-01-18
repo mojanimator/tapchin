@@ -25,14 +25,15 @@ class OrderController extends Controller
         $user = auth('sanctum')->user();
         $cart = $request->cart;
         if (!$cart) {
-            return response()->json(['message' => __('problem_in_create_order')], Variable::ERROR_STATUS);
+            return response()->json(['message' => __('problem_in_create_order'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
+
         if ($cart->errors) {
-            return response()->json(['message' => __('please_correct_errors')], Variable::ERROR_STATUS);
+            return response()->json(['message' => __('please_correct_errors'), 'cart' => $cart], Variable::ERROR_STATUS);
 
         }
         if (count($cart->items) == 0) {
-            return response()->json(['message' => __('cart_is_empty')], Variable::ERROR_STATUS);
+            return response()->json(['message' => __('cart_is_empty'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
         /*
         */

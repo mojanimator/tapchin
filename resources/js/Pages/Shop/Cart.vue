@@ -27,21 +27,21 @@
         </div>
         <!--        address section-->
         <div v-if="page=='shipping' || page=='payment'"
-             class="border-b flex flex-col   rounded-lg mx-4 mt-4 p-2 lg:p-4">
+             class="border-b flex flex-col   rounded-lg mx-1 mt-4 p-2 lg:p-4">
           <div class="text-neutral-400 pb-2">{{ __('delivery_address') }}</div>
 
 
-          <AddressSelector v-show="cart.need_address ||  page=='shipping'" :editable="page=='shipping'" class=" "
+          <AddressSelector v-if="cart.need_address ||  page!='cart'" :editable="page!='cart'  " class=" "
                            @change="update({address_idx:$event})"
                            :error="cart.errors &&   cart.errors.filter((e)=>e.type=='address').length>0?cart.errors.filter((e)=>e.type=='address')[0].message :null"
                            :preload="(cart.address)"/>
 
-          <div v-show="!cart.need_address &&  page=='payment' && cart.items.length>0"
-               class="text-neutral-500 font-bold py-2">
+          <div v-show="  page=='payment' && cart.shipments.length>0 && cart.need_self_receive"
+               class="text-primary-500 font-bold py-2">
             {{ __('you_selected_self_receive') }}
           </div>
         </div>
-        <div v-if=" cart.items.length==0" class="w-full p-4  items-center flex flex-col justify-center ">
+        <div v-if=" cart.shipments.length==0" class="w-full p-4  items-center flex flex-col justify-center ">
           <div> {{ __('cart_is_empty') }}</div>
           <Link class="text-primary-500 hover:text-primary-400 cursor-pointer" :href="route('shop.index')"> {{
               __('shop')
@@ -49,8 +49,9 @@
           </Link>
         </div>
 
-        <div v-for="( shipment ,id) in cart.shipments" :class="{'bg-danger-100':shipment.method.error_message}"
-             class="     p-2 m-2   shadow    rounded ">
+        <div v-for="( shipment ,id) in cart.shipments"
+             :class="{'bg-danger-100':shipment.method.error_message && page!='cart'  }"
+             class="     p-2 m-2   shadow-md    rounded ">
           <div v-for="(item,idx) in shipment.items" :key="item.cart_item.product_id"
                class="flex p-2  flex-col my-2"
                :class="{'bg-danger-100':item.cart_item.error_message}">
@@ -115,7 +116,7 @@
             </div>
           </div>
           <!--           shipping_method-->
-          <div class="border-t py-2">
+          <div v-if="page!='cart' && (cart.address || shipment.method.error_message) " class="border-t py-2">
             <div class="text-neutral-500">{{ __('shipping_method') }}</div>
             <div v-if="shipment.method.error_message" class="text-red-500 font-bold">
               {{ shipment.method.error_message }}
@@ -163,7 +164,7 @@
           </div>
 
 
-          <PrimaryButton :class="{'opacity-50 disabled':cart.items.length==0}"
+          <PrimaryButton :class="{'opacity-50 disabled':cart.shipments.length==0}"
                          @click="handleNextButtonClick"
                          classes="" class="my-2">
             <span v-if="!loading">   {{
@@ -264,16 +265,17 @@ export default {
     handleNextButtonClick() {
       if (this.loading) return;
       if (this.page == 'cart') {
-        this.update({next: 'checkout.shipping'});
+        this.update({current: 'checkout.cart', next: 'checkout.shipping'});
       } else if (this.page == 'shipping') {
-        this.update({next: 'checkout.payment'});
+        this.update({current: 'checkout.shipping', next: 'checkout.payment'});
       } else if (this.page == 'payment') {
-        this.update({next: 'order.create', cmnd: 'create_order_and_pay'});
+        this.update({current: 'checkout.payment', next: 'order.create', cmnd: 'create_order_and_pay'});
       }
 
     },
     update(params = {}) {
       this.isLoading(true);
+      params.current = `checkout.${this.page}`;
       this.loading = true;
       window.axios.patch(route('cart.update'), params,
           {})
@@ -299,7 +301,10 @@ export default {
           .catch((error) => {
             this.error = this.getErrors(error);
             if (error.response && error.response.data) {
-
+              if (error.response.data.cart) {
+                this.updateCart(error.response.data.cart);
+                this.cart = error.response.data.cart;
+              }
             }
             this.showToast('danger', this.error);
 

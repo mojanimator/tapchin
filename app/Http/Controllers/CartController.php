@@ -13,6 +13,7 @@ use App\Models\ShippingMethod;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -35,6 +36,7 @@ class CartController extends Controller
         $cityId = session()->get('city_id');
         $addressIdx = $request->address_idx;
         $needAddress = false;
+        $needSelfReceive = false;
 
 //        if ($cmnd == 'count') {
 //            $product = Product::with('repository')->find($productId);
@@ -81,9 +83,14 @@ class CartController extends Controller
         ]);
         //set cart address
         $addresses = $user->addresses ?? [];
-        $addressIdx = intval($addressIdx ?? $cart->address_idx);
+        //clear address
+        if ($request->exists('address_idx') && $request->address_idx == null) {
+            $cart->address_idx = null;
+            $cart->save();
+        }
+        $addressIdx = $addressIdx ?? $cart->address_idx;
         $address = null;
-        if ($user && count($addresses) > $addressIdx) {
+        if ($user && is_int($addressIdx) && $addressIdx >= 0 && count($addresses) > $addressIdx) {
             $address = $addresses[$addressIdx];
             $cityId = $address['district_id'] ?? $address['county_id'] ?? $cityId;
             $cityId = intval($cityId);
@@ -234,6 +241,7 @@ class CartController extends Controller
             } else {
                 $methodId = 'repo-' . $repo->id;
                 $errorMessage = null;
+                $needSelfReceive = true;
             }
             $default['id'] = $methodId;
             if ($errorMessage) {
@@ -243,6 +251,8 @@ class CartController extends Controller
             $shipments[$idx] = ['method_id' => $methodId, 'cart_item' => $cartItem, 'shipping' => $default, 'repo_name' => $repo->name, 'error_message' => $errorMessage];
 
         }
+        $needAddress = $needAddress && in_array($request->current, ['checkout.payment', 'checkout.shipping']);
+
         if ($needAddress && $address == null) {
             $errors[] = ['key' => 'address', 'type' => 'address', 'message' => sprintf(__('validator.required'), __('address'))];
 
@@ -272,6 +282,7 @@ class CartController extends Controller
         $cart->shipments = $shipments;
         $cart->total_price = $cart->total_items_price + $cart->total_shipping_price;
         $cart->need_address = $needAddress;
+        $cart->need_self_receive = $needSelfReceive;
         $cart->payment_methods = Variable::getPaymentMethods();
 //        if ($user) {
 //            $res = User::getLocation(Variable::$CITIES);
@@ -282,7 +293,7 @@ class CartController extends Controller
 //        dd($cart);
 //        dd($cartItems->pluck('repo_id'));
 //        dd(ShippingMethod::whereIn('repo_id', $cartItems->pluck('repo_id'))->get());
-
+        unset ($cart->items);
         if ($request->cmnd == 'create_order_and_pay')
             return (new OrderController())->create(new OrderRequest(['cart' => $cart]));
         else return response()->json(['message' => __('cart_updated'), 'cart' => $cart], Variable::SUCCESS_STATUS);

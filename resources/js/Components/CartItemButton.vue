@@ -93,30 +93,36 @@ export default {
   methods: {
     setInCartQty() {
       this.inCart = 0;
-      if (this.cart && this.cart.items && this.cart.items.length > 0)
-        for (let idx in this.cart.items) {
-          if (this.cart.items[idx].product_id == this.productId) {
-            this.inCart = this.cart.items[idx].qty;
-            break;
+      if (this.cart && this.cart.shipments && this.cart.shipments.length > 0)
+        for (let idx in this.cart.shipments) {
+          for (let id in this.cart.shipments[idx].items) {
+            if (this.cart.shipments[idx].items[id].cart_item.product_id == this.productId) {
+              this.inCart = this.cart.shipments[idx].items[id].cart_item.qty;
+              break;
+            }
           }
         }
-    },
+    }
+    ,
     isInt(value) {
       return (typeof value === 'number' &&
           isFinite(value) &&
           Math.floor(value) === value);
 
-    },
+    }
+    ,
     plus() {
       if (this.isInt(this.inCart))
         this.inCart++;
       else this.inCart = 0;
-    },
+    }
+    ,
     minus() {
       if (this.isInt(this.inCart) && this.inCart > 1)
         this.inCart--;
       else this.inCart = 0;
-    },
+    }
+    ,
     edit(params) {
       this.loading = true;
       window.axios.patch(route('cart.update'), params,
@@ -147,7 +153,8 @@ export default {
             this.loading = false;
 
           });
-    },
+    }
+    ,
 
   }
 }

@@ -19,6 +19,7 @@ class Repository extends Model
         'cities',
         'allow_visit',
         'phone',
+        'status',
     ];
 
     protected $casts = [
