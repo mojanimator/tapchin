@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Admin;
 use App\Models\Cart;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -73,7 +74,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
         Cart::where('ip', $request->ip())->whereNull('user_id')->update(['user_id' => auth($guard)->id()]);
-
+        if ($guard == 'admin')
+            return redirect()->to(route('admin.panel.index'));
         return redirect()->intended(/*route($guard == 'admin' ? 'admin.panel.index' : 'panel.index')*/);
 
 
@@ -119,8 +121,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): LogoutResponse
     {
-        $this->guard->logout();
 
+        $this->guard->logout();
+        $user = $request->user();
+        if ($user instanceof Admin) {
+            if ($request->hasSession())
+                auth('admin')->logout();
+            else
+                auth('admin-api')->logout();
+        }
+//        $request->user()->tokens()->delete();
+//        $request->user()->currentAccessToken()->delete();
         if ($request->hasSession()) {
             $request->session()->invalidate();
             $request->session()->regenerateToken();

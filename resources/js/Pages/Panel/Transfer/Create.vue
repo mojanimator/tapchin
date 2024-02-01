@@ -122,7 +122,7 @@
                            :placeholder="`${__('transfer_password')} ${__('transfer_password_label')}` "
                            classes=" "
                            v-model="form.password"
-                           autocomplete="expires_at"
+                           autocomplete="password"
                            :error="form.errors.password"
                 >
                   <template v-slot:prepend>

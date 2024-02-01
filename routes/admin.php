@@ -1,12 +1,16 @@
 <?php
 
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\PanelController;
+use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\RepositoryController;
 use App\Http\Helpers\Variable;
+use App\Models\Agency;
 use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 
@@ -35,71 +39,111 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('admin.password.store');
 
-    Route::middleware(['auth:sanctum', /*'auth:admin',*/
+    Route::middleware(['auth:sanctum', 'auth:admin',
         config('jetstream.auth_session'),
         'verified'])->prefix('panel')->group(function ($route) {
 
 
         Route::get('', [PanelController::class, 'index'])->name('admin.panel.index');
 
-        PanelController::makeInertiaRoute('get', 'setting/index', 'panel.admin.setting.index', 'Panel/Admin/Setting/Index',
+        PanelController::makeInertiaRoute('get', 'setting/index', 'admin.panel.setting.index', 'Panel/Admin/Setting/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'slider/index', 'panel.admin.slider.index', 'Panel/Admin/Slider/Index',
+        PanelController::makeInertiaRoute('get', 'slider/index', 'admin.panel.slider.index', 'Panel/Admin/Slider/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'slider/create', 'panel.admin.slider.create', 'Panel/Admin/Slider/Create',
+        PanelController::makeInertiaRoute('get', 'slider/create', 'admin.panel.slider.create', 'Panel/Admin/Slider/Create',
             [
                 'sliderRatio' => Variable::RATIOS['slider'],
             ]);
 
-        PanelController::makeInertiaRoute('get', 'notification/index', 'panel.admin.notification.index', 'Panel/Admin/Notification/Index',
+        PanelController::makeInertiaRoute('get', 'notification/index', 'admin.panel.notification.index', 'Panel/Admin/Notification/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'notification/create', 'panel.admin.notification.create', 'Panel/Admin/Notification/Create',
+        PanelController::makeInertiaRoute('get', 'notification/create', 'admin.panel.notification.create', 'Panel/Admin/Notification/Create',
             [
 
             ]);
 
-        PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.admin.ticket.index', 'Panel/Ticket/Index',
+        PanelController::makeInertiaRoute('get', 'ticket/index', 'admin.panel.ticket.index', 'Panel/Ticket/Index',
             [
                 'statuses' => Variable::TICKET_STATUSES
 
             ]);
-        PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.admin.ticket.create', 'Panel/Ticket/Create',
+        PanelController::makeInertiaRoute('get', 'ticket/create', 'admin.panel.ticket.create', 'Panel/Ticket/Create',
             [
                 'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
             ]);
 
-        PanelController::makeInertiaRoute('get', 'user/index', 'panel.admin.user.index', 'Panel/User/Index',
+        PanelController::makeInertiaRoute('get', 'user/index', 'admin.panel.user.index', 'Panel/User/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'user/create', 'panel.admin.user.create', 'Panel/User/Create',
+        PanelController::makeInertiaRoute('get', 'user/create', 'admin.panel.user.create', 'Panel/User/Create',
             [
             ]);
 
-        PanelController::makeInertiaRoute('get', 'message/index', 'panel.admin.message.index', 'Panel/Admin/Message/Index',
+        PanelController::makeInertiaRoute('get', 'message/index', 'admin.panel.message.index', 'Panel/Admin/Message/Index',
             [
                 'statuses' => Variable::MESSAGE_STATUSES,
             ]);
-        PanelController::makeInertiaRoute('get', 'message/create', 'panel.admin.message.create', 'Panel/Admin/Message/Create',
+        PanelController::makeInertiaRoute('get', 'message/create', 'admin.panel.message.create', 'Panel/Admin/Message/Create',
             [
             ]);
-        PanelController::makeInertiaRoute('get', 'article/index', 'panel.admin.article.index', 'Panel/Admin/Article/Index',
+        PanelController::makeInertiaRoute('get', 'article/index', 'admin.panel.article.index', 'Panel/Admin/Article/Index',
             [
                 'statuses' => Variable::STATUSES
             ]
         );
-        PanelController::makeInertiaRoute('get', 'article/create', 'panel.admin.article.create', 'Panel/Admin/Article/Create',
+        PanelController::makeInertiaRoute('get', 'article/create', 'admin.panel.article.create', 'Panel/Admin/Article/Create',
             [
                 'statuses' => Variable::STATUSES,
             ]
         );
 
 
+        PanelController::makeInertiaRoute('get', 'transaction/index', 'admin.panel.financial.transaction.index', 'Panel/Admin/Financial/Index',
+            [
+            ]
+        );
+
+
+        Route::get('admin/search', [AdminController::class, 'search'])->name('admin.admin.search');
+
+
+        PanelController::makeInertiaRoute('get', 'agency/index', 'admin.panel.agency.index', 'Panel/Admin/Agency/Index',
+            [
+            ]
+        );
+        PanelController::makeInertiaRoute('get', 'agency/create', 'admin.panel.agency.create', 'Panel/Admin/Agency/Create',
+            [
+                'parent_agencies' => Agency::whereNot('level', Variable::AGENCY_TYPES[count(Variable::AGENCY_TYPES) - 1]['level'])->whereNotNull('level')->select('id', 'name', 'province_id', 'level', 'access')->get(),
+            ]
+        );
+
+        Route::get('agency/{agency}', [AgencyController::class, 'edit'])->name('admin.panel.agency.edit');
+        Route::get('agency/search', [AgencyController::class, 'searchPanel'])->name('admin.panel.agency.search');
+        Route::patch('agency/update', [AgencyController::class, 'update'])->name('admin.panel.agency.update');
+        Route::post('agency/create', [AgencyController::class, 'create'])->name('admin.panel.agency.create')->middleware("can:create,App\Models\Admin,App\Models\Agency,'1'");
+
+
+        PanelController::makeInertiaRoute('get', 'repository/index', 'admin.panel.repository.index', 'Panel/Admin/Repository/Index',
+            [
+            ]
+        );
+        PanelController::makeInertiaRoute('get', 'repository/create', 'admin.panel.repository.create', 'Panel/Admin/Repository/Create',
+            [
+            ]
+        );
+
+        Route::get('repository/{repository}', [RepositoryController::class, 'edit'])->name('admin.panel.repository.edit');
+        Route::get('repository/search', [RepositoryController::class, 'searchPanel'])->name('admin.panel.repository.search');
+        Route::patch('repository/update', [RepositoryController::class, 'update'])->name('admin.panel.repository.update');
+        Route::post('repository/create', [RepositoryController::class, 'create'])->name('admin.panel.repository.create')->middleware("can:create,App\Models\Admin,App\Models\Repository,'1'");
+
     });
+
 });

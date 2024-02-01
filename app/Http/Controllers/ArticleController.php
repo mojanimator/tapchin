@@ -181,7 +181,7 @@ class ArticleController extends Controller
         $article = Article::create($request->all());
 
         if ($article) {
-            $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully_and_activete_after_review')];
+            $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully_and_activate_after_review')];
 
             Util::createImage($request->img, Variable::IMAGE_FOLDERS[Article::class], $article->id);
 

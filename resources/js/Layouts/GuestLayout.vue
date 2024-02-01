@@ -15,7 +15,7 @@ export default {
     Head, Link, ApplicationLogo, Alert, Dialog, Toast, LoadingIcon,
   },
   mounted() {
-    window.tailwindElements();
+    // window.tailwindElements();
     this.emitter.on('showToast', (e) => {
       if (this.$refs.toast)
         this.$refs.toast.show(e.type, e.message);
@@ -49,6 +49,9 @@ export default {
       <div>
         <Link href="/">
           <ApplicationLogo type="outline-dark" class="w-25 h-20 fill-current text-gray-500"/>
+          <div v-if="route().current('admin.login-form')" class="w-full   text-end">
+            {{ __('admin_portal') }}
+          </div>
         </Link>
       </div>
 

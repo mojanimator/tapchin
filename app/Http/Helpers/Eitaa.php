@@ -13,7 +13,7 @@ use Morilog\Jalali\Jalalian;
 
 class Eitaa
 {
-    const LOGS = [9377227, 'vartastudio'];
+    const LOGS = [9527197, 'vartastudio'];
 
     static function sendMessage($chat_id, $text, $mode = null, $title = null, $reply = null, $keyboard = null, $disable_notification = false, $app_id = null)
     {

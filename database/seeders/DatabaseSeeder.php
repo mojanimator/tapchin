@@ -90,8 +90,8 @@ class DatabaseSeeder extends Seeder
 
         DB::table('admins')->truncate();
         \Illuminate\Support\Facades\DB::table('admins')->insert(\App\Http\Helpers\Variable::getAdmins());
-
-        for ($i = 0; $i < $count; $i++) {
+        $agencyCount = 10;
+        for ($i = 1; $i < $count; $i++) {
             $phone = $this->faker->numerify("091########");
             DB::table('admins')->insert([
                 [
@@ -101,8 +101,9 @@ class DatabaseSeeder extends Seeder
                     'phone_verified' => true,
                     'password' => Hash::make($phone),
                     'status' => 'active',
-                    'role' => $i < 15 ? 'owner' : 'admin',
-                    'access' => json_encode(['all']),
+                    'agency_id' => $i < $agencyCount ? $i + 1 : $this->faker->numberBetween(2, $agencyCount),
+                    'role' => $i < $agencyCount ? 'owner' : 'admin',
+                    'access' => [],
                 ]
             ]);
         }
@@ -112,8 +113,10 @@ class DatabaseSeeder extends Seeder
     private
     function createAgencies($count = 30)
     {
-
+//zone_agency access : provinces
+        // province_agency access : agencies
         DB::table('agencies')->truncate();
+        $levels = array_column(Variable::AGENCY_TYPES, 'level');
 
 
         //section agencies
@@ -122,23 +125,37 @@ class DatabaseSeeder extends Seeder
         DB::table('agencies')->insert([
             [
                 'id' => 1,
+                'name' => 'دفتر مرکزی',
+                'access' => null,
+                'parent_id' => null,
+//                'has_shop' => true,
+                'level' => strval($levels[0]),
+//                'owner_id' => 2,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تهران',
+                'status' => 'active',
+            ], [
+                'id' => 2,
                 'name' => 'نمایندگی جنوب ایران',
-                'access' => json_encode($provinces1),
-                'has_shop' => false,
-                'type' => Variable::AGENCY_TYPES[1]['code'],
-                'owner_id' => 2,
+                'parent_id' => 1,
+                'access' => json_encode([City::where('level', 1)->whereIn('name', ['خوزستان', 'بوشهر', 'هرمزگان'])]),
+//                'has_shop' => false,
+                'level' => strval($levels[1]),
+//                'owner_id' => 2,
                 'province_id' => City::where('level', 1)->where('name', 'خوزستان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اهواز')->first()->id,
                 'address' => 'کوی کارگر',
                 'status' => 'active',
             ],
             [
-                'id' => 2,
+                'id' => 3,
                 'name' => 'نمایندگی مرکز ایران',
-                'access' => json_encode($provinces2),
-                'has_shop' => false,
-                'type' => Variable::AGENCY_TYPES[1]['code'],
-                'owner_id' => 3,
+                'access' => json_encode([City::where('level', 1)->whereIn('name', ['تهران', 'اصفهان', 'قزوین'])]),
+                'parent_id' => 1,
+//                'has_shop' => false,
+                'level' => strval($levels[1]),
+//                'owner_id' => 3,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'میدان آزادی',
@@ -146,12 +163,13 @@ class DatabaseSeeder extends Seeder
 
             ],
             [
-                'id' => 3,
-                'name' => 'نمایندگی انحصاری اصفهان',
-                'access' => json_encode([City::where('level', 1)->where('name', 'اصفهان')->first()->id]),
-                'has_shop' => false,
-                'type' => Variable::AGENCY_TYPES[2]['code'],
-                'owner_id' => 4,
+                'id' => 4,
+                'name' => 'نمایندگی استان اصفهان',
+                'parent_id' => 3,
+                'access' => json_encode([9, 10]),
+//                'has_shop' => false,
+                'level' => strval($levels[2]),
+//                'owner_id' => 4,
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
                 'address' => 'سه راه سیمین',
@@ -159,26 +177,42 @@ class DatabaseSeeder extends Seeder
 
             ],
             [
-                'id' => 4,
-                'name' => 'نمایندگی انحصاری تهران',
-                'access' => json_encode([City::where('level', 1)->where('name', 'تهران')->first()->id]),
-                'has_shop' => false,
-                'type' => Variable::AGENCY_TYPES[2]['code'],
-                'owner_id' => 5,
+                'id' => 5,
+                'name' => 'نمایندگی استان تهران1',
+                'access' => json_encode([7]),
+//                'has_shop' => false,
+                'parent_id' => 3,
+                'level' => strval($levels[2]),
+//                'owner_id' => 5,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'میدان آرژانتین',
                 'status' => 'active',
 
             ],
+            [
+                'id' => 6,
+                'name' => 'نمایندگی استان تهران2',
+                'access' => json_encode([8]),
+//                'has_shop' => false,
+                'parent_id' => 3,
+                'level' => strval($levels[2]),
+//                'owner_id' => 5,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تجریش',
+                'status' => 'active',
+
+            ],
 
             [
-                'id' => 5,
-                'name' => 'نمایندگی شعبه فیروزکوه',
+                'id' => 7,
+                'name' => 'شعبه فیروزکوه',
+                'parent_id' => 5,
                 'access' => null,
-                'has_shop' => true,
-                'type' => Variable::AGENCY_TYPES[3]['code'],
-                'owner_id' => 6,
+//                'has_shop' => true,
+                'level' => strval($levels[3]),
+//                'owner_id' => 6,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'فیروزکوه')->first()->id,
                 'address' => 'فیروزکوه',
@@ -186,12 +220,13 @@ class DatabaseSeeder extends Seeder
 
             ],
             [
-                'id' => 6,
-                'name' => 'نمایندگی شعبه اسلامشهر',
+                'id' => 8,
+                'name' => 'شعبه اسلامشهر',
+                'parent_id' => 6,
                 'access' => null,
-                'has_shop' => true,
-                'type' => Variable::AGENCY_TYPES[3]['code'],
-                'owner_id' => 7,
+//                'has_shop' => true,
+                'level' => strval($levels[3]),
+//                'owner_id' => 7,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اسلام‌شهر')->first()->id,
                 'address' => 'اسلامشهر',
@@ -199,12 +234,13 @@ class DatabaseSeeder extends Seeder
 
             ],
             [
-                'id' => 7,
-                'name' => 'نمایندگی شعبه اصفهان',
+                'id' => 9,
+                'name' => 'شعبه اصفهان',
+                'parent_id' => 4,
                 'access' => null,
-                'has_shop' => true,
-                'type' => Variable::AGENCY_TYPES[3]['code'],
-                'owner_id' => 8,
+//                'has_shop' => true,
+                'level' => strval($levels[3]),
+//                'owner_id' => 8,
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
                 'address' => 'میدان شهدا',
@@ -212,12 +248,13 @@ class DatabaseSeeder extends Seeder
 
             ],
             [
-                'id' => 8,
+                'id' => 10,
                 'name' => 'نمایندگی شعبه شهرضا',
+                'parent_id' => 4,
                 'access' => null,
-                'has_shop' => true,
-                'type' => Variable::AGENCY_TYPES[3]['code'],
-                'owner_id' => 9,
+//                'has_shop' => true,
+                'level' => strval($levels[3]),
+//                'owner_id' => 9,
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'شاهین‌شهر')->first()->id,
                 'address' => 'میدان شهدا',
@@ -277,6 +314,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 1,
                 'name' => 'انبار فیروزکوه',
                 'agency_id' => 5,
+                'is_shop' => true,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'فیروزکوه')->first()->id,
                 'address' => 'فیروزکوه',
@@ -291,6 +329,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اسلام‌شهر')->first()->id,
                 'address' => 'اسلامشهر',
+                'is_shop' => true,
                 'location' => null,
                 'status' => 'active',
                 'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(25)->inRandomOrder()->pluck('id')->toArray(), [686, 61])),
@@ -304,6 +343,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
                 'address' => 'خیابان مشتاق',
+                'is_shop' => true,
                 'location' => null,
                 'status' => 'active',
                 'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),
@@ -316,6 +356,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'اصفهان')->first()->id,
                 'address' => 'میدان شهدا',
+                'is_shop' => true,
                 'location' => null,
                 'status' => 'active',
                 'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 1)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),

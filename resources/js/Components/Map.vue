@@ -1,12 +1,13 @@
 <template>
   <div class=" ">
     <div>
-      <SearchInput class="w-full  " v-model="search" @change="searchMap" @search="searchMap"/>
+      <SearchInput class="w-full  " v-model="search" @input="searchMap" @search="searchMap"/>
 
+      <LoadingIcon class="w-6 mx-auto  mx-3 fill-primary-500 " type="line-dot" v-show="loading"/>
       <ul class=" border boredr-t-0 shadow-lg rounded mb-1">
         <!--        <li v-if="searchMapResults.length==0">{{ __('no_result') }}</li>-->
-        <LoadingIcon class="w-6 mx-auto  mx-3 fill-primary-500 " type="line-dot" v-if="loading"/>
-        <li class="py-3 px-1 text-neutral-600 cursor-pointer hover:bg-neutral-100 rounded" @click="setLocation(res)"
+        <li class="py-3 px-1 text-neutral-600 cursor-pointer hover:bg-neutral-100 rounded"
+            @click="setLocation(res); getAddressFromLocation({lat: res.y, lng: res.x});"
             v-for="res in searchMapResults">
           {{ res.label }}
         </li>
@@ -31,7 +32,7 @@ import LoadingIcon from "@/Components/LoadingIcon.vue";
 let self;
 export default {
   name: "Map",
-  props: ['mode'],
+  props: ['mode', 'preload'],
   emits: ['change'],
   components: {
     SearchInput,
@@ -143,6 +144,8 @@ export default {
         var marker = event.target;
         var result = marker.getLatLng();
         self.setLocation({x: result.lng, y: result.lat});
+        self.getAddressFromLocation({lat: result.lat, lng: result.lng});
+
       });
     }
     if (this.mode === 'create') {
@@ -151,6 +154,10 @@ export default {
     let fullScreenEl = document.querySelector('.leaflet-control-zoom-fullscreen');
     if (fullScreenEl)
       fullScreenEl.style.backgroundImage = "url('/assets/images/vendor/leaflet.fullscreen/icon-fullscreen.svg')";
+
+    if (this.preload) {
+      this.setLocation({x: this.preload.lat, y: this.preload.lon});
+    }
   },
   methods: {
     setCurrentAddress(data) {
@@ -159,7 +166,6 @@ export default {
         this.$emit('change', this.mapAddress);
         return;
       }
-      // this.log(data);
 
       let province = data.address && data.address.state ? data.address.state.replace('استان ', '') : data.address.province ? data.address.province.replace('استان ', '') : null;
       let county = data.address && data.address.county ? data.address.county.replace('شهرستان ', '') : null;
@@ -181,7 +187,6 @@ export default {
 
     },
     setLocation(res) {
-      // this.log(res);
       this.searchMapResults = [];
       if (!res) return;
       if (this.marker) {
@@ -198,15 +203,17 @@ export default {
       // this.map.panTo([res.y, res.x], 10);
       this.map.setView([res.y, res.x], this.map.getZoom(), {animation: true});
 
-      this.getAddressFromLocation({lat: res.y, lng: res.x});
+
     },
     searchMap() {
+      this.mapAddress = null;
+      this.$emit('change', this.mapAddress);
       this.loading = true;
       this.mapSearchProvider.search({query: this.search}).then(function (result) {
         // console.log(result);
         self.searchMapResults = result;
-        if (self.searchMapResults.length == 1)
-          self.setLocation(self.searchMapResults[0]);
+        // if (self.searchMapResults.length == 1)
+        //   self.setLocation(self.searchMapResults[0]);
       });
       this.loading = false;
     },
@@ -234,6 +241,7 @@ export default {
     onMapClick(e) {
       // this.log(e);
       this.setLocation({x: e.latlng.lng, y: e.latlng.lat});
+      this.getAddressFromLocation({lat: e.latlng.lat, lng: e.latlng.lng})
       return;
       if (this.marker) {
         if (!this.marker._map) {

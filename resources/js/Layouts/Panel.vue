@@ -19,25 +19,21 @@
            data-te-sidenav-scroll-container="#scrollContainer">
 
 
-        <ul id="scrollContainer" class="relative m-0 list-none    text-primary-500"
+        <ul v-if="isAdmin()" id="scrollContainer" class="relative m-0 list-none    text-primary-500"
             data-te-sidenav-menu-ref>
+
           <li class="relative">
-            <Link v-if="isAdmin()" :href="route('panel.admin.index')"
-                  class="pt-2 pb-2 flex  px-3 outline-none transition duration-300 ease-linear hover:bg-slate-200 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
-                  :class="{' bg-primary-100 text-primary':menuIsActive ( 'panel.admin.index' )}"
+            <Link :href="route('admin.panel.index')"
+                  class="py-4  flex  px-3 outline-none transition duration-300 ease-linear hover:bg-primary-200 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+                  :class="{' bg-primary-100 text-primary-500':menuIsActive ( 'admin.panel.index' )}"
             >
-              <span class="w-full text-gray-500"> {{ __('admin_dashboard') }}</span>
+              <span class="w-full text-primary-600 text-center"> {{ __('admin_dashboard') }}</span>
             </Link>
-            <Link v-if="false" :href="route('panel.index')"
-                  class="pt-2 pb-2 flex  px-3 outline-none transition duration-300 ease-linear hover:bg-slate-200 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
-                  :class="{'bg-primary-100  text-primary-500':menuIsActive ( 'panel.index' )}"
-            >
-              <span class="w-full  "> {{ __('dashboard') }}</span>
-            </Link>
+
             <hr class="border-gray-200 py-2 mx-4">
 
-            <div v-if="false"
-                 class="flex text-primary mx-2 justify-center items-center text-sm text-gray-500">
+            <div
+                class="flex text-primary mx-2 justify-center items-center text-sm text-gray-500">
 
               <Tooltip v-if="!hasWallet()" class="p-2 " :content="__('help_activate_wallet')">
                 <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
@@ -61,29 +57,54 @@
               </div>
 
             </div>
-            <hr v-if="false && hasWallet()" class="border-gray-200 my-2 mx-4">
-            <div v-if="false" class="flex text-primary mx-2 justify-center items-center text-sm text-gray-500">
-              <Tooltip class="p-2 " :content="__('help_meta')">
-                <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
-              </Tooltip>
-              <span class="text-gray-700">{{ __('meta') + ' :' }}</span>
-              <strong class="mx-2">{{ asPrice(user.meta) }} </strong>
-              <span
-                  class="mx-2   text-center  bg-success-200 text-success-700 hover:bg-success-100 cursor-pointer px-2 py-[.1rem] rounded-lg transition-all duration-300"> {{
-                  __('charge')
-                }}</span>
-            </div>
-            <hr v-if="false" class="border-primary-200 m-2">
+            <hr class="border-gray-200 my-2 mx-4">
+
 
           </li>
-          <!-- Admin links -->
-          <li v-if="isAdmin()" class="relative ">
-            <a
-                :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'panel.admin.*' ) ||menuIsActive ( 'panel.ticket.*' ) }"
-                class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
-                data-te-sidenav-link-ref>
-              <WrenchScrewdriverIcon class="w-5 h-5  "/>
-              <span class="mx-2 text-sm "> {{ __('admin') }} </span>
+
+          <!-- Agencies links -->
+          <li v-if="  hasAccess('view_agency')" class="relative ">
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.agency.*' )}"
+               class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+               data-te-sidenav-link-ref>
+              <UserGroupIcon class="w-5 h-5  "/>
+              <span class="mx-2 text-sm "> {{ __('agencies') }} </span>
+              <span
+                  class="  right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&>svg]:text-gray-600"
+                  data-te-sidenav-rotate-icon-ref>
+                                             <ChevronDownIcon class="h-5 w-5"/>
+                                             </span>
+            </a>
+            <ul
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'admin.panel.agency.*' )?true:null }"
+                class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
+                data-te-collapse-item data-te-sidenav-collapse-ref>
+              <li class="relative ps-7">
+
+                <Link :href="route('admin.panel.agency.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.agency.index' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <Bars2Icon class="w-5 h-5 mx-1"/>
+                  {{ __('list') }}
+                </Link>
+                <Link :href="route('admin.panel.agency.create')" role="menuitem"
+                      :class="subMenuIsActive ( 'admin.panel.agency.create' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <PlusSmallIcon class="w-5 h-5 mx-1"/>
+                  {{ __('new') }}
+                </Link>
+              </li>
+
+            </ul>
+          </li>
+
+          <!-- Repositories links -->
+          <li v-if="  hasAccess('view_repository')" class="relative ">
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.repository.*' )}"
+               class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+               data-te-sidenav-link-ref>
+              <InboxStackIcon class="w-5 h-5  "/>
+              <span class="mx-2 text-sm "> {{ __('repositories') }} </span>
               <span
                   class="  right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&>svg]:text-gray-600"
                   data-te-sidenav-rotate-icon-ref>
@@ -91,47 +112,31 @@
               </span>
             </a>
             <ul
-                class="  !visible relative m-0 hidden list-none   data-[te-collapse-show]:block "
-                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'panel.admin.*' )?true:null }"
-                data-te-collapse-item
-                data-te-sidenav-collapse-ref>
-              <li class="relative ps-7 ">
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'admin.panel.repository.*' )?true:null }"
+                class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
+                data-te-collapse-item data-te-sidenav-collapse-ref>
+              <li class="relative ps-7">
 
-                <Link :href="route('panel.admin.setting.index')" role="menuitem"
-                      :class="{'bg-primary-50  text-primary-500 border-primary-500':menuIsActive ( 'panel.admin.setting.*' )}"
-                      class="flex text-gray-500  border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
-                  <Cog6ToothIcon class="w-5 h-5 mx-1"/>
-                  {{ __('settings') }}
+                <Link :href="route('admin.panel.repository.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.repository.index' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <Bars2Icon class="w-5 h-5 mx-1"/>
+                  {{ __('list') }}
                 </Link>
-
-                <Link :href="route('panel.admin.slider.index')" role="menuitem"
-                      :class="{'bg-primary-50 text-primary-500 border-primary-500':menuIsActive ( 'panel.admin.slider.*' )}"
-                      class="flex text-gray-500  border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
-                  <RectangleStackIcon class="w-5 h-5 mx-1"/>
-                  {{ __('slider') }}
+                <Link :href="route('admin.panel.repository.create')" role="menuitem"
+                      :class="subMenuIsActive ( 'admin.panel.repository.create' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <PlusSmallIcon class="w-5 h-5 mx-1"/>
+                  {{ __('new') }}
                 </Link>
-                <Link :href="route('panel.admin.message.index')" role="menuitem"
-                      :class="{'bg-primary-50 text-primary-500 border-primary-500':menuIsActive ( 'panel.admin.message.*' )}"
-                      class="flex  text-gray-500 border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
-                  <MegaphoneIcon class="w-5 h-5 mx-1"/>
-                  {{ __('messages') }}
-                </Link>
-                <Link :href="route('panel.admin.article.index')" role="menuitem"
-                      :class="{'bg-primary-50 text-primary-500 border-primary-500':menuIsActive ( 'panel.admin.article.*' )}"
-                      class="flex  text-gray-500 border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
-                  <NewspaperIcon class="w-5 h-5 mx-1"/>
-                  {{ __('articles') }}
-                </Link>
-
-
               </li>
 
             </ul>
           </li>
 
           <!-- Article links -->
-          <li v-if="false && hasAccess('a')" class="relative ">
-            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'panel.article.*' )}"
+          <li v-if="  hasAccess('view_article')" class="relative ">
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.article.*' )}"
                class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
                data-te-sidenav-link-ref>
               <NewspaperIcon class="w-5 h-5  "/>
@@ -143,19 +148,19 @@
                                              </span>
             </a>
             <ul
-                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'panel.article.*' )?true:null }"
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'admin.panel.article.*' )?true:null }"
                 class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
                 data-te-collapse-item data-te-sidenav-collapse-ref>
               <li class="relative ps-7">
 
-                <Link :href="route('panel.article.index')" role="menuitem"
-                      :class="subMenuIsActive( 'panel.article.index' )"
+                <Link :href="route('admin.panel.article.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.article.index' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('list') }}
                 </Link>
-                <Link :href="route('panel.article.create')" role="menuitem"
-                      :class="subMenuIsActive ( 'panel.article.create' )"
+                <Link :href="route('admin.panel.article.create')" role="menuitem"
+                      :class="subMenuIsActive ( 'admin.panel.article.create' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <PlusSmallIcon class="w-5 h-5 mx-1"/>
                   {{ __('new') }}
@@ -166,7 +171,7 @@
           </li>
 
           <!-- Support links -->
-          <li v-if="!isAdmin()" class="relative  ">
+          <li class="relative  ">
             <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'panel.ticket.*' )}"
                class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
                data-te-sidenav-link-ref>
@@ -208,8 +213,8 @@
           </li>
 
           <!-- Financial links -->
-          <li v-if="false" class="relative  ">
-            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'panel.financial.*' )}"
+          <li class="relative  ">
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.financial.*' )}"
                class="flex   cursor-pointer items-center truncate rounded-[5px] px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
                data-te-sidenav-link-ref>
               <CurrencyDollarIcon class="w-5 h-5  "/>
@@ -221,13 +226,13 @@
                                              </span>
             </a>
             <ul
-                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'panel.financial.*' )?true:null }"
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'admin.panel.financial.*' )?true:null }"
                 class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
                 data-te-collapse-item data-te-sidenav-collapse-ref>
               <li class="relative ps-7">
 
-                <Link :href="route('panel.financial.transaction.index')" role="menuitem"
-                      :class="subMenuIsActive( 'panel.financial.transaction.index' )"
+                <Link :href="route('admin.panel.financial.transaction.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.financial.transaction.index' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('transactions') }}
@@ -244,6 +249,17 @@
             </div>
           </li>
         </ul>
+        <ul v-else id="scrollContainer" class="relative m-0 list-none    text-primary-500"
+            data-te-sidenav-menu-ref>
+
+
+          <li>
+            <div class="py-4">
+
+            </div>
+          </li>
+        </ul>
+
       </nav>
     </template>
 
@@ -279,6 +295,8 @@ import {
   ArrowsRightLeftIcon,
   BriefcaseIcon,
   RectangleStackIcon,
+  UserGroupIcon,
+  InboxStackIcon,
 } from "@heroicons/vue/24/outline";
 import {
   QuestionMarkCircleIcon
@@ -366,6 +384,8 @@ export default {
     ArrowsRightLeftIcon,
     BriefcaseIcon,
     RectangleStackIcon,
+    UserGroupIcon,
+    InboxStackIcon,
   },
   methods: {
     delay(time) {

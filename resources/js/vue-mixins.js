@@ -110,15 +110,18 @@ export default {
                     return this.__(el.name);
             return '';
         },
+        getAgency(id) {
+            if (id == null || usePage().props.agency_types == null) return '';
+            for (const el of usePage().props.agency_types)
+                if (el.id == id)
+                    return this.__(el.name);
+            return '';
+        },
         getStatus(type, id) {
             if (id == null || type == null || (usePage().props[`statuses`] == null && usePage().props[type] == null)) return {
                 name: '',
                 color: 'primary'
             };
-            if (usePage().props[`${type}`])
-                for (const el of usePage().props[`${type}`])
-                    if (el.name == id)
-                        return {name: this.__(el.name), color: el.color || 'primary'};
 
             for (const el of usePage().props[`statuses`])
                 if (el.name == id)
@@ -143,9 +146,9 @@ export default {
             }
         },
         hasAccess(role) {
-            if (this.isAdmin()) return true;
-            if (!this.user || !this.user.access) return false;
-            return this.user.access.split(',').indexOf(role) > -1;
+            if (!this.user || !this.isAdmin()) return false;
+            this.user.access = this.user.access || [];
+            return this.user.role == 'god' || this.user.role == 'owner' || this.user.access.indexOf(role) > -1;
         },
         hasWallet() {
 

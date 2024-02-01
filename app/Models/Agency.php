@@ -12,16 +12,26 @@ class Agency extends Model
 
     protected $fillable = [
         'name',
+        'phone',
+        'postal_code',
         'access',
-        'type',
-        'has_shop',
-        'owner_id',
+        'level',
+//        'has_shop',
+//        'owner_id',
+        'parent_id',
         'province_id',
         'county_id',
+        'district_id',
         'address',
+        'location',
         'status',
     ];
     protected $casts = [
         'access' => 'array'
     ];
+
+    public function owner()
+    {
+        return $this->hasOne(Admin::class, 'agency_id');
+    }
 }

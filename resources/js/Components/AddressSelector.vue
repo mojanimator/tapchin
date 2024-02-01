@@ -1,6 +1,7 @@
 <template>
 
   <div class="   ">
+    <InputLabel :value="label"/>
 
     <!--    <template v-slot:button>-->
 
@@ -12,9 +13,9 @@
 
       <div v-if="selectedAddress" class="  w-full">
         <div class="  end-0 top-0  flex">
-          <PrimaryButton
-              @click.stop=" selectedAddress=null;addAddressToCart(null) "
-              class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
+          <PrimaryButton type="button"
+                         @click.stop=" selectedAddress=null;mapAddress={};addAddressToCart(null) "
+                         class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
             <TrashIcon class="w-4 h-4 "/>
           </PrimaryButton>
         </div>
@@ -32,11 +33,11 @@
             {{ getCityName(selectedAddress.district_id) }}
           </div>
         </div>
-        <div class="flex items-center py-1 ">
+        <div v-if="type=='cart'" class="flex items-center py-1 ">
           <UserIcon class="w-4 h-4  text-primary-600"/>
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_fullname }}</div>
         </div>
-        <div class="flex items-center py-1">
+        <div v-if="type=='cart'" class="flex items-center py-1">
           <PhoneIcon class="w-4 h-4 text-primary-600"/>
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_phone }}</div>
         </div>
@@ -116,7 +117,7 @@
                 <div v-if="show=='addresses'" class="flex flex-col mx-1   col-span-2 w-full     px-2">
                   <ul>
                     <li
-                        @click="show='create_address'"
+                        @click="show='create_address'; "
                         class="py-8 px-3 border-b flex text-gray-800 items-center justify-start hover:bg-gray-100 rounded  hover:cursor-pointer">
                       <MagnifyingGlassPlusIcon class="w-6 h-6"/>
                       <span class="mx-2 font-bold">{{ __('add_new_address') }}</span>
@@ -162,13 +163,16 @@
                     </li>
                   </ul>
                 </div>
-                <div v-else-if="show=='create_address'">
-                  <Map mode="edit" @change="mapAddress=$event "/>
+
+                <div v-if="show=='create_address'">
+                  <Map ref="mapSelector" mode="edit" @change=" mapAddress=$event "
+                       :preload="selectedAddress && selectedAddress.lat?{lat:selectedAddress.lat,lon:selectedAddress.lon}:null"/>
                   <PrimaryButton @click="show='create_address2'" classes="w-full" class="my-2" v-if="mapAddress">
                     {{ __('accept_location') }}
                   </PrimaryButton>
                 </div>
-                <div v-else-if="show=='create_address2'" class="flex-col ">
+
+                <div v-if="show=='create_address2'" class="flex-col ">
 
                   <div @click="show='create_address'"
                        class="text-primary-500 hover:text-white hover:bg-primary-500 cursor-pointer text-center p-2 rounded border border-primary-500">
@@ -176,7 +180,7 @@
                   </div>
                   <div class="my-2">
                     <TextInput
-                        id="postal_code"
+                        id="address"
                         :multiline="true"
                         :placeholder="`${__('address')} *`"
                         classes="  "
@@ -244,7 +248,7 @@
                     </TextInput>
 
                   </div>
-                  <div class="grid gap-2 grid-cols-1 lg:grid-cols-2 my-4 ">
+                  <div v-if="type=='cart'" class="grid gap-2 grid-cols-1 lg:grid-cols-2 my-4 ">
                     <div class="p-2 border-b my-2">{{ __('receiver') }}</div>
                     <TextInput
                         id="fullname"
@@ -279,6 +283,7 @@
                   <PrimaryButton @click="mapAddress.cmnd='add-address';!loading? edit( mapAddress ):null"
                                  classes="w-full"
                                  class="my-2"
+                                 type="button"
                                  v-if="mapAddress">
                     <LoadingIcon class="w-6 mx-auto  mx-3  " type="line-dot" v-if="loading"/>
                     <div v-else> {{ __('reg_address') }}</div>
@@ -325,7 +330,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 export default {
   data() {
     return {
-      preload: null,
+
       errors: {},
       show: 'addresses',
       addresses: [],
@@ -335,11 +340,11 @@ export default {
       loading: false,
       cities: this.$page.props.cities,
       filteredCities: [],
-      mapAddress: null,
+      mapAddress: {},
 
     }
   },
-  props: ['id', 'label', 'data', 'modelValue', 'editable', 'error'],
+  props: ['id', 'label', 'type', 'data', 'modelValue', 'editable', 'error'],
   emits: ['change', 'updateCart'],
   components: {
     PrimaryButton,
@@ -372,6 +377,7 @@ export default {
 
       this.selectedAddress = cart.address;
     });
+
     // initTE({Select})
 
     // if (!window.Select) {
@@ -384,9 +390,28 @@ export default {
 
   },
   methods: {
+    preload(address) {
+      this.show = 'create_address';
+      this.$nextTick(() => {
+        if (address.lat && address.lon)
+          this.$refs.mapSelector.setLocation({y: address.lon, x: address.lat});
+        // this.show = 'create_address2';
+        this.selectedAddress = address;
+        this.mapAddress = address;
+
+      });
+
+
+    },
     clicked() {
       if (this.editable) {
-        this.show = 'addresses';
+        if (this.type == 'cart')
+          this.show = 'addresses';
+        else if (this.selectedAddress)
+          this.show = 'create_address2';
+        else
+          this.show = 'addresses';
+
         this.modal.show();
       }
     }
@@ -394,15 +419,25 @@ export default {
     addAddressToCart(idx) {
       this.modal.hide();
       this.$emit('change', idx);
-    }
-    ,
+    },
+
     edit(params = {}) {
       this.errors = {};
       this.loading = true;
       if (params.postal_code)
-        params.postal_code = this.f2e(params.postal_code)
+        params.postal_code = this.f2e(params.postal_code);
+
+      if (this.type != 'cart') {
+        this.loading = false;
+        this.modal.hide();
+        this.selectedAddress = params;
+        this.$emit('change', params);
+
+        return;
+      }
+
       if (params.receiver_phone)
-        params.receiver_phone = this.f2e(params.receiver_phone)
+        params.receiver_phone = this.f2e(params.receiver_phone);
       window.axios.patch(route('profile.update'), params,
           {})
           .then((response) => {

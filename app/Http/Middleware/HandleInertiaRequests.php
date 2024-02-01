@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Http\Helpers\Variable;
+use App\Models\Admin;
+use App\Models\Agency;
 use App\Models\Cart;
 use App\Models\City;
 use App\Models\Pack;
@@ -39,19 +41,21 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $socials = Setting::where('key', 'like', 'social_%')->get();
+        $user = auth('sanctum')->user();
         Variable::$CITIES = City::orderby('name')->get();
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' =>
-                    auth('sanctum')->user(),
+                'user' => $user,
             ],
-            'isAdmin' => in_array(optional($request->user())->role, ['ad', 'go']),
-
+            'isAdmin' => $user && $user instanceof Admin,
+            'agency' => $user && $user instanceof Admin ? Agency::find($user->agency_id) : null,
+            'agency_types' => Variable::AGENCY_TYPES,
             'location' => $request->url(),
 //            'user' => optional(auth()->user())->only(['id', 'fullname', 'username',]),
             'locale' => function () {
                 return app()->getLocale();
             },
+            'statuses' => Variable::STATUSES,
             'langs' => Variable::LANGS,
             'images' => asset('assets/images') . '/',
             'language' => function () {

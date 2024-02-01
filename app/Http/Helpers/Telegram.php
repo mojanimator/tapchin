@@ -4,6 +4,7 @@ namespace App\Http\Helpers;
 
 
 use App\Models\Category;
+use App\Models\City;
 use App\Models\Site;
 use App\Models\User;
 use DateTimeZone;
@@ -456,6 +457,7 @@ class Telegram
                 $us = User::find($data->user_id);
             else
                 $us = auth()->user();
+            $user = auth('sanctum')->user();
             $admin = isset ($us) && (in_array($us->role, ['ad', 'go']));
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
             $time = $now->format('%A, %d %B %Y ⏰ H:i');
@@ -596,7 +598,7 @@ class Telegram
                     $msg .= " 🟢 " . "یک نمایندگی ساخته شد" . PHP_EOL;
                     $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->updated_at)->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
                     $msg .= " 👤 " . "سازنده" . PHP_EOL;
-                    $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
+                    $msg .= optional($user)->fullname . PHP_EOL;
                     $parent = \App\Models\Agency::find($data->parent_id);
                     if ($parent) {
                         $msg .= " 👤 " . "نمایندگی والد" . PHP_EOL;
@@ -607,8 +609,8 @@ class Telegram
                     $msg .= ($owner->name ? "$owner->name $owner->family" : "$owner->username") . PHP_EOL;
                     $msg .= " 📌 " . "نام نمایندگی" . PHP_EOL;
                     $msg .= $data->name . PHP_EOL;
-                    $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
-                    $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
+                    $msg .= " 🚩 " . "استان: " . City::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
+                    $msg .= " 🚩 " . "شهر: " . City::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
                     $msg .= " 🚩 " . "آدرس: " . $data->address . PHP_EOL;
                     $msg .= " 📧 " . "ایمیل: " . PHP_EOL;
                     $msg .= $data->email . PHP_EOL;
@@ -999,9 +1001,9 @@ class Telegram
                 Bale::sendMessage($to, $msg, null);
                 Eitaa::logAdmins($msg, $type,);
             } else {
-//                self::logAdmins($msg, null);
-                Bale::logAdmins($msg, null);
-                Eitaa::logAdmins($msg, $type,);
+                self::logAdmins($msg, null);
+//                Bale::logAdmins($msg, null);
+//                Eitaa::logAdmins($msg, $type,);
             }
 
         } catch (\Exception $e) {

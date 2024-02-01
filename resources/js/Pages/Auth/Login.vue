@@ -30,10 +30,12 @@ const submit = () => {
 </script>
 
 <template>
+
   <GuestLayout :dir="dir()"
 
                aria-expanded="false"
   >
+
     <Head :title="__('signin')"/>
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -74,7 +76,7 @@ const submit = () => {
             classes=" "
             v-model="form.password"
             required
-            autocomplete="current-password">
+            autocomplete="password">
 
           <template v-slot:prepend>
             <div class="p-3" @click="showPassword=!showPassword">
@@ -118,6 +120,14 @@ const submit = () => {
             class="underline mx-2 text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {{ __('signup') }}
+        </Link>
+      </div>
+      <div v-if="route().current('login')" class="w-full mt-5 text-end">
+        <Link
+            :href="route('admin.login-form')"
+            class=" text-primary-600  mx-2 text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {{ __('admin_portal') }}
         </Link>
       </div>
     </form>

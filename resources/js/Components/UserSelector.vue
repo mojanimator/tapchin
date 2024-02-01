@@ -1,6 +1,8 @@
 <template>
 
   <div class="" @click="  Modal.show();">
+    <div v-if="label" class="text-sm text-gray-700">{{ label }}</div>
+
     <slot name="selector" :selectedText="selectedText" :clear="clear">
     </slot>
   </div>
@@ -211,8 +213,8 @@ import {
 import {Modal} from "tw-elements";
 
 export default {
-  name: "UserSElector",
-  props: ['id', 'mode', 'text', 'owner', 'paginate', 'selected', 'placeholder', 'error'],
+  name: "UserSelector",
+  props: ['id', 'mode', 'text', 'owner', 'paginate', 'selected', 'placeholder', 'error', 'link', 'label'],
   components: {
     ChevronDownIcon,
     MagnifyingGlassIcon,
@@ -273,9 +275,8 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('panel.admin.user.search'), {
-        params: this.params
-      }, {})
+      window.axios.get(this.link, {params: this.params}, {})
+
           .then((response) => {
             // console.log(response.data.data)
             this.data = response.data.data;

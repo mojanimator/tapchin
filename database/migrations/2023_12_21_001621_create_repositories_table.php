@@ -16,12 +16,16 @@ return new class extends Migration {
         Schema::create('repositories', function (Blueprint $table) {
             $table->id();
             $table->string('name', 200);
+            $table->boolean('is_shop')->default(false);
             $table->unsignedBigInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
-            $table->unsignedSmallInteger('province_id')->nullable();
+            $table->unsignedSmallInteger('province_id')->nullable()->index();
             $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();
             $table->foreign('county_id')->references('id')->on('cities')->onDelete('no action');
+            $table->unsignedSmallInteger('district_id')->nullable();
+            $table->foreign('district_id')->references('id')->on('cities')->onDelete('no action');
+
             $table->string('address', 2048)->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('location', 50)->nullable();

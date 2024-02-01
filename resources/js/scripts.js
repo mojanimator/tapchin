@@ -61,22 +61,39 @@ window.tailwindElements = () => {
     tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
     const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-te-toggle="popover"]'));
     popoverTriggerList.map((popoverTriggerList) => new Popover(popoverTriggerList));
+    // console.log(Dropdown);
+    //
+    const dropdownElementList = [].slice.call(document.querySelectorAll('[data-te-dropdown-toggle-ref]'));
+    window.dropdownList = dropdownElementList.map((dropdownToggleEl) => {
+        let d = new Dropdown(dropdownToggleEl);
+        dropdownToggleEl.addEventListener('click', function (event) {
+            d.toggle();
+        })
+        return d;
+    });
 
-
-    if (!window.Dropdown) {
-        //
-        window.Dropdown = Dropdown;
-        initTE({Dropdown});
-
-    }
-    window.Popover = Popover;
-    window.Tooltip = Tooltip;
-    window.Select = Select;
-    window.Alert = Alert;
-    window.Toast = Toast;
-    window.Sidenav = Sidenav;
-    window.Modal = Modal;
-    initTE({Popover, Tooltip, Ripple, Input, Select, Alert, Toast, Sidenav, Modal}, {allowReinits: true});
+    // window.Popover = Popover;
+    // window.Tooltip = Tooltip;
+    // window.Select = Select;
+    // window.Alert = Alert;
+    // window.Toast = Toast;
+    // window.Sidenav = Sidenav;
+    // window.Modal = Modal;
+    // window.Dropdown = Dropdown;
+    initTE({Popover, Tooltip, Ripple, Input, Select, Alert, Toast, Sidenav, Modal}, {
+        // allowReinits: true,
+        autoReinits: true,
+        checkOtherImports: false,
+    });
+    // if (!window.Dropdown) {
+    //     //
+    //     window.Dropdown = Dropdown;
+    //     initTE({Dropdown}, {
+    //         allowReinits: true,
+    //         autoReinits: true
+    //     });
+    //
+    // }
     document.querySelectorAll("[data-te-input-notch-ref]").forEach(el => el.setAttribute("dir", "ltr"))
     document.querySelectorAll("[data-te-input-notch-ref]").forEach(el => el.innerHTML = '')
 
@@ -90,6 +107,7 @@ window.tailwindElements = () => {
         window.Toast = Toast.getInstance(toastEl);
     if (modalEl)
         window.Modal = new Modal(modalEl);
+
 
     if (sideNavEl) {
 

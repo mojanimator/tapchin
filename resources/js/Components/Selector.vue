@@ -1,7 +1,7 @@
 <template>
   <div>
-    <InputLabel class="my-2" :for="id" :value="label"/>
-    <div class="flex ">
+    <InputLabel class="my-1  " :for="id" :value="label"/>
+    <div class="flex " :id="`${id}-wrapper`">
          <span v-if="$slots.append"
                class=" flex bg-gray-100  text-gray-500 items-center whitespace-nowrap rounded-s border border-e-0 border-solid border-neutral-300  text-center text-base font-normal leading-[1.6]   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"
                :id="`${id}-addon`">
@@ -9,9 +9,11 @@
         </span>
 
       <span class="grow " dir="ltr">
-            <select :id="id" class=" " :value="modelValue" @change="$emit('update:modelValue', $event.target.value)"
+            <select :multiple="multiple" :id="id" class=" " :value="modelValue" v-model="selecteds"
+                    @change=" setValue( $event.target.value)"
 
                     :name="id"
+                    :data-te-select-all="false"
                     data-te-select-filter="true"
                     data-te-select-search-placeholder="..."
                     data-te-select-clear-button="true"
@@ -23,16 +25,21 @@
                     data-te-class-no-result="text-center px-4"
                     :data-te-select-no-result-text="__('no_results')"
                     data-te-class-select-form-outline="rounded-lg"
-                    data-te-class-select-input-notch="pointer-events-none   box-border bg-transparent transition-all duration-200 ease-linear motion-reduce:transition-none left-0 top-0 h-full w-2 border-0 rounded-l-[0.25rem] group-data-[te-input-focused]:border-r-0 group-data-[te-input-state-active]:border-r-0 border-neutral-300 dark:border-neutral-600 group-data-[te-input-focused]:shadow-[-1px_0_0_#3b71ca,_0_1px_0_0_#3b71ca,_0_-1px_0_0_#3b71ca] group-data-[te-input-focused]:border-none"
+                    data-te-class-select-input-notch="pointer-events-none box-border bg-transparent transition-all duration-200 ease-linear motion-reduce:transition-none left-0 top-0 h-full w-2 border-0 rounded-l-[0.25rem] group-data-[te-input-focused]:border-r-0 group-data-[te-input-state-active]:border-r-0 border-neutral-300 dark:border-neutral-600 group-data-[te-input-focused]:shadow-[-1px_0_0_#3b71ca,_0_1px_0_0_#3b71ca,_0_-1px_0_0_#3b71ca] group-data-[te-input-focused]:border-none"
                     data-te-class-select-input-group="flex items-center whitespace-nowrap p-3 text-center text-base font-normal leading-[1.6] text-gray-700 dark:bg-zinc-800 dark:text-gray-200 dark:placeholder:text-gray-200"
                     data-te-class-select-clear-btn="absolute top-2 end-9 text-black cursor-pointer focus:text-blue-600 outline-none dark:text-gray-200"
                     data-te-class-select-arrow="absolute end-3 text-[0.8rem] cursor-pointer peer-focus:text-primary peer-data-[te-input-focused]:text-primary group-data-[te-was-validated]/validation:peer-valid:text-green-600 group-data-[te-was-validated]/validation:peer-invalid:text-[rgb(220,76,100)] w-5 h-5"
-                    data-te-class-select-option="flex flex-row items-center justify-center w-full px-4 truncate text-gray-700 bg-transparent select-none cursor-pointer data-[te-input-multiple-active]:bg-black/5 hover:[&:not([data-te-select-option-disabled])]:bg-black/5 data-[te-input-state-active]:bg-black/5 data-[te-select-option-selected]:data-[te-input-state-active]:bg-black/5 data-[te-select-selected]:data-[te-select-option-disabled]:cursor-default data-[te-select-selected]:data-[te-select-option-disabled]:text-gray-400 data-[te-select-selected]:data-[te-select-option-disabled]:bg-transparent data-[te-select-option-selected]:bg-black/[0.02] data-[te-select-option-disabled]:text-gray-400 data-[te-select-option-disabled]:cursor-default group-data-[te-select-option-group-ref]/opt:pl-7 dark:text-gray-200 dark:hover:[&:not([data-te-select-option-disabled])]:bg-white/30 dark:data-[te-input-state-active]:bg-white/30 dark:data-[te-select-option-selected]:data-[te-input-state-active]:bg-white/30 dark:data-[te-select-option-disabled]:text-gray-400 dark:data-[te-input-multiple-active]:bg-white/30"
+                    data-te-class-select-option="flex flex-row-reverse text-sm items-center justify-center w-full px-4 truncate text-gray-700 bg-transparent select-none cursor-pointer data-[te-input-multiple-active]:bg-black/5 hover:[&:not([data-te-select-option-disabled])]:bg-black/5 data-[te-input-state-active]:bg-black/5 data-[te-select-option-selected]:data-[te-input-state-active]:bg-black/5 data-[te-select-selected]:data-[te-select-option-disabled]:cursor-default data-[te-select-selected]:data-[te-select-option-disabled]:text-gray-400 data-[te-select-selected]:data-[te-select-option-disabled]:bg-transparent data-[te-select-option-selected]:bg-black/[0.02] data-[te-select-option-disabled]:text-gray-400 data-[te-select-option-disabled]:cursor-default group-data-[te-select-option-group-ref]/opt:pl-7 dark:text-gray-200 dark:hover:[&:not([data-te-select-option-disabled])]:bg-white/30 dark:data-[te-input-state-active]:bg-white/30 dark:data-[te-select-option-selected]:data-[te-input-state-active]:bg-white/30 dark:data-[te-select-option-disabled]:text-gray-400 dark:data-[te-input-multiple-active]:bg-white/30"
 
+                    :data-te-select-all-label="__('select_all')"
+                    :data-te-select-options-selected-label="__('item')"
+                    :data-te-select-search-placeholder="__('search')"
                     data-te-select-class="text-center"
                     data-te-select-init>
                 <option value="" hidden></option>
-                <option class="text-start" v-for="d in data" :value="d.id"> {{ __(d.name) }}</option>
+                <option class="text-start" v-for="d in data" :value="d.id"> {{
+                    __(d.name)
+                  }}</option>
 
             </select>
         <!--            <label data-te-select-label-ref> {{ label }}</label>-->
@@ -52,24 +59,51 @@ import InputError from '@/Components/InputError.vue';
 export default {
   data() {
     return {
+      selecteds: this.multiple ? [] : this.modelValue,
       selected: null,
+      closeButton: null,
     }
   },
-  props: ['id', 'label', 'data', 'modelValue', 'error'],
+  props: ['id', 'label', 'data', 'modelValue', 'error', 'multiple'],
   emits: ['update:modelValue'],
   components: {InputLabel, InputError},
-  mounted() {
-    // this.log(this.modelValue);
-    initTE({Select})
-
-    if (!window.Select) {
-      this.$forceUpdate();
-      this.$nextTick(function () {
-        initTE({Select})
-        window.Select = Select;
-      });
+  watch: {
+    modelValue(_new, _old) {
+      if (!_new && !this.closeButton.classList.contains('opacity-0'))
+        this.closeButton.classList.add('opacity-0');
+      else
+        this.closeButton.classList.remove('opacity-0');
     }
+  },
+  mounted() {
+    // this.log(this.data);
 
+    initTE({Select});
+    this.closeButton = document.querySelector(`#${this.id + '-wrapper'} span[data-te-select-clear-btn-ref]`);
+    this.input = document.querySelector(`#${this.id + '-wrapper'} input[data-te-select-input-ref]`);
+    if (this.input)
+      this.input.setAttribute('dir', 'rtl');
+    if (this.modelValue == null)
+      this.closeButton.classList.add('opacity-0');
+
+    // if (!window.Select) {
+    //   this.$forceUpdate();
+    //   this.$nextTick(function () {
+    //     initTE({Select})
+    //     window.Select = Select;
+    //   });
+    // }
+
+  }, methods: {
+    setValue(val) {
+
+      if (!this.multiple)
+        this.$emit('update:modelValue', val);
+      else {
+        this.$emit('update:modelValue', this.selecteds);
+
+      }
+    }
   }
 }
 </script>

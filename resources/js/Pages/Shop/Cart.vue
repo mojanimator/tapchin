@@ -34,7 +34,7 @@
           <AddressSelector v-if="cart.need_address ||  page!='cart'" :editable="page!='cart'  " class=" "
                            @change="update({address_idx:$event})"
                            :error="cart.errors &&   cart.errors.filter((e)=>e.type=='address').length>0?cart.errors.filter((e)=>e.type=='address')[0].message :null"
-                           :preload="(cart.address)"/>
+                           :preload="(cart.address)" type="cart"/>
 
           <div v-show="  page=='payment' && cart.shipments.length>0 && cart.need_self_receive"
                class="text-primary-500 font-bold py-2">

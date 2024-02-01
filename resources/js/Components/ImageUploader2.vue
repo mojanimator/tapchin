@@ -8,7 +8,7 @@
              class=" text-center d-none  "> </label>
 
       <!--           :style="'width:'+(cropRatio*height)+'rem;height:'+height+'rem'"-->
-      <div v-show="!croppedImage"
+      <div v-show="!doc"
            class=" flex  h-full md:min-w-[150px]  items-center justify-center  uploader-container  rounded-lg p-3 "
 
            :id="'container-' + this.id"
@@ -33,13 +33,12 @@
 
 
       </div>
+      <div v-show="doc" class="  rounded-lg flex flex-col justify-between   " :style="`width:${width}`">
 
-
-      <div v-show="croppedImage" class="  rounded-lg flex flex-col justify-between   " :style="`width:${width}`">
-
-        <img v-show="croppedImage" class="flex max-w-full    " :class="classes"
+        <img v-show="doc" :id="'img-'+id" class="flex max-w-full    " :class="classes"
              @error="errorImage"
-             :src="croppedImage"
+             @load="  uploadContainer.classList.add('d-none');initCropper()"
+             :src="doc"
 
              alt=""/>
 
@@ -75,31 +74,31 @@
 
     </div>
 
-
     <!-- Modal -->
     <div
         data-te-modal-init
-        class="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
+        class="fixed    left-0 top-0 backdrop-blur z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
         id="cropperModal"
         tabindex="-1"
-        aria-labelledby="cropperModalLabel"
+        aria-labelledby="addressModalLabel"
         aria-hidden="true">
       <div
           data-te-modal-dialog-ref
-          class="pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[0px]:m-0 min-[0px]:h-full min-[0px]:max-w-none">
+          class="max-w-2xl pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 px-2 sm:px-4 md:px8 min-[576px]:max-w-5xl">
         <div
-            class="pointer-events-auto relative flex w-full flex-col rounded-md bg-white bg-clip-padding text-current shadow-lg outline-none dark:bg-neutral-600 min-[0px]:h-full min-[0px]:rounded-none min-[0px]:border-0">
+            class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none max-w-xl mx-auto">
           <div
-              class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50 min-[0px]:rounded-none">
-            <!-- Modal title -->
+              class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4">
+            <!--Modal title-->
             <h5
-                class="flex text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200"
+                class="text-lg text-primary-500 flex items-center font-medium leading-normal text-neutral-600"
                 id="cropperModalLabel">
               <PhotoIcon class="h-7 w-7 mx-3"/>
-              {{ __('crop_image') }}
+              {{ __('select_address') }}
             </h5>
-            <!-- Close button -->
+            <!--Close button-->
             <button
+                :class="`text-danger`"
                 type="button"
                 class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
                 data-te-modal-dismiss
@@ -119,61 +118,26 @@
             </button>
           </div>
 
-          <!-- Modal body -->
-          <div class="relative p-4 pb-0 min-[0px]:overflow-y-auto">
-
-            <div v-show="mainDoc" class="h-full  rounded-lg flex flex-col justify-between   "
-                 :style="`width:${width}`">
-
-              <img :id="'img-'+id" class="flex max-w-full    " :class="classes"
-                   @error="errorImage"
-                   @load="  uploadContainer.classList.add('d-none');initCropper()"
-                   :src="mainDoc"
-
-                   alt=""/>
-
+          <!--Modal body-->
+          <div class="relative   p-2" data-te-modal-body-ref>
+            <div
+                class="flex items-center justify-start px-4 py-2 text-primary-500 border-b  ">
+              <h5 class="text-2xl font-semibold"></h5>
             </div>
 
+            <div class="px-2  md:px-1">
+              <div
+                  class="    mx-auto md:max-w-3xl   mt-2 px-2 md:px-2 py-2   overflow-hidden  rounded-lg  ">
 
-          </div>
 
-          <!-- Modal footer -->
-          <div
-              class="mt-auto flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50 min-[0px]:rounded-none">
-            <div class="flex my-1 w-full " role="group">
-              <div v-if="mode=='edit'"
-                   class="text-center flex rounded-s grow  cursor-pointer hover:bg-danger-600  p-3 bg-danger text-white grow "
-                   :title="__('remove')"
-                   @click="!preload || replace ? clearImage():  showDialog('danger',__('remove_image?'), __('remove') , removeImage )  ;">
-                <XMarkIcon class="w-4 h-4  mx-auto text-white  text-white" v-if="!removing"/>
-                <LoadingIcon class="w-4 h-4 mx-auto " v-if="removing"/>
-              </div>
-              <div v-if="  mode=='edit'"
-                   class="cursor-pointer grow rounded-e hover:bg-success-600  p-3 bg-success text-white grow"
-                   :title="__('upload')"
-                   @click="  showDialog('primary',__('new_file_replace'), __('upload') , uploadImage )">
-                <CheckIcon class="w-4 h-4  mx-auto text-white   text-white" v-if="!uploading"/>
-                <LoadingIcon class="w-4 h-4 mx-auto " v-if="uploading"/>
-              </div>
-              <div v-if=" mode!='edit'"
-                   class="cursor-pointer hover:bg-success-600 p-3 bg-success text-white grow rounded-s "
-                   :title="__('crop')"
-                   @click="cropImage()">
-                <CheckIcon class="w-4 h-4   mx-auto text-white  text-white"/>
-              </div>
-              <div v-if="mode!='edit'"
-                   class="  cursor-pointer bg-danger hover:bg-danger-600 p-3  text-white grow rounded-e"
-                   :title="__('remove')"
-                   @click="refresh()">
-                <XMarkIcon class="w-4 h-4  mx-auto text-white   text-white"/>
               </div>
             </div>
-
           </div>
+
+
         </div>
       </div>
     </div>
-
   </div>
 
 
@@ -212,12 +176,9 @@ export default {
   },
   data() {
     return {
-      modal: null,
       componentKey: 1,
       star: null,
-      mainDoc: this.preload,
       doc: this.preload,
-      croppedImage: this.preload,
       reader: null,
       cropper: null,
 
@@ -297,7 +258,6 @@ export default {
     },
     getCroppedData() { //input id=img value=cropped data
       //not upload file
-      return this.croppedImage;
       document.querySelector("#" + this.id + '-file').value = null;
       if (!this.cropper) return null;
       let c = this.cropper.getCroppedCanvas();
@@ -309,7 +269,7 @@ export default {
 
     },
     clearImage() {
-      this.doc = null;
+      // this.doc = null;
       this.image.src = null;
       document.querySelector("#" + this.id + '-file').value = null;
       document.querySelector('#' + this.id).value = null;
@@ -319,10 +279,9 @@ export default {
 
     },
     refresh() {
+
       this.uploadContainer.classList.remove('d-none');
-      this.doc = null;
-      // this.image.src = null;
-      this.croppedImage = null;
+      this.image.src = null;
 //                document.getElementById('img').value = null;
 //                this.cropper.destroy();
 //                this.componentKey++;
@@ -330,8 +289,6 @@ export default {
 
       this.creating = false;
       this.initCropper();
-      this.modal.hide();
-
 
     },
     cropImage() {
@@ -340,7 +297,7 @@ export default {
       this.cropper.crop();
       this.loading = false;
       let img = this.cropper.getCroppedCanvas().toDataURL();
-      this.croppedImage = img;
+
       if (this.mode === 'multi') {
         if (this.images.length >= this.limit) {
           window.showToast('danger', 'تعداد تصاویر بیش از حد مجاز است', onclick = null);
@@ -352,9 +309,8 @@ export default {
         this.initCropper();
       } else {
         document.querySelector('#' + self.id).value = img;
-        this.showToast('success', 'تصویر آماده ارسال است', onclick = null);
+        window.showToast('success', 'تصویر آماده ارسال است', onclick = null);
       }
-      this.modal.hide();
 //                this.cropper.getCroppedCanvas().toBlob((blob) => {
 //                    this.loading = false;
 //                    if (blob) {
@@ -431,6 +387,7 @@ export default {
     },
 
     initCropper() {
+
 //
 //                Cropper.noConflict();
       if (this.cropper)
@@ -499,7 +456,7 @@ export default {
     ,
     filePreview(event, id) {
       let file;
-      this.modal.show();
+
 
       if (event.dataTransfer) {
         file = event.dataTransfer.files[0];
@@ -525,7 +482,7 @@ export default {
 
 //                this.reader.readAsDataURL(file);
 
-      this.mainDoc = URL.createObjectURL(file);
+      this.doc = URL.createObjectURL(file);
       this.creating = false;
       this.$forceUpdate();
       this.uploadContainer.classList.add('d-none');

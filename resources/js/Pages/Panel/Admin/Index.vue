@@ -36,7 +36,7 @@
 
           </div>
           <!-- setting card -->
-          <Link :href="route('panel.admin.setting.index')" :class="cardShadow"
+          <Link :href="route('admin.panel.setting.index')" :class="cardShadow"
                 class="flex   hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-between p-4 bg-white  rounded-lg ">
             <div>
               <h6 class="text-xl font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -77,7 +77,7 @@
             </div>
           </Link>
           <!-- messages card -->
-          <Link :class="cardShadow" :href="route('panel.admin.message.index')"
+          <Link :class="cardShadow" :href="route('admin.panel.message.index')"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
               <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -104,7 +104,7 @@
           </Link>
 
           <!-- users card -->
-          <Link :href="route('panel.admin.user.index')" :class="cardShadow"
+          <Link :href="route('admin.panel.user.index')" :class="cardShadow"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
               <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">

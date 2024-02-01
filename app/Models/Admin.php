@@ -157,4 +157,14 @@ class Admin extends Authenticatable
             return substr($phone, -$length);
         return substr(str_shuffle($original), 0, $length);
     }
+
+    public function hasAccess($item)
+    {
+        return in_array($this->role, ['owner']) || in_array($this->access, $item);
+    }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class, 'agency_id');
+    }
 }

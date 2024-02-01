@@ -38,6 +38,7 @@ class ProductController extends Controller
         $query = Product::join('repositories', function ($join) use ($inShop, $parentIds, $cityId, $provinceId) {
             $join->on('products.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
+                ->where('repositories.is_shop', true)
                 ->where(function ($query) use ($inShop) {
                     if ($inShop)
                         $query->where('products.in_shop', '>', 0);

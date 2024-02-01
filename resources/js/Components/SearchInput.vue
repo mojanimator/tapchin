@@ -35,7 +35,7 @@ const focusNext = (elem) => {
       <div class="relative    mx-auto  ">
         <div
             class="absolute top-0 bottom-0 start-4 flex items-center opacity-60  hover:cursor-pointer   ">
-          <svg @click="$emit('search' )"
+          <svg @click.prevent="$emit('search' )"
                class="w-4 h-4 text-gray-600  fill-gray-500   "
                xmlns="http://www.w3.org/2000/svg"
                viewBox="0 0 20 20">

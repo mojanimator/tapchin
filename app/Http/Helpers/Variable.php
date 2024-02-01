@@ -26,19 +26,21 @@ use Illuminate\Support\Facades\Hash;
 
 class Variable
 {
+
+
     const LANGS = ['fa', 'en', 'ar'];
 
     const MARKETS = ['bazaar', 'myket', 'playstore', 'site'];
     const GATEWAYS = ['bazaar', 'myket', 'nextpay'];
 
     const USER_ROLES = ['us'];
-    const ADMIN_ROLES = ['owner', 'admin'];
+    const ADMIN_ROLES = ['god', 'owner', 'admin'];
     const AGENCY_TYPES = [
-        ['name' => 'central', 'code' => 0],
-        ['name' => 'zone_agency', 'code' => 1],
-        ['name' => 'province_agency', 'code' => 2],
-        ['name' => 'branch_agency', 'code' => 3],
-        ['name' => 'branch', 'code' => 4],
+        ['id' => 0, 'name' => 'central', 'level' => '0'],
+        ['id' => 1, 'name' => 'zone_agency', 'level' => '1'],
+        ['id' => 2, 'name' => 'province_agency', 'level' => '2'],
+        ['id' => 3, 'name' => 'branch_agency', 'level' => '3']
+//        ['name' => 'branch', 'code' => 4],
     ];
     const ADMIN_ACCESS = ['all'];
     const GRADES = [1, 2];
@@ -52,6 +54,11 @@ class Variable
         ['name' => 'refunded', 'color' => 'black'],
     ];
 
+    const  STATUSES = [
+        ["name" => 'inactive', "color" => 'gray'],
+        ["name" => 'active', "color" => 'success'],
+        ["name" => 'block', "color" => 'danger'],
+    ];
     const  USER_STATUSES = [
         ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'active', "color" => 'success'],
@@ -140,10 +147,6 @@ class Variable
     ];
 
 
-    const  STATUSES = [
-        ["name" => 'active', "color" => 'success'],
-        ["name" => 'inactive', "color" => 'danger'],
-    ];
     const NOTIFICATION_LIMIT = 5;
     const CITY_ID = 61; //تجریش
     const RATIOS = ['slider' => 1.8];
@@ -162,7 +165,7 @@ class Variable
     {
         return [
 
-            ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844', 'status' => 'active',
+            ['id' => 1, 'fullname' => 'مدیر', 'phone' => '09018945844', 'status' => 'active', 'role' => 'god', 'agency_id' => 1,
                 'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];
