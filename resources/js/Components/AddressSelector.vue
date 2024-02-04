@@ -166,7 +166,7 @@
 
                 <div v-if="show=='create_address'">
                   <Map ref="mapSelector" mode="edit" @change=" mapAddress=$event "
-                       :preload="selectedAddress && selectedAddress.lat?{lat:selectedAddress.lat,lon:selectedAddress.lon}:null"/>
+                       :preload="selectedAddress && selectedAddress.lat?{lat:selectedAddress.lon,lon:selectedAddress.lat}:null"/>
                   <PrimaryButton @click="show='create_address2'" classes="w-full" class="my-2" v-if="mapAddress">
                     {{ __('accept_location') }}
                   </PrimaryButton>
@@ -393,8 +393,8 @@ export default {
     preload(address) {
       this.show = 'create_address';
       this.$nextTick(() => {
-        if (address.lat && address.lon)
-          this.$refs.mapSelector.setLocation({y: address.lon, x: address.lat});
+        // if (address.lat && address.lon)
+        //   this.$refs.mapSelector.setLocation({y: address.lon, x: address.lat});
         // this.show = 'create_address2';
         this.selectedAddress = address;
         this.mapAddress = address;
@@ -431,6 +431,7 @@ export default {
         this.loading = false;
         this.modal.hide();
         this.selectedAddress = params;
+
         this.$emit('change', params);
 
         return;

@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->boolean('is_shop')->default(false);
             $table->unsignedBigInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('no action');
             $table->unsignedSmallInteger('province_id')->nullable()->index();
             $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();
@@ -30,6 +32,7 @@ return new class extends Migration {
             $table->string('phone', 20)->nullable();
             $table->string('location', 50)->nullable();
             $table->boolean('allow_visit')->default(true);
+            $table->string('postal_code', 20)->nullable();
             $table->json('cities')->nullable();
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();

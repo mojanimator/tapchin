@@ -154,7 +154,7 @@
               </div>
               <div class="my-2" v-if="isAdmin() && data">
 
-                <UserSelector :id="'user'" v-model:selected="form.owner_id" :owner="data.owner"
+                <UserSelector :id="'user'" v-model:selected="form.owner_id" :preload="data.owner"
                 >
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-2'"

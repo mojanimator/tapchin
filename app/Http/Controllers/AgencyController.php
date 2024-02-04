@@ -7,6 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\AgencyRequest;
 use App\Models\Admin;
 use App\Models\Agency;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -80,7 +81,7 @@ class AgencyController extends Controller
         return response()->json($response, $errorStatus);
     }
 
-    protected function create(Request $request)
+    protected function create(AgencyRequest $request)
     {
 //        $user = $request->user();
 
@@ -122,27 +123,16 @@ class AgencyController extends Controller
     function searchPanel(Request $request)
     {
         $admin = $request->user();
+
         $search = $request->search;
         $page = $request->page ?: 1;
         $orderBy = $request->order_by ?: 'id';
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
-        $query = Agency::query();
-        $query = $query->select('*');
 
+        $myAgency = Agency::find($admin->agency_id);
+        $query = $admin->allowedAgencies($myAgency);
 
-        if ($admin->role != 'god') {
-            $agency = Agency::find($admin->id);
-            if (!$agency)
-                $query->where('id', 0);
-            elseif ($agency->level == '1')
-                $query->whereIn('province_id', $agency->access);
-            elseif ($agency->level == '2')
-                $query->whereIn('id', $agency->access);
-            elseif ($agency->level == '3')
-                $query->where('id', $agency->id);
-
-        }
         if ($search)
             $query = $query->where('name', 'like', "%$search%");
 

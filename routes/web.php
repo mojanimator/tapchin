@@ -40,6 +40,7 @@ use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\County;
 use App\Models\Notification;
 use App\Models\Podcast;
@@ -76,7 +77,7 @@ Route::get('/cache', function () {
     echo Artisan::output();
 });
 Route::get('test', function () {
-    return collect(Repository::where('id', 1)->first()->cities)->shuffle()->take(10)->mapWithKeys(fn($e) => [(int)$e => random_int(1, 100)]);
+
     return;
     return \Illuminate\Support\Facades\Artisan::call('store:transactions');
     return (new ArticleController())->search(new Request([]));

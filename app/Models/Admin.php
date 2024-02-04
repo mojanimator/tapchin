@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Helpers\Util;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -166,5 +167,29 @@ class Admin extends Authenticatable
     public function agency()
     {
         return $this->belongsTo(Agency::class, 'agency_id');
+    }
+
+    public function allowedAgencies($myAgency)
+    {
+        $data = Agency::query();
+        $data = $data->select('*');
+        if ($this->role != 'god') {
+
+            if (!$myAgency)
+                $data->where('id', 0);
+            elseif ($myAgency->level == '1')
+                $data->whereIn('province_id', $myAgency->access);
+            elseif ($myAgency->level == '2')
+                $data->whereIn('id', $myAgency->access);
+            elseif ($myAgency->level == '3')
+                $data->where('id', $myAgency->id);
+            if ($myAgency)
+                $data->where('level', '>', $myAgency->level)
+                    ->orWhere(function ($query) use ($myAgency) {
+                        $query->whereId($myAgency->id);
+                    });
+        }
+        return $data;
+
     }
 }

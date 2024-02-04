@@ -111,7 +111,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         );
 
 
-        Route::get('admin/search', [AdminController::class, 'search'])->name('admin.admin.search');
+        Route::get('admin/search', [AdminController::class, 'search'])->name('admin.panel.admin.search');
 
 
         PanelController::makeInertiaRoute('get', 'agency/index', 'admin.panel.agency.index', 'Panel/Admin/Agency/Index',
@@ -124,14 +124,15 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             ]
         );
 
-        Route::get('agency/{agency}', [AgencyController::class, 'edit'])->name('admin.panel.agency.edit');
         Route::get('agency/search', [AgencyController::class, 'searchPanel'])->name('admin.panel.agency.search');
         Route::patch('agency/update', [AgencyController::class, 'update'])->name('admin.panel.agency.update');
         Route::post('agency/create', [AgencyController::class, 'create'])->name('admin.panel.agency.create')->middleware("can:create,App\Models\Admin,App\Models\Agency,'1'");
+        Route::get('agency/{agency}', [AgencyController::class, 'edit'])->name('admin.panel.agency.edit');
 
 
         PanelController::makeInertiaRoute('get', 'repository/index', 'admin.panel.repository.index', 'Panel/Admin/Repository/Index',
             [
+
             ]
         );
         PanelController::makeInertiaRoute('get', 'repository/create', 'admin.panel.repository.create', 'Panel/Admin/Repository/Create',
@@ -139,10 +140,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             ]
         );
 
-        Route::get('repository/{repository}', [RepositoryController::class, 'edit'])->name('admin.panel.repository.edit');
         Route::get('repository/search', [RepositoryController::class, 'searchPanel'])->name('admin.panel.repository.search');
         Route::patch('repository/update', [RepositoryController::class, 'update'])->name('admin.panel.repository.update');
         Route::post('repository/create', [RepositoryController::class, 'create'])->name('admin.panel.repository.create')->middleware("can:create,App\Models\Admin,App\Models\Repository,'1'");
+        Route::get('repository/{repository}', [RepositoryController::class, 'edit'])->name('admin.panel.repository.edit');
 
     });
 

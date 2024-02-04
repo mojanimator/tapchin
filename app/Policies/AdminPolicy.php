@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\City;
+use App\Models\Repository;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -46,9 +47,10 @@ class AdminPolicy
             switch ($item) {
                 case     Agency::class :
                     $res = $admin->hasAccess('create_agency');
-
                     break;
-
+                case    Repository::class:
+                    $res = $admin->hasAccess('create_repository');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -73,12 +75,16 @@ class AdminPolicy
             $message = __("user_is_blocked");
         }
 
+        if ($item->status == 'block') {
+            $message = __("item_is_blocked");
+        }
+
         if (empty($message) && $item)
             switch ($item) {
                 case  $item instanceof Agency  :
                     $res = $admin->hasAccess('edit_agency');
                     if ($res) {
-                        $myAgency = Agency::find($admin->id);
+                        $myAgency = Agency::find($admin->agency_id);
                         if (!$myAgency)
                             $res = false;
                         elseif ($myAgency->level == '1')
@@ -89,6 +95,11 @@ class AdminPolicy
                             $res = $myAgency->id == $item->id;
 
                     }
+
+                    break;
+                case  $item instanceof Repository  :
+                    $res = $admin->hasAccess('edit_repository');
+
 
                     break;
 

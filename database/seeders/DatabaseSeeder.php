@@ -103,7 +103,7 @@ class DatabaseSeeder extends Seeder
                     'status' => 'active',
                     'agency_id' => $i < $agencyCount ? $i + 1 : $this->faker->numberBetween(2, $agencyCount),
                     'role' => $i < $agencyCount ? 'owner' : 'admin',
-                    'access' => [],
+                    'access' => json_encode([]),
                 ]
             ]);
         }

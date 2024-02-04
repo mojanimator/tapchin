@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('new_agency')}}</title>
+      <title>{{__('edit_repository')}}</title>
     </template>
 
 
@@ -12,7 +12,7 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('new_agency') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_repository') }}</h1>
 
       </div>
 
@@ -23,8 +23,8 @@
             class="    mx-auto md:max-w-2xl   mt-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
 
 
-          <div
-              class="flex flex-col mx-2   col-span-2 w-full     px-2"
+          <div v-if="data"
+               class="flex flex-col mx-2   col-span-2 w-full     px-2"
           >
             <div class="flex-col   m-2 items-center rounded-lg max-w-xs  w-full mx-auto    ">
               <div v-if="false" class="my-2">
@@ -35,51 +35,57 @@
 
             </div>
             <form @submit.prevent="submit">
+
+              <div class="my-2" v-if=" $page.props.agency && $page.props.agency.level<3">
+                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('agency')"
+                              :id="'agency'" v-model:selected="form.agency_id" :preload=" this.$page.props.data.agency">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+
+              </div>
+
               <div class="my-2">
-                <Selector ref="typeSelector"
-                          :data="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level)"
-                          :label="__('agency_type')"
-                          :error="form.errors.type_id"
-                          @change="updateFilteredAgencies()"
-                          id="type_id" v-model="form.type_id">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
+                <UserSelector :colsData="['fullname','phone','agency_id']" :labelsData="['name','phone','agency_id']"
+                              :link="route('admin.panel.admin.search')+(form.agency_id?`?agency_id=${form.agency_id }`:'')"
+                              :label="__('repo_owner/admin')" :error="form.errors.admin_id"
+                              :id="'admin'" v-model:selected="form.admin_id" :preload=" this.$page.props.data.admin">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
                     </div>
                   </template>
-                </Selector>
+                </UserSelector>
+
               </div>
-              <div class="my-2" v-if=" form.type_id==1 ">
-                <Selector ref="provincesSelector" :multiple="true"
-                          :data="$page.props.cities.filter((e)=>e.level==1)"
-                          :label="__('supported_provinces')"
-                          :error="form.errors.supported_provinces"
-                          id="supported_provinces" v-model="form.supported_provinces">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
-                  </template>
-                </Selector>
-              </div>
-              <div class="my-2" v-if="form.type_id">
-                <Selector ref="parentSelector"
-                          :data="filteredAgencies"
-                          :label="__('parent_agency')"
-                          :error="form.errors.parent_id"
-                          id="parent_id" v-model="form.parent_id">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
-                  </template>
-                </Selector>
-              </div>
+
+
               <div class="my-2">
                 <TextInput
                     id="name"
                     type="text"
-                    :placeholder="__('name')"
+                    :placeholder="__('repo_name')"
                     classes="  "
                     v-model="form.name"
                     autocomplete="name"
@@ -113,34 +119,43 @@
                 </TextInput>
 
               </div>
-
-              <div v-if="false" class="my-2">
-                <UserSelector :link="route('admin.admin.search')" :label="__('owner')"
-                              :id="'admin'" v-model:selected="form.owner_id" :owner="null">
-                  <template v-slot:selector="props">
-                    <div :class="props.selectedText?'py-2':'py-2'"
-                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
-                      <div class="grow">
-                        {{ props.selectedText ?? __('select_owner') }}
-                      </div>
-                      <div v-if="props.selectedText"
-                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
-                           @click.stop="props.clear()">
-                        <XMarkIcon class="w-5 h-5"/>
-                      </div>
-                    </div>
-                  </template>
-                </UserSelector>
-              </div>
-
-
-              <div class="my-2">
+              <div class="my-4">
                 <AddressSelector ref="addressSelector" :editable="true" class=" " type="" :label="__('address')"
                                  @change="updateAddress($event) "
                                  :error="form.errors.address ||form.errors.postal_code || form.errors.province_id || form.errors.county_id "/>
 
 
               </div>
+              <div class="my-4">
+                <CitySelector :multi="true" :label="__('supported_cities')" v-model="form.cities"
+                              :preload=" $page.props.data.cities"
+                              :error="form.errors.cities"/>
+              </div>
+              <div class="my-3">
+                <TextInput
+                    id="is_shop"
+                    type="checkbox"
+                    :placeholder="__('connect_shop')"
+                    classes="  "
+                    v-model="form.is_shop"
+                    autocomplete="is_shop"
+                    :error="form.errors.is_shop"
+                >
+                </TextInput>
+              </div>
+              <div class="my-3" v-if="form.is_shop">
+                <TextInput
+                    id="allow_visit"
+                    type="checkbox"
+                    :placeholder="__('allow_visit')"
+                    classes="  "
+                    v-model="form.allow_visit"
+                    autocomplete="allow_visit"
+                    :error="form.errors.allow_visit"
+                >
+                </TextInput>
+              </div>
+
 
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
                 <div
@@ -214,6 +229,7 @@ import Article from "@/Components/Article.vue";
 import TextEditor from "@/Components/TextEditor.vue";
 import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
+import CitySelector from "@/Components/CitySelector.vue";
 
 
 export default {
@@ -225,9 +241,11 @@ export default {
       preloadAddress: null,
       form: useForm({
         id: null,
-        parent_id: null,
+        agency_id: null,
+        admin_id: null,
         type_id: null,
-        owner_id: null,
+        is_shop: false,
+        allow_visit: false,
         name: null,
         address: null,
         lat: null,
@@ -238,7 +256,8 @@ export default {
         district_id: null,
         postal_code: null,
         phone: null,
-        supported_provinces: null,
+        cities: [],
+
 
       }),
       img: null,
@@ -281,22 +300,28 @@ export default {
     UserSelector,
     XMarkIcon,
     AddressSelector,
+    CitySelector,
   },
   created() {
 
   },
   mounted() {
 
-    // console.log(this.data.content);
+    // console.log(this.data);
 
 
     this.form.id = this.data.id;
     this.form.name = this.data.name;
+    this.form.is_shop = this.data.is_shop;
+    this.form.allow_visit = this.data.allow_visit;
     this.form.type_id = this.data.type_id;
-    this.form.parent_id = this.data.parent_id;
+    this.form.admin = this.data.admin;
+    this.form.admin_id = this.data.admin_id;
+    this.form.agency = this.data.agency;
+    this.form.agency_id = this.data.agency_id;
     this.form.phone = this.data.phone;
     this.form.status = this.data.status;
-
+    this.form.cities = this.data.cities || [];
 
     this.form.owner = this.data.owner;
     this.form.owner_id = this.data.owner_id;
@@ -307,43 +332,20 @@ export default {
       province_id: this.data.province_id,
       county_id: this.data.county_id,
       district_id: this.data.district_id,
-      lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
-      lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
+      lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
+      lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
 
     };
-
     this.$nextTick(() => {
       this.$refs.addressSelector.preload(this.preloadAddress);
-      this.$refs.typeSelector.selecteds = this.form.type_id;
       this.updateAddress(this.preloadAddress);
-      if (this.form.type_id)
-        this.$refs.parentSelector.selecteds = this.form.parent_id;
 
-      if (this.form.type_id == 1) {
-        this.$refs.provincesSelector.selecteds = this.data.access;
-        this.form.supported_provinces = this.data.access;
-      }
+
     });
 
   },
   methods: {
-    updateFilteredAgencies() {
 
-      if (!this.form.type_id && !this.$page.props.agency) return;
-      this.filteredAgencies = [];
-      let myLevel = this.$page.props.agency.level;
-
-      for (let idx in this.$page.props.agencies.filter((e) => e.level > myLevel)) {
-        //find  level-1 parents
-        if (this.$page.props.agencies[idx].level == this.form.type_id - 1) {
-          let type = this.$page.props.agency_types.filter((e) => e.level == this.form.type_id - 1)[0].name
-          this.filteredAgencies.push({
-            id: this.$page.props.agencies[idx].id,
-            name: `${this.$page.props.agencies[idx].name} | ${this.__(type)}`
-          });
-        }
-      }
-    },
     updateAddress(address) {
       address = address || {};
       this.form.address = address.address;
@@ -354,7 +356,6 @@ export default {
       this.form.lon = address.lon;
       this.form.location = `${address.lat},${address.lon}`;
       this.form.postal_code = this.f2e(address.postal_code);
-      this.updateFilteredAgencies();
     },
     submit() {
 
@@ -368,7 +369,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('admin.panel.agency.update'), {
+      this.form.patch(route('admin.panel.repository.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

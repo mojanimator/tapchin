@@ -37,7 +37,7 @@
                     <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
                   </Tooltip>
                 </p>
-                <UserSelector v-model:selected="form.owner_id" :owner="data.owner">
+                <UserSelector v-model:selected="form.owner_id" :preload="data.owner">
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-4'"
                          class=" px-4 border rounded hover:bg-gray-100 cursor-pointer flex items-center ">

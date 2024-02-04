@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 
+use App\Models\City;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
@@ -213,6 +214,7 @@ class Util
             $table->enum('level', [1, 2, 3])->default(1);
             $table->json('tags')->default(json_encode([]));
             $table->json('bbox')->default(json_encode([]));
+            $table->boolean('has_child')->default(false);
             $table->unsignedSmallInteger('radius')->default(0);
         });
         Schema::table('cities', function (Blueprint $table) {
@@ -220,6 +222,10 @@ class Util
 
         });
         self::insertFromSql("");
+        foreach (City::get() as $item) {
+            $item->has_child = City::where('parent_id', $item->id)->exists();
+            $item->save();
+        }
         return;
         DB::table('cities')->insert([
             ['id' => 891, 'name' => 'آذربایجان شرقی', 'slug' => str_slug('آذربایجان شرقی'), /* 'amar_code' => '3',*/ 'latitude' => '37.9160365', 'longitude' => '46.6781589'],

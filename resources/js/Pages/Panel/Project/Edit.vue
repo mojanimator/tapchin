@@ -231,7 +231,7 @@
 
                   </ItemSelector>
 
-                  <UserSelector :key="idx" :id="idx" v-model:selected="item.op" :owner="item.op"
+                  <UserSelector :key="idx" :id="idx" v-model:selected="item.op" :preload="item.op"
                                 v-model:text="item.opText">
                     <template v-slot:selector="props">
                       <div :class="props.selectedText?'py-2':'py-2'"

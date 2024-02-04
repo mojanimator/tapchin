@@ -12,13 +12,13 @@
           class="flex items-center justify-between px-4 py-2 text-primary-500 border-b md:py-4">
         <div class="flex">
           <Bars2Icon class="h-7 w-7 mx-3"/>
-          <h5 class="  font-semibold">{{ __('agencies_list') }}</h5>
+          <h5 class="  font-semibold">{{ __('repositories_list') }}</h5>
         </div>
         <div>
-          <Link :href="route('admin.panel.agency.create')"
+          <Link :href="route('admin.panel.repository.create')"
                 class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
           >
-            {{ __('new_agency') }}
+            {{ __('new_repository') }}
           </Link>
         </div>
       </div>
@@ -107,7 +107,7 @@
           </div>
           <!--           table-->
           <table class="w-full text-sm text-left text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50">
             <!--         table header-->
             <tr class="text-sm text-center">
               <th scope="col" class="p-4" @click="toggleAll">
@@ -128,15 +128,15 @@
 
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='level';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='agency_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('type') }} </span>
+                  <span class="px-2">    {{ __('agency') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='province_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
                   <span class="px-2">    {{ __('city') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
@@ -159,7 +159,7 @@
               </th>
             </tr>
             </thead>
-            <tbody class=" ">
+            <tbody class="text-xs ">
             <tr v-if="loading" v-for="i in 3"
                 class="animate-pulse bg-white text-center border-b hover:bg-gray-50">
               <td class="w-4 p-4">
@@ -220,18 +220,21 @@
                 </div>
               </td>
               <td
-                  class="flex  items-center px-6 py-4 text-gray-900 whitespace-nowrap">
-                <!--                <Image class="w-10 h-10 cursor-pointer rounded-full" :src="`${route('storage.agencies')}/${d.id}.jpg`"-->
-                <!--                       :data-lity="`${route('storage.agencies')}/${d.id}.jpg`"-->
+                  class="flex  items-center px-2 py-4 text-gray-900 whitespace-nowrap">
+                <!--                <Image class="w-10 h-10 cursor-pointer rounded-full" :src="`${route('storage.repositories')}/${d.id}.jpg`"-->
+                <!--                       :data-lity="`${route('storage.repositories')}/${d.id}.jpg`"-->
                 <!--                       :alt="cropText(d.title,5)"/>-->
-                <Link class="px-3 hover:text-gray-500" :href="route('admin.panel.agency.edit',d.id)">
+                <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.repository.edit',d.id)">
                   <div class="text-sm font-semibold">{{ cropText(d.name, 30) }}</div>
                   <div class="font-normal text-gray-500">{{ }}</div>
                 </Link>
               </td>
 
-              <td class="px-2 py-4">
-                {{ getAgency(d.level) }}
+              <td class="px-2 py-4 ">
+                <Link class="hover:text-primary-500" v-if="d.agency"
+                      :href="route('admin.panel.agency.edit',d.agency_id)">
+                  {{ d.agency.name }}
+                </Link>
               </td>
 
               <td class="px-2 py-4">
@@ -258,8 +261,8 @@
                     data-te-ripple-init
                     data-te-ripple-color="light"
                     class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                    :class="`bg-${getStatus('agency', d.status).color}-100 hover:bg-${getStatus('agency', d.status).color}-200 text-${getStatus('agency', d.status).color}-500`">
-                  {{ getStatus('agency', d.status).name }}
+                    :class="`bg-${getStatus('repository', d.status).color}-100 hover:bg-${getStatus('repository', d.status).color}-200 text-${getStatus('repository', d.status).color}-500`">
+                  {{ getStatus('repository', d.status).name }}
                 </button>
                 <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
                     class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
@@ -301,7 +304,7 @@
                     class=" inline-flex rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                     role="group">
                   <Link
-                      type="button" :href="route('admin.panel.agency.edit',d.id)"
+                      type="button" :href="route('admin.panel.repository.edit',d.id)"
                       class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
                       data-te-ripple-init
                       data-te-ripple-color="light">
@@ -392,7 +395,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.agency.search'), {
+      window.axios.get(route('admin.panel.repository.search'), {
         params: this.params
       }, {})
           .then((response) => {
@@ -457,7 +460,7 @@ export default {
     },
     edit(params) {
       this.isLoading(true);
-      window.axios.patch(route('admin.panel.agency.update'), params,
+      window.axios.patch(route('admin.panel.repository.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -519,7 +522,7 @@ export default {
         }, [])
       };
 
-      window.axios.patch(route('admin.panel.agency.update'), params,
+      window.axios.patch(route('admin.panel.repository.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {

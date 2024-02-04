@@ -115,8 +115,8 @@
               </div>
 
               <div v-if="false" class="my-2">
-                <UserSelector :link="route('admin.admin.search')" :label="__('owner')"
-                              :id="'admin'" v-model:selected="form.owner_id" :owner="null">
+                <UserSelector :link="route('admin.panel.admin.search')" :label="__('owner')"
+                              :id="'admin'" v-model:selected="form.owner_id" :preload="null">
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-2'"
                          class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">

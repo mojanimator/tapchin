@@ -646,5 +646,17 @@
   "select_all": "انتخاب همه",
   "repositories": "انبارها",
   "repository": "انبار",
+  "new_repository": "انبار جدید",
+  "select_agency": "انتخاب نمایندگی",
+  "select": "انتخاب",
+  "repo_owner/admin": "مالک/مسئول انبار",
+  "agency_id": "کد نمایندگی",
+  "repo_name": "نام انبار",
+  "connect_shop": "اتصال به فروشگاه",
+  "allow_visit": "امکان دریافت حضوری",
+  "supported_cities": "شهرهای تحت پوشش",
+  "your_agency_inactive": "نمایندگی شما غیر فعال است",
+  "repositories_list": "لیست انبارها",
+  "edit_repository": "ویرایش انبار",
   "": ""
 }

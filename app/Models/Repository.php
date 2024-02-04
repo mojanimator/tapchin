@@ -12,6 +12,7 @@ class Repository extends Model
     protected $fillable = [
         'name',
         'agency_id',
+        'admin_id',
         'province_id',
         'county_id',
         'district_id',
@@ -22,15 +23,27 @@ class Repository extends Model
         'allow_visit',
         'phone',
         'status',
+        'postal_code',
     ];
 
     protected $casts = [
         'cities' => 'array',
         'allow_visit' => 'boolean',
+        'is_shop' => 'boolean',
     ];
 
     public function shippingMethods()
     {
         return $this->hasMany(ShippingMethod::class, 'repo_id');
+    }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class, 'agency_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 }

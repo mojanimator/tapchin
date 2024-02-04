@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\City;
 use Illuminate\Validation\Rules\File;
@@ -15,8 +16,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use stdClass;
 
-class AgencyRequest extends FormRequest
+class RepositoryRequest extends FormRequest
 {
+    public mixed $myAgency;
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,6 +28,11 @@ class AgencyRequest extends FormRequest
      */
     public function authorize()
     {
+        $this->myAgency = Agency::find($this->user()->agency_id);
+        if (!$this->myAgency)
+            abort(403, __("access_denied"));
+        if ($this->myAgency->status != 'active')
+            abort(403, __("your_agency_inactive"));
         return true;
     }
 
@@ -41,42 +50,29 @@ class AgencyRequest extends FormRequest
         if (!$this->cmnd) {
             $typeId = $this->type_id ?? -1;
             $provinceId = $this->province_id ?? -1;
-            $availableParents = [];
             $user = $this->user();
-            $agency = Agency::find($user->agency_id) ?? (object)['level' => count(Variable::AGENCY_TYPES), 'province_id' => -1];
-            $availableTypes = collect(Variable::AGENCY_TYPES)->where('level', '>', $agency->level)->pluck('id');
-
-
-            if ($agency->level == 0) {
-                if ($this->type_id == 1)
-                    $availableParents = [1];
-                elseif ($this->type_id == 2)
-                    $availableParents = Agency::where('level', '1')->whereJsonContains('access', $this->province_id)->pluck('id');
-                elseif ($this->type_id == 3)
-                    $availableParents = Agency::where('level', '2')->where('province_id', $this->province_id)->pluck('id');
-
-            } elseif ($agency->level == 1) {
-                if ($this->type_id == 2)
-                    $availableParents = Agency::where('id', $agency->id)->whereJsonContains('access', $this->province_id)->pluck('id');
-                elseif ($this->type_id == 3)
-                    $availableParents = Agency::where('level', '2')->whereIn('province_id', $agency->access)->where('province_id', $this->province_id)->pluck('id');
-
-            } elseif ($agency->level == 2) {
-                if ($this->type_id == 3)
-                    $availableParents = Agency::where('id', $agency->id)->where('province_id', $this->province_id)->pluck('id');
-            }
+            $availableAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
+            $childCities = City::where('has_child', false)->pluck('id')->toArray();
 
             $tmp = array_merge($tmp, [
-                'type_id' => ['required', Rule::in($availableTypes)],
+                'agency_id' => ['required', Rule::in($availableAgencies)],
+                'admin_id' => ['required', Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],
                 'name' => ['required', 'max:200'],
                 'phone' => ['required', "unique:agencies,phone,$this->id", 'max:20'],
                 'address' => ['required', 'max:2048'],
+                'cities' => ['required', 'array',
+                    function ($attribute, $value, $fail) use ($childCities) {
+                        if (array_diff($value, $childCities))
+                            return $fail(sprintf(__("validator.invalid"), __('supported_cities')));
+
+                    }],
+//                'cities.*' => [Rule::in($childCities)],
                 'province_id' => ['required', Rule::in(City::where('level', 1)->pluck('id'))],
                 'county_id' => ['required', Rule::in(City::where('level', 2)->pluck('id'))],
-                'postal_code' => ['required', 'max:20'],
-                'supported_provinces' => ['required_if:type_id,1'],
+                'postal_code' => ['nullable', 'max:20'],
                 'location' => ['required', "regex:$regexLocation",],
-                'parent_id' => ['required', Rule::in($availableParents)],
+                'is_shop' => ['required', 'boolean'],
+                'allow_visit' => [Rule::requiredIf($this->is_shop), 'boolean'],
             ]);
         }
         if ($this->uploading)
@@ -93,11 +89,12 @@ class AgencyRequest extends FormRequest
     {
 
         return [
-            'type_id.required' => sprintf(__("validator.required"), __('agency_type')),
-            'type_id.in' => sprintf(__("validator.invalid"), __('agency_type')),
+            'agency_id.required' => sprintf(__("validator.required"), __('agency')),
+            'agency_id.in' => sprintf(__("validator.invalid"), __('agency')),
 
-            'parent_id.required' => sprintf(__("validator.required"), __('parent_agency')),
-            'parent_id.in' => sprintf(__("validator.invalid"), __('parent_agency')),
+            'admin_id.required' => sprintf(__("validator.required"), __('repo_owner/admin')),
+            'admin_id.in' => sprintf(__("validator.invalid"), __('repo_owner/admin')),
+
 
             'name.required' => sprintf(__("validator.required"), __('name')),
             'name.max' => sprintf(__("validator.max_len"), __('name'), 200, mb_strlen($this->name)),
@@ -123,6 +120,15 @@ class AgencyRequest extends FormRequest
             'location.required' => sprintf(__("validator.required"), __('location')),
             'location.regex' => sprintf(__("validator.invalid"), __('location')),
 
+            'cities.required' => sprintf(__("validator.required"), __('supported_cities')),
+            'cities.array' => sprintf(__("validator.invalid"), __('supported_cities')),
+            'cities.*.in' => sprintf(__("validator.invalid"), __('supported_cities')),
+
+            'is_shop.required' => sprintf(__("validator.required"), __('connect_shop')),
+            'is_shop.boolean' => sprintf(__("validator.invalid"), __('connect_shop')),
+
+            'allow_visit.required' => sprintf(__("validator.required"), __('allow_visit')),
+            'allow_visit.boolean' => sprintf(__("validator.invalid"), __('allow_visit')),
 
         ];
     }

@@ -1,10 +1,11 @@
 <template>
 
-  <div class="" @click="  Modal.show();">
+  <div class="" @click="getData();  Modal.show();">
     <div v-if="label" class="text-sm text-gray-700">{{ label }}</div>
 
     <slot name="selector" :selectedText="selectedText" :clear="clear">
     </slot>
+    <InputError class="mt-1" :message="error"/>
   </div>
   <!-- Users Modal  -->
   <div
@@ -31,7 +32,7 @@
           <button
 
               type="button"
-              class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+              class="box-content text-danger rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
               data-te-modal-dismiss
               aria-label="Close">
             <svg
@@ -60,6 +61,7 @@
                 <div class="flex items-center p-1">
                   <div class="relative mx-1  " data-te-dropdown-ref>
                     <button
+                        type="button"
                         id="dropdownPaginate"
                         data-te-dropdown-toggle-ref
                         aria-expanded="false"
@@ -73,12 +75,12 @@
                     </button>
 
                     <!--     menu -->
-                    <div ref="userMenu" data-te-dropdown-menu-ref
+                    <div ref="paginateMenu" data-te-dropdown-menu-ref
                          class="min-w-[12rem] absolute z-[1000] start-0 text-gray-500  m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-start text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
                          aria-labelledby="dropdownPaginate">
                       <div v-for=" num in $page.props.pageItems " class="">
-                        <div @click="params.paginate=num;getData()" role="menuitem"
+                        <div @click.stop="params.paginate=num;getData()" role="menuitem"
                              class=" cursor-pointer  select-none block  p-2 px-6 text-sm   transition-colors hover:bg-gray-100 dark:text-light dark:hover:bg-primary">
                           {{ num }}
                         </div>
@@ -109,30 +111,19 @@
                 </div>
               </div>
               <!--           table-->
-              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <table class="w-full  text-sm text-start text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700   bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <!--         table header-->
                 <tr class="text-sm text-center">
 
-                  <th scope="col"
+                  <th v-for="(col,idx) in cols" scope="col"
                       class="px-2 py-3   cursor-pointer   hover:text-gray-500  "
-                      @click="params.order_by='fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      @click="params.order_by=col;params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                     <div class="flex items-center justify-center">
-                      <span class="px-2">  {{ __('name') }}</span>
+                      <span class="px-2">  {{ __(labels[idx]) }}</span>
                       <ArrowsUpDownIcon class="w-4 h-4 "/>
                     </div>
                   </th>
-
-                  <th scope="col"
-                      class="px-2 py-3   cursor-pointer  hover:text-gray-500  "
-                      @click="params.order_by='phone';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                    <div class="flex items-center justify-center">
-                      <span class="px-2">    {{ __('phone') }} </span>
-                      <ArrowsUpDownIcon class="w-4 h-4 "/>
-                    </div>
-                  </th>
-
-
                 </tr>
                 </thead>
                 <tbody class=" ">
@@ -161,23 +152,23 @@
                   </td>
 
                 </tr>
-                <tr v-for="(d,idx) in data"
-                    class="cursor-pointer hover:bg-gray-400 bg-white text-center border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                <tr v-for="(d,idx) in data" :class="{'border-b':idx!=data.length-1}"
+                    class="cursor-pointer hover:bg-gray-400 bg-white text-center  dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     @click="selectItem(d)"
                 >
+                  <template v-for="(col,idx) in cols">
+                    <td v-if="idx==0"
+                        class="flex  items-center px-2 py-2 text-gray-900 whitespace-nowrap dark:text-white">
+                      <!--                    <Image class="w-10 h-10 rounded-full" :src="`${route(`storage.users`)}/${d.id}.jpg`"-->
+                      <!--                           :alt="cropText(d.name,5)"/>-->
+                      <div class="text-base text-sm font-semibold">{{ cropText(d[col], 40) }}</div>
+                      <div class="font-normal text-gray-500"></div>
+                    </td>
 
-                  <td
-                      class="flex  items-center px-6 py-2 text-gray-900 whitespace-nowrap dark:text-white">
-                    <!--                    <Image class="w-10 h-10 rounded-full" :src="`${route(`storage.users`)}/${d.id}.jpg`"-->
-                    <!--                           :alt="cropText(d.name,5)"/>-->
-                    <div class="text-base text-sm font-semibold">{{ cropText(d.fullname, 40) }}</div>
-                    <div class="font-normal text-gray-500">{{ }}</div>
-                  </td>
-
-                  <td class="px-2 py-4">
-                    {{ __(d.phone) }}
-                  </td>
-
+                    <td v-else class="px-2 py-4">
+                      {{ callback && callback[col] ? callback[col](d[col]) : __(d[col]) }}
+                    </td>
+                  </template>
                 </tr>
 
                 </tbody>
@@ -199,6 +190,7 @@
 </template>
 
 <script>
+import InputError from "@/Components/InputError.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Image from "@/Components/Image.vue";
 import {
@@ -212,9 +204,10 @@ import {
 } from "@heroicons/vue/24/outline";
 import {Modal} from "tw-elements";
 
+let call;
 export default {
   name: "UserSelector",
-  props: ['id', 'mode', 'text', 'owner', 'paginate', 'selected', 'placeholder', 'error', 'link', 'label'],
+  props: ['id', 'mode', 'text', 'preload', 'paginate', 'selected', 'placeholder', 'error', 'link', 'label', 'colsData', 'labelsData', 'callback'],
   components: {
     ChevronDownIcon,
     MagnifyingGlassIcon,
@@ -222,6 +215,7 @@ export default {
     XMarkIcon,
     ArrowsUpDownIcon,
     Image,
+    InputError,
   },
   data() {
     return {
@@ -231,7 +225,8 @@ export default {
         paginate: this.paginate || 24,
         order_by: null,
         dir: 'DESC',
-
+        cols: this.colsData || ['fullname', 'phone'],
+        labels: this.colsData || ['name', 'phone'],
       },
       Modal: null,
       data: [],
@@ -246,14 +241,19 @@ export default {
     }
   },
   emits: ['update:selected', 'update:text'],
+  created() {
+    this.cols = this.colsData || ['fullname', 'phone'];
+    this.labels = this.labelsData || ['name', 'phone'];
+  },
   mounted() {
+    call = this.callback;
+
     const modalEl = document.getElementById(`modalUsers-${this.id}`);
     this.Modal = new Modal(modalEl);
+
     this.getData();
-    if (this.owner && this.owner.id) {
-      this.selectedItem = this.owner.id;
-      this.selectedText = `${this.owner.fullname} | ${this.owner.phone}`;
-      this.$emit('update:text', this.selectedText);
+    if (this.preload && this.preload.id) {
+      this.selectItem(this.preload);
 
     }
   },
@@ -266,7 +266,10 @@ export default {
     },
     selectItem(item) {
       this.selectedItem = item.id;
-      this.selectedText = `${item.fullname} | ${item.phone}`;
+      for (let idx in this.cols)
+        if (item[this.cols[idx]] && this.callback && this.callback[this.cols[idx]])
+          item[this.cols[idx]] = this.callback[this.cols[idx]](item[this.cols[idx]])
+      this.selectedText = this.myMap(this.cols, (col) => item[col]).filter((e) => e != null).join(' | ');
       this.$emit('update:selected', this.selectedItem);
       this.$emit('update:text', this.selectedText);
       this.Modal.hide();
