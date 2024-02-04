@@ -374,8 +374,8 @@ export default {
       this.addresses = this.$page.props.auth.user.addresses;
     }
     this.emitter.on('updateCart', (cart) => {
-
-      this.selectedAddress = cart.address;
+      if (cart)
+        this.selectedAddress = cart.address;
     });
 
     // initTE({Select})
