@@ -59,7 +59,7 @@ const focusNext = (elem) => {
           <label for="checkbox-verify" class="sr-only"> </label>
         </span>
     </div>
-    <div class="relative   flex flex-wrap items-stretch ">
+    <div class="    flex flex-wra items-stretch ">
 
 
 
@@ -76,7 +76,7 @@ const focusNext = (elem) => {
              :disabled="disabled"
              :type="type"
              :class="classes + (disabled?' opacity-50 ':'')+( $slots.append && $slots.prepend ? ' rounded-0 ':$slots.append? ' rounded-s ':$slots.prepend?' rounded-e ':' rounded ')"
-             class="  flex grow border border-solid border-neutral-300    px-3   text-neutral-700   transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+             class="  flex grow w-full border border-solid border-neutral-300     px-3   text-neutral-700   transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
              :value="modelValue"
              @input="$emit('update:modelValue', $event.target.value)"
              @visibility.window="$el.type = ($el.type == 'password') ? 'text' : 'password' "

@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1   gap-2">
+  <div class="grid grid-cols-1  text-start gap-2">
     <div>
       <InputLabel class="mt-2" for="phone" :value="__('phone')"/>
       <div v-if="!disableEdit" class="flex items-center">
@@ -8,7 +8,7 @@
         <span v-else-if="verified==1" class="text-success text-xs mx-1">({{ __('verified') }})</span>
 
       </div>
-      <div class="relative mb-2 mt-2 flex flex-wrap items-stretch">
+      <div class="relative mb-2   flex flex-wrap items-stretch">
 
       <span
           class="flex bg-gray-100  text-gray-500 items-center whitespace-nowrap rounded-s border border-e-0 border-solid border-neutral-300  text-center text-base font-normal leading-[1.6]   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"

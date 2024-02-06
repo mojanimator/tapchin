@@ -130,7 +130,7 @@
                     <span class="sr-only">User menu</span>
                     <Image
                         classes="   hover:shadow-lg  object-cover   rounded-full w-12 h-12  "
-                        :src="route('storage.users')+`/${$page.props.auth.user.id}.jpg`"
+                        :src="route(`storage.${isAdmin()?'admins':'users'}`)+`/${$page.props.auth.user.id}.jpg`"
                         alt="jane avatar"
                         type="user"/>
                   </button>

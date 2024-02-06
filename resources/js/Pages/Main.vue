@@ -6,14 +6,14 @@
     </template>
 
     <div
-        class="relative  bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500 to-lime-600">
+        class="relative    bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500 to-lime-600">
       <!--Hero-->
       <div
           class="opacity-70   bg-no-repeat  bg-cover  blur-sm   z-0 absolute  bottom-2     w-full   h-full      "
           :style="`background-image: url(${heroImage})`"></div>
 
 
-      <div class="py-24 md:py-32 xl:py-32   z-10    mx-auto    ">
+      <div class="py-24 md:py-32 xl:py-32   z-10 z-[1044]   mx-auto    ">
         <div class="justify-center  px-3  sm:px-1  flex   flex-col md:flex-row items-center">
           <!--                    Right Col-->
           <div v-if="false" class=" z-10 md:w-2/5 py-6 text-center">
@@ -25,11 +25,11 @@
           <!--Left Col-->
           <div
               class="flex flex-col max-w-lg text-white w-full    justify-center   text-center  ">
-            <p class="leading-normal text-2xl mb-8 z-10 animate-pulse delay-300">
+            <p class="text-xs sm:text-lg mx:text-xl lg:text-2xl leading-normal   mb-8 z-10 animate-pulse delay-300">
               {{ heroText }}
             </p>
             <!--                        search-->
-            <div class="w-full mx-auto mt-2  ">
+            <div v-if="false" class="w-full mx-auto mt-2  ">
               <div class="relative  px-6 mx-auto  ">
                 <div
                     class="absolute top-0 bottom-0 start-0 flex items-center opacity-60  ps-10  ">
@@ -51,7 +51,7 @@
 
 
             </div>
-            <div class=" z-10 p-3    flex  items-center">
+            <div class=" p-3    gap-2 grid  grid-cols-1 sm:grid-cols-2 items-center">
 
               <ButtonSkew @click="$inertia.visit(route('shop.index'))"
                           class="mx-2 p-2 grow  " classes="bg-white text-primary-500">
@@ -60,13 +60,37 @@
                   }}</span>
 
               </ButtonSkew>
-              <ButtonSkew @click="params.type='request_agency';recaptchaExpired() "
-                          data-te-toggle="modal"
-                          data-te-target="#messageModal" classes="skew-x-[12deg] "
-                          data-te-ripple-init class="mx-2 p-2 grow  ">{{
-                  __('agency')
-                }}
-              </ButtonSkew>
+              <PartnershipForm :type="'agency'">
+                <template v-slot:partnershipForm="props">
+                  <ButtonSkew
+                      classes="skew-x-[12deg] "
+                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
+                      __('agency')
+                    }}
+                  </ButtonSkew>
+                </template>
+              </PartnershipForm>
+
+
+              <PartnershipForm :type="'gardener'">
+                <template v-slot:partnershipForm="props">
+                  <ButtonSkew
+                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
+                      __('gardeners')
+                    }}
+                  </ButtonSkew>
+                </template>
+              </PartnershipForm>
+              <PartnershipForm :type="'farmer'">
+                <template v-slot:partnershipForm="props">
+                  <ButtonSkew
+                      classes="skew-x-[12deg] "
+                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
+                      __('farmers')
+                    }}
+                  </ButtonSkew>
+                </template>
+              </PartnershipForm>
             </div>
           </div>
 
@@ -166,177 +190,7 @@
         <ArticleSlider :items="$page.props.articles" :delay="8000"></ArticleSlider>
       </div>
     </div>
-    <!-- Modal -->
-    <div
-        data-te-modal-init
-        class="fixed left-0 top-0 backdrop-blur z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
-        id="messageModal"
-        tabindex="-1"
-        aria-labelledby="messageModalLabel"
-        aria-hidden="true">
-      <div
-          data-te-modal-dialog-ref
-          class="pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 px-2 sm:px-4 md:px8 min-[576px]:max-w-5xl">
-        <div
-            class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none">
-          <div
-              class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4">
-            <!--Modal title-->
-            <h5
-                class="text-xl font-medium leading-normal text-neutral-800"
-                id="messageModalLabel">
 
-            </h5>
-            <!--Close button-->
-            <button
-                :class="`text-danger`"
-                type="button"
-                class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
-                data-te-modal-dismiss
-                aria-label="Close">
-              <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="h-6 w-6">
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
-
-          <!--Modal body-->
-          <div class="relative flex-auto p-4" data-te-modal-body-ref>
-            <div
-                class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
-              <FolderPlusIcon class="h-7 w-7 mx-3"/>
-
-              <h1 class="text-2xl font-semibold">{{ __(params.type) }}</h1>
-
-            </div>
-
-
-            <div class="px-2  md:px-4">
-
-              <div
-                  class="    mx-auto md:max-w-3xl   mt-6 px-2 md:px-4 py-4   overflow-hidden  rounded-lg  ">
-
-
-                <div
-                    class="flex flex-col mx-2   col-span-2 w-full     px-2"
-                >
-
-                  <form @submit.prevent="addRefOrder">
-                    <input type="hidden" name="_token" :value="csrf()">
-
-
-                    <div class="my-2">
-                      <TextInput
-                          id="fullname"
-                          type="text"
-                          :placeholder="__('fullname')"
-                          classes="  "
-                          v-model="params.fullname"
-                          autocomplete="key"
-                          :error="params.errors.fullname"
-                      >
-                        <template v-slot:prepend>
-                          <div class="p-3">
-                            <Bars2Icon class="h-5 w-5"/>
-                          </div>
-                        </template>
-
-                      </TextInput>
-                    </div>
-                    <div class="my-2">
-                      <TextInput
-                          id="phone"
-                          type="text"
-                          :placeholder="__('phone')"
-                          classes="  "
-                          v-model="params.phone"
-                          autocomplete="key"
-                          :error="params.errors.phone"
-                      >
-                        <template v-slot:prepend>
-                          <div class="p-3">
-                            <PhoneIcon class="h-5 w-5"/>
-                          </div>
-                        </template>
-
-                      </TextInput>
-                    </div>
-                    <div class="my-2">
-                      <TextInput
-                          :multiline="true"
-                          id="description"
-                          type="text"
-                          :placeholder="__('description')"
-                          classes="  "
-                          v-model="params.description"
-                          autocomplete="description"
-                          :error="params.errors.description"
-                      >
-                        <template v-slot:prepend>
-                          <div class="p-3">
-                            <ChatBubbleBottomCenterTextIcon class="h-5 w-5"/>
-                          </div>
-                        </template>
-
-                      </TextInput>
-
-                    </div>
-
-                    <div class="my2">
-
-                      <vue-recaptcha v-show="showRecaptcha" :sitekey="siteKey"
-                                     size="normal" class="w-full"
-                                     theme="light"
-                                     hl="fa"
-                                     :loading-timeout="loadingTimeout"
-                                     @verify="recaptchaVerified"
-                                     @expire="recaptchaExpired"
-                                     @fail="recaptchaFailed"
-                                     @error="recaptchaError"
-                                     ref="vueRecaptcha">
-                      </vue-recaptcha>
-                      <InputError class="mt-1" :message="params.errors.recaptcha"/>
-                    </div>
-                    <div v-if="loading" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
-                      <div
-                          class=" bg-primary rounded  text-xs leading-none py-[.1rem] text-center text-white duration-300 "
-                          :class="{' animate-pulse': loading}"
-                          :style="`width: 100%`">
-                      </div>
-                    </div>
-
-                    <div class="    mt-4">
-
-                      <PrimaryButton class="w-full  "
-                                     :class="{ 'opacity-25': loading}"
-                                     :disabled="loading">
-                        <LoadingIcon class="w-4 h-4 mx-3 " v-if="  loading"/>
-                        <span class=" text-lg  ">  {{ __('register_info') }}</span>
-                      </PrimaryButton>
-
-                    </div>
-
-                  </form>
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-
-
-        </div>
-      </div>
-    </div>
   </Scaffold>
 
 </template>
@@ -354,6 +208,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import Slider from "@/Components/Slider.vue";
 import ArticleSlider from "@/Components/ArticleSlider.vue";
+import PartnershipForm from "@/Components/PartnershipForm.vue";
 import vueRecaptcha from 'vue3-recaptcha2';
 import {
   HomeModernIcon,
@@ -385,10 +240,7 @@ export default {
   data() {
     return {
       search: null,
-      siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-      showRecaptcha: true,
-      loadingTimeout: 30000, // 30 seconds
-      params: {errors: {}, fullname: null, phone: null, description: null, recaptcha: null},
+
       loading: false,
       heroImage,
       section1: this.$page.props.section1,
@@ -424,6 +276,7 @@ export default {
     TruckIcon,
     MapPinIcon,
     ButtonSkew,
+    PartnershipForm,
   },
   // mixins: [Mixin],
   setup(props) {
@@ -441,13 +294,12 @@ export default {
     const countupEls = document.querySelectorAll('.countup');
     countupEls.forEach(this.animateCountUp);
 
-    const modalEl = document.getElementById('messageModal');
-    this.modal = new Modal(modalEl);
 
     this.updateCart();
   },
   methods: {
     updateSearchResults() {
+      this.log('search')
       if (!this.search) return;
       this.loading = true;
       this.params.phone = f2e(this.params.phone);
@@ -455,7 +307,7 @@ export default {
           {params: {search: this.search}})
           .then((response) => {
             if (response.data && response.data.message) {
-              this.modal.hide();
+              // this.modal.hide();
               this.showToast('success', response.data.message);
               this.params = {errors: {}, fullname: null, phone: null, description: null, recaptcha: null};
               this.recaptchaExpired();
@@ -479,47 +331,7 @@ export default {
             this.loading = false;
           });
     },
-    addRefOrder() {
-      this.loading = true;
-      this.params.phone = f2e(this.params.phone);
-      window.axios.post(route('message.create'), this.params,
-          {})
-          .then((response) => {
-            if (response.data && response.data.message) {
-              this.modal.hide();
-              this.showToast('success', response.data.message);
-              this.params = {errors: {}, fullname: null, phone: null, description: null, recaptcha: null};
-              this.recaptchaExpired();
 
-            }
-
-
-          })
-
-          .catch((error) => {
-            this.error = this.getErrors(error);
-            if (error.response && error.response.data) {
-              // this.log(error.response)
-              this.params.errors = error.response.data.errors;
-
-            }
-            this.showToast('danger', this.error);
-          })
-          .finally(() => {
-            // always executed
-            this.loading = false;
-          });
-    },
-    recaptchaVerified(response) {
-      this.params.recaptcha = response;
-    },
-    recaptchaExpired() {
-      this.$refs.vueRecaptcha.reset();
-    },
-    recaptchaFailed() {
-    },
-    recaptchaError(reason) {
-    },
     animateCountUp(el) {
       // How long you want the animation to take, in ms
       const animationDuration = 1000 + Math.random(3000);

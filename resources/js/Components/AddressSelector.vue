@@ -248,37 +248,39 @@
                     </TextInput>
 
                   </div>
-                  <div v-if="type=='cart'" class="grid gap-2 grid-cols-1 lg:grid-cols-2 my-4 ">
-                    <div class="p-2 border-b my-2">{{ __('receiver') }}</div>
-                    <TextInput
-                        id="fullname"
-                        type="text"
-                        :placeholder="`${__('fullname')} *`"
-                        classes="  "
-                        v-model="mapAddress.receiver_fullname"
-                        autocomplete="fullname"
-                        :error=" errors.receiver_fullname?errors.receiver_fullname[0]:null">
-                      <template v-slot:prepend>
-                        <div class="p-3">
-                          <UserIcon class="h-5 w-5"/>
-                        </div>
-                      </template>
-                    </TextInput>
+                  <div v-if="type=='cart'" class=" ">
+                    <div class="p-2 border-b my-2 ">{{ __('receiver') }}</div>
+                    <div class="grid gap-2 grid-cols-1 lg:grid-cols-2 my-4">
+                      <TextInput
+                          id="fullname"
+                          type="text"
+                          :placeholder="`${__('fullname')} *`"
+                          classes="  "
+                          v-model="mapAddress.receiver_fullname"
+                          autocomplete="fullname"
+                          :error=" errors.receiver_fullname?errors.receiver_fullname[0]:null">
+                        <template v-slot:prepend>
+                          <div class="p-3">
+                            <UserIcon class="h-5 w-5"/>
+                          </div>
+                        </template>
+                      </TextInput>
 
-                    <TextInput
-                        id="phone"
-                        type="text"
-                        :placeholder="`${__('phone')} *`"
-                        classes="  "
-                        v-model="mapAddress.receiver_phone"
-                        autocomplete="phone"
-                        :error=" errors.receiver_phone?errors.receiver_phone[0]:null">
-                      <template v-slot:prepend>
-                        <div class="p-3">
-                          <PhoneIcon class="h-5 w-5"/>
-                        </div>
-                      </template>
-                    </TextInput>
+                      <TextInput
+                          id="phone"
+                          type="text"
+                          :placeholder="`${__('phone')} *`"
+                          classes="  "
+                          v-model="mapAddress.receiver_phone"
+                          autocomplete="phone"
+                          :error=" errors.receiver_phone?errors.receiver_phone[0]:null">
+                        <template v-slot:prepend>
+                          <div class="p-3">
+                            <PhoneIcon class="h-5 w-5"/>
+                          </div>
+                        </template>
+                      </TextInput>
+                    </div>
                   </div>
                   <PrimaryButton @click="mapAddress.cmnd='add-address';!loading? edit( mapAddress ):null"
                                  classes="w-full"

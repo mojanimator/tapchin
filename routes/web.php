@@ -100,6 +100,7 @@ Route::get('storage/tickets')->name('storage.tickets');
 Route::get('storage/slides')->name('storage.slides');
 Route::get('storage/pproducts')->name('storage.pproducts');
 Route::get('storage/products')->name('storage.products');
+Route::get('storage/admins')->name('storage.admins');
 
 Route::get('/', function (Request $request) {
     if ($r = $request->ref) {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Helpers\Variable;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,7 @@ return new class extends Migration {
             $table->unsignedInteger('free_from_price')->nullable();
             $table->string('name', 200);
             $table->string('description', 2048)->nullable();
+            $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();
         });
 

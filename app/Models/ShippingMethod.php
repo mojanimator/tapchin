@@ -11,6 +11,17 @@ class ShippingMethod extends Model
 
     protected $table = 'shipping_methods';
 
+    protected $fillable = [
+        'repo_id',
+        'status',
+        'products',
+        'cities',
+        'per_weight_price',
+        'base_price',
+        'name',
+        'description',
+        'free_from_price',
+    ];
 
     protected $casts = [
         'products' => 'array',

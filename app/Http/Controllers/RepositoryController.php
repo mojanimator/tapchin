@@ -109,8 +109,10 @@ class RepositoryController extends Controller
         $orderBy = $request->order_by ?: 'id';
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
+        $status = $request->status;
+        $isShop = $request->is_shop;
 
-        $query = Repository::query()->select('id', 'name', 'is_shop', 'status', 'agency_id', 'province_id', 'county_id', 'district_id');
+        $query = Repository::query()->select('id', 'name', 'phone', 'is_shop', 'status', 'agency_id', 'province_id', 'county_id', 'district_id');
 
         $myAgency = Agency::find($admin->agency_id);
 
@@ -118,6 +120,10 @@ class RepositoryController extends Controller
         $query->whereIntegerInRaw('agency_id', $agencies->pluck('id'));
         if ($search)
             $query = $query->where('name', 'like', "%$search%");
+        if ($status)
+            $query = $query->where('status', $status);
+        if ($isShop)
+            $query = $query->where('is_shop', $isShop);
 
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
             return $paginated->getCollection()->transform(

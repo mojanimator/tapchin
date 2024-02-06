@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
+use App\Models\Admin;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -29,6 +30,7 @@ class CartController extends Controller
 //            Log::info($query->sql);
 //        });
         $user = auth('sanctum')->user();
+
         $ip = $request->ip();
         $productId = $request->product_id;
         $qty = $request->qty;
@@ -38,6 +40,8 @@ class CartController extends Controller
         $needAddress = false;
         $needSelfReceive = false;
 
+        if (($user instanceof Admin) && ($productId || in_array($request->current, ['checkout.payment', 'checkout.shipping'])))
+            return response()->json(['message' => __('admin_can_not_order')], Variable::ERROR_STATUS);
 //        if ($cmnd == 'count') {
 //            $product = Product::with('repository')->find($productId);
 //            if (isset($qty) && !$product)
@@ -177,7 +181,7 @@ class CartController extends Controller
             $repo = $repos->find($cartItem->repo_id);
 
             if ($repo && $repo->status == 'active') {
-                $shippingMethods = $repo->getRelation('shippingMethods');
+                $shippingMethods = $repo->getRelation('shippingMethods')->where('status', 'active');
                 $supportCity = in_array($cityId, $repo->cities);
                 $cityProductRestrict = $supportCity ? $shippingMethods
                     ->filter(function ($e) use ($cartItem, $cityId, $repo) {

@@ -8,10 +8,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\PProductController;
 use App\Http\Controllers\RepositoryController;
+use App\Http\Controllers\ShippingMethodController;
 use App\Http\Helpers\Variable;
 use App\Models\Agency;
 use App\Models\Article;
+use App\Models\PProduct;
 use Illuminate\Support\Facades\Route;
 
 
@@ -135,6 +138,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
             ]
         );
+
         PanelController::makeInertiaRoute('get', 'repository/create', 'admin.panel.repository.create', 'Panel/Admin/Repository/Create',
             [
             ]
@@ -145,6 +149,22 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::post('repository/create', [RepositoryController::class, 'create'])->name('admin.panel.repository.create')->middleware("can:create,App\Models\Admin,App\Models\Repository,'1'");
         Route::get('repository/{repository}', [RepositoryController::class, 'edit'])->name('admin.panel.repository.edit');
 
+
+        PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping.method.index', 'Panel/Admin/Shipping/Method/Index',
+            []
+        );
+        PanelController::makeInertiaRoute('get', 'shipping/method/create', 'admin.panel.shipping.method.create', 'Panel/Admin/Shipping/Method/Create',
+            [
+                'help' => __('help.shipping_method'),
+
+            ]
+        );
+        Route::get('shipping/method/search', [ShippingMethodController::class, 'searchPanel'])->name('admin.panel.shipping.method.search');
+        Route::patch('shipping/method/update', [ShippingMethodController::class, 'update'])->name('admin.panel.shipping.method.update');
+        Route::post('shipping/method/create', [ShippingMethodController::class, 'create'])->name('admin.panel.shipping.method.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
+        Route::get('shipping/method/{shipping_method}', [ShippingMethodController::class, 'edit'])->name('admin.panel.shipping.method.edit');
+
+        Route::get('p_product/search', [PProductController::class, 'searchPanel'])->name('admin.panel.p_product.search');
     });
 
 });

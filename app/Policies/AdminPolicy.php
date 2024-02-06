@@ -75,7 +75,7 @@ class AdminPolicy
             $message = __("user_is_blocked");
         }
 
-        if ($item->status == 'block') {
+        if ($item && $item->status == 'block') {
             $message = __("item_is_blocked");
         }
 

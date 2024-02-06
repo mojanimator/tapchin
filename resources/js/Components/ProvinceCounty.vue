@@ -82,7 +82,7 @@
                     data-te-select-class="text-center"
                     data-te-select-init>
                 <option value="" hidden></option>
-                <option class="text-end" v-for="d in countiesData.filter(e=>e.province_id==provinceData)"
+                <option class="text-end" v-for="d in countiesData.filter(e=>e.parent_id==provinceData)"
                         :value="d.id"> {{ __(d.name) }}</option>
 
             </select>
