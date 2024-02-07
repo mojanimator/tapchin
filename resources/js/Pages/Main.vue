@@ -54,7 +54,8 @@
             <div class=" p-3    gap-2 grid  grid-cols-2 sm:grid-cols-2 items-center">
 
               <ButtonSkew @click="$inertia.visit(route('shop.index'))"
-                          class="mx-2 p-2 grow  p-4" classes="text-primary-500 bg-primary-500">
+                          class="mx-2 p-2 grow  p-4 text-primary-500  "
+                          classes="text-primary-500  bg-white  ">
                 <span class=" group-hover:text-white  ">  {{
                     __('shop')
                   }}</span>
