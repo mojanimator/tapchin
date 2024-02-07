@@ -15,7 +15,7 @@ return new class extends Migration {
         Schema::create('partnerships', function (Blueprint $table) {
             $table->id();
             $table->string('fullname', 100);
-            $table->string('meterage', 10);
+            $table->string('meterage', 10)->nullable();
             $table->unsignedSmallInteger('province_id')->nullable()->index();
             $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();

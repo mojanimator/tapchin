@@ -18,14 +18,14 @@ class PartnershipController extends Controller
     {
         $this->validate($request, [
             'fullname' => ['required', 'max:100'],
-            'meterage' => ['required', 'numeric', 'digits_between:0,10'],
+            'meterage' => [Rule::requiredIf(in_array($request->type, ['gardener', 'farmer'])), 'numeric', 'digits_between:0,10'],
             'province_id' => ['required', Rule::in(City::where('level', 1)->pluck('id'))],
             'county_id' => 'required', Rule::in(City::where('parent_id', $request->province_id)->pluck('id')),
             'address' => ['required', 'max:2048'],
             'description' => ['required'],
-            'products' => ['required', 'array'],
-            'products.*.name' => ['required', 'max:50'],
-            'products.*.weight' => ['required', 'max:30'],
+            'products' => in_array($request->type, ['gardener', 'farmer']) ? ['required', 'array'] : [],
+            'products.*.name' => in_array($request->type, ['gardener', 'farmer']) ? ['required', 'max:50'] : [],
+            'products.*.weight' => in_array($request->type, ['gardener', 'farmer']) ? ['required', 'max:30'] : [],
             'phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/'],
             'phone_verify' => ['required', Rule::exists('sms_verify', 'code')->where('phone', $request->phone)],
         ], [
@@ -65,7 +65,10 @@ class PartnershipController extends Controller
 
         ]);
 
-
+        $request->merge([
+            'products' => in_array($request->type, ['gardener', 'farmer']) ? $request->products : null,
+            'meterage' => in_array($request->type, ['gardener', 'farmer']) ? $request->meterage : null,
+        ]);
         $data = Partnership::create($request->all());
 
         if ($data) {

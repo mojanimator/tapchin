@@ -344,6 +344,7 @@ export default {
         description: null,
         recaptcha: null,
         products: [{name: null, weight: null}],
+        type: this.type,
       },
     }
 
