@@ -58,6 +58,7 @@
                                classes="     py-8  ">
                 {{ __('shop') }}
 
+
               </SecondaryButton>
               <PartnershipForm :type="'agency'">
                 <template v-slot:partnershipForm="props">
