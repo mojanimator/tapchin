@@ -15,6 +15,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PartnershipController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PodcastController;
 use App\Http\Controllers\ProductController;
@@ -237,6 +238,7 @@ Route::get('language/{language}', function ($language) {
     return;
 })->name('language');
 
+Route::post('partnership/create', [PartnershipController::class, 'create'])->name('partnership.create');
 
 //
 require __DIR__ . '/auth.php';

@@ -13,10 +13,10 @@ class MainController extends Controller
 {
     public function sendSms(Request $request)
     {
-        if ($request->type != 'forget' && DB::table($request->table)->where('phone', "$request->phone")->where('phone_verified', true)->exists())
-            return response(['message' => __('phone_is_repeated'),], 401);
+        if (SMSHelper::checkRepeatedSMS("$request->phone", 5))
+            return response(['message' => sprintf(__('you_received_sms_in_n_minutes'),5),], 401);
         $code = Util::generateRandomNumber(5);
-        $res = (new SMSHelper())->sendOTPSMS("$request->phone", "$code", $request->type);
+        $res = (new SMSHelper())->Send("$request->phone", "$code", $request->type);
         if ($res) {
             SMSHelper::addCode($request->phone, $code);
             return response(['message' => __('sms_send_to_phone')]);

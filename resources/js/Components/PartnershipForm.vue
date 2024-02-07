@@ -99,7 +99,7 @@
                         v-model:phone-verify="params.phone_verify"
                         :phone-error="params.errors.phone"
                         :phone-verify-error="params.errors.phone_verify"
-                        type="register"
+                        type="forget"
                         for="users"
                         :verified="null"
                         :activeButtonText="__('send_code')"
@@ -126,7 +126,7 @@
 
                     </TextInput>
                   </div>
-                  <div class="my-4" v-if="type=='gardener'|| type=='farmer'">
+                  <div class="my-4" v-if="false && type=='gardener'|| type=='farmer'">
                     <InputLabel :value="__('farm_type')"/>
 
                     <div class="my-2 flex">
@@ -167,7 +167,7 @@
                                        classes="  "
                                        v-model="product.name"
                                        :autocomplete="`product${idx}`"
-                                       :error="params.errors[`product${idx}.${idx}`]"
+                                       :error="params.errors[`products.${idx}.name`]"
                             >
                               <template v-slot:prepend>
                                 <div class="p-3">
@@ -182,7 +182,7 @@
                                        classes="   "
                                        v-model="product.weight"
                                        :autocomplete="`weight${idx}`"
-                                       :error="params.errors[`weight${idx}.${idx}`] "
+                                       :error="params.errors[`products.${idx}.weight`] "
                             >
                               <template v-slot:prepend>
                                 <div class="p-3">
@@ -366,8 +366,8 @@ export default {
     MinusIcon,
   },
   mounted() {
-    // const modalEl = document.getElementById('partnershipModal' + this.type);
-    // this.modal = new Modal(modalEl);
+    const modalEl = document.getElementById('partnershipModal' + this.type);
+    this.modal = new Modal(modalEl);
   },
   methods: {
     reset() {
@@ -384,7 +384,7 @@ export default {
               this.modal.hide();
               this.showToast('success', response.data.message);
               this.params = {errors: {}, fullname: null, phone: null, description: null, recaptcha: null};
-              this.recaptchaExpired();
+              // this.recaptchaExpired();
 
             }
 

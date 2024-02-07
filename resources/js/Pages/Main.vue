@@ -25,7 +25,7 @@
           <!--Left Col-->
           <div
               class="flex flex-col max-w-lg text-white w-full    justify-center   text-center  ">
-            <p class="text-xs sm:text-lg mx:text-xl lg:text-2xl leading-normal   mb-8 z-10 animate-pulse delay-300">
+            <p class="  sm:text-lg  md:text-xl lg:text-2xl  mb-8 z-10   delay-300">
               {{ heroText }}
             </p>
             <!--                        search-->
@@ -54,8 +54,8 @@
             <div class=" p-3    gap-2 grid  grid-cols-1 sm:grid-cols-2 items-center">
 
               <ButtonSkew @click="$inertia.visit(route('shop.index'))"
-                          class="mx-2 p-2 grow  " classes="bg-white text-primary-500">
-                <span class="text-primary-500 group-hover:text-white  ">  {{
+                          class="mx-2 p-2 grow  p-4" classes="text-primary-500 bg-primary-500">
+                <span class=" group-hover:text-white  ">  {{
                     __('shop')
                   }}</span>
 
@@ -63,9 +63,9 @@
               <PartnershipForm :type="'agency'">
                 <template v-slot:partnershipForm="props">
                   <ButtonSkew
-                      classes="skew-x-[12deg] "
-                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
-                      __('agency')
+                      classes="skew-x-[12deg] bg-white   "
+                      data-te-ripple-init class="mx-2 p-4 grow hover:text-white text-primary-500">{{
+                      __('request_agency')
                     }}
                   </ButtonSkew>
                 </template>
@@ -74,8 +74,8 @@
 
               <PartnershipForm :type="'gardener'">
                 <template v-slot:partnershipForm="props">
-                  <ButtonSkew
-                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
+                  <ButtonSkew classes="  bg-white   "
+                              data-te-ripple-init class="mx-2 p-4 grow  hover:text-white text-primary-500">{{
                       __('gardeners')
                     }}
                   </ButtonSkew>
@@ -84,8 +84,8 @@
               <PartnershipForm :type="'farmer'">
                 <template v-slot:partnershipForm="props">
                   <ButtonSkew
-                      classes="skew-x-[12deg] "
-                      data-te-ripple-init class="mx-2 p-2 grow  ">{{
+                      classes="skew-x-[12deg] bg-white  "
+                      data-te-ripple-init class="mx-2 p-4 grow  hover:text-white text-primary-500 ">{{
                       __('farmers')
                     }}
                   </ButtonSkew>

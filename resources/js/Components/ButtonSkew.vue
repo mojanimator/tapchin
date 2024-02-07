@@ -13,7 +13,7 @@ defineProps({
 <template>
   <button
       :type="type"
-      class=" relative z-[30]  group text-white   p-2  ">
+      class=" relative z-[30]  group     p-2  ">
     <div :class="classes"
          class="absolute    bg-primary-500 start-0 top-0 w-full h-full rounded-lg  -skew-x-12  duration-300 group-hover:bg-primary-400 z-[-1] ">
     </div>

@@ -116,6 +116,7 @@
   "item_not_found": "آیتم یافت نشد",
   "item_not_found_or_inactive": "آیتم یافت نشد یا غیر فعال است",
   "access_denied": "دسترسی غیرمجاز است",
+  "validator.max": "حداکثر طول مجاز %s %s است.",
   "validator.max_items": "حداکثر تعداد مجاز %s %s است. تعداد فعلی:%s",
   "validator.max_len": "حداکثر طول مجاز %s %s است. طول فعلی:%s",
   "validator.min_len": "حداقل طول مجاز %s است. طول فعلی:%s",
@@ -571,7 +572,7 @@
   "messages": "پیام ها",
   "your_message_send_successfully": "پیام شما با موفقیت ارسال شد. نتیجه به اطلاع شما خواهد رسید",
   "edit_slider_item": "ویرایش اسلاید",
-  "request_agency": "دریافت نمایندگی",
+  "request_agency": "درخواست نمایندگی",
   "zone_agency": "نمایندگی منطقه",
   "province_agency": "نمایندگی استان",
   "branch_agency": "شعبه",
@@ -685,5 +686,9 @@
   "farm_type": "نوع کشت",
   "bush": "بوته",
   "greenhouse": "گلخانه",
+  "your_request_registered_successfully": "درخواست شما با موفقیت ثبت شد",
+  "product_name": "نام محصول",
+  "product_weight": "وزن محصول",
+  "you_received_sms_in_n_minutes": "شما در %s دقیقه اخیر پیامک دریافت کرده اید",
   "": ""
 }
