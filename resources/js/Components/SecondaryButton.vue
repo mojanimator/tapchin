@@ -17,6 +17,7 @@ defineProps({
     <div :class="classes"
          class=" bg-white start-0 top-0 w-full h-full rounded-lg  p-2  duration-300 group-hover:bg-gray-200   ">
 
+
       <slot/>
     </div>
 
