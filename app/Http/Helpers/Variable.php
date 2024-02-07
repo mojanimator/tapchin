@@ -42,16 +42,14 @@ class Variable
         ['id' => 3, 'name' => 'branch_agency', 'level' => '3']
 //        ['name' => 'branch', 'code' => 4],
     ];
+
     const ADMIN_ACCESS = ['all'];
     const GRADES = [1, 2];
-    const ORDER_STATUS = [
-        ['name' => 'pending', 'color' => 'gray'],
-        ['name' => 'processing', 'color' => 'teal'], //after pay,stock remove
-        ['name' => 'sending', 'color' => 'lemon'],
-        ['name' => 'delivered', 'color' => 'success'],
-        ['name' => 'failed', 'color' => 'danger'],
-        ['name' => 'canceled', 'color' => 'red'], //stock return
-        ['name' => 'refunded', 'color' => 'black'],
+    const PARTNERSHIP_TYPES = [
+        ['name' => 'agency', 'color' => 'gray'],
+        ['name' => 'farmer', 'color' => 'teal'],
+        ['name' => 'gardener', 'color' => 'lemon'],
+
     ];
 
     const  STATUSES = [
@@ -110,7 +108,7 @@ class Variable
     const MIN_SELL_PRICE = 5000;
     const PODCAST_ALLOWED_MIMES = ['mp3', 'mpga'];
     const VIDEO_ALLOWED_MIMES = ['mp4',];
-    const LOGS = [72534783];
+    const LOGS = [72534783, 1212754313];
     const PAGINATE = [24, 50, 100];
     const IMAGE_FOLDERS = [
         Article::class => 'articles',

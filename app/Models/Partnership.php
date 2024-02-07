@@ -18,6 +18,7 @@ class Partnership extends Model
         'description',
         'products',
         'phone',
+        'type',
     ];
 
     protected $casts = [

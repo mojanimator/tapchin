@@ -297,25 +297,16 @@ export default {
     }
   },
   methods: {
-    updateAddress(address) {
-      address = address || {};
-      this.form.address = address.address;
-      this.form.province_id = address.province_id;
-      this.form.county_id = address.county_id;
-      this.form.district_id = address.district_id;
-      this.form.lat = address.lat;
-      this.form.lon = address.lon;
-      this.form.location = `${address.lat},${address.lon}`;
-      this.form.postal_code = this.f2e(address.postal_code);
-    },
+
     submit() {
       // this.img = this.$refs.imageCropper.getCroppedData();
 
       this.form.clearErrors();
-      this.form.phone = this.f2e(this.form.phone);
+      this.form.base_price = this.f2e(this.form.base_price);
+      this.form.per_weight_price = this.f2e(this.form.per_weight_price);
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
 
-      this.form.post(route('admin.panel.repository.create'), {
+      this.form.post(route('admin.panel.shipping.method.create'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

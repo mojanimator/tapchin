@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Helpers\Variable;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,7 @@ return new class extends Migration {
             $table->string('description', 2048)->nullable();
             $table->json('products')->nullable();
             $table->string('phone', 20)->nullable();
+            $table->enum('type', array_column(Variable::PARTNERSHIP_TYPES, 'name'))->nullable();
             $table->timestamps();
         });
     }

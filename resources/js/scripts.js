@@ -107,13 +107,13 @@ window.tailwindElements = () => {
         window.Toast = Toast.getInstance(toastEl);
     if (modalEl)
         window.Modal = new Modal(modalEl);
+    // if (sideNavEl)
+    // if (!window.Sidenav) {
+    window.Sidenav = new Sidenav(sideNavEl);
+    // } else
+    //     window.Sidenav = Sidenav.getInstance(sideNavEl);
 
-
-    if (sideNavEl) {
-
-        window.Sidenav = Sidenav.getInstance(sideNavEl);
-        initSidenav();
-    } else window.Sidenav = null;
+    initSidenav();
     // }
 }
 
@@ -136,6 +136,7 @@ window.initSidenav = () => {
             window.Sidenav.changeMode("over");
             // console.log('hide');
             window.Sidenav.hide();
+            // window.Sidenav.show();
         } else {
             window.Sidenav.changeMode("side");
             // console.log('show');
@@ -143,7 +144,7 @@ window.initSidenav = () => {
         }
     };
 
-    if (window.innerWidth < window.Sidenav.getBreakpoint("md")) {
+    if (window.Sidenav && window.innerWidth < window.Sidenav.getBreakpoint("md")) {
         setMode();
     }
 
