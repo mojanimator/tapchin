@@ -997,7 +997,7 @@ class Telegram
                     $msg = ' 📛 ' . ' خطای سیستم ' . PHP_EOL . $data;
                     break;
                 default :
-                    $msg = $data;
+                    $msg = print_r($data, true);
             }
             if ($to) {
 //                self::sendMessage($to, $msg, null);
