@@ -126,7 +126,7 @@
 
                     </TextInput>
                   </div>
-                  <div class="my-4" v-if="false && type=='gardener'|| type=='farmer'">
+                  <div class="my-4" v-if="false && (type=='gardener'|| type=='farmer')">
                     <InputLabel :value="__('farm_type')"/>
 
                     <div class="my-2 flex">
