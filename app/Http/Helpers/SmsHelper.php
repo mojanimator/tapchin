@@ -33,6 +33,7 @@ class SmsHelper
         );
     }
 
+
     public static function checkRepeatedSMS($phone, $min)
     {
         return DB::table('sms_verify')->where('phone', $phone)->where('created_at', '>', Carbon::now()->subMinutes($min))->exists();
