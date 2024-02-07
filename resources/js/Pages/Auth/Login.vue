@@ -44,7 +44,7 @@ const submit = () => {
 
     <form @submit.prevent="submit">
       <div>
-        <InputLabel for="login" :value="__('email')+ '/'+__('phone')"/>
+        <InputLabel for="login" :value="__('phone')"/>
 
         <TextInput
             id="login"
