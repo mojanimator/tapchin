@@ -63,7 +63,7 @@ class RepositoryRequest extends FormRequest
                 'cities' => ['required', 'array',
                     function ($attribute, $value, $fail) use ($childCities) {
                         if (array_diff($value, $childCities))
-                            return $fail(sprintf(__("validator.invalid"), __('supported_cities')));
+                            return $fail(sprintf(__("validator.invalid"), __('supported_districts')));
 
                     }],
 //                'cities.*' => [Rule::in($childCities)],
@@ -120,9 +120,9 @@ class RepositoryRequest extends FormRequest
             'location.required' => sprintf(__("validator.required"), __('location')),
             'location.regex' => sprintf(__("validator.invalid"), __('location')),
 
-            'cities.required' => sprintf(__("validator.required"), __('supported_cities')),
-            'cities.array' => sprintf(__("validator.invalid"), __('supported_cities')),
-            'cities.*.in' => sprintf(__("validator.invalid"), __('supported_cities')),
+            'cities.required' => sprintf(__("validator.required"), __('supported_districts')),
+            'cities.array' => sprintf(__("validator.invalid"), __('supported_districts')),
+            'cities.*.in' => sprintf(__("validator.invalid"), __('supported_districts')),
 
             'is_shop.required' => sprintf(__("validator.required"), __('connect_shop')),
             'is_shop.boolean' => sprintf(__("validator.invalid"), __('connect_shop')),

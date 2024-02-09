@@ -13,10 +13,12 @@ class ShippingMethod extends Model
 
     protected $fillable = [
         'repo_id',
+        'agency_id',
         'status',
         'products',
         'cities',
         'per_weight_price',
+        'min_order_weight',
         'base_price',
         'name',
         'description',
@@ -27,4 +29,9 @@ class ShippingMethod extends Model
         'products' => 'array',
         'cities' => 'array',
     ];
+
+    public function repository()
+    {
+        return $this->belongsTo(Repository::class, 'repo_id');
+    }
 }

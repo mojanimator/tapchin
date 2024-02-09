@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
             $table->unsignedInteger('in_repo')->default(0);
             $table->unsignedInteger('in_shop')->default(0);
+            $table->unsignedInteger('min_allowed')->default(0);
             $table->unsignedInteger('price')->default(0);
             $table->unsignedDecimal('weight', 7, 3)->default(0); //kg
             $table->unsignedInteger('auction_price')->default(0);

@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('edit_repository')}}</title>
+      <title>{{__('edit_shipping_method')}}</title>
     </template>
 
 
@@ -12,57 +12,37 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('edit_repository') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_shipping_method') }}</h1>
 
       </div>
 
 
-      <div class="px-2  md:px-4">
+      <div v-if=" $page.props.data" class="px-2  md:px-4">
 
         <div
             class="    mx-auto md:max-w-2xl   mt-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
 
 
-          <div v-if="data"
-               class="flex flex-col mx-2   col-span-2 w-full     px-2"
+          <div
+              class="flex flex-col mx-2   col-span-2 w-full     px-2"
           >
-            <div class="flex-col   m-2 items-center rounded-lg max-w-xs  w-full mx-auto    ">
-              <div v-if="false" class="my-2">
-                <ImageUploader ref="imageCropper" :label="__('image_cover_jpg')" cropRatio="1.25" id="img"
-                               height="10" class="grow "/>
-                <InputError class="mt-1 " :message="form.errors.img"/>
-              </div>
-
+            <div v-if="$page.props.help" class="flex flex-col text-md bg-primary-50 rounded-md p-2">
+              <span v-for="(item,idx) in $page.props.help" class="flex my-1">
+                 <LightBulbIcon v-if="idx==0" class="w-5 h-5"/>
+                <span class="mx-1 text-sm " :class="{'font-bold':idx==0}">
+                    {{ item }}
+                </span>
+              </span>
             </div>
+
             <form @submit.prevent="submit">
 
-              <div class="my-2" v-if=" $page.props.agency && $page.props.agency.level<3">
-                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
-                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
-                              :link="route('admin.panel.agency.search')" :label="__('agency')"
-                              :id="'agency'" v-model:selected="form.agency_id" :preload=" this.$page.props.data.agency">
-                  <template v-slot:selector="props">
-                    <div :class="props.selectedText?'py-2':'py-2'"
-                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
-                      <div class="grow">
-                        {{ props.selectedText ?? __('select') }}
-                      </div>
-                      <div v-if="props.selectedText"
-                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
-                           @click.stop="props.clear()">
-                        <XMarkIcon class="w-5 h-5"/>
-                      </div>
-                    </div>
-                  </template>
-                </UserSelector>
-
-              </div>
-
               <div class="my-2">
-                <UserSelector :colsData="['fullname','phone','agency_id']" :labelsData="['name','phone','agency_id']"
-                              :link="route('admin.panel.admin.search')+(form.agency_id?`?agency_id=${form.agency_id }`:'')"
-                              :label="__('repo_owner/admin')" :error="form.errors.admin_id"
-                              :id="'admin'" v-model:selected="form.admin_id" :preload=" this.$page.props.data.admin">
+                <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
+                              :callback="{'level':getAgency}" :error="form.errors.repo_id"
+                              :link="route('admin.panel.repository.search')+(`?status=active&is_shop=1` )"
+                              :label="__('repository')"
+                              :id="'repository'" v-model:selected="form.repo_id" :preload="$page.props.data.repository">
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-2'"
                          class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
@@ -73,6 +53,7 @@
                            class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
                            @click.stop="props.clear()">
                         <XMarkIcon class="w-5 h-5"/>
+
                       </div>
                     </div>
                   </template>
@@ -83,9 +64,65 @@
 
               <div class="my-2">
                 <TextInput
+                    id="base_price"
+                    type="number"
+                    :placeholder="`${__('base_price')} (${__('currency')})`"
+                    classes="  "
+                    v-model="form.base_price"
+                    autocomplete="base_price"
+                    :error="form.errors.base_price"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CurrencyDollarIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+
+              </div>
+              <div class="my-2">
+                <TextInput
+                    id="per_weight_price"
+                    type="number"
+                    :placeholder="`${__('per_weight_price')} (${__('currency')})`"
+                    classes="  "
+                    v-model="form.per_weight_price"
+                    autocomplete="per_weight_price"
+                    :error="form.errors.per_weight_price"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CurrencyDollarIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+
+              </div>
+              <div class="my-2">
+                <TextInput
+                    id="min_order_weight"
+                    type="number"
+                    :placeholder="`${__('min_order_weight')} (${__('kg')})`"
+                    classes="  "
+                    v-model="form.min_order_weight"
+                    autocomplete="min_order_weight"
+                    :error="form.errors.min_order_weight"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CurrencyDollarIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+              </div>
+              <div class="my-2">
+                <TextInput
                     id="name"
                     type="text"
-                    :placeholder="__('repo_name')"
+                    :placeholder="__('name')"
                     classes="  "
                     v-model="form.name"
                     autocomplete="name"
@@ -98,62 +135,38 @@
                   </template>
 
                 </TextInput>
-
               </div>
               <div class="my-2">
                 <TextInput
-                    id="phone"
-                    type="tel"
-                    :placeholder="__('phone')"
+                    id="description"
+                    type="text"
+                    :placeholder="__('description')"
                     classes="  "
-                    v-model="form.phone"
-                    autocomplete="phone"
-                    :error="form.errors.phone"
+                    :multiline="true"
+                    v-model="form.description"
+                    autocomplete="description"
+                    :error="form.errors.description"
                 >
                   <template v-slot:prepend>
                     <div class="p-3">
-                      <Bars2Icon class="h-5 w-5"/>
+                      <ChatBubbleBottomCenterTextIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
                 </TextInput>
-
               </div>
-              <div class="my-4">
-                <AddressSelector ref="addressSelector" :editable="true" class=" " type="" :label="__('address')"
-                                 @change="updateAddress($event) "
-                                 :error="form.errors.address ||form.errors.postal_code || form.errors.province_id || form.errors.county_id "/>
 
-
-              </div>
               <div class="my-4">
-                <CitySelector :multi="true" :label="__('supported_cities')" v-model="form.cities"
+                <CitySelector :multi="true" :label="__('supported_districts')" v-model="form.cities"
                               :preload=" $page.props.data.cities"
                               :error="form.errors.cities"/>
               </div>
-              <div class="my-3">
-                <TextInput
-                    id="is_shop"
-                    type="checkbox"
-                    :placeholder="__('connect_shop')"
-                    classes="  "
-                    v-model="form.is_shop"
-                    autocomplete="is_shop"
-                    :error="form.errors.is_shop"
-                >
-                </TextInput>
-              </div>
-              <div class="my-3" v-if="form.is_shop">
-                <TextInput
-                    id="allow_visit"
-                    type="checkbox"
-                    :placeholder="__('allow_visit')"
-                    classes="  "
-                    v-model="form.allow_visit"
-                    autocomplete="allow_visit"
-                    :error="form.errors.allow_visit"
-                >
-                </TextInput>
+
+              <div class="my-4" v-if="form.repo_id">
+                <ProductSelector :link="route('admin.panel.p_product.search')+`?repo_id=${form.repo_id}`" :multi="true"
+                                 :label="__('supported_products')" v-model="form.products"
+                                 :preload=" $page.props.data.products"
+                                 :error="form.errors.products"/>
               </div>
 
 
@@ -207,6 +220,8 @@ import {
   ChatBubbleBottomCenterTextIcon,
   PencilIcon,
   XMarkIcon,
+  LightBulbIcon,
+  CurrencyDollarIcon,
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
 import Checkbox from '@/Components/Checkbox.vue';
@@ -230,6 +245,7 @@ import TextEditor from "@/Components/TextEditor.vue";
 import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
 import CitySelector from "@/Components/CitySelector.vue";
+import ProductSelector from "@/Components/ProductSelector.vue";
 
 
 export default {
@@ -237,26 +253,18 @@ export default {
   data() {
     return {
       data: this.$page.props.data || {},
-      filteredAgencies: this.$page.props.agencies,
-      preloadAddress: null,
       form: useForm({
         id: null,
-        agency_id: null,
-        admin_id: null,
-        type_id: null,
-        is_shop: false,
-        allow_visit: false,
         name: null,
-        address: null,
-        lat: null,
-        lon: null,
-        location: null,
-        province_id: null,
-        county_id: null,
-        district_id: null,
-        postal_code: null,
-        phone: null,
+        description: null,
+        base_price: null,
+        per_weight_price: null,
+        min_order_weight: null,
+        repo: null,
+        repo_id: null,
+
         cities: [],
+        products: [],
 
 
       }),
@@ -301,6 +309,9 @@ export default {
     XMarkIcon,
     AddressSelector,
     CitySelector,
+    ProductSelector,
+    CurrencyDollarIcon,
+    LightBulbIcon,
   },
   created() {
 
@@ -312,33 +323,16 @@ export default {
 
     this.form.id = this.data.id;
     this.form.name = this.data.name;
-    this.form.is_shop = this.data.is_shop;
-    this.form.allow_visit = this.data.allow_visit;
-    this.form.type_id = this.data.type_id;
-    this.form.admin = this.data.admin;
-    this.form.admin_id = this.data.admin_id;
-    this.form.agency = this.data.agency;
-    this.form.agency_id = this.data.agency_id;
-    this.form.phone = this.data.phone;
-    this.form.status = this.data.status;
-    this.form.cities = this.data.cities || [];
+    this.form.description = this.data.description;
+    this.form.repository = this.data.repository;
+    this.form.base_price = this.data.base_price;
+    this.form.per_weight_price = this.data.per_weight_price;
+    this.form.min_order_weight = this.data.min_order_weight;
+    this.form.products = this.data.products;
+    this.form.cities = this.data.cities;
 
-    this.form.owner = this.data.owner;
-    this.form.owner_id = this.data.owner_id;
 
-    this.preloadAddress = {
-      address: this.data.address,
-      postal_code: this.data.postal_code,
-      province_id: this.data.province_id,
-      county_id: this.data.county_id,
-      district_id: this.data.district_id,
-      lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
-      lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
-
-    };
     this.$nextTick(() => {
-      this.$refs.addressSelector.preload(this.preloadAddress);
-      this.updateAddress(this.preloadAddress);
 
 
     });
@@ -346,17 +340,7 @@ export default {
   },
   methods: {
 
-    updateAddress(address) {
-      address = address || {};
-      this.form.address = address.address;
-      this.form.province_id = address.province_id;
-      this.form.county_id = address.county_id;
-      this.form.district_id = address.district_id;
-      this.form.lat = address.lat;
-      this.form.lon = address.lon;
-      this.form.location = `${address.lat},${address.lon}`;
-      this.form.postal_code = this.f2e(address.postal_code);
-    },
+
     submit() {
 
 
@@ -369,7 +353,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('admin.panel.repository.update'), {
+      this.form.patch(route('admin.panel.shipping.method.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

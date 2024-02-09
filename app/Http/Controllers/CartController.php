@@ -93,7 +93,7 @@ class CartController extends Controller
             $cart->save();
         }
         $addressIdx = $addressIdx ?? $cart->address_idx;
-        $addressIdx = $addressIdx != null ? intval($addressIdx) : null;
+        $addressIdx = $addressIdx !== null ? intval($addressIdx) : null;
         $address = null;
         if ($user && is_int($addressIdx) && $addressIdx >= 0 && count($addresses) > $addressIdx) {
             $address = $addresses[$addressIdx];
@@ -118,10 +118,13 @@ class CartController extends Controller
             $cartItem = $cartItems->where('product_id', $productId)->first();
             $product = optional($cartItem)->getRelation('product') ?? Product::find($productId);
             $inShopQty = optional($product)->in_shop ?? 0;
+            $minAllowed = optional($product)->min_allowed ?? 0;
             if ($qty < 0)
                 return response()->json(['message' => sprintf(__('validator.invalid'), __('requested_qty'))], Variable::ERROR_STATUS);
             elseif ($qty > $inShopQty)
                 return response()->json(['message' => sprintf(__('validator.max_items'), __('product'), $inShopQty, $qty)], Variable::ERROR_STATUS);
+            elseif ($qty < $minAllowed)
+                return response()->json(['message' => sprintf(__('validator.min_order_product'), $minAllowed)], Variable::ERROR_STATUS);
 
             if ($cartItem) {
                 if ($qty == 0) {
@@ -163,6 +166,11 @@ class CartController extends Controller
 //                $cartItem->qty = $product->in_shop;
 //                $cartItem->save();
                 $cartItem->error_message = $product->in_shop > 0 ? sprintf(__('validator.max_items'), __('product'), $product->in_shop, $cartItem->qty) : __('this_item_finished');
+                $errors[] = ['key' => $product->name, 'type' => 'product', 'message' => $cartItem->error_message];
+            } elseif ($cartItem->qty < $product->min_allowed) {
+//                $cartItem->qty = $product->in_shop;
+//                $cartItem->save();
+                $cartItem->error_message = sprintf(__('validator.min_order_product'), $product->min_allowed);
                 $errors[] = ['key' => $product->name, 'type' => 'product', 'message' => $cartItem->error_message];
             }
             $itemTotalPrice = $cartItem->qty * ($isAuction ? $product->auction_price : $product->price);
@@ -262,18 +270,20 @@ class CartController extends Controller
             $errors[] = ['key' => 'address', 'type' => 'address', 'message' => sprintf(__('validator.required'), __('address'))];
 
         }
-        $cart->errors = $errors ?? [];
+
         $cart->shipments = collect($shipments)->groupBy('method_id');
         $cart->total_shipping_price = 0;
         $cart->total_items = 0;
         $shipments = [];
         foreach ($cart->shipments as $items) {
+            $totalWeight = 0;
             $totalPrice = 0;
             $basePrice = 0;
             $shipping = null;
             foreach ($items as $idx => $item) {
                 $cartItem = $item['cart_item'];
                 $product = $cartItem->getRelation('product');
+                $totalWeight += $product->weight * $cartItem->qty;
                 $totalPrice += $product->weight * $cartItem->qty * $item['shipping']['per_weight_price'];
                 $basePrice = $basePrice > 0 ? $basePrice : $item['shipping']['base_price'];
                 $cart->total_items += $cartItem->qty ?? 0;
@@ -281,9 +291,16 @@ class CartController extends Controller
                 unset($item['shipping']);
                 $items[$idx] = $item;
             }
+            $errorMessage = null;
+            if ($totalWeight < $shipping['min_order_weight']) {
+                $errorMessage = sprintf(__('validator.min_order_weight'), $shipping['min_order_weight'] . ' ' . __('kg'), $totalWeight);
+                $shipping['error_message'] = $shipping['error_message'] ?? $errorMessage;
+                $errors[] = ['key' => 'min-order-weight', 'type' => 'shipping', 'message' => $errorMessage];
+            }
             $shipments[] = ['items' => $items, 'method' => $shipping, 'total_price' => $basePrice + $totalPrice];
             $cart->total_shipping_price += $basePrice + $totalPrice;
         }
+        $cart->errors = $errors ?? [];
         $cart->shipments = $shipments;
         $cart->total_price = $cart->total_items_price + $cart->total_shipping_price;
         $cart->need_address = $needAddress;

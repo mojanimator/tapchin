@@ -90,11 +90,11 @@ class Telegram
 
     static function creator($method, $datas = [])
     {
-        $url = "https://2sport.ir/api/dabel_telegram";
-        $datas['cmnd'] = $method;
+//        $url = "https://2sport.ir/api/dabel_telegram";
+//        $datas['cmnd'] = $method;
 
-//        if (!str_contains(url('/'), '.com') && !str_contains(url('/'), '.ir')) return;
-//        $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN', '') . "/" . $method;
+        if (!str_contains(url('/'), '.com') && !str_contains(url('/'), '.ir')) return;
+        $url = "https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN', '') . "/" . $method;
 
 //        $ch = curl_init();
 //        curl_setopt($ch, CURLOPT_URL, $url);

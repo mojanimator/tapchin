@@ -196,9 +196,7 @@ export default {
     if (this.preload) {
       this.selecteds = [];
       for (let idx in this.preload)
-        for (let ix in this.data)
-          if (this.preload[idx] == this.data[ix].id)
-            this.selecteds.push({id: this.data[ix].id, name: this.data[ix].name});
+        this.selecteds.push({id: this.preload[idx].id, name: this.createName(this.preload[idx])});
       this.$emit('update:modelValue', this.myMap(this.selecteds, (e) => e.id));
 
     }
@@ -219,6 +217,7 @@ export default {
 
   },
   methods: {
+
     createName(d) {
       if (!d) return '';
       return `${d.name} | ${this.getPack(d.pack_id)} | ${this.__('grade')} ${d.grade} | ${parseFloat(d.weight)} ${this.__('kg')} `
@@ -270,6 +269,7 @@ export default {
           .then((response) => {
 
             this.data = response.data;
+
             delete response.data;
             // this.pagination = response.data;
           })

@@ -24,6 +24,7 @@ class Product extends Model
         'in_auction',
         'weight',
         'description',
+        'min_allowed',
     ];
 
     public function repository()

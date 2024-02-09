@@ -80,7 +80,7 @@ window.tailwindElements = () => {
     // window.Sidenav = Sidenav;
     // window.Modal = Modal;
     // window.Dropdown = Dropdown;
-    initTE({Popover, Tooltip, Ripple, Input, Select, Alert, Toast, Sidenav, Modal}, {
+    initTE({Popover, Tooltip, Ripple, Input, Select, Alert, Toast, Sidenav, Modal,}, {
         // allowReinits: true,
         autoReinits: true,
         checkOtherImports: false,
@@ -102,14 +102,16 @@ window.tailwindElements = () => {
     const modalEl = document.getElementById('modal');
     const sideNavEl = document.getElementById('sidenav-1');
     if (alertEl)
-        window.Alert = Alert.getInstance(alertEl);
+        window.Alert = new Alert(alertEl);
+    // window.Alert = Alert.getInstance(alertEl);
     if (toastEl)
-        window.Toast = Toast.getInstance(toastEl);
+        window.Toast = new Toast(toastEl);
+    // window.Toast = Toast.getInstance(toastEl);
     if (modalEl)
         window.Modal = new Modal(modalEl);
-    // if (sideNavEl)
-    // if (!window.Sidenav) {
-    window.Sidenav = new Sidenav(sideNavEl);
+    if (sideNavEl)
+        // if (!window.Sidenav) {
+        window.Sidenav = new Sidenav(sideNavEl);
     // } else
     //     window.Sidenav = Sidenav.getInstance(sideNavEl);
 

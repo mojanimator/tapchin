@@ -18,7 +18,6 @@ use App\Models\Article;
 use App\Models\PProduct;
 use Illuminate\Support\Facades\Route;
 
-
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
     Route::get('register', [RegisteredUserController::class, 'create'])

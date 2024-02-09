@@ -71,6 +71,16 @@ class Variable
         ["name" => 'order', "color" => 'teal'],
         ["name" => 'referral', "color" => 'blue'],
     ];
+    const  ORDER_STATUSES = [
+
+        ["name" => 'pending', "color" => 'danger'],
+        ["name" => 'processing', "color" => 'teal'],
+        ["name" => 'sending', "color" => 'primary'],
+        ["name" => 'delivered', "color" => 'success'],
+        ["name" => 'failed', "color" => 'gray'],
+        ["name" => 'canceled', "color" => 'gray'],
+        ["name" => 'refunded', "color" => 'gray'],
+    ];
     const CATEGORIES = [
         ['name' => 'industry_mining',],
         ['name' => 'estate',],
@@ -204,6 +214,7 @@ class Variable
                 'repo_id' => null,
                 'products' => null,
                 'cities' => null,
+                'min_order_weight' => 0,
                 'per_weight_price' => 0,
                 'base_price' => 0,
                 'free_from_price' => null,

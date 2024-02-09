@@ -282,7 +282,7 @@
                       </TextInput>
                     </div>
                   </div>
-                  <PrimaryButton @click="mapAddress.cmnd='add-address';!loading? edit( mapAddress ):null"
+                  <PrimaryButton @click="mapAddress.cmnd='add-address'; !loading? edit( mapAddress ):null"
                                  classes="w-full"
                                  class="my-2"
                                  type="button"
@@ -424,10 +424,13 @@ export default {
     },
 
     edit(params = {}) {
+
       this.errors = {};
       this.loading = true;
       if (params.postal_code)
         params.postal_code = this.f2e(params.postal_code);
+      if (!params.address)
+        params.address = null;
 
       if (this.type != 'cart') {
         this.loading = false;

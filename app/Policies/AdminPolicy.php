@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\City;
 use App\Models\Repository;
+use App\Models\ShippingMethod;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -51,6 +52,9 @@ class AdminPolicy
                 case    Repository::class:
                     $res = $admin->hasAccess('create_repository');
                     break;
+                case    ShippingMethod::class:
+                    $res = $admin->hasAccess('create_shipping-method');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -78,7 +82,6 @@ class AdminPolicy
         if ($item && $item->status == 'block') {
             $message = __("item_is_blocked");
         }
-
         if (empty($message) && $item)
             switch ($item) {
                 case  $item instanceof Agency  :
@@ -100,6 +103,9 @@ class AdminPolicy
                 case  $item instanceof Repository  :
                     $res = $admin->hasAccess('edit_repository');
 
+                    break;
+                case  $item instanceof ShippingMethod  :
+                    $res = $admin->hasAccess('edit_shipping-method');
 
                     break;
 

@@ -39,7 +39,7 @@
 
               <div class="my-2">
                 <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
-                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
+                              :callback="{'level':getAgency}" :error="form.errors.repo_id"
                               :link="route('admin.panel.repository.search')+(`?status=active&is_shop=1` )"
                               :label="__('repository')"
                               :id="'repository'" v-model:selected="form.repo_id" :preload="null">
@@ -98,7 +98,25 @@
                   </template>
 
                 </TextInput>
+              </div>
 
+              <div class="my-2">
+                <TextInput
+                    id="min_order_weight"
+                    type="number"
+                    :placeholder="`${__('min_order_weight')} (${__('kg')})`"
+                    classes="  "
+                    v-model="form.min_order_weight"
+                    autocomplete="min_order_weight"
+                    :error="form.errors.min_order_weight"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CurrencyDollarIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
               </div>
 
               <div class="my-2">
@@ -140,7 +158,7 @@
               </div>
 
               <div class="my-4">
-                <CitySelector :multi="true" :label="__('supported_cities')" v-model="form.cities"
+                <CitySelector :multi="true" :label="__('supported_districts')" v-model="form.cities"
                               :error="form.errors.cities"/>
               </div>
 
@@ -235,6 +253,7 @@ export default {
         repo_id: null,
         base_price: 0,
         per_weight_price: 0,
+        min_order_weight: 0,
         name: null,
         description: null,
         cities: null,

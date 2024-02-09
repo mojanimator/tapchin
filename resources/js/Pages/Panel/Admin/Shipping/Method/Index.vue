@@ -136,9 +136,33 @@
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('city') }} </span>
+                  <span class="px-2">    {{ __('repository') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='base_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('base_price') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='per_weight_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('weight_price') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='min_order_weight';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('min_weight') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
@@ -224,7 +248,7 @@
                 <!--                <Image class="w-10 h-10 cursor-pointer rounded-full" :src="`${route('storage.repositories')}/${d.id}.jpg`"-->
                 <!--                       :data-lity="`${route('storage.repositories')}/${d.id}.jpg`"-->
                 <!--                       :alt="cropText(d.title,5)"/>-->
-                <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.repository.edit',d.id)">
+                <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.shipping.method.edit',d.id)">
                   <div class="text-sm font-semibold">{{ cropText(d.name, 30) }}</div>
                   <div class="font-normal text-gray-500">{{ }}</div>
                 </Link>
@@ -238,19 +262,23 @@
               </td>
 
               <td class="px-2 py-4">
-                <span v-if="d.district_id">
-                     {{ getCityName(d.county_id) + '/' + getCityName(d.district_id) }}
 
-                </span>
-                <span v-else-if="d.county_id">
-                     {{ getCityName(d.province_id) + '/' + getCityName(d.county_id) }}
+                {{ d.repo_id }}
+              </td>
 
-                </span>
-                <span v-else>
-                     {{ getCityName(d.province_id) }}
+              <td class="px-2 py-4">
 
-                </span>
+                {{ asPrice(d.base_price) }}
+              </td>
 
+              <td class="px-2 py-4">
+
+                {{ asPrice(d.per_weight_price) }}
+              </td>
+
+              <td class="px-2 py-4">
+
+                {{ asPrice(d.min_order_weight) }}
               </td>
 
               <td class="px-2 py-4    " data-te-dropdown-ref>
@@ -261,8 +289,8 @@
                     data-te-ripple-init
                     data-te-ripple-color="light"
                     class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                    :class="`bg-${getStatus('repository', d.status).color}-100 hover:bg-${getStatus('repository', d.status).color}-200 text-${getStatus('repository', d.status).color}-500`">
-                  {{ getStatus('repository', d.status).name }}
+                    :class="`bg-${getStatus('shipping-method', d.status).color}-100 hover:bg-${getStatus('shipping-method', d.status).color}-200 text-${getStatus('shipping-method', d.status).color}-500`">
+                  {{ getStatus('shipping-method', d.status).name }}
                 </button>
                 <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
                     class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
@@ -304,7 +332,7 @@
                     class=" inline-flex rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                     role="group">
                   <Link
-                      type="button" :href="route('admin.panel.repository.edit',d.id)"
+                      type="button" :href="route('admin.panel.shipping.method.edit',d.id)"
                       class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
                       data-te-ripple-init
                       data-te-ripple-color="light">
@@ -395,7 +423,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.repository.search'), {
+      window.axios.get(route('admin.panel.shipping.method.search'), {
         params: this.params
       }, {})
           .then((response) => {
@@ -460,7 +488,7 @@ export default {
     },
     edit(params) {
       this.isLoading(true);
-      window.axios.patch(route('admin.panel.repository.update'), params,
+      window.axios.patch(route('admin.panel.shipping.method.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -522,7 +550,7 @@ export default {
         }, [])
       };
 
-      window.axios.patch(route('admin.panel.repository.update'), params,
+      window.axios.patch(route('admin.panel.shipping.method.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {

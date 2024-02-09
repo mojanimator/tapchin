@@ -11,7 +11,7 @@
       <span class="grow " dir="ltr">
             <select :multiple="multiple" :id="id" class=" " :value="modelValue" v-model="selecteds"
                     @change=" setValue( $event.target.value)"
-
+                    data-te-select-init
                     :name="id"
                     :data-te-select-all="false"
                     data-te-select-filter="true"
@@ -35,7 +35,7 @@
                     :data-te-select-options-selected-label="__('item')"
                     :data-te-select-search-placeholder="__('search')"
                     data-te-select-class="text-center"
-                    data-te-select-init>
+            >
                 <option value="" hidden></option>
                 <option class="text-start" v-for="d in data" :value="d.id"> {{
                     __(d.name)
@@ -75,15 +75,19 @@ export default {
         this.closeButton.classList.remove('opacity-0');
     }
   },
+  created() {
+
+
+  },
   mounted() {
     // this.log(this.data);
+    new Select(document.getElementById(this.id));
 
-    initTE({Select});
     this.closeButton = document.querySelector(`#${this.id + '-wrapper'} span[data-te-select-clear-btn-ref]`);
     this.input = document.querySelector(`#${this.id + '-wrapper'} input[data-te-select-input-ref]`);
     if (this.input)
       this.input.setAttribute('dir', 'rtl');
-    if (this.modelValue == null)
+    if (this.closeButton && this.modelValue == null)
       this.closeButton.classList.add('opacity-0');
 
     // if (!window.Select) {

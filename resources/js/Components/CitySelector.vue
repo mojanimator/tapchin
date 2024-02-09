@@ -10,9 +10,9 @@
         @click="reset();modal.show()">
 
       <MapPinIcon class="h-4 w-4 mx-1 "/>
-      <div v-if="selecteds.length==0">{{ `0 ${__('city')}` }}</div>
+      <div v-if="selecteds.length==0">{{ `0 ${__('select')}` }}</div>
       <div v-else>
-        <span>{{ `${selecteds.length} ${__('city')}` }}</span>
+        <span>{{ `${selecteds.length} ${__('select')}` }}</span>
         <div class="flex flex-wrap  ">
           <div @click.stop=" remove(idx)" v-for="(s,idx) in selecteds"
                class="flex ms-1 mt-1   bg-primary-500 text-white rounded px-1">
@@ -47,7 +47,7 @@
                 class="text-lg text-primary-500 flex items-center font-medium leading-normal text-neutral-600"
                 id="citySelectorModalLabel">
               <MapPinIcon class="h-7 w-7 mx-3"/>
-              {{ __('city_select') }}
+
             </h5>
             <!--Close button-->
             <button
@@ -77,7 +77,7 @@
                 class="  sticky items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
 
               <div class="   text-xs ">
-                <span>{{ `${selecteds.length} ${__('city')}` }}</span>
+                <span>{{ `${selecteds.length} ${__('select')}` }}</span>
                 <div class="flex flex-wrap   ">
                   <div @click.stop="remove(idx)"
                        v-for="(s,idx) in selecteds"

@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->string('receiver_phone', 20)->nullable();
             $table->string('postal_code', 20)->nullable();
             $table->string('address', 2048)->nullable();
-            $table->enum('status', array_column(Variable::ORDER_STATUS, 'name'))->index();
+            $table->enum('status', array_column(Variable::ORDER_STATUSES, 'name'))->index();
             $table->unsignedInteger('total_items')->default(0);
             $table->unsignedBigInteger('total_price')->default(0);
             $table->unsignedBigInteger('total_items_price')->default(0);

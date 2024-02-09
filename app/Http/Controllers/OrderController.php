@@ -35,8 +35,7 @@ class OrderController extends Controller
         if (count($cart->items) == 0) {
             return response()->json(['message' => __('cart_is_empty'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
-        /*
-        */
+
 
         //create order
         $order = Order::create([
@@ -58,7 +57,6 @@ class OrderController extends Controller
             $items = [];
             $shippings = [];
             foreach ($cart->shipments as $shipment) {
-
                 foreach ($shipment['items'] as $item) {
                     $cartItem = $item ['cart_item'];
                     $methodId = $item ['method_id'];
@@ -71,7 +69,7 @@ class OrderController extends Controller
                         $methodId = 1;
                     $items[] = [
                         'name' => $cartItem->name,
-                        'order_id' => $cartItem->order_id,
+                        'order_id' => $order->id,
                         'product_id' => $cartItem->product_id,
                         'qty' => $cartItem->qty,
                         'shipping_method_id' => $methodId,

@@ -18,8 +18,11 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('repo_id')->nullable();
             $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
+            $table->unsignedBigInteger('agency_id')->nullable();
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
             $table->json('products')->nullable();
             $table->json('cities')->nullable();
+            $table->unsignedInteger('min_order_weight')->default(0);
             $table->unsignedInteger('per_weight_price')->default(0);
             $table->unsignedInteger('base_price')->default(0);
             $table->unsignedInteger('free_from_price')->nullable();

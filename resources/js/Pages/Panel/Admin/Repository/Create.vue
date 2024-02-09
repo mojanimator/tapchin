@@ -127,7 +127,7 @@
 
               </div>
               <div class="my-4">
-                <CitySelector :multi="true" :label="__('supported_cities')" v-model="form.cities"
+                <CitySelector :multi="true" :label="__('supported_districts')" v-model="form.cities"
                               :error="form.errors.cities"/>
               </div>
               <div class="my-3">
