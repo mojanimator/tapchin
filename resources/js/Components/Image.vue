@@ -28,16 +28,16 @@ export default {
 
     }
   },
-  props: ['type', 'src', 'alt', 'classes'],
+  props: ['type', 'src', 'alt', 'classes','failUrl'],
   methods: {
     imageError() {
       this.loading = false;
       if (this.retry < 0) return;
       this.loading = true;
       if (this.type == 'user')
-        this.url = "/assets/images/def-user.png";
+        this.url = this.failUrl || "/assets/images/def-user.png";
       else
-        this.url = "/assets/images/noimage.png";
+        this.url = this.failUrl || "/assets/images/noimage.png";
       this.retry--;
     }
   }

@@ -5,9 +5,13 @@ namespace App\Policies;
 use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\City;
+use App\Models\Pack;
+use App\Models\Product;
 use App\Models\Repository;
+use App\Models\RepositoryOrder;
 use App\Models\ShippingMethod;
 use App\Models\User;
+use App\Models\Variation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AdminPolicy
@@ -34,6 +38,45 @@ class AdminPolicy
 
     }
 
+    public function view(Admin $admin, $item, $abort = true, $option = null)
+    {
+
+        if ($admin->status == 'inactive') {
+            $message = __("user_is_inactive");
+
+        }
+        if ($admin->status == 'block') {
+            $message = __("user_is_blocked");
+        }
+        if (empty($message) && $item)
+            switch ($item) {
+                case     Agency::class :
+                    $res = $admin->hasAccess('view_agency');
+                    break;
+                case    Repository::class:
+                    $res = $admin->hasAccess('view_repository');
+                    break;
+                case    ShippingMethod::class:
+                    $res = $admin->hasAccess('view_shipping-method');
+                    break;
+                case    Pack::class:
+                    $res = $admin->hasAccess('view_pack');
+                    break;
+                case    Product::class:
+                    $res = $admin->hasAccess('view_product');
+                    break;
+                case    Variation::class:
+                    $res = $admin->hasAccess('view_variation');
+                    break;
+            }
+
+        if ($abort && empty($res))
+            return abort(403, $message ?? __("access_denied"));
+        if (!empty($res))
+            return true;
+        return false;
+    }
+
     public function create(Admin $admin, $item, $abort = true, $option = null)
     {
 
@@ -54,6 +97,18 @@ class AdminPolicy
                     break;
                 case    ShippingMethod::class:
                     $res = $admin->hasAccess('create_shipping-method');
+                    break;
+                case    Pack::class:
+                    $res = $admin->hasAccess('create_pack');
+                    break;
+                case    Product::class:
+                    $res = $admin->hasAccess('create_product');
+                    break;
+                case    RepositoryOrder::class:
+                    $res = $admin->hasAccess('create_repository_order');
+                    break;
+                case    Variation::class:
+                    $res = $admin->hasAccess('create_variation');
                     break;
             }
 
@@ -106,6 +161,16 @@ class AdminPolicy
                     break;
                 case  $item instanceof ShippingMethod  :
                     $res = $admin->hasAccess('edit_shipping-method');
+                    break;
+
+                case  $item instanceof Pack  :
+                    $res = $admin->hasAccess('edit_pack');
+                    break;
+                case   $item instanceof Product :
+                    $res = $admin->hasAccess('edit_product');
+                    break;
+                case   $item instanceof Variation :
+                    $res = $admin->hasAccess('edit_variation');
 
                     break;
 

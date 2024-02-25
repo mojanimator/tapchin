@@ -18,6 +18,7 @@ return new class extends Migration {
 //            $table->string('username', 50)->nullable();
             $table->unsignedBigInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+            $table->enum('agency_level', array_column(Variable::AGENCY_TYPES, 'level'))->nullable();
 
             $table->string('fullname', 100);
             $table->string('email', 100)->unique()->nullable();

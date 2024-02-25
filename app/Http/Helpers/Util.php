@@ -5,6 +5,7 @@ namespace App\Http\Helpers;
 
 use App\Models\City;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class Util
         $file->move(storage_path("app/public/$type"), "$name." . $file->extension());
     }
 
-    static function createImage($img, $type, $name = null, $folder = null)
+    static function createImage($img, $type, $name = null, $folder = null,)
     {
 
         $image_parts = explode(";base64,", $img);
@@ -39,14 +40,16 @@ class Util
             File::makeDirectory(Storage::path("public/$type"), $mode = 0755,);
         }
         $source = imagecreatefromstring($image_base64);
-        if (!$name && $folder) { //is gallery
+        if ($folder) { //is gallery
             if (!Storage::exists("public/$type/$folder"))
                 File::makeDirectory(Storage::path("public/$type/$folder"), $mode = 0755,);
             $allFiles = Storage::allFiles("public/$type/$folder");
-            $name = 1;
-            foreach ($allFiles as $path) {
-                if (str_contains($path, "/$name.jpg")) {
-                    $name++;
+            if (!$name) {
+                $name = 1;
+                foreach ($allFiles as $path) {
+                    if (str_contains($path, "/$name.jpg")) {
+                        $name++;
+                    }
                 }
             }
             $type = "$type/$folder";
@@ -58,6 +61,28 @@ class Util
         return $imageSave;
         return "/storage/$type/$name.jpg";
 //        file_put_contents(storage_path("app/public/$type_id/$image->id.jpg"), $image_base64);
+
+
+    }
+
+    public
+    function copyImage()
+    {
+        if (!File::exists("storage/app/public/$type/$id")) {
+//            Storage::makeDirectory("public/$type", 766);
+            File::makeDirectory(Storage::path("public/$type/$id"), $mode = 0755,);
+        }
+        $path = storage_path("app/public/faker/$faker/$parent.jpg");
+
+        $file = new UploadedFile(
+            $path,
+            '1.' . File::extension($path),
+            File::mimeType($path),
+            null,
+            true
+
+        );
+        copy($file->path(), (storage_path("app/public/$type/$id/thumb.jpg")   /*. $file->extension()*/));
 
 
     }
@@ -196,7 +221,8 @@ class Util
         return $time;
     }
 
-    public static function createCityTableFromDivar()
+    public
+    static function createCityTableFromDivar()
     {
 
         ini_set('max_execution_time', '0'); // for infinite time of execution
@@ -321,7 +347,8 @@ class Util
 
     }
 
-    private static function insertFromSql(string $string)
+    private
+    static function insertFromSql(string $string)
     {
         DB::unprepared("
 INSERT INTO `cities` (`id`, `parent_id`, `name`, `latitude`, `longitude`, `slug`, `level`, `tags`, `bbox`, `radius`) VALUES

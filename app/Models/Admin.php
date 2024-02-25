@@ -72,6 +72,7 @@ class Admin extends Authenticatable
         'is_active' => 'boolean',
         'is_block' => 'boolean',
         'wallet_active' => 'boolean',
+        'access' => 'array',
     ];
 
     public static function makeRefCode2()
@@ -161,7 +162,33 @@ class Admin extends Authenticatable
 
     public function hasAccess($item)
     {
-        return in_array($this->role, ['owner']) || in_array($this->access, $item);
+
+        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product',])) {
+            return $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
+        }
+        if (in_array($item, ['create_repository_order'])) {
+            return $this->agency_level < '3' && (in_array($this->role, ['owner']) || in_array($item, $this->access));
+        }
+        return in_array($this->role, ['owner']) || in_array($item, $this->access);
+    }
+
+    public function accesses()
+    {
+
+        if ($this->role == 'god' || ($this->agency_id == 1 && (in_array($this->role, ['owner'])))) return 'all';
+
+        if (in_array($this->role, ['owner'])) return [
+            'view_agency',
+            'view_repository',
+            'view_shipping',
+            'view_shipping-method',
+            'view_finantial',
+            'view_variation',
+            $this->agency_level < 3 ? 'create_repository_order' : '',
+            $this->agency_level == 0 ? 'create_variation' : '',
+        ];
+        return $this->access;
+
     }
 
     public function agency()

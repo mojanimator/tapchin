@@ -27,122 +27,158 @@
         </div>
         <!--        address section-->
         <div v-if="page=='shipping' || page=='payment'"
-             class="border-b flex flex-col   rounded-lg mx-1 mt-4 p-2 lg:p-4">
+             class="border-b flex flex-col shadow  rounded-lg mx-1 mt-4 p-2 lg:p-4">
           <div class="text-neutral-400 pb-2">{{ __('delivery_address') }}</div>
 
 
-          <AddressSelector v-if="cart.need_address ||  page!='cart'" :editable="page!='cart'  " class=" "
+          <AddressSelector v-if="cart.need_address ||  page!='cart'" :editable="page!='cart'" :clearable="true"
+                           class=" "
                            @change="update({address_idx:$event})"
                            :error="cart.errors &&   cart.errors.filter((e)=>e.type=='address').length>0?cart.errors.filter((e)=>e.type=='address')[0].message :null"
                            :preload="(cart.address)" type="cart"/>
 
-          <div v-show="  page=='payment' && cart.shipments.length>0 && cart.need_self_receive"
+          <div v-show="  page=='payment' && cart.orders.length>0 && cart.need_self_receive"
                class="text-primary-500 font-bold py-2">
             {{ __('you_selected_self_receive') }}
           </div>
         </div>
-        <div v-if=" cart.shipments.length==0" class="w-full p-4  items-center flex flex-col justify-center ">
+        <div v-if=" cart.orders.length==0" class="w-full p-4  items-center flex flex-col justify-center ">
           <div> {{ __('cart_is_empty') }}</div>
           <Link class="text-primary-500 hover:text-primary-400 cursor-pointer" :href="route('shop.index')"> {{
               __('shop')
             }}
           </Link>
         </div>
-
-        <div v-for="( shipment ,id) in cart.shipments"
-             :class="{'bg-danger-100':shipment.method.error_message && page!='cart'  }"
-             class="     p-2 m-2   shadow-md    rounded ">
-          <div v-for="(item,idx) in shipment.items" :key="item.cart_item.product_id"
-               class="flex p-2  flex-col my-2"
-               :class="{'bg-danger-100':item.cart_item.error_message}">
-            <div class="flex items-start" v-if="item.cart_item "
-            >
-              <div>
-                <Image :src="route('storage.products')+`/${item.cart_item.product_id}/1.jpg`"
-                       classes="w-32 h-32 object-contain rounded  mx-1 "
-                       :data-lity="route('storage.products')+`/${item.cart_item.product_id}/1.jpg`"/>
-              </div>
-              <div v-if=" item.cart_item.product "
-                   class="   w-full flex-col p-2 space-y-2 items-start">
-                <div class="flex items-center justify-between">
-                  <Link :href=" route( 'product.view',{id:item.cart_item.product.id,name:item.cart_item.product.name})"
+        <div v-for="(cart,idx) in cart.orders" class="shadow-md    rounded">
+          <div class="p-2">{{ `${__('order')} ${idx + 1}` }}</div>
+          <div v-for="( shipment ,id) in cart.shipments"
+               :class="{'bg-danger-100':shipment.method.error_message && page!='cart'  }"
+               class="     p-2 m-2    ">
+            <div v-for="(item,idx) in shipment.items" :key="item.cart_item.variation_id"
+                 class="flex p-2  flex-col my-2"
+                 :class="{'bg-danger-100':item.cart_item.error_message}">
+              <div class="flex items-start" v-if="item.cart_item "
+              >
+                <div>
+                  <Image :src="route('storage.variations')+`/${item.cart_item.variation_id}/thumb.jpg`"
+                         classes="w-32 h-32 object-contain rounded  mx-1 "
+                         :data-lity="route('storage.variations')+`/${item.cart_item.variation_id}/thumb.jpg`"/>
+                </div>
+                <div v-if=" item.cart_item.product "
+                     class="   w-full flex-col p-2 space-y-2 items-start">
+                  <div class="flex items-center justify-between">
+                    <Link
+                        :href=" route( 'variation.view',{id:item.cart_item.product.id,name:item.cart_item.product.name})"
                         class="cursor-pointer hover:text-primary-500">
-                    {{ item.cart_item.product.name || '' }}
-                  </Link>
-                  <div v-if="item.cart_item.product.grade"
-                       class="text-sm text-neutral-500 mx-2 ">{{
-                      __('grade') + ' ' + item.cart_item.product.grade
-                    }}
+                      {{ item.cart_item.product.name || '' }}
+                    </Link>
+                    <div v-if="item.cart_item.product.grade"
+                         class="text-sm text-neutral-500 mx-2 ">{{
+                        __('grade') + ' ' + item.cart_item.product.grade
+                      }}
+                    </div>
+                  </div>
+                  <div class="text-neutral-400 text-sm">{{ item.repo_name }}</div>
+                  <div class="flex  items-center text-sm">
+                    <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
+                    <div class="text-neutral-600 mx-1">{{ __('qty') }}:</div>
+                    <div class="text-neutral-600 mx-1">{{ item.cart_item.qty }}</div>
+                    <div class="text-neutral-400"> {{ getPack(item.cart_item.product.pack_id) }}</div>
+                  </div>
+
+                  <div class="flex  items-center text-sm">
+                    <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
+                    <div class="text-neutral-600 mx-1">{{ __('price_unit') }}:</div>
+                    <div class="text-neutral-600 mx-1">{{ asPrice(item.cart_item.product.price) }}</div>
+                    <TomanIcon class="w-5 h-5 text-neutral-400"/>
+
+                  </div>
+                  <div class="flex  items-center text-sm">
+                    <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
+                    <div class="text-neutral-600 mx-1">{{ __('weight_unit') }}:</div>
+                    <div class="text-neutral-600 mx-1">{{ parseFloat(item.cart_item.product.weight) }}</div>
+                    <div class="text-neutral-400 mx-1">{{ __('kg') }}</div>
+                    <!--                <TomanIcon class="w-5 h-5 text-neutral-500"/>-->
+
                   </div>
                 </div>
-                <div class="text-neutral-400 text-sm">{{ item.repo_name }}</div>
-                <div class="flex  items-center text-sm">
-                  <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
-                  <div class="text-neutral-600 mx-1">{{ __('qty') }}:</div>
-                  <div class="text-neutral-600 mx-1">{{ item.cart_item.qty }}</div>
-                  <div class="text-neutral-400"> {{ getPack(item.cart_item.product.pack_id) }}</div>
-                </div>
 
-                <div class="flex  items-center text-sm">
-                  <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
-                  <div class="text-neutral-600 mx-1">{{ __('price_unit') }}:</div>
-                  <div class="text-neutral-600 mx-1">{{ asPrice(item.cart_item.product.price) }}</div>
-                  <TomanIcon class="w-5 h-5 text-neutral-400"/>
-
+              </div>
+              <div v-if="item.cart_item.error_message" class="text-danger-600 font-bold text-sm">
+                {{ item.cart_item.error_message }}
+              </div>
+              <div class="flex flex-wrap items-center justify-start my-2">
+                <CartItemButton :product-id="item.cart_item.variation_id"
+                                class="flex  min-w-[100%]   xs:min-w-[50%] sm:min-w-[36%] lg:min-w-[20%]  hover:cursor-pointer"/>
+                <div class="flex">
+                  <div class="mx-2 ">{{ asPrice(item.cart_item.total_price) }}</div>
+                  <div>
+                    <TomanIcon class=""/>
+                  </div>
                 </div>
-                <div class="flex  items-center text-sm">
-                  <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
-                  <div class="text-neutral-600 mx-1">{{ __('weight_unit') }}:</div>
-                  <div class="text-neutral-600 mx-1">{{ parseFloat(item.cart_item.product.weight) }}</div>
-                  <div class="text-neutral-400 mx-1">{{ __('kg') }}</div>
-                  <!--                <TomanIcon class="w-5 h-5 text-neutral-500"/>-->
-
-                </div>
+              </div>
+            </div>
+            <div>
+              <div class="flex  items-center text-sm  border-b p-2 py-2">
+                <div class="text-neutral-600 mx-1">{{ __('cart_total_qty') }}:</div>
+                <div class="text-neutral-800 mx-1">{{ shipment.total_items }}</div>
+              </div>
+              <div class="flex  items-center text-sm  p-2 py-2">
+                <div class="text-neutral-600 mx-1">{{ __('cart_total_price') }}:</div>
+                <div class="text-neutral-800 mx-1">{{ asPrice(shipment.total_items_price) }}</div>
+                <TomanIcon class="w-5 h-5 text-neutral-400"/>
               </div>
 
             </div>
-            <div v-if="item.cart_item.error_message" class="text-danger-600 font-bold text-sm">
-              {{ item.cart_item.error_message }}
-            </div>
-            <div class="flex flex-wrap items-center justify-start my-2">
-              <CartItemButton :product-id="item.cart_item.product_id"
-                              class="flex  min-w-[100%]   xs:min-w-[50%] sm:min-w-[36%] lg:min-w-[20%]  hover:cursor-pointer"/>
-              <div class="flex">
-                <div class="mx-2 ">{{ asPrice(item.cart_item.total_price) }}</div>
-                <div>
+            <!--           shipping_method-->
+            <div v-if="page!='cart' && (cart.address || shipment.method.error_message) " class="border-t p-2">
+              <div class="text-neutral-500">{{ __('shipping_method') }}</div>
+              <div v-if="shipment.method.error_message" class="text-red-500 font-bold">
+                {{ shipment.method.error_message }}
+              </div>
+              <div v-else>
+                <div>{{ shipment.method.name }}
+                  <span v-if="shipment.method.description" class="text-sm">({{ shipment.method.description }})</span>
+                </div>
+                <div v-if="shipment.method.address" class="text-sm my-2 text-primary-700">{{ __('address') }}: {{
+                    shipment.method.address
+                  }}
+                </div>
+                <div class="flex items-center">
+                  <div class="text-neutral-500">{{ __('shipping_price') }} :</div>
+                  <div class="mx-2">{{ asPrice(shipment.total_shipping_price) }}</div>
                   <TomanIcon class=""/>
                 </div>
               </div>
+              <div v-if=" shipment.has_available_shipping " class="my-4 ">
+                <TextInput
+                    @change=" ($e)=>{let params={};params[`visit_repo_${shipment.repo_id}`]= shipment.visit_checked  ; update( params)}"
+                    :id="`visit_repo_${shipment.repo_id}`"
+                    type="checkbox"
+                    :placeholder="__('visit_repo')"
+                    classes=" px-0 mx-0 "
+                    v-model="shipment.visit_checked"
+                    :autocomplete="`visit_repo_${shipment.repo_id}`"
+
+                >
+                </TextInput>
+              </div>
             </div>
           </div>
-          <!--           shipping_method-->
-          <div v-if="page!='cart' && (cart.address || shipment.method.error_message) " class="border-t py-2">
-            <div class="text-neutral-500">{{ __('shipping_method') }}</div>
-            <div v-if="shipment.method.error_message" class="text-red-500 font-bold">
-              {{ shipment.method.error_message }}
-            </div>
-            <div v-else>
-              <div>{{ shipment.method.name }}
-                <span v-if="shipment.method.description" class="text-sm">({{ shipment.method.description }})</span>
-              </div>
-              <div v-if="shipment.method.address" class="text-sm my-2 text-primary-700">{{ __('address') }}: {{
-                  shipment.method.address
-                }}
-              </div>
-              <div class="flex items-center">
-                <div class="text-neutral-500">{{ __('shipping_price') }} :</div>
-                <div class="mx-2">{{ asPrice(shipment.total_price) }}</div>
-                <TomanIcon class=""/>
-              </div>
-            </div>
-
+          <div class="flex border-t items-center justify-end font-bold text-sm  p-4 py-2">
+            <div class="text-neutral-600 mx-1">{{ __('order_price') }}:</div>
+            <div class="text-neutral-800 mx-1">{{ asPrice(cart.total_price) }}</div>
+            <TomanIcon class="w-5 h-5 text-neutral-400"/>
           </div>
-
         </div>
       </section>
 
       <aside class="min-w-[15rem] sticky bg-neutral-100 my-2 md:my-0  p-2 rounded-lg   md:rounded-s-none ">
         <div class="flex flex-col md:my-4  ">
+          <div class="flex  items-center text-sm  border-b p-4 py-2">
+            <div class="text-neutral-600 mx-1">{{ __('orders_count') }}:</div>
+            <div class="text-neutral-800 mx-1">{{ cart.orders.length }}</div>
+          </div>
           <div class="flex  items-center text-sm  border-b p-4 py-2">
             <div class="text-neutral-600 mx-1">{{ __('cart_total_qty') }}:</div>
             <div class="text-neutral-800 mx-1">{{ cart.total_items }}</div>
@@ -164,7 +200,7 @@
           </div>
 
 
-          <PrimaryButton :class="{'opacity-50 disabled':cart.shipments.length==0}"
+          <PrimaryButton :class="{'opacity-50 disabled':cart.orders.length==0}"
                          @click="handleNextButtonClick"
                          classes="" class="my-2">
             <span v-if="!loading">   {{
@@ -193,6 +229,7 @@ import heroImage from '@/../images/hero.jpg';
 import {loadScript} from "vue-plugin-load-script";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import TextInput from "@/Components/TextInput.vue";
 import {
   EyeIcon,
   MapPinIcon,
@@ -243,6 +280,7 @@ export default {
     TomanIcon,
     ShoppingBagIcon,
     AddressSelector,
+    TextInput,
   },
   // mixins: [Mixin],
   setup(props) {

@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center ">
 
-    <Link :href="route('checkout.cart')"
+    <Link :href="cartLink || route('checkout.cart')"
           class="flex mx-1 btn  border relative   font-medium
             focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-300 ease-in-out   p-2 rounded-lg  rounded-lg hover:bg-primary-400 hover:text-white">
       <ShoppingCartIcon class=" h-5 w-5"/>
@@ -43,7 +43,7 @@ export default {
     ArrowRightOnRectangleIcon,
     ShoppingCartIcon,
   },
-  props: {},
+  props: ['link', 'cartLink'],
   setup(props) {
 
 
@@ -52,6 +52,7 @@ export default {
     this.update();
 
     this.emitter.on('updateCart', (cart) => {
+
       this.cart = cart;
       this.$page.props.cart = cart;
       this.setCartQty();
@@ -64,7 +65,9 @@ export default {
   methods: {
     setCartQty() {
       this.qty = 0;
+      this.qty = this.cart ? this.cart.total_items : 0;
 
+      return;
       if (this.cart && this.cart.shipments && this.cart.shipments.length > 0)
         for (let idx in this.cart.shipments) {
           for (let id in this.cart.shipments[idx].items) {
@@ -85,7 +88,7 @@ export default {
     update(params) {
       this.isLoading(true);
       this.loading = true;
-      window.axios.patch(route('cart.update'), params,
+      window.axios.patch(this.link || route('cart.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message && params) {

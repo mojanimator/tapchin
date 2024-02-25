@@ -27,10 +27,10 @@
         <swiper-slide @click=" toggleArray(p.id ,params.parent_ids);getData(0)"
                       :class="{'bg-primary-500 hover:bg-primary-400':params.parent_ids.filter((e)=>e==p.id).length>0}"
                       class="flex max-w-[3.5rem] flex-col rounded p-1 mb-4  items-center hover:cursor-pointer hover:bg-gray-50 hover:scale-[105%]"
-                      v-for="p in $page.props.p_products">
+                      v-for="p in $page.props.products">
           <div>
             <Image classes="rounded-full h-12 w-12 border-primary-500 border"
-                   :src="route('storage.pproducts')+`/${p.id}.jpg`"></Image>
+                   :src="route('storage.products')+`/${p.id}.jpg`"></Image>
           </div>
           <div :class="{'text-white':params.parent_ids.filter((e)=>e==p.id).length>0}"
                class="text-xs text-center text-neutral-500">{{ replaceAll(p.name, ' ', "‌") }}
@@ -46,11 +46,11 @@
           class="  mt-6   gap-y-3 gap-x-2 grid   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
         <div class="bg-white  shadow-md rounded-lg  "
              v-for="(p,idx) in products">
-          <article :id="p.id" @click.self="$inertia.visit(  route( 'product.view',{id:p.id,name:p.name}) )"
-                   class=" flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
+          <article :id="p.id" @click.self="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
+                   class="overflow-hidden flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
             <Image
-                classes="  overflow-hidden md:mx-auto max-w-16 md:max-w-[20rem] max-h-32 sm:max-h-64 rounded-b-lg mx-2  "
-                :src="route('storage.products')+`/${p.id}/1.jpg`"></Image>
+                classes="object-contain md:mx-auto sm:h-64      w-32 sm:w-full  h-32  rounded-b-lg mx-2"
+                :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
 
             <div class="hidden sm:flex min-w-[36%]   mx-auto">
               <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
@@ -64,7 +64,7 @@
               <hr class="border-gray-200  m-2">
               <div class="text-neutral-500 text-sm">{{ p.repo_name }}</div>
               <div class="flex items-center text-sm">
-                <div>{{ __('in_stock') + ` : ${p.in_shop}` }}</div>
+                <div>{{ __('in_stock') + ` : ${parseFloat(p.in_shop)}` }}</div>
                 <div class="text-sm text-neutral-500 mx-2" v-if="getPack(p.pack_id)">{{
                     ` ${getPack(p.pack_id)} `
                   }}
@@ -152,7 +152,7 @@ export default {
       params: {
         page: 0,
         search: null,
-        p_products: [],
+        products: [],
         order_by: null,
         dir: null,
         parent_ids: [],
@@ -200,7 +200,7 @@ export default {
       if (this.total > 0 && this.total <= this.products.length) return;
       this.loading = true;
 
-      window.axios.get(route('product.search'), {
+      window.axios.get(route('variation.search'), {
         params: this.params
       })
           .then((response) => {

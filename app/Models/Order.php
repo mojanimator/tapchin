@@ -12,11 +12,14 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'repo_id',
+        'agency_id',
         'province_id',
         'county_id',
         'district_id',
         'receiver_fullname',
         'receiver_phone',
+        'location',
         'postal_code',
         'address',
         'status',

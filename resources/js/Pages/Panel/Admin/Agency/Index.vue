@@ -417,7 +417,7 @@ export default {
               console.log(error.response.data);
               console.log(error.response.status);
               console.log(error.response.headers);
-              this.error = error.response.data;
+              this.error = error.response.data ? error.response.data.message ? error.response.data.message : error.response.data : this.__('response_error');
 
             } else if (error.request) {
               // The request was made but no response was received
@@ -431,7 +431,7 @@ export default {
               this.error = error.message;
             }
             console.log(error.config);
-            this.showToast('danger', error)
+            this.showToast('danger', this.error)
           })
           .finally(() => {
             // always executed

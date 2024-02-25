@@ -13,13 +13,13 @@ class CartItem extends Model
         'name',
         'repo_id',
         'cart_id',
-        'product_id',
+        'variation_id',
         'shipping_id',
         'qty',
     ];
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->belongsTo(Variation::class, 'variation_id');
     }
 }

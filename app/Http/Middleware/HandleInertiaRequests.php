@@ -8,11 +8,12 @@ use App\Models\Agency;
 use App\Models\Cart;
 use App\Models\City;
 use App\Models\Pack;
-use App\Models\PProduct;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
 
@@ -47,6 +48,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
             ],
+            'accesses' => $user && $user instanceof Admin ? $user->accesses() : [],
             'isAdmin' => $user && $user instanceof Admin,
             'agency' => $user && $user instanceof Admin ? Agency::find($user->agency_id) : null,
             'agency_types' => Variable::AGENCY_TYPES,
@@ -56,6 +58,7 @@ class HandleInertiaRequests extends Middleware
                 return app()->getLocale();
             },
             'statuses' => Variable::STATUSES,
+            'categories' => \App\Models\Category::get(),
             'langs' => Variable::LANGS,
             'images' => asset('assets/images') . '/',
             'language' => function () {
@@ -82,7 +85,8 @@ class HandleInertiaRequests extends Middleware
             'cities' => Variable::$CITIES,
             'is_auction' => Setting::getValue('is_auction'),
             'packs' => Pack::get(),
-            'p_products' => PProduct::select('id', 'name')->get(),
+            'grades' => Variable::GRADES,
+            'products' => Product::select('id', 'name')->whereStatus('active')->get(),
             'user_location' => User::getLocation(Variable::$CITIES),
             'socials' => [
                 'whatsapp' => "https://wa.me/" . optional($socials->where('key', 'social_whatsapp')->first())->value,

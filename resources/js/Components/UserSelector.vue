@@ -240,7 +240,7 @@ export default {
       errors: null,
     }
   },
-  emits: ['update:selected', 'update:text'],
+  emits: ['update:selected', 'update:text', 'change'],
   created() {
     this.cols = this.colsData || ['fullname', 'phone'];
     this.labels = this.labelsData || ['name', 'phone'];
@@ -272,6 +272,7 @@ export default {
       this.selectedText = this.myMap(this.cols, (col) => item[col]).filter((e) => e != null).join(' | ');
       this.$emit('update:selected', this.selectedItem);
       this.$emit('update:text', this.selectedText);
+      this.$emit('change', item);
       this.Modal.hide();
     },
     getData() {

@@ -1,5 +1,6 @@
 import {usePage,} from "@inertiajs/vue3";
 import {inject, ref, defineEmits} from 'vue'
+import {Dropdown, Modal} from "tw-elements";
 
 
 export default {
@@ -146,9 +147,7 @@ export default {
             }
         },
         hasAccess(role) {
-            if (!this.user || !this.isAdmin()) return false;
-            this.user.access = this.user.access || [];
-            return this.user.role == 'god' || this.user.role == 'owner' || this.user.access.indexOf(role) > -1;
+            return usePage().props.accesses == 'all' || usePage().props.accesses.indexOf(role) >= 0;
         },
         hasWallet() {
 
@@ -277,6 +276,30 @@ export default {
 
             return array;
         },
+        initTableDropdowns() {
+            const dropdownElementList = [].slice.call(document.querySelectorAll('td [data-te-dropdown-toggle-ref]'));
+            window.dropdownList = dropdownElementList.map((dropdownToggleEl) => {
+                let d = new Dropdown(dropdownToggleEl);
+                dropdownToggleEl.addEventListener('click', function (event) {
+                    d.toggle();
+                })
+                return d;
+            });
+        },
+        initTableModals() {
+            const modalElementList = [].slice.call(document.querySelectorAll('td .modal'));
+            window.modalElementList = modalElementList.map((modalElementList) => {
+                let d = new Modal(modalElementList);
+                modalElementList.parentElement.firstChild.addEventListener('click', function (event) {
+                    d.toggle();
+                })
+                return d;
+            });
+        },
+        mySum(array) {
+            array = array || [];
+            return array.reduce((partialSum, a) => partialSum + a, 0)
+        }
     },
 
 

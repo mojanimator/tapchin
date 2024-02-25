@@ -23,8 +23,8 @@
           <div class="flex flex-col sm:flex-row   ">
 
             <div class=" min-w-[36%]">
-              <Image :src="route('storage.products')+`/${data.id}/1.jpg`"
-                     :data-lity="route('storage.products')+`/${data.id}/1.jpg`"
+              <Image :src="route('storage.variations')+`/${data.id}/thumb.jpg`"
+                     :data-lity="route('storage.variations')+`/${data.id}/1.jpg`"
                      classes="object-contain  cursor-pointer   "/>
 
             </div>

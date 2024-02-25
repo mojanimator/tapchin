@@ -55,12 +55,12 @@ const remove = (idx) => {
 <template>
   <div>
     <div class="flex items-center">
-      <Tooltip class="p-2 " :content="__('help_tags')">
+      <Tooltip class="  " :content="__('help_tags')">
         <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
       </Tooltip>
-      <InputLabel for="name" :value="placeholder"/>
+      <InputLabel :for="id" :value="placeholder"/>
     </div>
-    <div class="relative mb-2 mt-2 flex flex-wrap items-stretch">
+    <div class="relative mb-2  flex flex-wrap items-stretch">
         <span
             class="flex bg-gray-100  text-gray-500 items-center whitespace-nowrap rounded-s border border-e-0 border-solid border-neutral-300  text-center text-base font-normal leading-[1.6]   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"
             id="basic-addon1">

@@ -34,6 +34,7 @@ return new class extends Migration {
             $table->string('address', 2048)->nullable();
             $table->string('location', 50)->nullable();
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
+            $table->bigInteger('wallet')->default(0);
 
             $table->timestamps();
         });

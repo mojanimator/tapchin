@@ -163,7 +163,7 @@
               </div>
 
               <div class="my-4" v-if="form.repo_id">
-                <ProductSelector :link="route('admin.panel.p_product.search')+`?repo_id=${form.repo_id}`" :multi="true"
+                <ProductSelector :link="route('admin.panel.product.tree')+`?repo_id=${form.repo_id}`" :multi="true"
                                  :label="__('supported_products')" v-model="form.products"
                                  :preload=" $page.props.data.products"
                                  :error="form.errors.products"/>

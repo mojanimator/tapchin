@@ -3,7 +3,7 @@
   <div class="flex    flex-col ">
 
     <div class="flex  ">
-      <div @click="!show? show=true:  !loading? edit({product_id:productId,qty:inCart}):null "
+      <div @click="!show? show=true:  !loading? edit({variation_id:productId,qty:inCart}):null "
            :class="  show ?'rounded-s-md':'rounded-md'"
            class="border grow   flex justify-center items-center   border-primary-500 text-primary-500 p-2  hover:bg-primary-400 hover:text-white">
         <ShoppingCartIcon v-if=" !show" :class="{'border-e pe-1':inCart}" class="w-7 h-6  "/>
@@ -65,7 +65,7 @@ export default {
     }
   },
   expose: ['update:cart'],
-  props: ['productId', 'inShop',],
+  props: ['productId', 'inShop', 'link'],
   components: {
     TextInput,
     ChevronDownIcon,
@@ -92,13 +92,16 @@ export default {
   },
   methods: {
     setInCartQty() {
-      this.inCart = 0;
-      if (this.cart && this.cart.shipments && this.cart.shipments.length > 0)
-        for (let idx in this.cart.shipments) {
-          for (let id in this.cart.shipments[idx].items) {
-            if (this.cart.shipments[idx].items[id].cart_item.product_id == this.productId) {
-              this.inCart = this.cart.shipments[idx].items[id].cart_item.qty;
-              break;
+      this.inCart = 0
+
+      if (this.cart && this.cart.orders && this.cart.orders.length > 0)
+        for (let ix in this.cart.orders) {
+          for (let idx in this.cart.orders[ix].shipments) {
+            for (let id in this.cart.orders[ix].shipments[idx].items) {
+              if (this.cart.orders[ix].shipments[idx].items[id].cart_item.variation_id == this.productId) {
+                this.inCart = this.cart.orders[ix].shipments[idx].items[id].cart_item.qty;
+                break;
+              }
             }
           }
         }
@@ -125,7 +128,7 @@ export default {
     ,
     edit(params) {
       this.loading = true;
-      window.axios.patch(route('cart.update'), params,
+      window.axios.patch(this.link || route('cart.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {

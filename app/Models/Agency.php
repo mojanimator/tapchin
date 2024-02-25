@@ -11,11 +11,13 @@ class Agency extends Model
 
 
     protected $fillable = [
+        'parent_id',
         'name',
         'phone',
         'postal_code',
         'access',
         'level',
+        'wallet',
 //        'has_shop',
 //        'owner_id',
         'parent_id',
@@ -29,6 +31,11 @@ class Agency extends Model
     protected $casts = [
         'access' => 'array'
     ];
+
+    public function repositories()
+    {
+        return $this->hasMany(Repository::class, 'agency_id');
+    }
 
     public function owner()
     {

@@ -21,11 +21,13 @@ return new class extends Migration {
             $table->foreign('shipping_method_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('no action');
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('no action');
+            $table->unsignedBigInteger('variation_id')->nullable();
+            $table->foreign('variation_id')->references('id')->on('variations')->onDelete('no action');
             $table->unsignedBigInteger('repo_id')->nullable();
             $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
-            $table->unsignedInteger('qty')->nullable();
+//            $table->unsignedInteger('qty')->nullable();
+            $table->unsignedDecimal('qty', 8, 3)->default(0);//weight|count
+
             $table->unsignedBigInteger('total_price');
             $table->unsignedBigInteger('discount_price');
             $table->timestamps();

@@ -7,7 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\ShippingMethodRequest;
 use App\Models\Admin;
 use App\Models\Agency;
-use App\Models\Product;
+use App\Models\Variation;
 use App\Models\Repository;
 use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
@@ -24,7 +24,7 @@ class ShippingMethodController extends Controller
 
         $this->authorize('edit', [Admin::class, $data]);
 
-        $data->products = Product::whereIntegerInRaw('id', $data->products)->select('id', 'name', 'pack_id', 'grade', 'weight')->get();
+        $data->products = Variation::whereIntegerInRaw('id', $data->products)->select('id', 'name', 'pack_id', 'grade', 'weight')->get();
         return Inertia::render('Panel/Admin/Shipping/Method/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,

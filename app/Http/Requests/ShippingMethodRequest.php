@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Agency;
 use App\Models\City;
 use App\Models\Pack;
-use App\Models\Product;
+use App\Models\Variation;
 use App\Models\Repository;
 use App\Models\ShippingMethod;
 use Illuminate\Validation\Rules\File;
@@ -56,7 +56,7 @@ class ShippingMethodRequest extends FormRequest
             $repoId = $this->repo_id;
             $repo = Repository::find($repoId);
             $allowedCities = optional($repo)->cities ?? [];
-            $allowedProducts = Product::where('repo_id', $repoId)->whereNotNull('repo_id')->select('id', 'name', 'pack_id', 'grade', 'weight')->get();
+            $allowedProducts = Variation::where('repo_id', $repoId)->whereNotNull('repo_id')->select('id', 'name', 'pack_id', 'grade', 'weight')->get();
             $this->name = $this->name ?? __('shipping') . '/' . optional($repo)->name;
             $this->merge(["agency_id" => optional($repo)->agency_id]);
 

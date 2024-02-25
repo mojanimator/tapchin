@@ -12,13 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('p_products', function (Blueprint $table) {
+        Schema::create('agency_financials', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 200);
-            $table->json('categories')->nullable();
-            $table->unsignedInteger('category_id')->nullable();
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
-            $table->json('tags')->nullable();
+            $table->unsignedBigInteger('agency_id')->nullable();
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+
+            $table->bigInteger('wallet')->default(0);
+            $table->string('card', 20)->nullable();
+            $table->string('sheba', 30)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('p_products');
+        Schema::dropIfExists('agency_financials');
     }
 };

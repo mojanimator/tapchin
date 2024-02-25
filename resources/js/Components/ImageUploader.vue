@@ -35,9 +35,12 @@
       </div>
 
 
-      <div v-show="croppedImage" class="  rounded-lg flex flex-col justify-between   " :style="`width:${width}`">
+      <div v-show="croppedImage" class="cursor-pointer  rounded  flex flex-col justify-between   "
+           :style="`width:${width}`"
+           @click="modal.show();initCropper()"
+      >
 
-        <img v-show="croppedImage" class="flex max-w-full    " :class="classes"
+        <img v-show="croppedImage" class="flex max-w-full rounded    " :class="classes"
              @error="errorImage"
              :src="croppedImage"
 
@@ -45,13 +48,13 @@
 
         <div class="flex my-1 w-full " role="group">
           <div v-if="mode=='edit'"
-               class="text-center flex rounded-s grow  cursor-pointer hover:bg-danger-600  p-2 bg-danger text-white grow "
+               class="text-center flex rounded  grow  cursor-pointer hover:bg-danger-600  p-2 bg-danger text-white grow "
                :title="__('remove')"
-               @click="!preload || replace ? clearImage():  showDialog('danger',__('remove_image?'), __('remove') , removeImage )  ;">
+               @click.stop="!preload || replace ? clearImage():  showDialog('danger',__('remove_image?'), __('remove') , removeImage )  ;">
             <XMarkIcon class="w-4 h-4  mx-auto text-white  text-white" v-if="!removing"/>
             <LoadingIcon class="w-4 h-4 mx-auto " v-if="removing"/>
           </div>
-          <div v-if="  mode=='edit'"
+          <div v-if=" false &&  mode=='edit'"
                class="cursor-pointer grow rounded-e hover:bg-success-600  p-2 bg-success text-white grow"
                :title="__('upload')"
                @click="  showDialog('primary',__('new_file_replace'), __('upload') , uploadImage )">
@@ -80,9 +83,9 @@
     <div
         data-te-modal-init
         class="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
-        id="cropperModal"
+        :id="`cropperModal${id}`"
         tabindex="-1"
-        aria-labelledby="cropperModalLabel"
+        :aria-labelledby="`cropperModal${id}Label`"
         aria-hidden="true">
       <div
           data-te-modal-dialog-ref
@@ -94,16 +97,16 @@
             <!-- Modal title -->
             <h5
                 class="flex text-xl font-medium leading-normal text-neutral-800 dark:text-neutral-200"
-                id="cropperModalLabel">
+                :id="`cropperModal${id}Label`">
               <PhotoIcon class="h-7 w-7 mx-3"/>
               {{ __('crop_image') }}
             </h5>
             <!-- Close button -->
-            <button
-                type="button"
-                class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
-                data-te-modal-dismiss
-                aria-label="Close">
+            <button @click="modal.hide()"
+                    type="button"
+                    class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+                    data-te-modal-dismiss
+                    aria-label="Close">
               <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -144,7 +147,7 @@
               <div v-if="mode=='edit'"
                    class="text-center flex rounded-s grow  cursor-pointer hover:bg-danger-600  p-3 bg-danger text-white grow "
                    :title="__('remove')"
-                   @click="!preload || replace ? clearImage():  showDialog('danger',__('remove_image?'), __('remove') , removeImage )  ;">
+                   @click="!preload || replace ? clearImage('modal',$event):  showDialog('danger',__('remove_image?'), __('remove') , removeImage )  ;">
                 <XMarkIcon class="w-4 h-4  mx-auto text-white  text-white" v-if="!removing"/>
                 <LoadingIcon class="w-4 h-4 mx-auto " v-if="removing"/>
               </div>
@@ -267,7 +270,7 @@ export default {
     this.uploader = document.querySelector('#' + this.id + '-file');
     this.uploadContainer = document.querySelector('#container-' + this.id);
 
-    const modalEl = document.getElementById('cropperModal');
+    const modalEl = document.getElementById(`cropperModal${this.id}`);
     this.modal = new Modal(modalEl);
   }
   ,
@@ -308,12 +311,18 @@ export default {
       return null
 
     },
-    clearImage() {
+    clearImage(_from, $event) {
+
       this.doc = null;
       this.image.src = null;
+      this.croppedImage = null;
       document.querySelector("#" + this.id + '-file').value = null;
       document.querySelector('#' + this.id).value = null;
+      if (_from == 'modal') {
+        // this.openFileChooser($event, this.id + '-file')
+        this.modal.hide();
 
+      }
 
       return null
 
@@ -373,6 +382,7 @@ export default {
       this.removing = true;
 
       axios.patch(this.link, {
+        'name': this.id,
         'id': this.forId,
         'cmnd': 'delete-img',
         'path': this.preload,
@@ -397,13 +407,15 @@ export default {
 
     async uploadImage() {
 //                console.log(this.$refs.dropdown.selected.length);
-
       this.uploading = true;
+      this.isLoading(true);
+      this.modal.hide();
       const canvas = this.cropper.getCroppedCanvas();
 //                this.cropper.crop();
       if (!canvas)
         this.initCropper();
       let fd = {
+        'name': this.id,
         'img': this.cropper.getCroppedCanvas().toDataURL(),
         'id': this.forId,
         'path': this.preload,
@@ -425,6 +437,8 @@ export default {
 
       }).finally(() => {
         this.uploading = false;
+        this.isLoading(false);
+
       });
 
 

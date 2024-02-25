@@ -8,6 +8,7 @@ use App\Http\Requests\RepositoryRequest;
 use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\Repository;
+use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -111,12 +112,14 @@ class RepositoryController extends Controller
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
         $isShop = $request->is_shop;
-
-        $query = Repository::query()->select('id', 'name', 'phone', 'is_shop', 'status', 'agency_id', 'province_id', 'county_id', 'district_id');
+        $with = $request->with;
+        $visitRepoMethod = null;
+        $query = Repository::query()->select('id', 'address', 'name', 'phone', 'is_shop', 'status', 'allow_visit', 'agency_id', 'postal_code', 'province_id', 'county_id', 'district_id');
 
         $myAgency = Agency::find($admin->agency_id);
 
         $agencies = $admin->allowedAgencies($myAgency)->select('id', 'name')->get();
+
         $query->whereIntegerInRaw('agency_id', $agencies->pluck('id'));
         if ($search)
             $query = $query->where('name', 'like', "%$search%");
@@ -124,13 +127,24 @@ class RepositoryController extends Controller
             $query = $query->where('status', $status);
         if ($isShop)
             $query = $query->where('is_shop', $isShop);
-
-        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
+        if ($with == 'shipping_methods') {
+            $query = $query->with('shippingMethods');
+            $visitRepoMethod = ShippingMethod::find(1);
+        }
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies, $with, $visitRepoMethod) {
             return $paginated->getCollection()->transform(
-                function ($item) use ($agencies) {
+                function ($item) use ($agencies, $with, $visitRepoMethod) {
                     $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
+
+                    if ($with == 'shipping_methods' && $item->allow_visit) {
+                        $methods = $item->getRelation('shippingMethods');
+                        $methods->add($visitRepoMethod);
+                        $item->setRelation('shippingMethods', $methods);
+                    }
+
                     return $item;
                 }
+
             );
         });
 

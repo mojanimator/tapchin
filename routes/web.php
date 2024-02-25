@@ -18,7 +18,7 @@ use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PartnershipController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PodcastController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VariationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectItemController;
@@ -78,7 +78,13 @@ Route::get('/cache', function () {
     echo Artisan::output();
 });
 Route::get('test', function () {
-
+    return;
+    if (!File::exists("storage/app/public/variations/198")) {
+//            Storage::makeDirectory("public/$type", 766);
+        File::makeDirectory(Storage::path("public/variations/198"), $mode = 0755,);
+    }
+    return File::copy(storage_path("app/public/variations/182/thumb.jpg"), storage_path("app/public/variations/198/thumb.jpg"));
+    return;
     return;
     return \Illuminate\Support\Facades\Artisan::call('store:transactions');
     return (new ArticleController())->search(new Request([]));
@@ -99,7 +105,7 @@ Route::get('storage/banners')->name('storage.banners');
 Route::get('storage/articles')->name('storage.articles');
 Route::get('storage/tickets')->name('storage.tickets');
 Route::get('storage/slides')->name('storage.slides');
-Route::get('storage/pproducts')->name('storage.pproducts');
+Route::get('storage/variations')->name('storage.variations');
 Route::get('storage/products')->name('storage.products');
 Route::get('storage/admins')->name('storage.admins');
 
@@ -223,8 +229,8 @@ Route::get('/article/search', [ArticleController::class, 'search'])->name('artic
 Route::post('article/view', [ArticleController::class, 'increaseView'])->name('article.view');
 Route::get('article/{article}', [ArticleController::class, 'view'])->name('article');
 
-Route::get('/product/search', [ProductController::class, 'search'])->name('product.search');
-Route::get('/product/{id}/{name}', [ProductController::class, 'view'])->name('product.view');
+Route::get('/variation/search', [VariationController::class, 'search'])->name('variation.search');
+Route::get('/variation/{id}/{name}', [VariationController::class, 'view'])->name('variation.view');
 
 Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
 

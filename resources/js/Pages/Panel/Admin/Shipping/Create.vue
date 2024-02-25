@@ -120,7 +120,7 @@
 
               </div>
               <div class="my-4">
-                <AddressSelector :editable="true" class=" " type="" :label="__('address')"
+                <AddressSelector :editable="true" :clearable="true" class=" " type="" :label="__('address')"
                                  @change="updateAddress($event) "
                                  :error="form.errors.address ||form.errors.postal_code || form.errors.province_id || form.errors.county_id "/>
 

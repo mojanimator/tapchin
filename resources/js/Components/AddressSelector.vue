@@ -13,7 +13,7 @@
 
       <div v-if="selectedAddress" class="  w-full">
         <div class="  end-0 top-0  flex">
-          <PrimaryButton type="button"
+          <PrimaryButton v-if="clearable" type="button"
                          @click.stop=" selectedAddress=null;mapAddress={};addAddressToCart(null) "
                          class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
             <TrashIcon class="w-4 h-4 "/>
@@ -33,11 +33,11 @@
             {{ getCityName(selectedAddress.district_id) }}
           </div>
         </div>
-        <div v-if="type=='cart'" class="flex items-center py-1 ">
+        <div v-if="type=='cart' || type=='repo'" class="flex items-center py-1 ">
           <UserIcon class="w-4 h-4  text-primary-600"/>
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_fullname }}</div>
         </div>
-        <div v-if="type=='cart'" class="flex items-center py-1">
+        <div v-if="type=='cart' || type=='repo'" class="flex items-center py-1">
           <PhoneIcon class="w-4 h-4 text-primary-600"/>
           <div class="mx-1 text-neutral-700"> {{ selectedAddress.receiver_phone }}</div>
         </div>
@@ -248,8 +248,8 @@
                     </TextInput>
 
                   </div>
-                  <div v-if="type=='cart'" class=" ">
-                    <div class="p-2 border-b my-2 ">{{ __('receiver') }}</div>
+                  <div v-if="type=='cart' || type=='repo'" class=" ">
+                    <div class="p-2 border-b my-2 ">{{ type == 'repo' ? __('owner') : __('receiver') }}</div>
                     <div class="grid gap-2 grid-cols-1 lg:grid-cols-2 my-4">
                       <TextInput
                           id="fullname"
@@ -346,7 +346,7 @@ export default {
 
     }
   },
-  props: ['id', 'label', 'type', 'data', 'modelValue', 'editable', 'error'],
+  props: ['id', 'label', 'type', 'data', 'modelValue', 'editable', 'clearable', 'error'],
   emits: ['change', 'updateCart'],
   components: {
     PrimaryButton,

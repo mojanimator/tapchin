@@ -8,14 +8,22 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\PackController;
 use App\Http\Controllers\PartnershipController;
-use App\Http\Controllers\PProductController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RepositoryCartController;
 use App\Http\Controllers\RepositoryController;
+use App\Http\Controllers\RepositoryOrderController;
+use App\Http\Controllers\RepositoryShippingController;
+use App\Http\Controllers\RepositoryShopController;
+use App\Http\Controllers\RepositoryTransportController;
 use App\Http\Controllers\ShippingMethodController;
+use App\Http\Controllers\VariationController;
 use App\Http\Helpers\Variable;
 use App\Models\Agency;
 use App\Models\Article;
-use App\Models\PProduct;
+use App\Models\Product;
+use App\Models\Variation;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
@@ -150,6 +158,29 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::get('repository/{repository}', [RepositoryController::class, 'edit'])->name('admin.panel.repository.edit');
 
 
+        PanelController::makeInertiaRoute('get', 'repository/transport/index', 'admin.panel.repository.transport.index', 'Panel/Admin/Repository/Transport/Index', []);
+
+        PanelController::makeInertiaRoute('get', 'repository/transport/create', 'admin.panel.repository.transport.create', 'Panel/Admin/Repository/Transport/Create', []);
+
+
+        Route::get('repository/shipping/search', [RepositoryShippingController::class, 'searchPanel'])->name('admin.panel.repository.shipping.search');
+        Route::patch('repository/shipping/update', [RepositoryShippingController::class, 'update'])->name('admin.panel.repository.shipping.update');
+        Route::post('repository/shipping/create', [RepositoryShippingController::class, 'create'])->name('admin.panel.repository.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\RepositoryShipping,'1'");
+        Route::get('repository/shipping/{shipping}', [RepositoryShippingController::class, 'edit'])->name('admin.panel.repository.shipping.edit');
+
+        PanelController::makeInertiaRoute('get', 'repository/order/index', 'admin.panel.repository.order.index', 'Panel/Admin/Repository/Order/Index', []);
+        Route::post('repository/order/create', [RepositoryOrderController::class, 'create'])->name('admin.panel.repository.order.create')->middleware("can:create,App\Models\Admin,App\Models\RepositoryOrder,'1'");
+        PanelController::makeInertiaRoute('get', 'repository/order/create', 'admin.panel.repository.order.create', 'Panel/Admin/Repository/Order/Create', [
+            'pay_timeout' => Variable::PAY_TIMEOUT,
+            'statuses' => collect(Variable::ORDER_STATUSES)->whereIn('name', ['request', 'pending', 'processing'])->pluck('name'),
+        ]);
+        Route::get('repository/order/search}', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.repository.order.search');
+
+        PanelController::makeInertiaRoute('get', 'repository/shop/index', 'admin.panel.repository.shop.index', 'Panel/Admin/Repository/Shop/Index', []);
+        Route::get('repository/shop/search', [RepositoryShopController::class, 'search'])->name('admin.panel.repository.shop.search');
+        Route::patch('repository/cart/update', [RepositoryCartController::class, 'update'])->name('admin.panel.repository.cart.update');
+
+
         PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping.method.index', 'Panel/Admin/Shipping/Method/Index',
             []
         );
@@ -164,7 +195,50 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::post('shipping/method/create', [ShippingMethodController::class, 'create'])->name('admin.panel.shipping.method.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
         Route::get('shipping/method/{shipping_method}', [ShippingMethodController::class, 'edit'])->name('admin.panel.shipping.method.edit');
 
-        Route::get('p_product/search', [PProductController::class, 'searchPanel'])->name('admin.panel.p_product.search');
+
+        PanelController::makeInertiaRoute('get', 'pack/index', 'admin.panel.pack.index', 'Panel/Admin/Pack/Index',
+            []
+        );
+
+        PanelController::makeInertiaRoute('get', 'pack/create', 'admin.panel.pack.create', 'Panel/Admin/Pack/Create',
+            [], "can:create,App\Models\Admin,App\Models\Pack,'1'"
+        );
+
+        Route::get('pack/search', [PackController::class, 'searchPanel'])->name('admin.panel.pack.search');
+        Route::patch('pack/update', [PackController::class, 'update'])->name('admin.panel.pack.update');
+        Route::post('pack/create', [PackController::class, 'create'])->name('admin.panel.pack.create')->middleware("can:create,App\Models\Admin,App\Models\Pack,'1'");
+        Route::get('pack/{pack}', [PackController::class, 'edit'])->name('admin.panel.pack.edit');
+
+
+        PanelController::makeInertiaRoute('get', 'product/index', 'admin.panel.product.index', 'Panel/Admin/Product/Index',
+            []
+        );
+
+        PanelController::makeInertiaRoute('get', 'product/create', 'admin.panel.product.create', 'Panel/Admin/Product/Create',
+            [
+
+            ]
+        );
+
+        Route::get('product/tree', [ProductController::class, 'getTree'])->name('admin.panel.product.tree');
+        Route::get('product/search', [ProductController::class, 'searchPanel'])->name('admin.panel.product.search')->middleware("can:view,App\Models\Admin,App\Models\Product,'1'");
+        Route::patch('product/update', [ProductController::class, 'update'])->name('admin.panel.product.update');
+        Route::post('product/create', [ProductController::class, 'create'])->name('admin.panel.product.create')->middleware("can:create,App\Models\Admin,App\Models\Product,'1'");
+        Route::get('product/{product}', [ProductController::class, 'edit'])->name('admin.panel.product.edit');
+
+        PanelController::makeInertiaRoute('get', 'repository/shop/cart', 'admin.panel.repository.shop.cart', 'Panel/Admin/Repository/Shop/Cart',
+            []
+        );
+
+
+        PanelController::makeInertiaRoute('get', 'variation/create', 'admin.panel.variation.create', 'Panel/Admin/Variation/Create', []);
+
+        Route::get('variation/index', [VariationController::class, 'index'])->name('admin.panel.variation.index')->middleware("can:view,App\Models\Admin,App\Models\Variation,'1'");
+        Route::get('variation/search', [VariationController::class, 'searchPanel'])->name('admin.panel.variation.search')->middleware("can:view,App\Models\Admin,App\Models\Variation,'1'");
+        Route::patch('variation/update', [VariationController::class, 'update'])->name('admin.panel.variation.update');
+        Route::post('variation/create', [VariationController::class, 'create'])->name('admin.panel.variation.create')->middleware("can:create,App\Models\Admin,App\Models\Variation,'1'");
+        Route::get('variation/{Variation}', [VariationController::class, 'edit'])->name('admin.panel.variation.edit');
+
     });
 
 });

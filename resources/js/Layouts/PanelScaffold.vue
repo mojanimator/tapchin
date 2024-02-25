@@ -1,6 +1,6 @@
 <template>
   <App>
-    <main :dir="dir()" class="min-h-screen panel   " :class="{'dark':isDark}">
+    <main :dir="dir()" class="h-full  panel   " :class="{'dark':isDark}">
       <Head>
         <slot name="header"/>
         <link rel="shortcut icon" type="image/x-icon" :href="favicon"/>
@@ -81,6 +81,11 @@
                   </div>
                 </button>
 
+                <!--cart button-->
+                <CartButton
+                    :link="route('admin.panel.repository.cart.update')"
+                    :cart-link="route('admin.panel.repository.shop.cart')"
+                />
                 <!-- Notification button -->
                 <NotificaionButton/>
 
@@ -167,14 +172,14 @@
           </header>
 
           <!-- Main content -->
-          <main class="min-h-screen text-primary-500">
+          <main class="min-h-[calc(100%-50rem)] text-primary-500">
             <!--   content-->
             <slot name="content" :showToast="showToast"/>
           </main>
 
           <!-- Main footer -->
-          <footer
-              class="flex shadow-lg drop-shadow items-center justify-between p-4 bg-white  ">
+          <footer v-if="false"
+                  class="flex fixed bottom-0 w-fill end-0 shadow-lg drop-shadow items-center justify-between p-4 bg-white  ">
             <div>
               <a href="https://zil.ink/varta" target="_blank" class="text-blue-500 hover:underline">
               </a>
@@ -196,6 +201,7 @@ import Footer from "@/Components/Footer.vue";
 import Toast from "@/Components/Toast.vue";
 import Image from '@/Components/Image.vue';
 import Dialog from '@/Components/Dialog.vue';
+import CartButton from '@/Components/CartButton.vue';
 import App from '@/Layouts/App.vue';
 import {
   Bars3Icon,
@@ -212,11 +218,14 @@ import LoadingIcon from "@/Components/LoadingIcon.vue";
 import NotificaionButton from "@/Components/NotificaionButton.vue";
 import WalletCharge from "@/Components/WalletCharge.vue";
 import favicon from "@/../images/logo.png";
+import CartItemButton from "@/Components/CartItemButton.vue";
 
 export const emitter = mitt()
 
 export default {
   components: {
+    CartButton,
+    CartItemButton,
     WalletCharge,
     NotificaionButton,
     LoadingIcon,
@@ -255,6 +264,7 @@ export default {
     //   // }
     //
     // });
+
 
     this.emitter.on('showToast', (e) => {
       if (this.$refs.toast)

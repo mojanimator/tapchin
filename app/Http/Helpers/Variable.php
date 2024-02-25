@@ -11,6 +11,7 @@ use App\Models\BusinessTransaction;
 use App\Models\Message;
 use App\Models\Podcast;
 use App\Models\PodcastTransaction;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Site;
 use App\Models\SiteTransaction;
@@ -18,6 +19,7 @@ use App\Models\Slider;
 use App\Models\Text;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\Variation;
 use App\Models\Video;
 use App\Models\VideoTransaction;
 use Carbon\Carbon;
@@ -42,6 +44,7 @@ class Variable
         ['id' => 3, 'name' => 'branch_agency', 'level' => '3']
 //        ['name' => 'branch', 'code' => 4],
     ];
+    const PRODUCT_UNITS = ['qty', 'kg', 'gr'];
 
     const ADMIN_ACCESS = ['all'];
     const GRADES = [1, 2];
@@ -73,29 +76,30 @@ class Variable
     ];
     const  ORDER_STATUSES = [
 
+        ["name" => 'request', "color" => 'lemon'],
         ["name" => 'pending', "color" => 'danger'],
         ["name" => 'processing', "color" => 'teal'],
         ["name" => 'sending', "color" => 'primary'],
         ["name" => 'delivered', "color" => 'success'],
-        ["name" => 'failed', "color" => 'gray'],
         ["name" => 'canceled', "color" => 'gray'],
+        ["name" => 'rejected', "color" => 'gray'],
         ["name" => 'refunded', "color" => 'gray'],
     ];
+    const  SHIPPING_STATUSES = [
+
+        ["name" => 'pending', "color" => 'danger'],
+        ["name" => 'processing', "color" => 'sky'],
+        ["name" => 'sending', "color" => 'blue'],
+        ["name" => 'delivered', "color" => 'success'],
+        ["name" => 'failed', "color" => 'danger'],
+        ["name" => 'canceled', "color" => 'danger'],
+        ["name" => 'refunded', "color" => 'gray'],
+
+    ];
     const CATEGORIES = [
-        ['name' => 'industry_mining',],
-        ['name' => 'estate',],
-        ['name' => 'trading',],
-        ['name' => 'business',],
-        ['name' => 'it',],
-        ['name' => 'tutorial',],
-        ['name' => 'car',],
-        ['name' => 'personal_stuff',],
-        ['name' => 'home_stuff',],
-        ['name' => 'employment',],
-        ['name' => 'agriculture',],
-        ['name' => 'wearing',],
-        ['name' => 'travel_entertainment',],
-        ['name' => 'legal',],
+        ['name' => 'fruit', 'color' => 'teal'],
+        ['name' => 'protein', 'color' => 'rose'],
+
 
     ];
 
@@ -106,6 +110,7 @@ class Variable
     const DATA_TRANSACTION_TYPES = ['view', 'transfer'];
     const REF_TYPES = ['register',];
     const BANK_GATEWAY = 'nextpay';
+    const PAY_TIMEOUT = 1;
     const BANNER_IMAGE_LIMIT_MB = 10;
     const SITE_IMAGE_LIMIT_MB = 4;
     const BUSINESS_IMAGE_LIMIT = 4;
@@ -113,6 +118,10 @@ class Variable
 
     const TICKET_ATTACHMENT_ALLOWED_MIMES = ['jpeg', 'jpg', 'png', 'txt', 'pdf'];
     const BANNER_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
+    const PRODUCT_IMAGE_LIMIT_MB = 10;
+    const VARIATION_IMAGE_LIMIT = 5;
+
+    const PRODUCT_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
 
 
     const MIN_SELL_PRICE = 5000;
@@ -125,6 +134,8 @@ class Variable
         Ticket::class => 'tickets',
         User::class => 'users',
         Slider::class => 'slides',
+        Product::class => 'products',
+        Variation::class => 'variations',
     ];
     const NOTIFICATION_TYPES = [
         "business_approve",
@@ -173,7 +184,7 @@ class Variable
     {
         return [
 
-            ['id' => 1, 'fullname' => 'مدیر', 'phone' => '09018945844', 'status' => 'active', 'role' => 'god', 'agency_id' => 1,
+            ['id' => 1, 'fullname' => 'مدیر', 'phone' => '09018945844', 'status' => 'active', 'role' => 'owner', 'agency_id' => 7, 'agency_level' => '0',
                 'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];
@@ -184,7 +195,7 @@ class Variable
         return [
 
             ['id' => 1, 'fullname' => 'رجبی', 'phone' => '09018945844', 'status' => 'active', 'ref_id' => 'develowper',
-                'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
+                'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('o7615564351'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
             ['id' => 2, 'fullname' => 'داریوش بهشتی', 'phone' => '09351414815', 'status' => 'active', 'ref_id' => 'dabel',
                 'access' => json_encode(['all']), 'email' => null, 'password' => Hash::make('Dd20552055'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,

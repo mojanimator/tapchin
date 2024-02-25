@@ -177,7 +177,7 @@ export default {
     }
   },
   props: ['id', 'link', 'label', 'preload', 'modelValue', 'multi', 'error'],
-  emits: ['change', 'update:modelValue'],
+  emits: ['change', 'update:modelValue', 'change'],
   components: {
     InputLabel,
     MapPinIcon,
@@ -198,6 +198,8 @@ export default {
       for (let idx in this.preload)
         this.selecteds.push({id: this.preload[idx].id, name: this.createName(this.preload[idx])});
       this.$emit('update:modelValue', this.myMap(this.selecteds, (e) => e.id));
+      this.$emit('change', this.data.filter((e) => e.parent_id != 0 && this.selecteds.map((el) => el.id).indexOf(e.id) > -1));
+
 
     }
 
@@ -225,6 +227,9 @@ export default {
     remove(idx) {
       this.selecteds.splice(idx, 1);
       this.$emit('update:modelValue', this.myMap(this.selecteds, (e) => e.id));
+      this.$emit('change', this.data.filter((e) => e.parent_id != 0 && this.selecteds.map((el) => el.id).indexOf(e.id) > -1));
+
+
     },
     reset() {
       this.getData();
@@ -258,6 +263,7 @@ export default {
         this.currentLevel++;
       }
       this.$emit('update:modelValue', this.myMap(this.selecteds, (e) => e.id));
+      this.$emit('change', this.data.filter((e) => e.parent_id != 0 && this.selecteds.map((el) => el.id).indexOf(e.id) > -1));
 
     },
     getData() {
