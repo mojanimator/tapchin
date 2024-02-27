@@ -161,8 +161,8 @@ export default {
     preload() {
       this.selecteds = this.$page.props.user_location || [];
       this.currentLevel = this.selecteds.length + 1;
-      this.selectedName = (this.selecteds.length > 1 ? this.selecteds[1]['name'] : '') + (this.selecteds.length > 2 ? (' _ ' + this.selecteds[2]['name']) : this.__('select_city'));
-
+      this.selectedName = (this.selecteds.length > 1 ? this.selecteds[1]['name'] : '') + (this.selecteds.length > 2 ? (' _ ' + this.selecteds[2]['name']) : '');
+      this.selectedName == '' ? this.__('select_city') : this.selectedName;
       this.getCities(this.currentLevel, this.selecteds.length - 2 >= 0 ? this.selecteds[this.selecteds.length - 2].id : 0);
       if (this.selecteds.length == 0)
         this.modal.show();
