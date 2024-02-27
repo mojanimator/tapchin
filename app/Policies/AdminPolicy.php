@@ -171,7 +171,13 @@ class AdminPolicy
                     break;
                 case   $item instanceof Variation :
                     $res = $admin->hasAccess('edit_variation');
-
+                    break;
+                case   $item instanceof RepositoryOrder :
+                    $res = $admin->hasAccess('edit_repository_order');
+                    if ($res)
+                        break;
+                    $agencyIds = $admin->allowedAgencies(Agency::find($admin->agency_id))->pluck('id');
+                    $res = in_array($item->from_agency_id, $agencyIds->toArray());
                     break;
 
             }
@@ -180,6 +186,7 @@ class AdminPolicy
             return abort(403, $message ?? __("access_denied"));
         if (!empty($res))
             return true;
+
         return false;
     }
 }

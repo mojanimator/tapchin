@@ -133,90 +133,64 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
+
+
                     <th scope="col"
-                        class="px-4 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='name';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='from_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">  {{ __('product_title') }}</span>
+                        <span class="px-2">    {{ __('origin_repository') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='from_fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('repository_id') }} </span>
+                        <span class="px-2">    {{ __('sender') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='grade';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='from_county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('grade') }} </span>
+                        <span class="px-2">    {{ __('county') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='pack_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='district_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('pack') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
-
-                    <th scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='weight';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('weight') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
-
-                    <th scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('fee') }} </span>
+                        <span class="px-2">    {{ __('city') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='auction_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='total_discount';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('auction_fee') }} </span>
+                        <span class="px-2">    {{ __('discount') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
-
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='in_shop';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='total_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('shop_count') }} </span>
+                        <span class="px-2">    {{ __('total_price') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
-
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='in_repo';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='status';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('repository_count') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
-                    <th v-if="false" scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='is_private';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('repository_special') }} </span>
+                        <span class="px-2">    {{ __('status') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
@@ -291,33 +265,39 @@
                     <td class="px-2 py-4    ">
                       {{ d.id }}
                     </td>
-                    <td
-                        class="flex  text-xs items-center px-1 py-4 text-gray-900  ">
-                      <Image class="w-10 h-10 cursor-pointer rounded-full"
-                             :src="`${route('storage.variations')}/${d.id}/thumb.jpg`"
-                             :data-lity="`${route('storage.variations')}/${d.id}/thumb.jpg`"
-                             :alt="cropText(d.title,5)"/>
-                      <Link class="px-1 whitespace-nowrap hover:text-gray-500"
-                            :href="route('admin.panel.variation.edit',d.id)">
-                        <div class=" font-semibold ">{{ cropText(d.name, 30) }}</div>
-                        <div class="font-normal text-gray-500">{{ }}</div>
-                      </Link>
+                    <td class="px-2 py-4    ">
+                      {{ d.from_repo_id }}
+                    </td>
+                    <td class="px-2 py-4   text-xs ">
+                      {{ `${d.from_fullname || ''}\n${d.from_phone || ''}` }}
+                    </td>
+
+                    <td>
+                      {{ getCityName(d.from_county_id) }}
+                    </td>
+
+                    <td>
+                      {{ getCityName(d.from_district_id) }}
                     </td>
                     <td>
-
+                      {{ asPrice(d.total_discount) }}
+                    </td>
+                    <td>
+                      {{ asPrice(d.total_price) }}
+                    </td>
+                    <td>
                       <button
-                          @click="d.idx=idx;d.cmnd='change-repo';selected=d; "
-                          id="RepoId"
+                          id="dropdownStatusSetting"
+                          data-te-dropdown-toggle-ref
                           aria-expanded="false"
                           data-te-ripple-init
                           data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-primary-50 border border-primary-300 hover:bg-primary-200 text-primary-500`"
-                      >
-                        {{ d.repo_id }}
+                          class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                          :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
+                        {{ getStatus('order_statuses', d.status).name }}
                       </button>
-
                     </td>
+
                     <td v-if="false"
                         class="px-2     " data-te-dropdown-ref>
                       <button @click="selected=d"
@@ -374,104 +354,6 @@
                       </ul>
                     </td>
 
-
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-grade-pack-weight';d.new_grade=d.grade;d.new_pack_id=d.pack_id;d.new_in_repo=0;selected=d; "
-                          id="GradeId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-blue-50 border border-blue-300 hover:bg-blue-200 text-primary-500`"
-                      >
-                        {{ d.grade }}
-                      </button>
-                    </td>
-
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-grade-pack-weight';d.new_grade=d.grade;d.new_pack_id=d.pack_id;d.new_in_repo=0;selected=d; "
-                          id="PackId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-blue-50 border border-blue-300 hover:bg-blue-200 text-primary-500`"
-                      >
-                        {{ getPack(d.pack_id) }}
-                      </button>
-
-                    </td>
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-grade-pack-weight';d.new_grade=d.grade;d.new_pack_id=d.pack_id;d.new_in_repo=0;selected=d; "
-                          id="WeightId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-blue-50 border border-blue-300 hover:bg-blue-200 text-primary-500`"
-                      >
-                        {{ parseFloat(d.weight) }}
-                      </button>
-
-                    </td>
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-price';d.new_price=d.price;d.new_auction_price=d.auction_price; selected=d; "
-                          id="PriceId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-indigo-50 border border-indigo-300 hover:bg-indigo-200 text-indigo-500`"
-                      >
-                        {{ asPrice(d.price) }}
-                      </button>
-
-                    </td>
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-price';d.new_price=d.price;d.new_auction_price=d.auction_price; selected=d; "
-                          id="PriceId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-indigo-50 border border-indigo-300 hover:bg-indigo-200 text-indigo-500`"
-                      >
-                        {{ asPrice(d.auction_price) }}
-                      </button>
-
-                    </td>
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-qty';d.new_in_shop=parseFloat(d.in_shop);d.new_in_repo=parseFloat(d.in_repo); selected=d; "
-                          id="InShopId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-sky-50 border border-sky-300 hover:bg-sky-200 text-sky-500`"
-                      >
-                        {{ parseFloat(d.in_shop) }}
-                      </button>
-
-                    </td>
-                    <td class="px-2 py-4    ">
-                      <button
-                          @click="d.idx=idx;d.cmnd='change-qty';d.new_in_shop=parseFloat(d.in_shop);d.new_in_repo=parseFloat(d.in_repo); selected=d; "
-                          id="InShopId"
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]    p-2 cursor-pointer items-center text-center rounded-md  "
-                          :class="`bg-sky-50 border border-sky-300 hover:bg-sky-200 text-sky-500`"
-                      >
-                        {{ parseFloat(d.in_repo) }}
-                      </button>
-                    </td>
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
                     </td>
@@ -483,11 +365,11 @@
                           class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
                         <Link
-                            type="button" :href="route('admin.panel.variation.edit',d.id)"
-                            class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
+                            type="button" :href="route('admin.panel.repository.order.edit',d.id)"
+                            class="inline-block rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
                             data-te-ripple-init
                             data-te-ripple-color="light">
-                          {{ __('edit') }}
+                          {{ __('details') }}
                         </Link>
 
                         <!--                  <button -->
@@ -506,267 +388,7 @@
               </div>
             </div>
           </div>
-          <!--Modals-->
 
-          <div v-if="selected" class="relative z-[1050]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-
-            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-              <div @click.self="selected=null;errors={}"
-                   class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div
-                    class="relative transform overflow-hidden rounded-lg bg-white   shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div class=" flex flex-col items-stretch">
-                      <div class="flex items-center  gap-2">
-                        <div
-                            class="  flex text-warning  h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-warning-100 sm:mx-0 sm:h-10 sm:w-10">
-                          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                               fill="currentColor" viewBox="0 0 16 16">
-                            <path
-                                d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                          </svg>
-                        </div>
-                        <h3 class="text-base     text-gray-900" id="modal-title">
-                          {{ `${selected.name} | ${getPack(selected.pack_id)} | ${__('grade')} ${selected.grade}` }}
-                        </h3>
-                      </div>
-                      <div class="m-2  text-start">
-                        <!--                         modal body-->
-                        <div class="mt-2">
-
-                          <div v-if="selected.cmnd=='change-repo'"
-                               class="   text-sm text-gray-500 ">
-                            <span class="text-xs py-2 text-danger-500">{{ __('help_change_repo') }}</span>
-                            <div class="flex flex-col  space-y-2 text-start ">
-
-                              <div class="flex flex-col  ">
-
-                                <Selector ref="repoIdSelector" v-model="selected.new_repo_id"
-                                          @change="($e)=>{ selected.new_repo_id=$e.target.value;}"
-                                          :data="filteredRepositories[selected.agency_id] "
-                                          :error="errors.new_repo_id"
-                                          :label="__('repository')" :id=" `selectRepo${selected.id}`">
-                                  <template v-slot:append>
-                                    <div class="  p-3">
-                                      <Squares2X2Icon class="h-5 w-5"/>
-                                    </div>
-                                  </template>
-                                </Selector>
-
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_in_repo"
-                                      type="number"
-                                      :placeholder="`${__('get_from_repo')} (${__('max')}: ${parseFloat(selected.in_repo)} ${__('unit')})`"
-                                      classes="  "
-                                      v-model="selected.new_in_repo"
-                                      :autocomplete="selected.new_in_repo"
-                                      :error="  errors.new_in_repo">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <Bars2Icon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <button
-                                    class="bg-success-200 text-success-700 p-2 rounded-lg  hover:bg-success-300 w-full"
-                                    @click="edit({'idx':selected.idx ,'id':selected.id,'cmnd':'change-repo','new_repo_id':selected.new_repo_id,'new_in_repo':selected.new_in_repo})">
-                                  {{ __('accept') }}
-                                </button>
-
-                              </div>
-                            </div>
-                          </div>
-                          <div v-if="selected.cmnd=='change-grade-pack-weight'"
-                               class="   text-sm text-gray-500 ">
-                            <span class="text-xs py-2 text-danger-500">{{ __('help_change_grade_pack') }}</span>
-                            <div class="flex flex-col  space-y-2 text-start ">
-
-                              <div class="flex flex-col  ">
-
-                                <Selector ref="gradeSelector" v-model="selected.new_grade"
-                                          @change="($e)=>{ selected.new_grade=$e.target.value;}"
-                                          :data="$page.props.grades.map((e)=> {return {id:e,name:e}})"
-                                          :error="errors.new_grade"
-                                          :label="__('grade')" :id=" `selectGrade${selected.id}`">
-                                  <template v-slot:append>
-                                    <div class="  p-3">
-                                      <Squares2X2Icon class="h-5 w-5"/>
-                                    </div>
-                                  </template>
-                                </Selector>
-                                <Selector ref="packSelector" v-model="selected.new_pack_id"
-                                          @change="($e)=>{ selected.new_pack_id=$e.target.value;}"
-                                          :data="$page.props.packs"
-                                          :error="errors.new_pack_id"
-                                          :label="__('pack')" :id=" `selectPack${selected.id}`">
-                                  <template v-slot:append>
-                                    <div class="  p-3">
-                                      <Squares2X2Icon class="h-5 w-5"/>
-                                    </div>
-                                  </template>
-                                </Selector>
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_in_repo"
-                                      type="number"
-                                      :placeholder="`${__('get_from_repo')} (${__('max')}: ${parseFloat(selected.in_repo)} ${__('unit')})`"
-                                      classes="  "
-                                      v-model="selected.new_in_repo"
-                                      :autocomplete="selected.new_in_repo"
-                                      :error="  errors.new_in_repo">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <Bars2Icon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <div class="my-2">
-                                  <TextInput v-if="selected.new_pack_id!=1"
-                                             id="new_unit_weight"
-                                             type="number"
-                                             :placeholder="`${__('new_unit_weight')} (${__('max')}: ${parseFloat(selected.new_in_repo*selected.weight)} ${__('unit')})`"
-                                             classes="  "
-                                             v-model="selected.new_unit_weight"
-                                             :autocomplete="selected.new_unit_weight"
-                                             :error="  errors.new_unit_weight">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <Bars2Icon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <button
-                                    class="bg-success-200 text-success-700 p-2 rounded-lg  hover:bg-success-300 w-full"
-                                    @click="edit({'idx':selected.idx ,'id':selected.id,'cmnd':'change-grade-pack-weight','new_in_repo':selected.new_in_repo,'new_pack_id':selected.new_pack_id,'new_grade':selected.new_grade,'new_unit_weight':selected.new_unit_weight,})">
-                                  {{ __('accept') }}
-                                </button>
-
-                              </div>
-                            </div>
-                          </div>
-                          <div v-if="selected.cmnd=='change-price'"
-                               class="   text-sm text-gray-500 ">
-                            <span class="text-xs py-2 text-danger-500">{{ __('help_price') }}</span>
-                            <div class="flex flex-col  space-y-2 text-start ">
-
-                              <div class="flex flex-col  ">
-
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_price"
-                                      type="number"
-                                      :placeholder="`${__('new_price')}`"
-                                      classes="  "
-                                      v-model="selected.new_price"
-                                      :autocomplete="selected.new_price"
-                                      :error="  errors.new_price">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <CurrencyDollarIcon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_auction_price"
-                                      type="number"
-                                      :placeholder="`${__('new_auction_price')}`"
-                                      classes="  "
-                                      v-model="selected.new_auction_price"
-                                      :autocomplete="selected.new_auction_price"
-                                      :error="  errors.new_auction_price">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <CurrencyDollarIcon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <button
-                                    class="bg-success-200 text-success-700 p-2 rounded-lg  hover:bg-success-300 w-full"
-                                    @click="edit({'idx':selected.idx ,'id':selected.id,'cmnd':'change-price','new_price':selected.new_price,'new_auction_price':selected.new_auction_price, })">
-                                  {{ __('accept') }}
-                                </button>
-
-                              </div>
-                            </div>
-                          </div>
-                          <div v-if="selected.cmnd=='change-qty'"
-                               class="   text-sm text-gray-500 ">
-                            <span class="text-xs py-2 text-danger-500">{{ __('help_repo_shop_qty') }}</span>
-                            <div class="flex flex-col  space-y-2 text-start ">
-
-                              <div class="flex flex-col  ">
-
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_in_shop"
-                                      type="number"
-                                      :placeholder="`${__('new_in_shop')}`"
-                                      classes="  "
-                                      v-model="selected.new_in_shop"
-                                      :autocomplete="selected.new_in_shop"
-                                      :error="  errors.new_in_shop">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <CurrencyDollarIcon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <div class="my-2">
-                                  <TextInput
-                                      id="new_in_repo"
-                                      type="number"
-                                      :placeholder="`${__('new_in_repo')}`"
-                                      classes="  "
-                                      v-model="selected.new_in_repo"
-                                      :autocomplete="selected.new_in_repo"
-                                      :error="  errors.new_in_repo">
-
-                                    <template v-slot:prepend>
-                                      <div class="p-3">
-                                        <CurrencyDollarIcon class="h-5 w-5"/>
-                                      </div>
-                                    </template>
-                                  </TextInput>
-                                </div>
-                                <button
-                                    class="bg-success-200 text-success-700 p-2 rounded-lg  hover:bg-success-300 w-full"
-                                    @click="edit({'idx':selected.idx ,'id':selected.id,'cmnd':'change-qty','new_in_repo':selected.new_in_repo,'new_in_shop':selected.new_in_shop, })">
-                                  {{ __('accept') }}
-                                </button>
-
-                              </div>
-                            </div>
-                          </div>
-                          <button class="bg-gray-200 my-2 text-gray-700 p-2 rounded-lg  hover:bg-gray-300 w-full"
-                                  @click="selected=null;errors={}">
-                            {{ __('cancel') }}
-                          </button>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </template>
@@ -809,6 +431,7 @@ export default {
       params: {
         page: 1,
         search: null,
+        is_to_agency: true,
         paginate: this.$page.props.pageItems[0],
         order_by: null,
         dir: 'DESC',
@@ -881,7 +504,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.variation.search'), {
+      window.axios.get(route('admin.panel.repository.order.search'), {
         params: this.params
       }, {})
           .then((response) => {

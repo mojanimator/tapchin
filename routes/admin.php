@@ -175,6 +175,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             'statuses' => collect(Variable::ORDER_STATUSES)->whereIn('name', ['request', 'pending', 'processing'])->pluck('name'),
         ]);
         Route::get('repository/order/search}', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.repository.order.search');
+        Route::get('repository/order/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.repository.order.edit');
 
         PanelController::makeInertiaRoute('get', 'repository/shop/index', 'admin.panel.repository.shop.index', 'Panel/Admin/Repository/Shop/Index', []);
         Route::get('repository/shop/search', [RepositoryShopController::class, 'search'])->name('admin.panel.repository.shop.search');

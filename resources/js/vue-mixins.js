@@ -119,11 +119,15 @@ export default {
             return '';
         },
         getStatus(type, id) {
+
             if (id == null || type == null || (usePage().props[`statuses`] == null && usePage().props[type] == null)) return {
                 name: '',
                 color: 'primary'
             };
-
+            if (usePage().props[type])
+                for (const el of usePage().props[type])
+                    if (el.name == id)
+                        return {name: this.__(el.name), color: el.color || 'primary'};
             for (const el of usePage().props[`statuses`])
                 if (el.name == id)
                     return {name: this.__(el.name), color: el.color || 'primary'};

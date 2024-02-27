@@ -7,6 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\RepositoryOrderRequest;
 use App\Models\Admin;
+use App\Models\Agency;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
@@ -14,10 +15,12 @@ use App\Models\Repository;
 use App\Models\RepositoryCart;
 use App\Models\RepositoryCartItem;
 use App\Models\RepositoryOrder;
+use App\Models\ShippingMethod;
 use App\Models\Variation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class RepositoryOrderController extends Controller
 {
@@ -204,5 +207,60 @@ class RepositoryOrderController extends Controller
         Telegram::log(null, 'repo_order_created', $order);
         return to_route('admin.panel.repository.order.index')->with($res);
 
+    }
+
+    protected
+    function searchPanel(Request $request)
+    {
+        $admin = $request->user();
+
+        $search = $request->search;
+        $page = $request->page ?: 1;
+        $orderBy = $request->order_by ?: 'id';
+        $dir = $request->dir ?: 'DESC';
+        $paginate = $request->paginate ?: 24;
+        $status = $request->status;
+        $isFromAgency = $request->is_from_agency;
+        $isToAgency = $request->is_to_agency;
+        $query = RepositoryOrder::query()->select('*');
+
+        $myAgency = Agency::find($admin->agency_id);
+
+        $agencies = $admin->allowedAgencies($myAgency)->select('id', 'name')->get();
+        $agencyIds = $agencies->pluck('id');
+        $agencyIds = $myAgency->level == '0' ? $agencyIds->merge([null]) : $agencyIds;
+        if ($search)
+            $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
+        if ($status)
+            $query = $query->where('status', $status);
+        if ($isFromAgency)
+            $query->whereIntegerInRaw('from_agency_id', $agencyIds);
+        if ($isToAgency)
+            $query->whereIntegerInRaw('to_agency_id', $agencyIds);
+
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
+            return $paginated->getCollection()->transform(
+                function ($item) use ($agencies,) {
+//                    $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
+
+                    return $item;
+                }
+
+            );
+        });
+
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $data = RepositoryOrder:: find($id);
+        $admin = $request->user();
+        $canEdit = $admin->can('edit', [Admin::class, $data, false]);
+
+        return Inertia::render('Panel/Admin/Repository/Order/Edit', [
+            'order_statuses' => Variable::ORDER_STATUSES,
+            'data' => $data,
+            'canEdit' => $canEdit,
+        ]);
     }
 }

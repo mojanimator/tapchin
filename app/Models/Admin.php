@@ -163,7 +163,7 @@ class Admin extends Authenticatable
     public function hasAccess($item)
     {
 
-        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product',])) {
+        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order'])) {
             return $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
         if (in_array($item, ['create_repository_order'])) {
@@ -213,7 +213,7 @@ class Admin extends Authenticatable
             if ($myAgency)
                 $data->where('level', '>', $myAgency->level)
                     ->orWhere(function ($query) use ($myAgency) {
-                        $query->whereId($myAgency->id);
+                        $query->whereIn('id', $myAgency->level == '0' ? [$myAgency->id, null] : [$myAgency->id]);
                     });
         }
         return $data;

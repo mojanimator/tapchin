@@ -156,10 +156,10 @@ class UserPolicy
     public function update(User $user, $item, $abort = true, $data = null)
     {
 
-        if ( $user->status=='inactive') {
+        if ($user->status == 'inactive') {
             return abort(403, __("user_is_inactive"));
         }
-        if ($user->status=='block') {
+        if ($user->status == 'block') {
             return abort(403, __("user_is_blocked"));
         }
 
@@ -182,7 +182,7 @@ class UserPolicy
             case $item instanceof Notification  :
             case $item instanceof Ticket  :
             case $item instanceof Transfer  :
-                 $res= $user->role == 'us' && optional($item)->owner_id == $user->id || in_array($user->role, ['ad',]);
+                $res = $user->role == 'us' && optional($item)->owner_id == $user->id || in_array($user->role, ['ad',]);
                 break;
         }
         if ($abort && empty($res))
