@@ -6,7 +6,7 @@
 
     <!--    </template>-->
     <div
-        class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-50 text-gray-500"
+        class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-3 hover:bg-gray-50 text-gray-500"
         @click="preload();modal.show()"
     >
       <MapPinIcon class="h-4 w-4 mx-1"/>
@@ -83,7 +83,7 @@
                         @click="selectCity(d)"
                         class="p-2 px-3 flex items-center justify-between hover:bg-gray-100 rounded  hover:cursor-pointer">
                       <span>{{ d.name }}</span>
-                      <ChevronLeftIcon class="w-4 h-4"/>
+                      <ChevronLeftIcon v-if="d.has_child" class="w-4 h-4"/>
                     </li>
                   </ul>
                 </div>
@@ -159,12 +159,13 @@ export default {
       window.axios.post(route('user.update_location'), {city_id: city_id});
     },
     preload() {
-      this.selecteds = this.$page.props.user_location;
+      this.selecteds = this.$page.props.user_location || [];
       this.currentLevel = this.selecteds.length + 1;
-      this.selectedName = (this.selecteds.length > 1 ? this.selecteds[1]['name'] : '') + (this.selecteds.length > 2 ? (' _ ' + this.selecteds[2]['name']) : '');
+      this.selectedName = (this.selecteds.length > 1 ? this.selecteds[1]['name'] : '') + (this.selecteds.length > 2 ? (' _ ' + this.selecteds[2]['name']) : this.__('select_city'));
 
       this.getCities(this.currentLevel, this.selecteds.length - 2 >= 0 ? this.selecteds[this.selecteds.length - 2].id : 0);
-
+      if (this.selecteds.length == 0)
+        this.modal.show();
     },
     back() {
       const last = this.selecteds[this.selecteds.length - 1];

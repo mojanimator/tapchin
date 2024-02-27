@@ -777,5 +777,8 @@
   "refunded": "بازگشت وجه",
   "order_type": "نوع سفارش",
   "sender": "فرستنده",
+  "parent_products": "محصولات والد",
+  "customers": "مشتریان",
+  "select_city": "انتخاب شهر",
   "": ""
 }

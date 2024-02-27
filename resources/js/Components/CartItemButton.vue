@@ -100,6 +100,7 @@ export default {
             for (let id in this.cart.orders[ix].shipments[idx].items) {
               if (this.cart.orders[ix].shipments[idx].items[id].cart_item.variation_id == this.productId) {
                 this.inCart = this.cart.orders[ix].shipments[idx].items[id].cart_item.qty;
+                this.inCart = this.inCart ? parseFloat(this.inCart) : 0;
                 break;
               }
             }

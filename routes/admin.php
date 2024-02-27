@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PackController;
 use App\Http\Controllers\PartnershipController;
 use App\Http\Controllers\ProductController;
@@ -180,6 +181,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         PanelController::makeInertiaRoute('get', 'repository/shop/index', 'admin.panel.repository.shop.index', 'Panel/Admin/Repository/Shop/Index', []);
         Route::get('repository/shop/search', [RepositoryShopController::class, 'search'])->name('admin.panel.repository.shop.search');
         Route::patch('repository/cart/update', [RepositoryCartController::class, 'update'])->name('admin.panel.repository.cart.update');
+
+
+        PanelController::makeInertiaRoute('get', 'order/user/index', 'admin.panel.order.user.index', 'Panel/Admin/Order/User/Index', []);
+        Route::get('order/user/search', [OrderController::class, 'searchPanel'])->name('admin.panel.order.user.search');
+
+        PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', []);
+        Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');
 
 
         PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping.method.index', 'Panel/Admin/Shipping/Method/Index',

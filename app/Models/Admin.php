@@ -186,6 +186,8 @@ class Admin extends Authenticatable
             'view_variation',
             $this->agency_level < 3 ? 'create_repository_order' : '',
             $this->agency_level == 0 ? 'create_variation' : '',
+            $this->agency_level < 3 ? 'view_agency_order' : '',
+            'view_user_order',
         ];
         return $this->access;
 

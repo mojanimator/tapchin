@@ -258,8 +258,8 @@
                     data-te-ripple-init
                     data-te-ripple-color="light"
                     class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                    :class="`bg-${getStatus('agency', d.status).color}-100 hover:bg-${getStatus('agency', d.status).color}-200 text-${getStatus('agency', d.status).color}-500`">
-                  {{ getStatus('agency', d.status).name }}
+                    :class="`bg-${getStatus('statuses', d.status).color}-100 hover:bg-${getStatus('statuses', d.status).color}-200 text-${getStatus('statuses', d.status).color}-500`">
+                  {{ getStatus('statuses', d.status).name }}
                 </button>
                 <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
                     class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"

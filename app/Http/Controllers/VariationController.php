@@ -48,6 +48,7 @@ class VariationController extends Controller
         //disable ONLY_FULL_GROUP_BY
 //        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
 //        $user = auth()->user();
+
         $search = $request->search;
         $inShop = $request->in_shop;
         $parentIds = $request->parent_ids;
@@ -74,6 +75,7 @@ class VariationController extends Controller
                 })->where(function ($query) use ($cityId) {
                     if ($cityId)
                         $query->whereJsonContains('repositories.cities', intval($cityId));
+                    else $query->where('repositories.id', 0);
                 });
 
         })->select('variations.id', 'variations.product_id',

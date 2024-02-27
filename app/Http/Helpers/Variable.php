@@ -79,6 +79,7 @@ class Variable
         ["name" => 'request', "color" => 'lemon'],
         ["name" => 'pending', "color" => 'danger'],
         ["name" => 'processing', "color" => 'teal'],
+        ["name" => 'ready', "color" => 'green'],
         ["name" => 'sending', "color" => 'primary'],
         ["name" => 'delivered', "color" => 'success'],
         ["name" => 'canceled', "color" => 'gray'],

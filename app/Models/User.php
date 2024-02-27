@@ -125,11 +125,13 @@ class User extends Authenticatable
     {
 
         $user = auth('sanctum')->user();
-        $res = [
-            ['id' => 904, 'name' => 'تهران'],
-            ['id' => 1, 'name' => 'تهران'],
-            ['id' => 61, 'name' => 'تجریش'],
-        ];
+//        $res = [
+//            ['id' => 904, 'name' => 'تهران'],
+//            ['id' => 1, 'name' => 'تهران'],
+//            ['id' => 61, 'name' => 'تجریش'],
+//        ];
+        session()->put('city_id', null);
+        $res = null;
         $city = $cities->where('id', optional($user)->city_id ?? session('city_id', Variable::CITY_ID))->first();
         if ($city) {
             if ($city->level == 1)
@@ -150,7 +152,7 @@ class User extends Authenticatable
                 ];
             }
         }
-        session()->put('city_id', $res[count($res) - 1]['id']);
+        session()->put('city_id', is_array($res) ? $res[count($res) - 1]['id'] : null);
         return $res;
     }
 

@@ -124,13 +124,16 @@ export default {
                 name: '',
                 color: 'primary'
             };
-            if (usePage().props[type])
-                for (const el of usePage().props[type])
-                    if (el.name == id)
-                        return {name: this.__(el.name), color: el.color || 'primary'};
-            for (const el of usePage().props[`statuses`])
-                if (el.name == id)
-                    return {name: this.__(el.name), color: el.color || 'primary'};
+            let array = usePage().props[type];
+
+            if (array /*&& Symbol.iterator in Object(array)*/)
+                for (const idx in array)
+                    if (array[idx].name == id)
+                        return {name: this.__(array[idx].name), color: array[idx].color || 'primary'};
+            array = usePage().props[`statuses`];
+            for (const idx in array)
+                if (array[idx].name == id)
+                    return {name: this.__(array[idx].name), color: array[idx].color || 'primary'};
 
         },
         getErrors(error) {
