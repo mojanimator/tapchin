@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
+use App\Models\Agency;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
@@ -49,12 +50,14 @@ class OrderController extends Controller
                 'receiver_phone' => $cart->address['receiver_phone'] ?? null,
                 'postal_code' => $cart->address['postal_code'] ?? null,
                 'address' => $cart->address['address'] ?? null,
+                'location' => $cart->address['lat'] && $cart->address['lon'] ? ($cart->address['lat'] . "," . $cart->address['lon']) : null,
                 'status' => 'pending',
                 'repo_id' => $cart->repo_id,
                 'agency_id' => $cart->agency_id,
                 'total_shipping_price' => $cart->total_shipping_price,
                 'total_items_price' => $cart->total_items_price,
                 'total_items' => $cart->total_items,
+                'total_discount' => $cart->total_discount,
                 'total_price' => $cart->total_price,
             ]);
             if ($order) {
@@ -96,4 +99,34 @@ class OrderController extends Controller
         }
         return response()->json(['message' => __('redirect_to_payment_page'), 'url' => 'https://tapchin.ir'], Variable::SUCCESS_STATUS);
     }
+
+    protected
+    function searchPanel(Request $request)
+    {
+        $admin = $request->user();
+
+        $search = $request->search;
+        $page = $request->page ?: 1;
+        $orderBy = $request->order_by ?: 'id';
+        $dir = $request->dir ?: 'DESC';
+        $paginate = $request->paginate ?: 24;
+        $status = $request->status;
+        $isFromAgency = $request->is_from_agency;
+        $isToAgency = $request->is_to_agency;
+        $query = Order::query()->select('*');
+
+        $myAgency = Agency::find($admin->agency_id);
+
+        $agencyIds = $admin->allowedAgencies($myAgency)->pluck('id');
+
+        if ($search)
+            $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
+        if ($status)
+            $query = $query->where('status', $status);
+        $query->whereIntegerInRaw('agency_id', $agencyIds);
+
+        return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
+
+    }
+
 }

@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('edit_product')}}</title>
+      <title>{{__('edit_car')}}</title>
     </template>
 
 
@@ -12,7 +12,7 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('edit_product') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_car') }}</h1>
 
       </div>
 
@@ -24,39 +24,43 @@
 
 
           <div
-              class="flex flex-col mx-2 text-gray-500   col-span-2 w-full     px-2"
+              class="flex flex-col mx-2   col-span-2 w-full     px-2"
           >
-            <div class="flex-col   m-2  rounded-lg    w-full mx-auto    ">
-              <div class="font-semibold">{{ __('main_product_image') }}</div>
-              <div class="my-2 flex max-w-[150px]" v-if="$page.props.data">
-                <ImageUploader mode="edit"
-                               :link="route('admin.panel.variation.update')"
-                               :preload="$page.props.data.thumb_img" ref="imageCropperThumb"
-                               :label="__('product_image_jpg')" :for-id="$page.props.data.id"
-                               :cropRatio="1" :id="'img-'+'thumb'"
-                               class="   "/>
-                <InputError class="mt-1 text-xs" :message="form.errors.image_thumb ? form.errors.image_thumb :null "/>
-
-              </div>
-              <div>{{ __('gallery') }}</div>
-
-              <div class="my-2 flex flex-wrap items-stretch" v-if="$page.props.data">
-                <div v-for="(data,idx) in $page.props.data.images"
-                     class="m-1  max-w-[150px]   ">
-                  <ImageUploader mode="edit"
-                                 :link="route('admin.panel.variation.update')"
-                                 :preload="$page.props.data.images[idx]" ref="imageCropper"
-                                 :label="__('product_image_jpg')" :for-id="$page.props.data.id"
-                                 :cropRatio="1" :id="'img-'+idx"
-                                 class="   "/>
-                  <InputError class="mt-1 text-xs" :message="form.errors.images ? form.errors.images.idx:null "/>
-                </div>
-
+            <div class="flex-col   m-2 items-center rounded-lg max-w-xs  w-full mx-auto    ">
+              <div class="my-2">
+                <ImageUploader :replace="true"
+                               :preload="route('storage.cars')+`/${$page.props.data.id}.jpg`"
+                               mode="edit" :for-id="$page.props.data.id"
+                               :link="route('admin.panel.shipping.car.update')"
+                               ref="imageCropper" :label="__('car_image_jpg')" :cropRatio="1.25" id="img"
+                               height="10" class="grow "/>
+                <InputError class="mt-1 " :message="form.errors.img"/>
               </div>
 
             </div>
             <form @submit.prevent="submit">
 
+              <div class="my-2" v-if="$page.props.agency && $page.props.agency.level<3">
+                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('agency')"
+                              :id="'agency'" v-model:selected="form.agency_id" :preload="$page.props.data.agency">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+
+              </div>
               <div class="my-2">
                 <TextInput
                     id="name"
@@ -66,6 +70,24 @@
                     v-model="form.name"
                     autocomplete="name"
                     :error="form.errors.name"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <Bars2Icon class="h-5 w-5"/>
+                    </div>
+                  </template>
+                </TextInput>
+              </div>
+
+              <div class="my-2">
+                <TextInput
+                    id="plate_number"
+                    type="text"
+                    :placeholder="__('plate_number')"
+                    classes="  "
+                    v-model="form.plate_number"
+                    autocomplete="plate_number"
+                    :error="form.errors.plate_number"
                 >
                   <template v-slot:prepend>
                     <div class="p-3">
@@ -126,29 +148,20 @@ import {
   ChatBubbleBottomCenterTextIcon,
   PencilIcon,
   XMarkIcon,
+  PhoneIcon,
+  IdentificationIcon,
+  CreditCardIcon,
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
 import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import RadioGroup from '@/Components/RadioGroup.vue'
 import LoadingIcon from "@/Components/LoadingIcon.vue";
-import Popover from "@/Components/Popover.vue";
-import Tooltip from "@/Components/Tooltip.vue";
-import TagInput from "@/Components/TagInput.vue";
 import ImageUploader from "@/Components/ImageUploader.vue";
 import Selector from "@/Components/Selector.vue";
-import ProvinceCounty from "@/Components/ProvinceCounty.vue";
-import PhoneFields from "@/Components/PhoneFields.vue";
-import SocialFields from "@/Components/SocialFields.vue";
-import Article from "@/Components/Article.vue";
-import TextEditor from "@/Components/TextEditor.vue";
 import UserSelector from "@/Components/UserSelector.vue";
-import AddressSelector from "@/Components/AddressSelector.vue";
-import CitySelector from "@/Components/CitySelector.vue";
 
 
 export default {
@@ -158,17 +171,17 @@ export default {
       data: this.$page.props.data || {},
       form: useForm({
         id: null,
+        agency_id: null,
         name: null,
+        plate_number: null,
         uploading: false,
-        category_id: false,
-        tags: false,
+
 
       }),
       img: null,
     }
   },
   components: {
-    TextEditor,
     ImageUploader,
     LoadingIcon,
     Head,
@@ -180,31 +193,24 @@ export default {
     TextInput,
     InputError,
     PrimaryButton,
-    RadioGroup,
     UserIcon,
     EyeIcon,
     Checkbox,
-    Popover,
-    Tooltip,
     FolderPlusIcon,
     Bars2Icon,
     LinkIcon,
-    TagInput,
     QuestionMarkCircleIcon,
     Selector,
     Squares2X2Icon,
-    ProvinceCounty,
-    PhoneFields,
-    SocialFields,
     PencilSquareIcon,
-    Article,
     SignalIcon,
     ChatBubbleBottomCenterTextIcon,
     PencilIcon,
     UserSelector,
     XMarkIcon,
-    AddressSelector,
-    CitySelector,
+    PhoneIcon,
+    IdentificationIcon,
+    CreditCardIcon,
   },
   created() {
 
@@ -215,7 +221,9 @@ export default {
 
 
     this.form.id = this.data.id;
+    this.form.agency_id = this.data.agency_id;
     this.form.name = this.data.name;
+    this.form.plate_number = this.data.plate_number;
 
   },
   methods: {
@@ -233,7 +241,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('admin.panel.variation.update'), {
+      this.form.patch(route('admin.panel.shipping.car.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

@@ -294,6 +294,7 @@ export default {
   methods: {
 
     errorImage() {
+
       this.doc = null;
       this.uploadContainer.classList.remove('d-none');
 
@@ -312,9 +313,8 @@ export default {
 
     },
     clearImage(_from, $event) {
-
       this.doc = null;
-      this.image.src = null;
+      // this.image.src = null;
       this.croppedImage = null;
       document.querySelector("#" + this.id + '-file').value = null;
       document.querySelector('#' + this.id).value = null;
@@ -445,7 +445,7 @@ export default {
     },
 
     initCropper() {
-//
+
 //                Cropper.noConflict();
       if (this.cropper)
         this.cropper.destroy();

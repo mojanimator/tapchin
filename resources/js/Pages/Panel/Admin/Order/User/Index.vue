@@ -137,25 +137,25 @@
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('origin_repository') }} </span>
+                        <span class="px-2">    {{ __('repository_id') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='receiver_fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('sender') }} </span>
+                        <span class="px-2">    {{ __('receiver') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
                         <span class="px-2">    {{ __('county') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
@@ -266,18 +266,18 @@
                       {{ d.id }}
                     </td>
                     <td class="px-2 py-4    ">
-                      {{ d.from_repo_id }}
+                      {{ d.repo_id }}
                     </td>
                     <td class="px-2 py-4   text-xs ">
-                      {{ `${d.from_fullname || ''}\n${d.from_phone || ''}` }}
+                      {{ `${d.receiver_fullname || ''}\n${d.receiver_phone || ''}` }}
                     </td>
 
                     <td>
-                      {{ getCityName(d.from_county_id) }}
+                      {{ getCityName(d.county_id) }}
                     </td>
 
                     <td>
-                      {{ getCityName(d.from_district_id) }}
+                      {{ getCityName(d.district_id) }}
                     </td>
                     <td>
                       {{ asPrice(d.total_discount) }}
@@ -365,7 +365,7 @@
                           class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
                         <Link
-                            type="button" :href="route('admin.panel.repository.order.edit',d.id)"
+                            type="button" :href="route('admin.panel.order.user.edit',d.id)"
                             class="inline-block rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
                             data-te-ripple-init
                             data-te-ripple-color="light">
@@ -504,7 +504,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.repository.order.search'), {
+      window.axios.get(route('admin.panel.order.user.search'), {
         params: this.params
       }, {})
           .then((response) => {

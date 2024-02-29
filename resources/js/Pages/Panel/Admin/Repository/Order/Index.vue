@@ -143,6 +143,14 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='to_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('destination_repository') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
@@ -164,7 +172,7 @@
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='district_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='from_district_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
                         <span class="px-2">    {{ __('city') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
@@ -267,6 +275,9 @@
                     </td>
                     <td class="px-2 py-4    ">
                       {{ d.from_repo_id }}
+                    </td>
+                    <td class="px-2 py-4    ">
+                      {{ d.to_repo_id }}
                     </td>
                     <td class="px-2 py-4   text-xs ">
                       {{ `${d.from_fullname || ''}\n${d.from_phone || ''}` }}

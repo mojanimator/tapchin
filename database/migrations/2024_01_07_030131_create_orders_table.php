@@ -33,6 +33,7 @@ return new class extends Migration {
             $table->string('address', 2048)->nullable();
             $table->string('location', 50)->nullable();
             $table->enum('status', array_column(Variable::ORDER_STATUSES, 'name'))->index();
+            $table->unsignedBigInteger('total_discount')->default(0);
             $table->unsignedInteger('total_items')->default(0);
             $table->unsignedBigInteger('total_price')->default(0);
             $table->unsignedBigInteger('total_items_price')->default(0);

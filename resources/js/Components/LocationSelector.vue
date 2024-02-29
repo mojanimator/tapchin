@@ -6,7 +6,7 @@
 
     <!--    </template>-->
     <div
-        class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-3 hover:bg-gray-50 text-gray-500"
+        class="rounded   flex items-center border border-neutral-300 hover:cursor-pointer p-2 hover:bg-gray-50 text-gray-500"
         @click="preload();modal.show()"
     >
       <MapPinIcon class="h-4 w-4 mx-1"/>

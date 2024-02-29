@@ -123,7 +123,7 @@ class CartController extends Controller
             if ($qty < 0)
                 return response()->json(['message' => sprintf(__('validator.invalid'), __('requested_qty'))], Variable::ERROR_STATUS);
             elseif ($qty > $inShopQty)
-                return response()->json(['message' => sprintf(__('validator.max_items'), __('product'), $inShopQty, $qty)], Variable::ERROR_STATUS);
+                return response()->json(['message' => sprintf(__('validator.max_items'), __('product'), floatval($inShopQty), $qty)], Variable::ERROR_STATUS);
             elseif ($qty < $minAllowed)
                 return response()->json(['message' => sprintf(__('validator.min_order_product'), $minAllowed)], Variable::ERROR_STATUS);
 
@@ -167,7 +167,7 @@ class CartController extends Controller
             if ($cartItem->qty > $product->in_shop) {
 //                $cartItem->qty = $product->in_shop;
 //                $cartItem->save();
-                $cartItem->error_message = $product->in_shop > 0 ? sprintf(__('validator.max_items'), __('product'), $product->in_shop, $cartItem->qty) : __('this_item_finished');
+                $cartItem->error_message = $product->in_shop > 0 ? sprintf(__('validator.max_items'), __('product'), floatval($product->in_shop), $cartItem->qty) : __('this_item_finished');
                 $errors[] = ['key' => $product->name, 'type' => 'product', 'message' => $cartItem->error_message];
             } elseif ($cartItem->qty < $product->min_allowed) {
 //                $cartItem->qty = $product->in_shop;

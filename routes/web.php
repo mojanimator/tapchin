@@ -108,6 +108,8 @@ Route::get('storage/slides')->name('storage.slides');
 Route::get('storage/variations')->name('storage.variations');
 Route::get('storage/products')->name('storage.products');
 Route::get('storage/admins')->name('storage.admins');
+Route::get('storage/drivers')->name('storage.drivers');
+Route::get('storage/cars')->name('storage.cars');
 
 Route::get('/', function (Request $request) {
     if ($r = $request->ref) {

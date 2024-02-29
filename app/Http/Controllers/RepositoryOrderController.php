@@ -32,7 +32,7 @@ class RepositoryOrderController extends Controller
 //        $cart = (new CartController())->update($request);
 //        $cart = $cart ? $cart->getData() : null;
 //        $cart = optional($cart)->cart ?? null;
-        $admin = auth('sanctum')->user();
+        $admin = $request->user();
         $cart = $request->cart;
         if (!$cart) {
             return response()->json(['message' => __('problem_in_create_order'), 'cart' => $cart], Variable::ERROR_STATUS);
@@ -47,24 +47,55 @@ class RepositoryOrderController extends Controller
         }
 
 //split cart to each repo
-
         //create order for each repo
         foreach ($cart->orders as $cart) {
+            $fromRepoId = $cart->repo_id;
+            $toRepoId = $cart->to_repo_id;
+            $repos = Repository::whereIn('id', [$fromRepoId, $toRepoId])->get();
+            $fromRepo = $repos->where('id', $fromRepoId)->first();
+            $toRepo = $repos->where('id', $toRepoId)->first();
+            $toAdmin = Admin::find($toRepo->admin_id) ?? Admin::where('agency_id', $toRepo->agency_id)->where('role', 'owner')->first();
+            $fromAdmin = Admin::find($fromRepo->admin_id) ?? Admin::where('agency_id', $fromRepo->agency_id)->where('role', 'owner')->first();
             $order = RepositoryOrder::create([
-                'to_admin_id' => $admin->id,
-                'to_province_id' => $cart->to_address['province_id'] ?? null,
-                'to_county_id' => $cart->to_address['county_id'] ?? null,
-                'to_district_id' => $cart->to_address['district_id'] ?? null,
-                'to_fullname' => $cart->to_address['receiver_fullname'] ?? null,
-                'to_phone' => $cart->to_address['receiver_phone'] ?? null,
-                'to_postal_code' => $cart->to_address['postal_code'] ?? null,
-                'to_address' => $cart->to_address['address'] ?? null,
-                'to_location' => $cart->to_address['location'] ?? null,
+                /*  'to_province_id' => $cart->to_address['province_id'] ?? null,
+                  'to_county_id' => $cart->to_address['county_id'] ?? null,
+                  'to_district_id' => $cart->to_address['district_id'] ?? null,
+                  'to_fullname' => $cart->to_address['receiver_fullname'] ?? null,
+                  'to_phone' => $cart->to_address['receiver_phone'] ?? null,
+                  'to_postal_code' => $cart->to_address['postal_code'] ?? null,
+                  'to_address' => $cart->to_address['address'] ?? null,
+                  'to_location' => $cart->to_address['location'] ?? null,
+               */
                 'status' => $cart->status ?? 'request',
+
                 'from_repo_id' => $cart->repo_id,
                 'from_agency_id' => $cart->agency_id,
                 'to_repo_id' => $cart->to_repo_id,
                 'to_agency_id' => $cart->to_agency_id,
+
+                'to_admin_id' => $toAdmin->id ?? null,
+                'from_admin_id' => $fromAdmin->id ?? null,
+
+                'to_province_id' => $toRepo->province_id,
+                'to_county_id' => $toRepo->county_id,
+                'to_district_id' => $toRepo->district_id,
+                'to_fullname' => $toAdmin->fullname ?? null,
+                'to_phone' => $toRepo->phone ?? $toAdmin->phone ?? null,
+                'to_postal_code' => $toRepo->postal_code,
+                'to_address' => $toRepo->address,
+                'to_location' => $toRepo->location,
+
+
+                'from_province_id' => $fromRepo ? $fromRepo->province_id : $request->from_province_id,
+                'from_county_id' => $fromRepo ? $fromRepo->county_id : $request->from_county_id,
+                'from_district_id' => $fromRepo ? $fromRepo->district_id : $request->from_district_id,
+                'from_fullname' => $fromAdmin->fullname ?? null,
+                'from_phone' => $fromRepo->phone ?? $fromAdmin->phone ?? null,
+                'from_postal_code' => $fromRepo ? $fromRepo->postal_code : $request->from_postal_code,
+                'from_address' => $fromRepo ? $fromRepo->address : $request->from_address,
+                'from_location' => $fromRepo ? $fromRepo->location : $request->from_location,
+
+
                 'total_shipping_price' => $cart->total_shipping_price,
                 'total_items_price' => $cart->total_items_price,
                 'total_items' => $cart->total_items,
@@ -225,10 +256,9 @@ class RepositoryOrderController extends Controller
         $query = RepositoryOrder::query()->select('*');
 
         $myAgency = Agency::find($admin->agency_id);
-
         $agencies = $admin->allowedAgencies($myAgency)->select('id', 'name')->get();
-        $agencyIds = $agencies->pluck('id');
-        $agencyIds = $myAgency->level == '0' ? $agencyIds->merge([null]) : $agencyIds;
+        $agencyIds = $myAgency->level == '0' ? $agencies->pluck('id')->merge([null]) : collect([$admin->agency_id]);// $agencies->pluck('id');
+
         if ($search)
             $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
         if ($status)

@@ -5,29 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
-use App\Http\Requests\CarRequest;
+use App\Http\Requests\DriverRequest;
 use App\Models\Admin;
 use App\Models\Agency;
-use App\Models\Car;
+use App\Models\Driver;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class CarController extends Controller
+class DriverController extends Controller
 {
     public function edit(Request $request, $id)
     {
 
-        $data = Car::with('agency')->find($id);
+        $data = Driver::with('agency')->find($id);
+
         $this->authorize('edit', [Admin::class, $data]);
 
-        return Inertia::render('Panel/Admin/Shipping/Car/Edit', [
+        return Inertia::render('Panel/Admin/Shipping/Driver/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
 
         ]);
     }
 
-    public function create(CarRequest $request)
+    public function create(DriverRequest $request)
     {
         if (!$request->uploading) { //send again for uploading images
             return back()->with(['resume' => true]);
@@ -35,16 +36,16 @@ class CarController extends Controller
 //        $request->merge([
 //            'status' => 'active',
 //        ]);
-        $data = Car::create($request->all());
+        $data = Driver::create($request->all());
 
         if ($data) {
             if ($request->img)
-                Util::createImage($request->img, Variable::IMAGE_FOLDERS[Car::class], $data->id);
+                Util::createImage($request->img, Variable::IMAGE_FOLDERS[Driver::class], $data->id);
 
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
-            Telegram::log(null, 'car_created', $data);
+            Telegram::log(null, 'driver_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
-        return to_route('admin.panel.shipping.car.index')->with($res);
+        return to_route('admin.panel.shipping.driver.index')->with($res);
 
     }
 
@@ -59,7 +60,7 @@ class CarController extends Controller
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
-        $query = Car::query()->select('*');
+        $query = Driver::query()->select('*');
 
         $myAgency = Agency::find($admin->agency_id);
 
@@ -87,14 +88,14 @@ class CarController extends Controller
 
     }
 
-    public function update(CarRequest $request)
+    public function update(DriverRequest $request)
     {
         $response = ['message' => __('response_error')];
         $errorStatus = Variable::ERROR_STATUS;
         $successStatus = Variable::SUCCESS_STATUS;
         $id = $request->id;
         $cmnd = $request->cmnd;
-        $data = Car::find($id);
+        $data = Driver::find($id);
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
 
@@ -104,7 +105,7 @@ class CarController extends Controller
 
                     if (!$request->img) //  add extra image
                         return response()->json(['errors' => [__('file_not_exists')], 422]);
-                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Car::class], $id);
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Driver::class], $id);
                     return response()->json(['message' => __('updated_successfully')], $successStatus);
 
 
@@ -121,7 +122,7 @@ class CarController extends Controller
 
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
-                Telegram::log(null, 'car_edited', $data);
+                Telegram::log(null, 'driver_edited', $data);
             } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
             return back()->with($res);
         }

@@ -233,7 +233,6 @@ export default {
 
   data() {
     return {
-      filteredAgencies: this.$page.props.agencies,
       form: useForm({
         agency_id: null,
         admin_id: null,

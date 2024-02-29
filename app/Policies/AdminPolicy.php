@@ -4,7 +4,9 @@ namespace App\Policies;
 
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\Car;
 use App\Models\City;
+use App\Models\Driver;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
@@ -110,6 +112,12 @@ class AdminPolicy
                 case    Variation::class:
                     $res = $admin->hasAccess('create_variation');
                     break;
+                case    Driver::class:
+                    $res = $admin->hasAccess('create_driver');
+                    break;
+                case    Car::class:
+                    $res = $admin->hasAccess('create_car');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -179,7 +187,12 @@ class AdminPolicy
                     $agencyIds = $admin->allowedAgencies(Agency::find($admin->agency_id))->pluck('id');
                     $res = in_array($item->from_agency_id, $agencyIds->toArray());
                     break;
-
+                case   $item instanceof Driver :
+                    $res = $admin->hasAccess('edit_driver');
+                    break;
+                case   $item instanceof Car :
+                    $res = $admin->hasAccess('edit_car');
+                    break;
             }
 
         if ($abort && empty($res))

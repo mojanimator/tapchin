@@ -12,10 +12,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('cars', function (Blueprint $table) {
+        Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100)->nullable();
-            $table->string('plate_number', 30)->nullable();
+            $table->string('fullname', 200)->nullable();
+            $table->string('national_code', 20)->nullable();
+            $table->string('phone', 20)->nullable()->index();
+            $table->bigInteger('wallet')->default(0);
+            $table->string('card', 20)->nullable();
+            $table->string('sheba', 30)->nullable();
             $table->unsignedBigInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
 
@@ -30,6 +34,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('cars');
+        Schema::dropIfExists('drivers');
     }
 };

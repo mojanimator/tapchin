@@ -64,7 +64,7 @@
                   <hr class="border-gray-200  m-2">
                   <div class="text-neutral-500 text-sm">{{ p.repo_name }}</div>
                   <div class="flex items-center text-sm">
-                    <div>{{ __('in_stock') + ` : ${p.in_shop}` }}</div>
+                    <div>{{ __('in_stock') + ` : ${p.in_shop ? parseFloat(p.in_shop) : 0}` }}</div>
                     <div class="text-sm text-neutral-500 mx-2" v-if="getPack(p.pack_id)">{{
                         ` ${getPack(p.pack_id)} `
                       }}

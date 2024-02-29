@@ -15,7 +15,7 @@
           <h5 class="  font-semibold">{{ __('shipping_methods_list') }}</h5>
         </div>
         <div>
-          <Link :href="route('admin.panel.shipping.method.create')"
+          <Link :href="route('admin.panel.shipping-method.create')"
                 class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
           >
             {{ __('new_shipping_method') }}
@@ -248,7 +248,7 @@
                 <!--                <Image class="w-10 h-10 cursor-pointer rounded-full" :src="`${route('storage.repositories')}/${d.id}.jpg`"-->
                 <!--                       :data-lity="`${route('storage.repositories')}/${d.id}.jpg`"-->
                 <!--                       :alt="cropText(d.title,5)"/>-->
-                <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.shipping.method.edit',d.id)">
+                <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.shipping-method.edit',d.id)">
                   <div class="text-sm font-semibold">{{ cropText(d.name, 30) }}</div>
                   <div class="font-normal text-gray-500">{{ }}</div>
                 </Link>
@@ -332,7 +332,7 @@
                     class=" inline-flex rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                     role="group">
                   <Link
-                      type="button" :href="route('admin.panel.shipping.method.edit',d.id)"
+                      type="button" :href="route('admin.panel.shipping-method.edit',d.id)"
                       class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
                       data-te-ripple-init
                       data-te-ripple-color="light">
@@ -423,7 +423,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.shipping.method.search'), {
+      window.axios.get(route('admin.panel.shipping-method.search'), {
         params: this.params
       }, {})
           .then((response) => {
@@ -488,7 +488,7 @@ export default {
     },
     edit(params) {
       this.isLoading(true);
-      window.axios.patch(route('admin.panel.shipping.method.update'), params,
+      window.axios.patch(route('admin.panel.shipping-method.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -550,7 +550,7 @@ export default {
         }, [])
       };
 
-      window.axios.patch(route('admin.panel.shipping.method.update'), params,
+      window.axios.patch(route('admin.panel.shipping-method.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {

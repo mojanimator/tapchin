@@ -8,6 +8,8 @@ use App\Models\Banner;
 use App\Models\BannerTransaction;
 use App\Models\Business;
 use App\Models\BusinessTransaction;
+use App\Models\Car;
+use App\Models\Driver;
 use App\Models\Message;
 use App\Models\Podcast;
 use App\Models\PodcastTransaction;
@@ -76,7 +78,7 @@ class Variable
     ];
     const  ORDER_STATUSES = [
 
-        ["name" => 'request', "color" => 'lemon'],
+        ["name" => 'request', "color" => 'violet'],
         ["name" => 'pending', "color" => 'danger'],
         ["name" => 'processing', "color" => 'teal'],
         ["name" => 'ready', "color" => 'green'],
@@ -120,9 +122,11 @@ class Variable
     const TICKET_ATTACHMENT_ALLOWED_MIMES = ['jpeg', 'jpg', 'png', 'txt', 'pdf'];
     const BANNER_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
     const PRODUCT_IMAGE_LIMIT_MB = 10;
+    const DRIVER_IMAGE_LIMIT_MB = 10;
     const VARIATION_IMAGE_LIMIT = 5;
 
     const PRODUCT_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
+    const DRIVER_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
 
 
     const MIN_SELL_PRICE = 5000;
@@ -137,6 +141,8 @@ class Variable
         Slider::class => 'slides',
         Product::class => 'products',
         Variation::class => 'variations',
+        Driver::class => 'drivers',
+        Car::class => 'cars',
     ];
     const NOTIFICATION_TYPES = [
         "business_approve",

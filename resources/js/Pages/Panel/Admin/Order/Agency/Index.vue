@@ -143,6 +143,14 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='to_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('destination_repository') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
@@ -268,6 +276,9 @@
                     <td class="px-2 py-4    ">
                       {{ d.from_repo_id }}
                     </td>
+                    <td class="px-2 py-4    ">
+                      {{ d.to_repo_id }}
+                    </td>
                     <td class="px-2 py-4   text-xs ">
                       {{ `${d.from_fullname || ''}\n${d.from_phone || ''}` }}
                     </td>
@@ -292,7 +303,7 @@
                           aria-expanded="false"
                           data-te-ripple-init
                           data-te-ripple-color="light"
-                          class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                          class="  min-w-[5rem]   px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
                           :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
                         {{ getStatus('order_statuses', d.status).name }}
                       </button>
@@ -431,7 +442,7 @@ export default {
       params: {
         page: 1,
         search: null,
-        is_to_agency: true,
+        is_from_agency: true,
         paginate: this.$page.props.pageItems[0],
         order_by: null,
         dir: 'DESC',

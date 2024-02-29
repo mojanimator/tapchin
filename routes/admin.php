@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PackController;
 use App\Http\Controllers\PartnershipController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\RepositoryOrderController;
 use App\Http\Controllers\RepositoryShippingController;
 use App\Http\Controllers\RepositoryShopController;
 use App\Http\Controllers\RepositoryTransportController;
+use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\ShippingMethodController;
 use App\Http\Controllers\VariationController;
 use App\Http\Helpers\Variable;
@@ -185,24 +188,37 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
         PanelController::makeInertiaRoute('get', 'order/user/index', 'admin.panel.order.user.index', 'Panel/Admin/Order/User/Index', []);
         Route::get('order/user/search', [OrderController::class, 'searchPanel'])->name('admin.panel.order.user.search');
+        Route::get('order/user/{order}', [OrderController::class, 'edit'])->name('admin.panel.order.user.edit');
 
         PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', []);
         Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');
+        Route::get('order/agency/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.order.agency.edit');
 
 
-        PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping.method.index', 'Panel/Admin/Shipping/Method/Index',
+        PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping-method.index', 'Panel/Admin/Shipping/Method/Index',
             []
         );
-        PanelController::makeInertiaRoute('get', 'shipping/method/create', 'admin.panel.shipping.method.create', 'Panel/Admin/Shipping/Method/Create',
+        PanelController::makeInertiaRoute('get', 'shipping/method/create', 'admin.panel.shipping-method.create', 'Panel/Admin/Shipping/Method/Create',
             [
                 'help' => __('help.shipping_method'),
-
             ]
         );
-        Route::get('shipping/method/search', [ShippingMethodController::class, 'searchPanel'])->name('admin.panel.shipping.method.search');
-        Route::patch('shipping/method/update', [ShippingMethodController::class, 'update'])->name('admin.panel.shipping.method.update');
-        Route::post('shipping/method/create', [ShippingMethodController::class, 'create'])->name('admin.panel.shipping.method.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
-        Route::get('shipping/method/{shipping_method}', [ShippingMethodController::class, 'edit'])->name('admin.panel.shipping.method.edit');
+        Route::get('shipping/method/search', [ShippingMethodController::class, 'searchPanel'])->name('admin.panel.shipping-method.search');
+        Route::patch('shipping/method/update', [ShippingMethodController::class, 'update'])->name('admin.panel.shipping-method.update');
+        Route::post('shipping/method/create', [ShippingMethodController::class, 'create'])->name('admin.panel.shipping-method.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
+        Route::get('shipping/method/{shipping_method}', [ShippingMethodController::class, 'edit'])->name('admin.panel.shipping-method.edit');
+
+
+        PanelController::makeInertiaRoute('get', 'shipping/index', 'admin.panel.shipping.index', 'Panel/Admin/Shipping/Index',
+            []
+        );
+        PanelController::makeInertiaRoute('get', 'shipping/create', 'admin.panel.shipping.create', 'Panel/Admin/Shipping/Create',
+            []
+        );
+        Route::get('shipping/search', [ShippingController::class, 'searchPanel'])->name('admin.panel.shipping.search');
+        Route::patch('shipping/update', [ShippingController::class, 'update'])->name('admin.panel.shipping.update');
+        Route::post('shipping/create', [ShippingController::class, 'create'])->name('admin.panel.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
+        Route::get('shipping/{shipping}', [ShippingController::class, 'edit'])->name('admin.panel.shipping.edit');
 
 
         PanelController::makeInertiaRoute('get', 'pack/index', 'admin.panel.pack.index', 'Panel/Admin/Pack/Index',
@@ -247,6 +263,27 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('variation/update', [VariationController::class, 'update'])->name('admin.panel.variation.update');
         Route::post('variation/create', [VariationController::class, 'create'])->name('admin.panel.variation.create')->middleware("can:create,App\Models\Admin,App\Models\Variation,'1'");
         Route::get('variation/{Variation}', [VariationController::class, 'edit'])->name('admin.panel.variation.edit');
+
+
+        PanelController::makeInertiaRoute('get', 'shipping/driver/index', 'admin.panel.shipping.driver.index', 'Panel/Admin/Shipping/Driver/Index', []);
+
+        PanelController::makeInertiaRoute('get', 'shipping/driver/create', 'admin.panel.shipping.driver.create', 'Panel/Admin/Shipping/Driver/Create', [], "can:create,App\Models\Admin,App\Models\Driver,'1'"
+        );
+
+        Route::get('shipping/driver/search', [DriverController::class, 'searchPanel'])->name('admin.panel.shipping.driver.search');
+        Route::patch('shipping/driver/update', [DriverController::class, 'update'])->name('admin.panel.shipping.driver.update');
+        Route::post('shipping/driver/create', [DriverController::class, 'create'])->name('admin.panel.shipping.driver.create')->middleware("can:create,App\Models\Admin,App\Models\Driver,'1'");
+        Route::get('shipping/driver/{driver}', [DriverController::class, 'edit'])->name('admin.panel.shipping.driver.edit');
+
+        PanelController::makeInertiaRoute('get', 'shipping/car/index', 'admin.panel.shipping.car.index', 'Panel/Admin/Shipping/Car/Index', []);
+
+        PanelController::makeInertiaRoute('get', 'shipping/car/create', 'admin.panel.shipping.car.create', 'Panel/Admin/Shipping/Car/Create', [], "can:create,App\Models\Admin,App\Models\Car,'1'"
+        );
+
+        Route::get('shipping/car/search', [CarController::class, 'searchPanel'])->name('admin.panel.shipping.car.search');
+        Route::patch('shipping/car/update', [CarController::class, 'update'])->name('admin.panel.shipping.car.update');
+        Route::post('shipping/car/create', [CarController::class, 'create'])->name('admin.panel.shipping.car.create')->middleware("can:create,App\Models\Admin,App\Models\Car,'1'");
+        Route::get('shipping/car/{car}', [CarController::class, 'edit'])->name('admin.panel.shipping.car.edit');
 
     });
 

@@ -27,6 +27,7 @@ class Order extends Model
         'total_items_price',
         'total_items',
         'total_price',
+        'total_discount',
     ];
 
     public function store(OrderRequest $request)
