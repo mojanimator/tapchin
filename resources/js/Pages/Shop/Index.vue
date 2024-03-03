@@ -188,7 +188,7 @@ export default {
 
   }, mounted() {
     // this.setScroll(this.$refs.loader.$el);
-    this.getData();
+    // this.getData();
   },
   methods: {
     getData(page) {

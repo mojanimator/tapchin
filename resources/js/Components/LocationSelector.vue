@@ -174,10 +174,8 @@ export default {
   methods: {
     updateLocation(city_id) {
       window.axios.post(route('user.update_location'), {city_id: city_id}).then((response) => {
-        this.log('location');
         if (response.data && response.data.location) {
           this.$page.props.user_location = response.data.location;
-          this.log(this.$page.props.user_location);
         }
 
 
@@ -200,6 +198,8 @@ export default {
         this.selectedName == this.__('select_city');
       if (!this.selected.province_id)
         this.modal.show();
+      else
+        this.$emit('change', this.selected);
       this.loaded = true;
     },
 
