@@ -58,7 +58,6 @@ class HandleInertiaRequests extends Middleware
                 return app()->getLocale();
             },
             'statuses' => Variable::STATUSES,
-            'order_statuses' => Variable::ORDER_STATUSES,
             'categories' => \App\Models\Category::get(),
             'langs' => Variable::LANGS,
             'images' => asset('assets/images') . '/',

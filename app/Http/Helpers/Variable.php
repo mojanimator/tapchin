@@ -80,10 +80,10 @@ class Variable
 
         ["name" => 'request', "color" => 'violet'],
         ["name" => 'pending', "color" => 'danger'],
-        ["name" => 'processing', "color" => 'teal'],
+        ["name" => 'processing', "color" => 'orange'],
         ["name" => 'ready', "color" => 'green'],
-        ["name" => 'sending', "color" => 'primary'],
-        ["name" => 'delivered', "color" => 'success'],
+        ["name" => 'sending', "color" => 'blue'],
+        ["name" => 'delivered', "color" => 'gray'],
         ["name" => 'canceled', "color" => 'gray'],
         ["name" => 'rejected', "color" => 'gray'],
         ["name" => 'refunded', "color" => 'gray'],
@@ -174,7 +174,7 @@ class Variable
 
 
     const NOTIFICATION_LIMIT = 5;
-    const CITY_ID = 61; //تجریش
+    const CITY_ID = null; //61 تجریش
     const RATIOS = ['slider' => 1.8];
 
     static $CITIES = [];

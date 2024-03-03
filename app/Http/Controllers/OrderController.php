@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
+use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\User;
+use App\Models\UserFinancial;
 use App\Models\Variation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,6 +19,70 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
+    public function update(OrderRequest $request)
+    {
+        $response = ['message' => __('response_error')];
+        $errorStatus = Variable::ERROR_STATUS;
+        $successStatus = Variable::SUCCESS_STATUS;
+        $id = $request->id;
+        $cmnd = $request->cmnd;
+        $status = $request->status;
+        $data = Order::find($id);
+        if (!starts_with($cmnd, 'bulk'))
+            $this->authorize('edit', [Admin::class, $data]);
+
+        if ($cmnd) {
+            switch ($cmnd) {
+                case 'status':
+                    $availableStatuses = $data->getAvailableStatuses();
+
+                    if (!$availableStatuses->where('name', $status)->first())
+                        return response()->json(['message' => __('action_not_allowed'), 'status' => $data->status,], $errorStatus);
+                    $data->status = $status;
+                    if ($status == 'refunded' || $status == 'rejected') {
+
+                        $data->status = 'canceled';
+                        //return order to repo
+                        $userF = UserFinancial::firstOrNew(['user_id' => $data->user_id]);
+                        if (!$data->user_id)
+                            return response()->json(['message' => __('user_not_found'), 'status' => $data->status,], $errorStatus);
+
+                        foreach ($data->items()->get() as $item) {
+                            $variation = Variation::find($item->variation_id);
+                            if ($variation) {
+                                $variation->in_repo += $item->qty;
+                                $variation->save();
+                            }
+                        }
+                        $userF->wallet += $data->total_price;
+                        //TODO: Save transaction
+                        $userF->save();
+                        //return price to user wallet
+                    }
+                    $data->save();
+                    return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
+
+
+            }
+        } elseif ($data) {
+
+
+            $request->merge([
+//                'cities' => json_encode($request->cities ?? [])
+            ]);
+
+
+            if ($data->update($request->all())) {
+
+                $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+//                dd($request->all());
+                Telegram::log(null, 'repository_edited', $data);
+            } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
+            return back()->with($res);
+        }
+
+        return response()->json($response, $errorStatus);
+    }
 
     public function create(OrderRequest $request)
     {
@@ -125,8 +192,16 @@ class OrderController extends Controller
             $query = $query->where('status', $status);
         $query->whereIntegerInRaw('agency_id', $agencyIds);
 
-        return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
 
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) {
+            return $paginated->getCollection()->transform(
+                function ($item) {
+                    $item->statuses = $item->getAvailableStatuses();
+                    return $item;
+                }
+
+            );
+        });
     }
 
 }

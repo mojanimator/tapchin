@@ -188,6 +188,7 @@ class Admin extends Authenticatable
             $this->agency_level == 0 ? 'create_variation' : '',
             $this->agency_level < 3 ? 'view_agency_order' : '',
             'view_user_order',
+            'create_shipping',
         ];
         return $this->access;
 
@@ -217,6 +218,7 @@ class Admin extends Authenticatable
                     ->orWhere(function ($query) use ($myAgency) {
                         $query->whereIn('id', $myAgency->level == '0' ? [$myAgency->id, null] : [$myAgency->id]);
                     });
+
         }
         return $data;
 

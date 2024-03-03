@@ -285,9 +285,9 @@
                     <td>
                       {{ asPrice(d.total_price) }}
                     </td>
-                    <td>
+                    <td class="px-2 py-4    " data-te-dropdown-ref>
                       <button
-                          id="dropdownStatusSetting"
+                          :id="`dropdownStatusSetting${d.id}`"
                           data-te-dropdown-toggle-ref
                           aria-expanded="false"
                           data-te-ripple-init
@@ -296,63 +296,24 @@
                           :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
                         {{ getStatus('order_statuses', d.status).name }}
                       </button>
-                    </td>
+                      <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
+                          class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                          :aria-labelledby="`dropdownStatusSetting${d.id}`">
 
-                    <td v-if="false"
-                        class="px-2     " data-te-dropdown-ref>
-                      <button @click="selected=d"
-                              id="dropdownRepoId"
-                              data-te-dropdown-toggle-ref
-                              aria-expanded="false"
-                              data-te-ripple-init
-                              data-te-ripple-color="light"
-                              class="  min-w-[5rem]    px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                              :class="`bg-primary-50 border border-primary-100 hover:bg-primary-200 text-primary-500`"
-                      >
-                        {{ d.repo_id }}
-                      </button>
-                      <ul @click.stop ref="dropdownRepoIdMenu" data-te-dropdown-menu-ref
-                          class="p-4  absolute z-[1050]    hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
-                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="RepoId menu"
-                          aria-labelledby="dropdownRepoId">
-                        <li
-                            class="   text-sm  ">
-                          <span class="text-xs py-2 text-danger-500">{{ __('help_change_repo') }}</span>
-                          <div class="flex flex-col  space-y-2 text-start ">
-                            <div class="flex items-stretch">
-                              <div @click.stop="d.new_repo_id=null "
-                                   class="bg-red-500 cursor-pointer text-white align-middle rounded-s hover:bg-red-400">
-                                <XMarkIcon class="w-8 h-6 my-2 "/>
-                              </div>
-                              <select class="grow rounded-e border-400 cursor-pointer" name=""
-                                      @change="($e)=>{log(d.agency_id);d.new_repo_id=$e.target.value;}"
-                                      :id=" `selectRepo${d.id}` " v-model="d.new_repo_id">
-                                <option class="text-start rounded p-2 m-2"
-                                        v-for="d in filteredRepositories[d.agency_id] "
-                                        :value="d.id">
-                                  <div class="p-2"> {{ __(d.name) }}</div>
-                                </option>
-                              </select>
-                            </div>
-
-                            <span class="text-xs   pt-2  font-light text-gray-400">
-                               {{ `${__('get_from_repo')} (${__('max')}: ${d.in_repo} ${__('unit')})` }}
-                            </span>
-                            <input
-                                @keydown.enter="edit({'idx':idx,'id':d.id,'cmnd':'change-repo','repo_id':d.new_repo_id,'in_repo':d.new_in_repo})"
-                                type="number" min="0" class="grow mb-2  p-1 rounded  border-gray-400"
-                                v-model="d.new_in_repo">
-
-                            <button class="bg-success-100 text-success-700 p-2 rounded-lg  hover:bg-success-50 w-full"
-                                    @click="edit({'idx':idx,'id':d.id,'cmnd':'change-repo','repo_id':d.new_repo_id,'in_repo':d.new_in_repo})">
-                              {{ __('edit') }}
-                            </button>
+                        <li v-for="(s,ix) in d.statuses" role="menuitem"
+                            @click="showDialog('danger',s.message,__('accept'),edit,{'idx':idx,'id':d.id,'cmnd':'status','status':s.name}) "
+                            class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                          <div class="flex items-center justify-center    px-6 py-2   "
+                               :class="` hover:bg-gray-200 text-${s.color}-500`">
+                            {{ __(s.name) }}
                           </div>
+                          <hr class="border-gray-200 ">
                         </li>
-
 
                       </ul>
                     </td>
+
 
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
@@ -517,8 +478,9 @@ export default {
             this.setTableHeight();
             this.$nextTick(() => {
 
-              // this.initTableDropdowns();
+              this.initTableDropdowns();
               // this.initTableModals();
+
 
             });
 
@@ -564,7 +526,7 @@ export default {
     edit(params) {
       this.isLoading(true);
       this.errors = {};
-      window.axios.patch(route('admin.panel.variation.update'), params,
+      window.axios.patch(route('admin.panel.order.user.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -574,6 +536,8 @@ export default {
 
             if (response.data.status) {
               this.data[params.idx].status = response.data.status;
+              if (response.data.statuses)
+                this.data[params.idx].statuses = response.data.statuses;
             } else {
               this.getData();
             }

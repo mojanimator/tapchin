@@ -7,6 +7,7 @@ use App\Models\Agency;
 use App\Models\Car;
 use App\Models\City;
 use App\Models\Driver;
+use App\Models\Order;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
@@ -192,6 +193,9 @@ class AdminPolicy
                     break;
                 case   $item instanceof Car :
                     $res = $admin->hasAccess('edit_car');
+                    break;
+                case   $item instanceof Order :
+                    $res = $admin->hasAccess('edit_order');
                     break;
             }
 

@@ -65,27 +65,6 @@ class Util
 
     }
 
-    public
-    function copyImage()
-    {
-        if (!File::exists("storage/app/public/$type/$id")) {
-//            Storage::makeDirectory("public/$type", 766);
-            File::makeDirectory(Storage::path("public/$type/$id"), $mode = 0755,);
-        }
-        $path = storage_path("app/public/faker/$faker/$parent.jpg");
-
-        $file = new UploadedFile(
-            $path,
-            '1.' . File::extension($path),
-            File::mimeType($path),
-            null,
-            true
-
-        );
-        copy($file->path(), (storage_path("app/public/$type/$id/thumb.jpg")   /*. $file->extension()*/));
-
-
-    }
 
     static function createScreenshot($url, $type, $name)
     {
@@ -222,6 +201,15 @@ class Util
     }
 
     public
+    static function createCityTable()
+    {
+        self::createCityTableFromDivar();
+//        City::where('level', 3)->delete();
+        DB::statement('ALTER TABLE cities MODIFY COLUMN id SMALLINT UNSIGNED  auto_increment');
+
+    }
+
+    public
     static function createCityTableFromDivar()
     {
 
@@ -245,13 +233,13 @@ class Util
         });
         Schema::table('cities', function (Blueprint $table) {
             $table->foreign('parent_id')->references('id')->on('cities');
-
         });
         self::insertFromSql("");
         foreach (City::get() as $item) {
             $item->has_child = City::where('parent_id', $item->id)->exists();
             $item->save();
         }
+
         return;
         DB::table('cities')->insert([
             ['id' => 891, 'name' => 'آذربایجان شرقی', 'slug' => str_slug('آذربایجان شرقی'), /* 'amar_code' => '3',*/ 'latitude' => '37.9160365', 'longitude' => '46.6781589'],

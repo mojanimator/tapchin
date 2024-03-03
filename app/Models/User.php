@@ -133,6 +133,7 @@ class User extends Authenticatable
 //        session()->put('city_id', null);
         $res = null;
         $city = $cities->where('id', optional($user)->city_id ?? session('city_id', Variable::CITY_ID))->first();
+//        dd(session('city_id', Variable::CITY_ID));
         if ($city) {
             if ($city->level == 1)
                 $res = [['id' => $city->id, 'name' => $city->name]];

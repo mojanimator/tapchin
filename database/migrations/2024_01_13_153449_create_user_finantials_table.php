@@ -15,9 +15,10 @@ return new class extends Migration {
         Schema::create('user_financials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
-            $table->string('sheba')->nullable();
-            $table->string('cart')->nullable();
-            $table->unsignedBigInteger('wallet')->nullable();
+            $table->bigInteger('wallet')->default(0);
+            $table->string('card', 16)->nullable();
+            $table->string('sheba', 24)->nullable();
+
             $table->timestamps();
         });
     }

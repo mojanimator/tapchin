@@ -8,6 +8,7 @@ use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\City;
 use App\Models\Hire;
 use App\Models\Notification;
 use App\Models\User;
@@ -177,9 +178,14 @@ class UserController extends Controller
     {
         if (!is_numeric($request->city_id)) return;
         session()->put('city_id', $request->city_id);
+
+
         $user = auth('sanctum')->user();
         if ($user)
             $user->update(['city_id' => $request->city_id]);
+
+
+        return response()->json(['location' => User::getLocation(City::select('id', 'name', 'level', 'parent_id')->get())]);
     }
 
 }

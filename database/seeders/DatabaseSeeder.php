@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
 
+        $this->createCities();
         $this->createUsers(20);
         $this->createAgencies(20);
         $this->createAdmins(20);
@@ -76,7 +77,42 @@ class DatabaseSeeder extends Seeder
         // ]);
     }
 
-    private function createUsers($count = 30)
+
+    private function createCities()
+    {
+        ini_set('max_execution_time', '0'); // for infinite time of execution
+        if (DB::connection()->getDriverName() == 'mysql')
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//        DB::statement("ALTER TABLE cities AUTO_INCREMENT = 2000;");
+
+        City::where('level', 3)->delete();
+        $areas = [
+            ['name' => 'تهران', 'count' => 22],
+            ['name' => 'رشت', 'count' => 5],
+            ['name' => 'اصفهان', 'count' => 15],
+        ];
+        foreach ($areas as $area) {
+            $cityId = City::where('level', 2)->where('name', $area['name'])->first()->id;
+            foreach (range(1, $area['count']) as $item) {
+                City::create(
+                    [
+                        'level' => 3,
+                        'name' => "منطقه $item",
+                        'parent_id' => $cityId,
+                        'slug' => "m-$item",
+                    ]
+                );
+            }
+
+        }
+        foreach (City::get() as $item) {
+            $item->has_child = City::where('parent_id', $item->id)->exists();
+            $item->save();
+        }
+    }
+
+    private
+    function createUsers($count = 30)
     {
 
         DB::table('users')->truncate();
@@ -85,7 +121,8 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function createAdmins($count = 30)
+    private
+    function createAdmins($count = 30)
     {
 
         DB::table('admins')->truncate();
@@ -141,7 +178,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 2,
                 'name' => 'نمایندگی جنوب ایران',
                 'parent_id' => 1,
-                'access' => json_encode([City::where('level', 1)->whereIn('name', ['خوزستان', 'بوشهر', 'هرمزگان'])->pluck('id')]),
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['خوزستان', 'بوشهر', 'هرمزگان'])->pluck('id')),
 //                'has_shop' => false,
                 'level' => strval($levels[1]),
 //                'owner_id' => 2,
@@ -153,7 +190,7 @@ class DatabaseSeeder extends Seeder
             [
                 'id' => 3,
                 'name' => 'نمایندگی مرکز ایران',
-                'access' => json_encode([City::where('level', 1)->whereIn('name', ['تهران', 'اصفهان', 'قزوین'])->pluck('id')]),
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['تهران', 'اصفهان', 'قزوین'])->pluck('id')),
                 'parent_id' => 1,
 //                'has_shop' => false,
                 'level' => strval($levels[1]),
@@ -258,7 +295,7 @@ class DatabaseSeeder extends Seeder
                 'level' => strval($levels[3]),
 //                'owner_id' => 9,
                 'province_id' => City::where('level', 1)->where('name', 'اصفهان')->first()->id,
-                'county_id' => City::where('level', 2)->where('name', 'شاهین‌شهر')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'شهرضا')->first()->id,
                 'address' => 'میدان شهدا',
                 'status' => 'active',
 
@@ -269,7 +306,8 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function createPacks($count = 30)
+    private
+    function createPacks($count = 30)
     {
 
         DB::table('packs')->truncate();
@@ -314,7 +352,8 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function createRepositories($count = 30)
+    private
+    function createRepositories($count = 30)
     {
 
 
@@ -413,7 +452,8 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function createShippingMethods($count = 30)
+    private
+    function createShippingMethods($count = 30)
     {
 
 
@@ -491,7 +531,8 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 
-    private function createProducts($count = 30)
+    private
+    function createProducts($count = 30)
     {
         DB::table('products')->truncate();
         DB::table('variations')->truncate();

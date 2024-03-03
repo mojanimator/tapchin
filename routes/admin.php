@@ -30,6 +30,7 @@ use App\Models\Product;
 use App\Models\Variation;
 use Illuminate\Support\Facades\Route;
 
+//return;
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -186,12 +187,14 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('repository/cart/update', [RepositoryCartController::class, 'update'])->name('admin.panel.repository.cart.update');
 
 
-        PanelController::makeInertiaRoute('get', 'order/user/index', 'admin.panel.order.user.index', 'Panel/Admin/Order/User/Index', []);
+        PanelController::makeInertiaRoute('get', 'order/user/index', 'admin.panel.order.user.index', 'Panel/Admin/Order/User/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/user/search', [OrderController::class, 'searchPanel'])->name('admin.panel.order.user.search');
+        Route::patch('order/user/update', [OrderController::class, 'update'])->name('admin.panel.order.user.update');
         Route::get('order/user/{order}', [OrderController::class, 'edit'])->name('admin.panel.order.user.edit');
 
-        PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', []);
+        PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');
+        Route::patch('order/agency/update', [RepositoryOrderController::class, 'update'])->name('admin.panel.order.agency.update');
         Route::get('order/agency/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.order.agency.edit');
 
 
@@ -217,7 +220,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         );
         Route::get('shipping/search', [ShippingController::class, 'searchPanel'])->name('admin.panel.shipping.search');
         Route::patch('shipping/update', [ShippingController::class, 'update'])->name('admin.panel.shipping.update');
-        Route::post('shipping/create', [ShippingController::class, 'create'])->name('admin.panel.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\ShippingMethod,'1'");
+        Route::post('shipping/create', [ShippingController::class, 'create'])->name('admin.panel.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\Shipping,'1'");
         Route::get('shipping/{shipping}', [ShippingController::class, 'edit'])->name('admin.panel.shipping.edit');
 
 

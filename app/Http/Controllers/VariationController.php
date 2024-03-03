@@ -52,13 +52,14 @@ class VariationController extends Controller
         $search = $request->search;
         $inShop = $request->in_shop;
         $parentIds = $request->parent_ids;
-        $cityId = $request->city_id;
+        $districtId = $request->district_id;
+        $countyId = $request->county_id;
         $provinceId = $request->province_id;
         $page = $request->page ?: 1;
         $orderBy = $request->order_by ?? 'id';
         $dir = $request->dir ?? 'DESC';
         $paginate = $request->paginate ?: 24;
-        $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $cityId, $provinceId) {
+        $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
                 ->where('repositories.is_shop', true)
@@ -70,12 +71,20 @@ class VariationController extends Controller
                     if ($parentIds && is_array($parentIds) && count($parentIds) > 0)
                         $query->whereIntegerInRaw('variations.product_id', $parentIds);
                 })->where(function ($query) use ($provinceId) {
-                    if ($provinceId)
+                    if ($provinceId === null)
+                        $query->where('repositories.id', 0);
+                    elseif ($provinceId)
                         $query->where('repositories.province_id', $provinceId);
-                })->where(function ($query) use ($cityId) {
-                    if ($cityId)
-                        $query->whereJsonContains('repositories.cities', intval($cityId));
-                    else $query->where('repositories.id', 0);
+                })->where(function ($query) use ($countyId) {
+                    if ($countyId === null)
+                        $query->where('repositories.id', 0);
+                    elseif ($countyId)
+                        $query->whereJsonContains('repositories.cities', intval($countyId));
+                })->where(function ($query) use ($districtId) {
+                    if ($districtId === null)
+                        $query->where('repositories.id', 0);
+                    elseif ($districtId)
+                        $query->whereJsonContains('repositories.cities', intval($districtId));
                 });
 
         })->select('variations.id', 'variations.product_id',

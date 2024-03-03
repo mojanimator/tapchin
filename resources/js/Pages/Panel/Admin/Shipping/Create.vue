@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('new_order')}}</title>
+      <title>{{__('new_shipping')}}</title>
     </template>
 
 
@@ -12,7 +12,7 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('new_order') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('new_shipping') }}</h1>
 
       </div>
 
@@ -30,11 +30,12 @@
             <form @submit.prevent="submit">
 
               <div class="my-2">
-                <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
-                              :callback="{'level':getAgency}" :error="form.errors.to_repo_id"
-                              :link="route('admin.panel.repository.search')+(`?status=active` )"
-                              :label="__('destination_repository')"
-                              :id="'destination_repository'" v-model:selected="form.to_repo_id" :preload="null">
+                <UserSelector :colsData="['fullname','phone','agency_id','level']"
+                              :labelsData="['name','phone','agency_id','level']"
+                              :callback="{'level':getAgency}" :error="form.errors.driver_id"
+                              :link="route('admin.panel.shipping.driver.search') "
+                              :label="__('driver')"
+                              :id="'driver'" v-model:selected="form.driver_id" :preload="null">
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-2'"
                          class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
@@ -50,18 +51,17 @@
                     </div>
                   </template>
                 </UserSelector>
-
               </div>
 
               <div class="my-4 ">
-                <Tooltip v-if="hasAccess('create_variation')" class="  " :content="__('help_order_from')">
+                <Tooltip v-if="hasAccess('create_variation')" class="  " :content="__('help_shipping_from')">
                   <div class="flex items-center">
                     <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
-                    <InputLabel class="mx-1" for="order_from" :value="__('order_from')"/>
+                    <InputLabel class="mx-1" for="shipping_from" :value="__('shipping_from')"/>
                   </div>
                 </Tooltip>
                 <div class="border p-2 rounded border-gray-300">
-                  <RadioGroup v-if="hasAccess('create_variation')" :beforeSelected="form.order_type"
+                  <RadioGroup v-if="hasAccess('create_variation')" :beforeSelected="form.shipping_type"
                               ref="orderFromSelector" class="grow" name="status"
                               @change="($e)=>{ if($e.target.value==__('external')){form.from_repo_id=null;form.from_repo=null;form.shipping_method_id=null};form.products=[ ] }"
                               v-model="form.order_type"
@@ -490,26 +490,7 @@ export default {
       orderFrom: [this.__('internal'), this.__('external')],
       form: useForm({
 
-        status: 'pending',
-        to_repo_id: null,
-        from_repo_id: null,
-        from_repo: null,
-        order_type: this.__('internal'),
-        pay_timeout: this.$page.props.pay_timeout,
-        products: [],
-        shipping_method_id: null,
-        total_discount: 0,
-        total_shipping_price: 0,
-        from_address: null,
-        from_province_id: null,
-        from_county_id: null,
-        from_district_id: null,
-        from_lat: null,
-        from_lon: null,
-        from_location: null,
-        from_postal_code: null,
-        from_fullname: null,
-        from_phone: null,
+        driver_id:null,
       }),
 
     }

@@ -10,4 +10,8 @@ class UserFinancial extends Model
     use HasFactory;
 
     protected $table = 'user_financials';
+
+    protected $fillable = [
+        'user_id',
+    ];
 }

@@ -35,9 +35,9 @@ return new class extends Migration {
 
             $table->boolean('wallet_active')->default(false);
             $table->integer('notifications')->unsigned()->default(0);
-            $table->unsignedInteger('wallet')->default(0);
             $table->unsignedInteger('meta_wallet')->default(0);
-            $table->string('card', 16)->default(null)->nullable();
+//            $table->unsignedInteger('wallet')->default(0);
+//            $table->string('card', 16)->default(null)->nullable();
             $table->string('ref_id', 10);
             $table->string('push_id', 20)->nullable();
             $table->timestamp('expires_at')->nullable()->default(null);

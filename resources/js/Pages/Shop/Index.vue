@@ -12,7 +12,8 @@
 
     <section
         class="flex   flex-wrap gap-2 w-full bg-gray-100 rounded-b-2xl shadow-md p-2  px-2 lg:px-4 items-center z-[-10]">
-      <LocationSelector @change="  params.province_id=$event.province_id;params.city_id=$event.city_id; getData(0);"/>
+      <LocationSelector
+          @change="  params.province_id=$event.province_id;params.county_id=$event.county_id;params.district_id=$event.district_id; getData(0);"/>
 
       <SearchInput v-model="params.search" @search="getData(0)"/>
       <swiper

@@ -257,8 +257,9 @@ class RepositoryOrderController extends Controller
 
         $myAgency = Agency::find($admin->agency_id);
         $agencies = $admin->allowedAgencies($myAgency)->select('id', 'name')->get();
-        $agencyIds = $myAgency->level == '0' ? $agencies->pluck('id')->merge([null]) : collect([$admin->agency_id]);// $agencies->pluck('id');
 
+//        $agencyIds = $myAgency->level == '0' ? $agencies->pluck('id')->merge([null]) : collect([$admin->agency_id]);// $agencies->pluck('id');
+        $agencyIds = $agencies->pluck('id');
         if ($search)
             $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
         if ($status)

@@ -58,47 +58,39 @@
 
           <!--Modal body-->
           <div class="relative   p-4" data-te-modal-body-ref>
+            <div
+                class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
 
-            <Selector v-if="loaded" ref="provinceSelector"
-                      :data="cities.filter(e=>e.level==1 || e.id==0)"
-                      :label="`${__('province')} *`"
-                      @change="$e=>select('province_id',$e.target.value)"
-                      id="province_id" v-model=" selected.province_id">
-              <template v-slot:append>
-                <div class="  p-3">
-                  <MapPinIcon class="h-5 w-5"/>
-                </div>
-              </template>
-            </Selector>
+              <h5 class="text-2xl font-semibold"> {{
+                  selecteds[currentLevel > 0 ? currentLevel - 1 : 0] ? selecteds[currentLevel > 0 ? currentLevel - 1 : 0].name : ''
+                }}</h5>
 
-            <Selector v-if="loaded" ref="countySelector"
-                      :data="cities.filter(e=>e.parent_id==selected.province_id || e.id==0) "
-                      :label="`${__('county')} *`"
-                      @change="$e=>select('county_id',$e.target.value)"
-                      id="county_id" v-model=" selected.county_id">
-              <template v-slot:append>
-                <div class="  p-3">
-                  <MapPinIcon class="h-5 w-5"/>
-                </div>
-              </template>
-            </Selector>
-            <Selector
-                v-if="loaded && cities.filter(e=>e.parent_id==selected.county_id && e.parent_id!=0&& e.id!=0).length>0"
-                ref="districtSelector"
-                :data="cities.filter(e=>(e.level==3 && e.parent_id==selected.county_id) || e.id==0)"
-                @change="$e=>select('district_id',$e.target.value)"
-                :label="`${__('district/city')} *`"
-                id="district_id" v-model=" selected.district_id">
-              <template v-slot:append>
-                <div class="  p-3">
-                  <MapPinIcon class="h-5 w-5"/>
-                </div>
-              </template>
-            </Selector>
+            </div>
 
-            <PrimaryButton @click="modal.hide();$emit('change',selected)" classes="w-full" class="my-2">
-              {{ __('accept') }}
-            </PrimaryButton>
+            <div class="px-2  md:px-4">
+              <div
+                  class="    mx-auto md:max-w-3xl   mt-6 px-2 md:px-4 py-4   overflow-hidden  rounded-lg  ">
+
+                <div class="flex flex-col mx-2   col-span-2 w-full     px-2">
+                  <ul>
+                    <li v-if="selecteds.length>0"
+                        @click="back()"
+                        class="p-3 px-3 border-b flex text-gray-600 items-center justify-between hover:bg-gray-100 rounded  hover:cursor-pointer">
+                      <span>{{ __('return') }}</span>
+                      <ChevronRightIcon class="w-4 h-4"/>
+                    </li>
+                    <li v-for="(d,idx) in filteredCities"
+                        @click="selectCity(d)"
+                        class="p-2 px-3 flex items-center justify-between hover:bg-gray-100 rounded  hover:cursor-pointer">
+                      <span>{{ d.name }}</span>
+                      <ChevronLeftIcon v-if="d.has_child" class="w-4 h-4"/>
+                    </li>
+                  </ul>
+                </div>
+
+
+              </div>
+            </div>
           </div>
 
 
@@ -114,7 +106,6 @@ import {Select, initTE, Modal} from "tw-elements";
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import LoadingIcon from '@/Components/LoadingIcon.vue';
-import Selector from '@/Components/Selector.vue';
 import {
 
   MapPinIcon,
@@ -122,14 +113,11 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "@heroicons/vue/24/outline";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 export default {
   data() {
     return {
-      loaded: false,
       currentLevel: 1,
-      selected: {},
       selecteds: [],
       selectedName: null,
       loading: false,
@@ -141,7 +129,6 @@ export default {
   props: ['id', 'label', 'data', 'modelValue'],
   emits: ['change'],
   components: {
-    PrimaryButton,
     InputLabel,
     MapPinIcon,
     Bars2Icon,
@@ -149,14 +136,10 @@ export default {
     LoadingIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
-    Selector,
   },
   mounted() {
     const modalEl = document.getElementById('locationModal');
     this.modal = new Modal(modalEl);
-    this.cities = [{id: 0, name: this.__('all')}];
-    for (let idx in this.$page.props.cities)
-      this.cities.push(this.$page.props.cities[idx]);
 
     this.preload();
 
@@ -173,69 +156,24 @@ export default {
   },
   methods: {
     updateLocation(city_id) {
-      window.axios.post(route('user.update_location'), {city_id: city_id}).then((response) => {
-        this.log('location');
-        if (response.data && response.data.location) {
-          this.$page.props.user_location = response.data.location;
-          this.log(this.$page.props.user_location);
-        }
-
-
-      });
-
+      window.axios.post(route('user.update_location'), {city_id: city_id});
     },
     preload() {
-      let preload = this.$page.props.user_location || {};
-
-      this.selected.province_id = preload.length > 0 ? preload[0]['id'] : 0;
-      this.selected.county_id = preload.length > 1 ? preload[1]['id'] : 0;
-      this.selected.district_id = preload.length > 2 ? preload[2]['id'] : 0;
-      if (this.selected.district_id && this.selected.county_id && this.selected.province_id)
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.district_id)[0]['name']}`;
-      else if (this.selected.county_id && this.selected.province_id)
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}`;
-      else if (this.selected.province_id)
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}`;
-      else
-        this.selectedName == this.__('select_city');
-      if (!this.selected.province_id)
+      this.selecteds = this.$page.props.user_location || [];
+      this.currentLevel = this.selecteds.length + 1;
+      this.selectedName = (this.selecteds.length > 1 ? this.selecteds[1]['name'] : '') + (this.selecteds.length > 2 ? (' _ ' + this.selecteds[2]['name']) : '');
+      this.selectedName == '' ? this.__('select_city') : this.selectedName;
+      this.getCities(this.currentLevel, this.selecteds.length - 2 >= 0 ? this.selecteds[this.selecteds.length - 2].id : 0);
+      if (this.selecteds.length == 0)
         this.modal.show();
-      this.loaded = true;
     },
+    back() {
+      const last = this.selecteds[this.selecteds.length - 1];
+      this.selecteds.pop();
+      this.currentLevel = this.selecteds.length;
 
-    select(_type, id) {
-      if (_type == 'province_id') {
-        this.selected = {
-          province_id: id,
-          county_id: 0,
-          district_id: 0,
-        };
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}`;
+      this.getCities(this.currentLevel + 1, this.selecteds.length > 0 ? this.selecteds[this.selecteds.length - 1].id : 0);
 
-        if (id != 0)
-          this.updateLocation(id);
-
-      } else if (_type == 'county_id') {
-        this.selected = {
-          province_id: this.selected.province_id,
-          county_id: id,
-          district_id: 0,
-        };
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}`;
-        if (id != 0)
-          this.updateLocation(this.selected.county_id);
-      } else if (_type == 'district_id') {
-        this.selected = {
-          province_id: this.selected.province_id,
-          county_id: this.selected.county_id,
-          district_id: id,
-        };
-        this.selectedName = `${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.district_id)[0]['name']}`;
-        if (id != 0)
-          this.updateLocation(this.selected.district_id);
-      }
-
-      this.$emit('change', this.selected);
     },
     selectCity(d) {
       this.selecteds.push({id: d.id, name: d.name});
