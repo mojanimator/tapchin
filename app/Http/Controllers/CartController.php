@@ -340,7 +340,7 @@ class CartController extends Controller
                     'repo_id' => $repo->id,
                     'agency_id' => $repo->agency_id,
                     'error_message' => $errorMessage,
-                    'has_available_shipping' => $shipments[$idx]['has_available_shipping'] ?? false,
+                    'has_available_shipping' => boolval($shipments[$idx]['has_available_shipping']) ?? false,
                     'allow_visit' => optional($repo)->allow_visit ?? false,
                     'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                 ];
@@ -444,7 +444,7 @@ class CartController extends Controller
                 $repoId = $item['repo_id'];
                 $visitChecked = $item['visit_checked'];
                 $errorMessage = $item['error_message'] ?? null;
-                $hasAvailableShipping = $item['has_available_shipping'];
+                $hasAvailableShipping = boolval($item['has_available_shipping']);
                 $agencyId = $item['agency_id'];
                 $totalItemsPrice += $cartItem->total_price;
                 $totalItemsDiscount += $cartItem->total_discount;
