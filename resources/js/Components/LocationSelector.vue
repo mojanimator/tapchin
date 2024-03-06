@@ -195,7 +195,7 @@ export default {
       else if (this.selected.province_id)
         this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}`;
       else
-        this.selectedName == this.__('select_city');
+        this.selectedName = this.__('select_city');
       if (!this.selected.province_id)
         this.modal.show();
       else

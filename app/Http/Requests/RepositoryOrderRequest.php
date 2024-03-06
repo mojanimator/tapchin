@@ -152,6 +152,7 @@ class RepositoryOrderRequest extends FormRequest
                 "products.$idx.grade.required" => sprintf(__("validator.required"), __('grade')),
 
                 "products.$idx.pack_id.required" => sprintf(__("validator.required"), __('pack')),
+                "products.$idx.pack_id.in" => sprintf(__("validator.invalid"), __('pack')),
 
                 "products.$idx.weight.required" => sprintf(__("validator.required"), __('weight')),
                 "products.$idx.weight.gt" => sprintf(__("validator.gt"), __('weight'), 0),

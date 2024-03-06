@@ -105,7 +105,16 @@ class Variable
 
 
     ];
-
+    const TIMESTAMPS = [
+        ['from' => 7, 'to' => 10, 'active' => true],
+        ['from' => 10, 'to' => 13, 'active' => true],
+        ['from' => 13, 'to' => 16, 'active' => true],
+        ['from' => 16, 'to' => 19, 'active' => true],
+        ['from' => 7, 'to' => 10, 'active' => true],
+        ['from' => 10, 'to' => 13, 'active' => true],
+        ['from' => 13, 'to' => 16, 'active' => true],
+        ['from' => 16, 'to' => 19, 'active' => true],
+    ];
 
     const SUCCESS_STATUS = 200;
     const ERROR_STATUS = 422;

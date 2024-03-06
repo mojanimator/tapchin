@@ -84,6 +84,20 @@ class ShippingMethodRequest extends FormRequest
                 'name' => ['required', 'max:200'],
                 'description' => ['nullable', 'max:2048'],
             ]);
+
+            $hours = range(1, 24);
+            foreach ($this->timestamps as $idx => $time) {
+                $tmp = array_merge($tmp, [
+                    "timestamps.$idx.from" => ['required', "gte:0", Rule::in($hours)],
+                ]);
+                $tmp = array_merge($tmp, [
+                    "timestamps.$idx.to" => ['required', "gt:" . ($time['from'] ?? 25), Rule::in($hours)],
+                ]);
+
+                $tmp = array_merge($tmp, [
+                    "timestamps.$idx.active" => ['required', 'boolean'],
+                ]);
+            }
         }
         if ($this->uploading)
             $tmp = array_merge($tmp, [
@@ -99,7 +113,7 @@ class ShippingMethodRequest extends FormRequest
     public function messages()
     {
 
-        return [
+        $tmp = [
             'data.required' => __("access_denied"),
 
             'repo_id.required' => sprintf(__("validator.required"), __('repository')),
@@ -123,5 +137,18 @@ class ShippingMethodRequest extends FormRequest
 
 
         ];
+        foreach ($this->timestamps as $idx => $time) {
+            $tmp = array_merge($tmp, [
+                "timestamps.$idx.from.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.from.gte" => sprintf(__("validator.gt"), __('time'), 1),
+                "timestamps.$idx.to.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.to.gt" => sprintf(__("validator.gt"), __('time'), $time['from'] ?? 0),
+                "timestamps.$idx.active.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.active.boolean" => sprintf(__("validator.required"), __('time')),
+
+            ]);
+        }
+
+        return $tmp;
     }
 }

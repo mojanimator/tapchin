@@ -120,7 +120,8 @@
 
               </div>
               <div class="my-4">
-                <AddressSelector ref="addressSelector" :editable="true" :clearable="true" class=" " type=""
+                <AddressSelector ref="addressSelector" :editable="true" :clearable="true"
+                                 class=" " type=""
                                  :label="__('address')"
                                  @change="updateAddress($event) "
                                  :error="form.errors.address ||form.errors.postal_code || form.errors.province_id || form.errors.county_id "/>
@@ -257,6 +258,7 @@ export default {
         district_id: null,
         postal_code: null,
         phone: null,
+        timestamps: null,
         cities: [],
 
 
@@ -323,6 +325,7 @@ export default {
     this.form.phone = this.data.phone;
     this.form.status = this.data.status;
     this.form.cities = this.data.cities || [];
+
 
     this.form.owner = this.data.owner;
     this.form.owner_id = this.data.owner_id;

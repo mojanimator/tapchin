@@ -31,6 +31,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('total_price');
             $table->unsignedBigInteger('discount_price');
             $table->timestamps();
+            $table->date('delivery_date')->nullable();//deliver|cancel
+            $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
+
         });
     }
 

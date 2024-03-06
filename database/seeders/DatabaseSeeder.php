@@ -370,7 +370,7 @@ class DatabaseSeeder extends Seeder
                 'address' => 'فیروزکوه',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [392, 61])),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [])),
             ],
             [
                 'id' => 2,
@@ -382,8 +382,7 @@ class DatabaseSeeder extends Seeder
                 'is_shop' => true,
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(25)->inRandomOrder()->pluck('id')->toArray(), [686, 61])),
-
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(25)->inRandomOrder()->pluck('id')->toArray(), [])),
 
             ],
             [
@@ -397,7 +396,6 @@ class DatabaseSeeder extends Seeder
                 'location' => null,
                 'status' => 'active',
                 'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),
-
             ],
             [
                 'id' => 4,
@@ -409,8 +407,7 @@ class DatabaseSeeder extends Seeder
                 'is_shop' => true,
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 1)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [1543])),
-
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 1)->where('name', 'اصفهان')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [])),
             ],
             [
                 'id' => 5,
@@ -446,7 +443,7 @@ class DatabaseSeeder extends Seeder
                 'address' => 'فیروزکوه2',
                 'location' => null,
                 'status' => 'active',
-                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [392, 61])),
+                'cities' => json_encode(array_merge(City::where('parent_id', City::where('level', 2)->where('name', 'تهران')->first()->id)->take(20)->inRandomOrder()->pluck('id')->toArray(), [])),
             ],
 
         ]);
@@ -474,6 +471,8 @@ class DatabaseSeeder extends Seeder
                 'description' => '',
                 'name' => 'پخش فیروزکوه',
                 'status' => 'active',
+                'timestamps' => json_encode(Variable::TIMESTAMPS),
+
             ], [
                 'id' => 3,
                 'repo_id' => 1,
@@ -486,6 +485,8 @@ class DatabaseSeeder extends Seeder
                 'description' => '',
                 'name' => 'پخش فیروزکوه',
                 'status' => 'active',
+                'timestamps' => json_encode(Variable::TIMESTAMPS),
+
 
             ], [
                 'id' => 4,
@@ -499,6 +500,8 @@ class DatabaseSeeder extends Seeder
                 'description' => '',
                 'name' => 'پخش ویژه فیروزکوه',
                 'status' => 'active',
+                'timestamps' => json_encode(Variable::TIMESTAMPS),
+
 
             ], [
                 'id' => 5,
@@ -512,6 +515,8 @@ class DatabaseSeeder extends Seeder
                 'description' => '',
                 'name' => 'پخش اسلامشهر',
                 'status' => 'active',
+                'timestamps' => json_encode(Variable::TIMESTAMPS),
+
 
             ], [
                 'id' => 6,
@@ -525,6 +530,8 @@ class DatabaseSeeder extends Seeder
                 'description' => '',
                 'name' => 'پخش انحصاری تهران',
                 'status' => 'active',
+                'timestamps' => json_encode(Variable::TIMESTAMPS),
+
 
             ],
 
@@ -541,8 +548,9 @@ class DatabaseSeeder extends Seeder
 
         $repoIds = [1, 2, 3, 4, 5, 6];
         $prods = [
-            'انگور',
-            'لیمو',
+
+            'سیب زمینی',
+            'پیاز',
             'تمشک',
             'پرتقال',
             'آناناس',
@@ -556,7 +564,9 @@ class DatabaseSeeder extends Seeder
             'لیمو ترش',
             'گیلاس',
             'کیوی',
-            'پیاز',
+
+            'انگور',
+            'لیمو',
         ];
         foreach ($prods as $prod) {
             $packs = Pack::where('id', '!=', 1)->inRandomOrder()->take(2)->pluck('id');

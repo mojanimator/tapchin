@@ -168,7 +168,10 @@
                                  :preload=" $page.props.data.products"
                                  :error="form.errors.products"/>
               </div>
-
+              <div class="my-2">
+                <Timestamp ref="timestampSelector" mode="edit" :label="__('delivery_hours')"
+                           :errors="form.errors || []" v-model="form.timestamps"/>
+              </div>
 
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
                 <div
@@ -246,6 +249,7 @@ import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
 import CitySelector from "@/Components/CitySelector.vue";
 import ProductSelector from "@/Components/ProductSelector.vue";
+import Timestamp from "@/Components/Timestamp.vue";
 
 
 export default {
@@ -265,6 +269,7 @@ export default {
 
         cities: [],
         products: [],
+        timestamps: null,
 
 
       }),
@@ -272,6 +277,7 @@ export default {
     }
   },
   components: {
+    Timestamp,
     TextEditor,
     ImageUploader,
     LoadingIcon,
@@ -330,7 +336,8 @@ export default {
     this.form.min_order_weight = this.data.min_order_weight;
     this.form.products = this.data.products;
     this.form.cities = this.data.cities;
-
+    this.form.timestamps = this.data.timestamps || [];
+    this.$refs.timestampSelector.data = this.form.timestamps;
 
     this.$nextTick(() => {
 
@@ -353,7 +360,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('admin.panel.shipping.method.update'), {
+      this.form.patch(route('admin.panel.shipping-method.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

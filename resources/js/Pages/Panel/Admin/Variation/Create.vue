@@ -37,37 +37,107 @@
             <form @submit.prevent="submit">
 
               <div class="my-2">
-                <TextInput
-                    id="name"
-                    type="text"
-                    :placeholder="__('name')"
-                    classes="  "
-                    v-model="form.name"
-                    autocomplete="name"
-                    :error="form.errors.name"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <Bars2Icon class="h-5 w-5"/>
+                <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
+                              :callback="{'level':getAgency}" :error="form.errors.repo_id"
+                              :link="route('admin.panel.repository.search')+(`?status=active` )"
+                              :label="__('repository')"
+                              :id="'repository'" v-model:selected="form.repo_id" :preload="null">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+
+                      </div>
                     </div>
                   </template>
-                </TextInput>
+                </UserSelector>
               </div>
+              <Selector ref="productSelector" v-model="form.product_id"
+                        :data="$page.props.products"
+                        :error="form.errors.product_id"
+                        :label="__('product')" classes=""
+                        :id="`product_id`">
+
+              </Selector>
+
+
               <div class="my-2">
-                <Selector ref="categorySelector" v-model="form.category_id"
-                          :data="$page.props.categories" :error="form.errors.category_id"
-                          :label="__('category')"
-                          id="category_id">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
-                  </template>
+                <Selector ref="gradeSelector" v-model="form.grade"
+                          :data="$page.props.grades.map(e=>{return{id:e,name:e}})"
+                          :error="form.errors.grade"
+                          :label="__('grade')" classes=""
+                          :id="`grade`">
+
                 </Selector>
               </div>
-              <div class="my-4">
-                <TagInput :multi="true" :placeholder="__('tags')" v-model="form.tags"
-                          :error="form.errors.tags"/>
+              <div class="my-2">
+                <Selector ref="packSelector" v-model="form.pack_id"
+                          :data="$page.props.packs"
+                          @change="($e)=> {if(form.pack_id==1)form.weight=1}"
+                          :error="form.errors.pack_id"
+                          :label="__('pack')" classes=""
+                          :id="`pack`">
+
+                </Selector>
+              </div>
+
+              <div class="my-2">
+                <TextInput
+                    :id="`weight`"
+                    type="number"
+                    :placeholder="__('weight')"
+                    :disabled="form.pack_id==1? true:false"
+                    classes=" p-2   min-w-[5rem]"
+                    v-model="form.weight"
+                    autocomplete="weight"
+                    :error="form.errors.weight">
+
+                </TextInput>
+              </div>
+
+              <div class="my-2">
+                <TextInput
+                    :id="`price`"
+                    type="number"
+                    :placeholder="__('price')"
+                    classes=" p-2   min-w-[5rem]"
+                    v-model="form.price"
+                    autocomplete="price"
+                    :error="form.errors.price">
+
+                </TextInput>
+              </div>
+
+              <div class="my-2">
+                <TextInput
+                    :id="`in_repo`"
+                    type="number"
+                    :placeholder="__('repository_count')"
+                    classes="    "
+                    v-model="form.in_repo"
+                    autocomplete="in_repo"
+                    :error="form.errors.in_repo">
+
+                </TextInput>
+              </div>
+
+              <div class="my-2">
+                <TextInput
+                    :id="`in_shop`"
+                    type="number"
+                    :placeholder="__('shop_count')"
+                    classes=" "
+                    v-model="form.in_shop"
+                    autocomplete="in_shop"
+                    :error="form.errors.in_shop">
+
+                </TextInput>
               </div>
 
 
@@ -150,10 +220,15 @@ export default {
     return {
       form: useForm({
 
-        name: null,
+        product_id: null,
+        repo_id: null,
+        weight: null,
+        grade: null,
+        price: null,
+        pack_id: null,
+        in_repo: null,
+        in_shop: null,
         uploading: false,
-        category_id: false,
-        tags: false,
 
       }),
       img: null,
@@ -216,7 +291,7 @@ export default {
       this.form.clearErrors();
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
 
-      this.form.post(route('admin.panel.product.create'), {
+      this.form.post(route('admin.panel.variation.create'), {
         preserveScroll: false,
 
         onSuccess: (data) => {
@@ -230,7 +305,7 @@ export default {
               img: this.img,
 
             }))
-                .post(route('admin.panel.product.create'), {
+                .post(route('admin.panel.variation.create'), {
                   preserveScroll: false,
                   onSuccess: (data) => {
                     // else {

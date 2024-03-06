@@ -15,6 +15,8 @@ class CartItem extends Model
         'cart_id',
         'variation_id',
         'shipping_id',
+        'delivery_date',
+        'delivery_timestamp',
         'qty',
     ];
 

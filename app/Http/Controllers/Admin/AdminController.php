@@ -25,19 +25,11 @@ class AdminController extends Controller
         $query = $query->select('*');
         if ($admin->role != 'god') {
             $agency = Agency::find($admin->agency_id);
-            if (!$agency || !in_array($agency->level, [0, 1, 2, 3]))
-                $query = $query->whereId(0);
-            elseif ($agency->level == 1) //access is province_id
-                $query = $query->whereIn('agency_id', Agency::whereIn('province_id', $agency->access ?? [])->where('level', '>=', $agency->level)->pluck('id'));
-            elseif ($agency->level == 2) //access is agency_id
-                $query = $query->whereIn('agency_id', Agency::whereIn('id', $agency->access ?? [])->where('level', '>=', $agency->level)->pluck('id'));
-            elseif ($agency->level == 3) //zone
-                $query = $query->where('agency_id', $agency->id);
-
-
+            $allowedAgencies = $admin->allowedAgencies($agency)->pluck('id');
+            $query = $query->whereIntegerInRaw('agency_id', $allowedAgencies);
         }
         if ($agencyId)
-            $query = $query->where('id', $agencyId);
+            $query = $query->where('agency_id', $agencyId);
         if ($search)
             $query = $query->where('name', 'like', "%$search%");
 

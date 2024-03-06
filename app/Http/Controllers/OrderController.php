@@ -108,6 +108,7 @@ class OrderController extends Controller
 
         //create order for each repo
         foreach ($cart->orders as $cart) {
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'province_id' => $cart->address['province_id'] ?? null,
@@ -152,6 +153,8 @@ class OrderController extends Controller
                             'total_price' => $cartItem->total_price ?? 0,
                             'discount_price' => $cartItem->discount_price ?? 0,
                             'created_at' => Carbon::now(),
+                            'delivery_date' => $cartItem->delivery_date,
+                            'delivery_timestamp' => $cartItem->delivery_timestamp,
 
                         ];
                     }

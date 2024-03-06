@@ -9,6 +9,7 @@ use App\Http\Requests\VariationRequest;
 use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\Pack;
+use App\Models\Product;
 use App\Models\Repository;
 use App\Models\Variation;
 use Illuminate\Http\Request;
@@ -141,15 +142,48 @@ class VariationController extends Controller
         $request->merge([
             'status' => 'active',
         ]);
-        $data = Variation::create($request->all());
+        $repo = Repository::find($request->repo_id);
+        $product = Product::find($request->product_id);
+        $agency = Agency::find($repo->agency_id);
 
+        $data = Variation::where([
+            'repo_id' => $request->repo_id,
+            'product_id' => $request->product_id,
+            'grade' => $request->grade,
+            'pack_id' => $request->pack_id,
+            'weight' => $request->weight,
+
+        ])->first();
+        if (!$data) {
+            $data = Variation::create([
+                'repo_id' => $request->repo_id,
+                'in_repo' => $request->in_repo,
+                'in_shop' => $request->in_shop,
+                'product_id' => $request->product_id,
+                'grade' => $request->grade,
+                'pack_id' => $request->pack_id,
+                'agency_id' => $repo->agency_id,
+                'weight' => $request->weight,
+                'price' => $request->price,
+                'description' => null,
+                'name' => $product->name,
+                'category_id' => $product->category_id,
+                'agency_level' => $agency->level,
+                'in_auction' => false,
+            ]);
+        } else {
+            $data->in_shop += $request->in_shop;
+            $data->in_repo += $request->in_repo;
+            $data->save();
+        }
         if ($data) {
-            Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], $data->id);
+            if ($request->img)
+                Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
 
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
             Telegram::log(null, 'variation_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
-        return to_route('admin.panel.product.index')->with($res);
+        return to_route('admin.panel.variation.index')->with($res);
 
     }
 
@@ -177,7 +211,8 @@ class VariationController extends Controller
 
     }
 
-    public function update(VariationRequest $request)
+    public
+    function update(VariationRequest $request)
     {
 
         $response = ['message' => __('response_error')];

@@ -376,7 +376,8 @@ export default {
       this.addresses = this.$page.props.auth.user.addresses;
     }
     this.emitter.on('updateCart', (cart) => {
-      if (cart)
+
+      if (cart && this.type == 'cart')
         this.selectedAddress = cart.address;
     });
 
@@ -400,7 +401,6 @@ export default {
         // this.show = 'create_address2';
         this.selectedAddress = address;
         this.mapAddress = address;
-
       });
 
 

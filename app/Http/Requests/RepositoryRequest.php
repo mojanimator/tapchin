@@ -53,7 +53,6 @@ class RepositoryRequest extends FormRequest
             $user = $this->user();
             $availableAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
             $childCities = City::where('has_child', false)->pluck('id')->toArray();
-
             $tmp = array_merge($tmp, [
                 'agency_id' => ['required', Rule::in($availableAgencies)],
                 'admin_id' => ['required', Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],
@@ -74,6 +73,8 @@ class RepositoryRequest extends FormRequest
                 'is_shop' => ['required', 'boolean'],
                 'allow_visit' => [Rule::requiredIf($this->is_shop), 'boolean'],
             ]);
+
+
         }
         if ($this->uploading)
             $tmp = array_merge($tmp, [
@@ -88,7 +89,7 @@ class RepositoryRequest extends FormRequest
     public function messages()
     {
 
-        return [
+        $tmp = [
             'agency_id.required' => sprintf(__("validator.required"), __('agency')),
             'agency_id.in' => sprintf(__("validator.invalid"), __('agency')),
 
@@ -131,5 +132,18 @@ class RepositoryRequest extends FormRequest
             'allow_visit.boolean' => sprintf(__("validator.invalid"), __('allow_visit')),
 
         ];
+        foreach ($this->timestamps as $idx => $time) {
+            $tmp = array_merge($tmp, [
+                "timestamps.$idx.from.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.from.gte" => sprintf(__("validator.gt"), __('time'), 1),
+                "timestamps.$idx.to.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.to.gt" => sprintf(__("validator.gt"), __('time'), $time['from'] ?? 0),
+                "timestamps.$idx.active.required" => sprintf(__("validator.required"), __('time')),
+                "timestamps.$idx.active.boolean" => sprintf(__("validator.required"), __('time')),
+
+            ]);
+        }
+
+        return $tmp;
     }
 }

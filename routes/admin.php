@@ -173,7 +173,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::post('repository/shipping/create', [RepositoryShippingController::class, 'create'])->name('admin.panel.repository.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\RepositoryShipping,'1'");
         Route::get('repository/shipping/{shipping}', [RepositoryShippingController::class, 'edit'])->name('admin.panel.repository.shipping.edit');
 
-        PanelController::makeInertiaRoute('get', 'repository/order/index', 'admin.panel.repository.order.index', 'Panel/Admin/Repository/Order/Index', []);
+        PanelController::makeInertiaRoute('get', 'repository/order/index', 'admin.panel.repository.order.index', 'Panel/Admin/Repository/Order/Index', ['order_statuses' => Variable::ORDER_STATUSES]);
         Route::post('repository/order/create', [RepositoryOrderController::class, 'create'])->name('admin.panel.repository.order.create')->middleware("can:create,App\Models\Admin,App\Models\RepositoryOrder,'1'");
         PanelController::makeInertiaRoute('get', 'repository/order/create', 'admin.panel.repository.order.create', 'Panel/Admin/Repository/Order/Create', [
             'pay_timeout' => Variable::PAY_TIMEOUT,

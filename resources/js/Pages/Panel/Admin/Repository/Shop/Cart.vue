@@ -126,7 +126,10 @@
                     <div class="flex  items-center text-sm">
                       <!--                <ShoppingBagIcon class="w-5 h-5 text-neutral-500"/>-->
                       <div class="text-neutral-600 mx-1">{{ __('qty') }}:</div>
-                      <div class="text-neutral-600 mx-1">{{ item.cart_item.qty ? parseFloat(item.cart_item.qty) : 0 }}</div>
+                      <div class="text-neutral-600 mx-1">{{
+                          item.cart_item.qty ? parseFloat(item.cart_item.qty) : 0
+                        }}
+                      </div>
                       <div class="text-neutral-400"> {{ getPack(item.cart_item.product.pack_id) }}</div>
                     </div>
 
@@ -178,6 +181,7 @@
               <!--           shipping_method-->
               <div class="border-t p-2">
                 <div class="text-neutral-500">{{ __('shipping_method') }}</div>
+
                 <div v-if="shipment.method.error_message" class="text-red-500 font-bold">
                   {{ shipment.method.error_message }}
                 </div>
@@ -196,6 +200,7 @@
                     <TomanIcon class=""/>
                   </div>
                 </div>
+
                 <div v-if=" shipment.has_available_shipping " class="my-4 ">
                   <TextInput
                       @change=" ($e)=>{let params={};params[`visit_repo_${shipment.repo_id}`]= shipment.visit_checked  ; update( params)}"
@@ -301,6 +306,7 @@ import 'swiper/css/scrollbar';
 import CartItemButton from "@/Components/CartItemButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import {Dropdown, initTE, Modal} from "tw-elements";
+import Timestamp from "@/Components/Timestamp.vue";
 
 export default {
   data() {
@@ -313,6 +319,7 @@ export default {
   },
   props: ['heroText'],
   components: {
+    Timestamp,
     CartItemButton,
     SearchInput,
     SecondaryButton,

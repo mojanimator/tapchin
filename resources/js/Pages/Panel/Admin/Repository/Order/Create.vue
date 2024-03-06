@@ -298,7 +298,7 @@
                                   :placeholder="``"
                                   classes=" p-0 max-w-[5rem]"
                                   v-model="d.qty"
-                                  autocomplete="in_repo"
+                                  autocomplete="qty"
                                   :error="form.errors[`products.${idx}.qty`]">
 
                               </TextInput>
@@ -309,7 +309,7 @@
                                        :placeholder="``"
                                        classes=" p-2   min-w-[5rem]"
                                        v-model="d.qty"
-                                       autocomplete="in_repo"
+                                       autocomplete="qty"
                                        :error="form.errors[`products.${idx}.qty`]">
 
                             </TextInput>

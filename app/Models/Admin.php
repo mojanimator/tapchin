@@ -166,7 +166,7 @@ class Admin extends Authenticatable
         if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order'])) {
             return $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
-        if (in_array($item, ['create_repository_order'])) {
+        if (in_array($item, ['create_repository_order', 'create_variation'])) {
             return $this->agency_level < '3' && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
         return in_array($this->role, ['owner']) || in_array($item, $this->access);
@@ -185,7 +185,7 @@ class Admin extends Authenticatable
             'view_finantial',
             'view_variation',
             $this->agency_level < 3 ? 'create_repository_order' : '',
-            $this->agency_level == 0 ? 'create_variation' : '',
+            $this->agency_level < 3 ? 'create_variation' : '',
             $this->agency_level < 3 ? 'view_agency_order' : '',
             'view_user_order',
             'create_shipping',

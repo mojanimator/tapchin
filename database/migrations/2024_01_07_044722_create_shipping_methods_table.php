@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->string('description', 2048)->nullable();
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();
+            $table->json('timestamps')->nullable();
         });
 
         DB::table('shipping_methods')->insert(\App\Http\Helpers\Variable::getDefaultShippingMethods());

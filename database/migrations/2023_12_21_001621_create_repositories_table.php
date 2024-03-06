@@ -34,6 +34,7 @@ return new class extends Migration {
             $table->boolean('allow_visit')->default(true);
             $table->string('postal_code', 20)->nullable();
             $table->json('cities')->nullable();
+
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();
         });

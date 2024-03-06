@@ -28,6 +28,9 @@ return new class extends Migration {
             $table->unsignedDecimal('qty', 8, 3)->default(0);//weight|count
 
             $table->timestamps();
+            $table->date('delivery_date')->nullable();//deliver|cancel
+            $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
+
         });
     }
 

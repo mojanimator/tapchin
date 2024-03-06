@@ -23,11 +23,13 @@ class ShippingMethod extends Model
         'name',
         'description',
         'free_from_price',
+        'timestamps',
     ];
 
     protected $casts = [
         'products' => 'array',
         'cities' => 'array',
+        'timestamps' => 'array',
     ];
 
     public function repository()

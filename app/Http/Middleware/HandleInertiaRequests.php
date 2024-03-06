@@ -60,6 +60,8 @@ class HandleInertiaRequests extends Middleware
             'statuses' => Variable::STATUSES,
             'categories' => \App\Models\Category::get(),
             'langs' => Variable::LANGS,
+            'default_timestamps' => Variable::TIMESTAMPS,
+            'hours' => collect(range(1, 24))->map(fn($e) => ['id' => $e, 'name' => "$e:00"]),
             'images' => asset('assets/images') . '/',
             'language' => function () {
                 if (!file_exists(lang_path('/' . app()->getLocale() . '.json'))) {

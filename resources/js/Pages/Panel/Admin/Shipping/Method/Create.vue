@@ -168,7 +168,10 @@
                                  :error="form.errors.products"/>
               </div>
 
-
+              <div class="my-2">
+                <Timestamp mode="create" :label="__('delivery_hours')"
+                           :errors="form.errors || []" v-model="form.timestamps"/>
+              </div>
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
                 <div
                     class=" bg-primary rounded  text-xs leading-none py-[.1rem] text-center text-white duration-300 "
@@ -243,6 +246,7 @@ import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
 import CitySelector from "@/Components/CitySelector.vue";
 import ProductSelector from "@/Components/ProductSelector.vue";
+import Timestamp from "@/Components/Timestamp.vue";
 
 
 export default {
@@ -258,6 +262,7 @@ export default {
         description: null,
         cities: null,
         products: null,
+        timestamps: null,
 
 
       }),
@@ -266,6 +271,7 @@ export default {
     }
   },
   components: {
+    Timestamp,
     AddressSelector,
     UserSelector,
     ImageUploader,

@@ -28,6 +28,7 @@ class Repository extends Model
 
     protected $casts = [
         'cities' => 'array',
+
         'allow_visit' => 'boolean',
         'is_shop' => 'boolean',
     ];
