@@ -154,7 +154,7 @@
                 </div>
                 <div class="my-2">
 
-                  <Timestamp v-if=" shipment.visit_checked==0 " mode="view" :errors="shipment.error_message"
+                  <Timestamp v-if=" !shipment.visit_checked  " mode="view" :errors="shipment.error_message"
                              :label="__('delivery_time')"
                              @change=" ($e)=>{let params={};params[`timestamp_shipping_${shipment.method.id}`]= $e  ; update( params)}"
                              v-model="shipment.method.timestamps"/>
