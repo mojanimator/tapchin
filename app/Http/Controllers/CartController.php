@@ -204,7 +204,7 @@ class CartController extends Controller
                 $cartItem->delivery_timestamp = null;
                 $cartItem->delivery_date = null;
                 CartItem::where('id', $cartItem->id)->update(['visit_checked' => boolval($cartItem->visit_checked), 'delivery_timestamp' => null, 'delivery_date' => null]);
-
+                $needAddress = !$cartItem->visit_checked;
             }
 
 
@@ -381,7 +381,7 @@ class CartController extends Controller
             $day = 0;
             $editedTimestamps = [];
 //            $cart->errors = $errors ?? [];
-            foreach ($shipments[$idx]['shipping']['timestamps'] as $ix => $timestamp) {
+            foreach ($shipments[$idx]['shipping']['timestamps'] ?? [] as $ix => $timestamp) {
 
                 $jalali = Jalalian::fromCarbon($now->addDays($day));
                 $timestamp['day'] = $jalali->format('%A');
