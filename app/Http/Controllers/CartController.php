@@ -388,13 +388,20 @@ class CartController extends Controller
                 $timestamp['group'] = $day;
                 $timestamp['selected'] = $selectedFrom == $timestamp['from'] && $selectedDay == $day;
 
+
                 if ($day == 0) {
-                    $timestamp['active'] = $timestamp['from'] > $jalali->getHour();
-                    if ($selectedFrom <= $jalali->getHour() && !$cartItem->visit_checked && $needAddress) {
+                    $timestamp['active'] = $timestamp['active'] && $timestamp['from'] > $jalali->getHour();
+                    if ($selectedDay == $day && $selectedFrom <= $jalali->getHour() && !$cartItem->visit_checked && $needAddress) {
                         $errors[] = ['key' => $shipments[$idx]['method_id'], 'type' => 'timestamp', 'message' => __('timestamp_is_inactive')];
                         $shipments[$idx]['error_message'] = __('timestamp_is_inactive');
                     }
                 }
+                if ($selectedDay == $day && $selectedFrom == $timestamp['from'] && !$timestamp['active']) {
+                    $errors[] = ['key' => $shipments[$idx]['method_id'], 'type' => 'timestamp', 'message' => __('timestamp_is_inactive')];
+                    $shipments[$idx]['error_message'] = __('timestamp_is_inactive');
+
+                }
+
                 $editedTimestamps[] = $timestamp;
                 if (count($shipments[$idx]['shipping']['timestamps']) > $ix + 1) {
                     if ($timestamp['to'] > $shipments[$idx]['shipping']['timestamps'][$ix + 1]['from']) {
