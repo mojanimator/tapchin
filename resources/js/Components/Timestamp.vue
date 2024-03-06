@@ -89,7 +89,7 @@
       </PrimaryButton>
     </div>
   </div>
-  <div v-else class="border p-2 rounded" :class="`${errors?'bg-red-50':''}`">
+  <div v-else class="border p-2 rounded overflow-x-scroll " :class="`${errors?'bg-red-50':''}`">
     <InputLabel :for="id" :value="label"/>
     <div class="flex items-center gap-1" v-for="(row,idx) in modelValue">
       <div class="w-[4rem]">{{ row[0].day }}</div>
