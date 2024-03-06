@@ -229,7 +229,7 @@ class CartController extends Controller
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
-                        'visit_checked' => $cartItem->visit_checked ?? false,
+                        'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
@@ -252,7 +252,7 @@ class CartController extends Controller
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
-                        'visit_checked' => $cartItem->visit_checked ?? false,
+                        'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
@@ -273,7 +273,7 @@ class CartController extends Controller
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
-                        'visit_checked' => $cartItem->visit_checked ?? false,
+                        'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
@@ -295,7 +295,7 @@ class CartController extends Controller
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
-                        'visit_checked' => $cartItem->visit_checked ?? false,
+                        'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
@@ -342,7 +342,7 @@ class CartController extends Controller
                     'error_message' => $errorMessage,
                     'has_available_shipping' => $shipments[$idx]['has_available_shipping'] ?? false,
                     'allow_visit' => optional($repo)->allow_visit ?? false,
-                    'visit_checked' => $cartItem->visit_checked ?? false,
+                    'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                 ];
             //if user checked timestamp
             if ($request->exists('timestamp_shipping_' . $shipments[$idx]['method_id'])) {
