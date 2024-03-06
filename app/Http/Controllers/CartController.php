@@ -399,7 +399,6 @@ class CartController extends Controller
                 if ($selectedDay == $day && $selectedFrom == $timestamp['from'] && !$timestamp['active']) {
                     $errors[] = ['key' => $shipments[$idx]['method_id'], 'type' => 'timestamp', 'message' => __('timestamp_is_inactive')];
                     $shipments[$idx]['error_message'] = __('timestamp_is_inactive');
-
                 }
 
                 $editedTimestamps[] = $timestamp;
