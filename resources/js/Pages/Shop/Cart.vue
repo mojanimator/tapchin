@@ -134,7 +134,7 @@
 
             </div>
             <!--           shipping_method-->
-            <div v-if="page!='cart' && (cart.address || shipment.method.error_message) " class="border-t p-2">
+            <div v-if="page!='cart'    " class="border-t p-2">
               <div class="text-neutral-500">{{ __('shipping_method') }}</div>
               <div v-if="shipment.method.error_message" class="text-red-500 font-bold">
                 {{ shipment.method.error_message }}
@@ -154,7 +154,8 @@
                 </div>
                 <div class="my-2">
 
-                  <Timestamp v-if=" !shipment.visit_checked  " mode="view" :errors="shipment.error_message"
+                  <Timestamp v-if="shipment.has_available_shipping && !shipment.visit_checked  " mode="view"
+                             :errors="shipment.error_message"
                              :label="__('delivery_time')"
                              @change=" ($e)=>{let params={};params[`timestamp_shipping_${shipment.method.id}`]= $e  ; update( params)}"
                              v-model="shipment.method.timestamps"/>

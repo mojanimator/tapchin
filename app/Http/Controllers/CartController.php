@@ -390,7 +390,7 @@ class CartController extends Controller
 
                 if ($day == 0) {
                     $timestamp['active'] = $timestamp['from'] > $jalali->getHour();
-                    if ($selectedFrom <= $jalali->getHour() && !$cartItem->visit_checked) {
+                    if ($selectedFrom <= $jalali->getHour() && !$cartItem->visit_checked && $needAddress) {
                         $errors[] = ['key' => $shipments[$idx]['method_id'], 'type' => 'timestamp', 'message' => __('timestamp_is_inactive')];
                         $shipments[$idx]['error_message'] = __('timestamp_is_inactive');
                     }
