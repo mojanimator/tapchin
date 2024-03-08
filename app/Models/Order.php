@@ -29,6 +29,14 @@ class Order extends Model
         'total_items',
         'total_price',
         'total_discount',
+        'shipping_method_id',
+        'shipping_id',
+        'delivery_date',
+        'delivery_timestamp',
+        'shipping_id',
+        'shipping_method_id',
+        'done_at',
+
     ];
 
     public function store(OrderRequest $request)
@@ -67,7 +75,7 @@ class Order extends Model
             case    'processing':
                 return $statuses->whereIn('name', ['ready', 'refunded']);
             case    'ready':
-                return $statuses->whereIn('name', ['processing', 'sending', 'delivered', 'refunded']);
+                return $statuses->whereIn('name', ['processing', 'delivered', 'refunded']);
             case    'sending':
                 return $statuses->whereIn('name', ['ready', 'delivered', 'rejected']);
             case    'delivered':
@@ -76,7 +84,7 @@ class Order extends Model
             case    'rejected':
                 return $statuses->whereIn('name', []);
             case    'refunded':
-                return $statuses->whereIn('name', ['cancelled']);
+                return $statuses->whereIn('name', []);
             default:
                 return $statuses->whereIn('name', []);
         }

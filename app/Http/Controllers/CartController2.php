@@ -22,7 +22,7 @@ use Inertia\Inertia;
 use Morilog\Jalali\Jalalian;
 use PHPUnit\Framework\Constraint\Count;
 
-class CartController extends Controller
+class CartController2 extends Controller
 {
 
     public function update(Request $request)
@@ -331,7 +331,7 @@ class CartController extends Controller
                 $errors[] = ['key' => $methodId, 'type' => 'shipping', 'message' => $errorMessage];
                 $default['error_message'] = $errorMessage;
             }
-            if (!$shipments[$idx] || $cartItem->visit_checked) {
+            if (!$shipments[$idx] || $cartItem->visit_checked)
                 $shipments[$idx] = [
                     'method_id' => $methodId,
                     'cart_item' => $cartItem,
@@ -344,8 +344,6 @@ class CartController extends Controller
                     'allow_visit' => optional($repo)->allow_visit ?? false,
                     'visit_checked' => boolval($cartItem->visit_checked) ?? false,
                 ];
-                $needAddress = false;
-            }
             //if user checked timestamp
             if ($request->exists('timestamp_shipping_' . $shipments[$idx]['method_id'])) {
                 $timestampIdx = $request->{"timestamp_shipping_" . $shipments[$idx]['method_id']};
@@ -444,8 +442,6 @@ class CartController extends Controller
             $visitChecked = false;
             $hasAvailableShipping = false;
             $errorMessage = null;
-            $deliveryDate = null;
-            $deliveryTimestamp = null;
             foreach ($items as $idx => $item) {
                 $cartItem = $item['cart_item'];
                 $product = $cartItem->getRelation('product');
@@ -459,11 +455,8 @@ class CartController extends Controller
                 $errorMessage = $item['error_message'] ?? null;
                 $hasAvailableShipping = boolval($item['has_available_shipping']);
                 $agencyId = $item['agency_id'];
-                $deliveryDate = $cartItem->delivery_date;
-                $deliveryTimestamp = $cartItem->delivery_timestamp;
                 $totalItemsPrice += $cartItem->total_price;
                 $totalItemsDiscount += $cartItem->total_discount;
-
                 $shipping = $item['shipping'];
                 unset($item['shipping']);
                 $items[$idx] = $item;
@@ -475,14 +468,10 @@ class CartController extends Controller
                 $errors[] = ['key' => 'min-order-weight', 'type' => 'shipping', 'message' => $errorMessage];
             }
             $shipments[] = [
-
-                'delivery_timestamp' => $deliveryTimestamp,
-                'delivery_date' => $deliveryDate,
                 'repo_id' => $repoId,
                 'visit_checked' => $visitChecked,
                 'agency_id' => $agencyId,
                 'items' => $items,
-                'method_id' => $i,
                 'method' => $shipping,
                 'error_message' => $errorMessage,
                 'total_items' => $totalItems,
@@ -511,20 +500,17 @@ class CartController extends Controller
 //        dd(ShippingMethod::whereIn('repo_id', $cartItems->pluck('repo_id'))->get());
 //split orders base repo
         $orders = collect();
-        foreach (collect($cart->shipments)->groupBy('method_id') as $methodId => $shipments) {
+        foreach (collect($cart->shipments)->groupBy('repo_id') as $repoId => $shipments) {
             $tmpCart = clone $cart;
-            $tmpCart->shipping_method_id = str_starts_with($methodId, 'repo-') ? 1 : $methodId; //visit-repo [change id to 1]
             $tmpCart->total_items_discount = 0;
             $tmpCart->total_discount = 0;
             $tmpCart->total_items_price = 0;
             $tmpCart->total_shipping_price = 0;
             $tmpCart->total_items = 0;
             $tmpCart->total_price = 0;
+            $tmpCart->repo_id = $repoId;
             $tmpShipments = collect();
             foreach ($shipments as $shipment) {
-                $tmpCart->delivery_timestamp = $shipment['delivery_timestamp'];
-                $tmpCart->delivery_date = $shipment['delivery_date'];
-                $tmpCart->repo_id = $shipment['repo_id'];
                 $tmpCart->agency_id = $shipment['agency_id'];
                 $tmpShipments->add($shipment);
                 $tmpCart->total_items_discount += $shipment['total_items_discount'];

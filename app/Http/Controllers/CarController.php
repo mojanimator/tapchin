@@ -56,6 +56,7 @@ class CarController extends Controller
         $search = $request->search;
         $page = $request->page ?: 1;
         $orderBy = $request->order_by ?: 'id';
+        $orderBy = $orderBy == 'agency' ? 'agency_id' : $orderBy;
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;

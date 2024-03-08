@@ -90,13 +90,10 @@ class Variable
     ];
     const  SHIPPING_STATUSES = [
 
-        ["name" => 'pending', "color" => 'danger'],
-        ["name" => 'processing', "color" => 'sky'],
+        ["name" => 'preparing', "color" => 'orange'],
         ["name" => 'sending', "color" => 'blue'],
-        ["name" => 'delivered', "color" => 'success'],
-        ["name" => 'failed', "color" => 'danger'],
-        ["name" => 'canceled', "color" => 'danger'],
-        ["name" => 'refunded', "color" => 'gray'],
+        ["name" => 'done', "color" => 'success'],
+        ["name" => 'canceled', "color" => 'gray'],
 
     ];
     const CATEGORIES = [

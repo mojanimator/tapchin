@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
 
             $table->foreignId('user_id')->nullable()->index();
+            $table->enum('status', array_column(Variable::ORDER_STATUSES, 'name'))->index();
             $table->unsignedSmallInteger('province_id')->nullable();
             $table->foreign('province_id')->references('id')->on('cities')->onDelete('no action');
             $table->unsignedSmallInteger('county_id')->nullable();
@@ -32,7 +33,6 @@ return new class extends Migration {
             $table->string('postal_code', 20)->nullable();
             $table->string('address', 2048)->nullable();
             $table->string('location', 50)->nullable();
-            $table->enum('status', array_column(Variable::ORDER_STATUSES, 'name'))->index();
             $table->unsignedBigInteger('total_discount')->default(0);
             $table->unsignedInteger('total_items')->default(0);
             $table->unsignedBigInteger('total_price')->default(0);
@@ -40,6 +40,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('total_shipping_price')->default(0);
             $table->timestamps();
             $table->timestamp('done_at')->nullable();//deliver|cancel
+            $table->unsignedBigInteger('shipping_id')->nullable();
+            $table->foreign('shipping_id')->references('id')->on('order_shipping')->onDelete('no action');
+            $table->unsignedBigInteger('shipping_method_id')->nullable();
+            $table->foreign('shipping_method_id')->references('id')->on('shipping_methods')->onDelete('no action');
+            $table->date('delivery_date')->nullable();//deliver|cancel
+            $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
 
         });
     }

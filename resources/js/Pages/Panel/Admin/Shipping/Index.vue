@@ -137,63 +137,39 @@
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='agency_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('origin_repository') }} </span>
+                        <span class="px-2">    {{ __('agency') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='to_repo_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='driver_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('destination_repository') }} </span>
+                        <span class="px-2">    {{ __('driver') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='car_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('sender') }} </span>
+                        <span class="px-2">    {{ __('car') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='from_county_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                        @click="params.order_by='order_done_qty';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('county') }} </span>
+                        <span class="px-2">    {{ __('orders') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
 
-                    <th scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='district_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('city') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
-                    <th scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='total_discount';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('discount') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
-                    <th scope="col"
-                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
-                        @click="params.order_by='total_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                      <div class="flex items-center justify-center">
-                        <span class="px-2">    {{ __('total_price') }} </span>
-                        <ArrowsUpDownIcon class="w-4 h-4 "/>
-                      </div>
-                    </th>
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
                         @click="params.order_by='status';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
@@ -274,101 +250,59 @@
                       {{ d.id }}
                     </td>
                     <td class="px-2 py-4    ">
-                      {{ d.from_repo_id }}
+                      <div v-if="d.agency">
+                        <div> {{ `(${d.agency.id})` }}</div>
+                        <div> {{ `${d.agency.name || ''}` }}</div>
+                        <div> {{ `${d.agency.phone || ''}` }}</div>
+
+                      </div>
                     </td>
                     <td class="px-2 py-4    ">
-                      {{ d.to_repo_id }}
+                      <div v-if="d.driver">
+                        <div> {{ `(${d.driver.id})` }}</div>
+                        <div> {{ `${d.driver.name || ''}` }}</div>
+                        <div> {{ `${d.driver.phone || ''}` }}</div>
+
+                      </div>
                     </td>
-                    <td class="px-2 py-4   text-xs ">
-                      {{ `${d.from_fullname || ''}\n${d.from_phone || ''}` }}
+                    <td class="px-2 py-4    ">
+                      <div v-if="d.car">
+                        <div> {{ `(${d.car.id})` }}</div>
+                        <div> {{ `${d.driver.phone || ''}` }}</div>
+                      </div>
+                    </td>
+                    <td>
+                      {{ `${d.order_qty} / ${d.order_delivered_qty}` }}
                     </td>
 
-                    <td>
-                      {{ getCityName(d.from_county_id) }}
-                    </td>
-
-                    <td>
-                      {{ getCityName(d.from_district_id) }}
-                    </td>
-                    <td>
-                      {{ asPrice(d.total_discount) }}
-                    </td>
-                    <td>
-                      {{ asPrice(d.total_price) }}
-                    </td>
-                    <td>
-                      <button
-                          id="dropdownStatusSetting"
-                          data-te-dropdown-toggle-ref
-                          aria-expanded="false"
-                          data-te-ripple-init
-                          data-te-ripple-color="light"
-                          class="  min-w-[5rem]   px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                          :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
-                        {{ getStatus('order_statuses', d.status).name }}
-                      </button>
-                    </td>
-
-                    <td v-if="false"
-                        class="px-2     " data-te-dropdown-ref>
-                      <button @click="selected=d"
-                              id="dropdownRepoId"
+                    <td class="px-2 py-4    " data-te-dropdown-ref>
+                      <button type="button"
+                              :id="`dropdownStatusSetting${d.id}`"
                               data-te-dropdown-toggle-ref
                               aria-expanded="false"
                               data-te-ripple-init
                               data-te-ripple-color="light"
-                              class="  min-w-[5rem]    px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
-                              :class="`bg-primary-50 border border-primary-100 hover:bg-primary-200 text-primary-500`"
-                      >
-                        {{ d.repo_id }}
+                              class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                              :class="`bg-${getStatus('shipping_statuses', d.status).color}-100 hover:bg-${getStatus('shipping_statuses', d.status).color}-200 text-${getStatus('shipping_statuses', d.status).color}-500`">
+                        {{ getStatus('shipping_statuses', d.status).name }}
                       </button>
-                      <ul @click.stop ref="dropdownRepoIdMenu" data-te-dropdown-menu-ref
-                          class="p-4  absolute z-[1050]    hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
-                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="RepoId menu"
-                          aria-labelledby="dropdownRepoId">
-                        <li
-                            class="   text-sm  ">
-                          <span class="text-xs py-2 text-danger-500">{{ __('help_change_repo') }}</span>
-                          <div class="flex flex-col  space-y-2 text-start ">
-                            <div class="flex items-stretch">
-                              <div @click.stop="d.new_repo_id=null "
-                                   class="bg-red-500 cursor-pointer text-white align-middle rounded-s hover:bg-red-400">
-                                <XMarkIcon class="w-8 h-6 my-2 "/>
-                              </div>
-                              <select class="grow rounded-e border-400 cursor-pointer" name=""
-                                      @change="($e)=>{log(d.agency_id);d.new_repo_id=$e.target.value;}"
-                                      :id=" `selectRepo${d.id}` " v-model="d.new_repo_id">
-                                <option class="text-start rounded p-2 m-2"
-                                        v-for="d in filteredRepositories[d.agency_id] "
-                                        :value="d.id">
-                                  <div class="p-2"> {{ __(d.name) }}</div>
-                                </option>
-                              </select>
-                            </div>
+                      <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
+                          class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                          :aria-labelledby="`dropdownStatusSetting${d.id}`">
 
-                            <span class="text-xs   pt-2  font-light text-gray-400">
-                               {{ `${__('get_from_repo')} (${__('max')}: ${d.in_repo} ${__('unit')})` }}
-                            </span>
-                            <input
-                                @keydown.enter="edit({'idx':idx,'id':d.id,'cmnd':'change-repo','repo_id':d.new_repo_id,'in_repo':d.new_in_repo})"
-                                type="number" min="0" class="grow mb-2  p-1 rounded  border-gray-400"
-                                v-model="d.new_in_repo">
-
-                            <button class="bg-success-100 text-success-700 p-2 rounded-lg  hover:bg-success-50 w-full"
-                                    @click="edit({'idx':idx,'id':d.id,'cmnd':'change-repo','repo_id':d.new_repo_id,'in_repo':d.new_in_repo})">
-                              {{ __('edit') }}
-                            </button>
+                        <li v-for="(s,ix) in d.statuses" role="menuitem"
+                            @click="showDialog('danger',s.message,__('accept'),edit,{'idx':idx,'id':d.id,'cmnd':'status','status':s.name}) "
+                            class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                          <div class="flex items-center justify-center    px-6 py-2   "
+                               :class="` hover:bg-gray-200 text-${s.color}-500`">
+                            {{ __(s.name) }}
                           </div>
+                          <hr class="border-gray-200 ">
                         </li>
-
 
                       </ul>
                     </td>
-
-                    <td v-if="false" class="px-2 py-4    ">
-                      {{ d.is_private ? __('internal') : __('public') }}
-                    </td>
-
 
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
@@ -376,11 +310,11 @@
                           class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
                         <Link
-                            type="button" :href="route('admin.panel.repository.order.edit',d.id)"
+                            type="button" :href="route('admin.panel.shipping.edit',d.id)"
                             class="inline-block rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
                             data-te-ripple-init
                             data-te-ripple-color="light">
-                          {{ __('details') }}
+                          {{ __('edit') }}
                         </Link>
 
                         <!--                  <button -->
@@ -515,7 +449,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.repository.order.search'), {
+      window.axios.get(route('admin.panel.shipping.search'), {
         params: this.params
       }, {})
           .then((response) => {
@@ -528,7 +462,7 @@ export default {
             this.setTableHeight();
             this.$nextTick(() => {
 
-              // this.initTableDropdowns();
+              this.initTableDropdowns();
               // this.initTableModals();
 
             });
@@ -575,7 +509,7 @@ export default {
     edit(params) {
       this.isLoading(true);
       this.errors = {};
-      window.axios.patch(route('admin.panel.variation.update'), params,
+      window.axios.patch(route('admin.panel.shipping.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -585,6 +519,10 @@ export default {
 
             if (response.data.status) {
               this.data[params.idx].status = response.data.status;
+              if (response.data.statuses)
+                this.data[params.idx].statuses = response.data.statuses;
+              if (response.data.order_qty !== null)
+                this.data[params.idx].order_qty = response.data.order_qty;
             } else {
               this.getData();
             }

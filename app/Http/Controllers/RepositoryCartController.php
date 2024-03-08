@@ -328,6 +328,8 @@ class RepositoryCartController extends Controller
             $agencyId = null;
             $visitChecked = false;
             $hasAvailableShipping = false;
+            $deliveryDate = null;
+            $deliveryTimestamp = null;
             foreach ($items as $idx => $item) {
 
                 $cartItem = $item['cart_item'];
@@ -341,6 +343,8 @@ class RepositoryCartController extends Controller
                 $visitChecked = $item['visit_checked'];
                 $hasAvailableShipping = $item['has_available_shipping'];
                 $agencyId = $item['agency_id'];
+                $deliveryDate = $cartItem->delivery_date;
+                $deliveryTimestamp = $cartItem->delivery_timestamp;
                 $totalItemsDiscount += $cartItem->total_discount;
                 $totalItemsPrice += $cartItem->total_price;
 
@@ -355,6 +359,8 @@ class RepositoryCartController extends Controller
                 $errors[] = ['key' => 'min-order-weight', 'type' => 'shipping', 'message' => $errorMessage];
             }
             $shipments[] = [
+                'delivery_timestamp' => $deliveryTimestamp,
+                'delivery_date' => $deliveryDate,
                 'repo_id' => $repoId,
                 'visit_checked' => $visitChecked,
                 'agency_id' => $agencyId,
@@ -385,17 +391,20 @@ class RepositoryCartController extends Controller
 //        dd(ShippingMethod::whereIn('repo_id', $cartItems->pluck('repo_id'))->get());
 //split orders base repo
         $orders = collect();
-        foreach (collect($cart->shipments)->groupBy('repo_id') as $repoId => $shipments) {
+        foreach (collect($cart->shipments)->groupBy('method_id') as $methodId => $shipments) {
             $tmpCart = clone $cart;
+            $tmpCart->shipping_method_id = str_starts_with($methodId, 'repo-') ? 1 : $methodId; //visit-repo [change id to 1]
             $tmpCart->total_items_discount = 0;
             $tmpCart->total_items_price = 0;
             $tmpCart->total_shipping_price = 0;
             $tmpCart->total_items = 0;
             $tmpCart->total_price = 0;
             $tmpCart->total_discount = 0;
-            $tmpCart->repo_id = $repoId;
             $tmpShipments = collect();
             foreach ($shipments as $shipment) {
+                $tmpCart->delivery_timestamp = $shipment['delivery_timestamp'];
+                $tmpCart->delivery_date = $shipment['delivery_date'];
+                $tmpCart->repo_id = $shipment['repo_id'];
                 $tmpCart->agency_id = $shipment['agency_id'];
                 $tmpShipments->add($shipment);
                 $tmpCart->total_items_price += $shipment['total_items_price'];

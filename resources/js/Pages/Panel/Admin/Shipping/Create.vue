@@ -30,9 +30,10 @@
             <form @submit.prevent="submit">
 
               <div class="my-2">
-                <UserSelector :colsData="['fullname','phone','agency_id','level']"
-                              :labelsData="['name','phone','agency_id','level']"
-                              :callback="{'level':getAgency}" :error="form.errors.driver_id"
+                <UserSelector :colsData="['fullname','phone','agency' ]"
+                              :labelsData="['name','phone','agency' ]"
+                              :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id||''})`}"
+                              :error="form.errors.driver_id"
                               :link="route('admin.panel.shipping.driver.search') "
                               :label="__('driver')"
                               :id="'driver'" v-model:selected="form.driver_id" :preload="null">
@@ -52,356 +53,38 @@
                   </template>
                 </UserSelector>
               </div>
+              <div class="my-2">
+                <UserSelector :colsData="['name', 'agency' ]"
+                              :labelsData="['name', 'agency' ]"
+                              :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id ||''})`}"
+                              :error="form.errors.car_id"
+                              :link="route('admin.panel.shipping.car.search') "
+                              :label="__('car')"
+                              :id="'car'" v-model:selected="form.car_id" :preload="null">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
 
-              <div class="my-4 ">
-                <Tooltip v-if="hasAccess('create_variation')" class="  " :content="__('help_shipping_from')">
-                  <div class="flex items-center">
-                    <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
-                    <InputLabel class="mx-1" for="shipping_from" :value="__('shipping_from')"/>
-                  </div>
-                </Tooltip>
-                <div class="border p-2 rounded border-gray-300">
-                  <RadioGroup v-if="hasAccess('create_variation')" :beforeSelected="form.shipping_type"
-                              ref="orderFromSelector" class="grow" name="status"
-                              @change="($e)=>{ if($e.target.value==__('external')){form.from_repo_id=null;form.from_repo=null;form.shipping_method_id=null};form.products=[ ] }"
-                              v-model="form.order_type"
-                              :items="orderFrom"/>
-                  <div v-if="form.order_type==orderFrom[0]">
-
-                    <UserSelector :colsData="['name','phone','agency_id','address']"
-                                  :labelsData="['name','phone','agency_id','address']"
-                                  :callback="{'level':getAgency}" :error="form.errors.from_repo_id"
-                                  :link="route('admin.panel.repository.search')+(`?status=active&with=shipping_methods` )"
-                                  :label="__('origin_repository')"
-                                  @change="($e)=>{form.from_repo=$e;updateAddress($e)}"
-                                  :id="'origin_repository'" v-model:selected="form.from_repo_id" :preload="null">
-                      <template v-slot:selector="props">
-                        <div :class="props.selectedText?'py-2':'py-2'"
-                             class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
-                          <div class="grow">
-                            {{ props.selectedText ?? __('select') }}
-                          </div>
-                          <div v-if="props.selectedText"
-                               class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
-                               @click.stop="props.clear()">
-                            <XMarkIcon class="w-5 h-5"/>
-
-                          </div>
-                        </div>
-                      </template>
-                    </UserSelector>
-
-                    <div v-if="form.from_repo" class="my-2 border rounded p-2">
-                      <InputLabel for="shipping_methods" :value="__('shipping_method')"/>
-                      <InputError :message="form.errors.shipping_method"/>
-                      <div v-for="(s,idx) in form.from_repo.shipping_methods">
-                        <div @click="form.shipping_method_id=form.shipping_method_id==s.id?null:  s.id"
-                             :class="{'bg-primary-200':form.shipping_method_id==s.id}"
-                             class="border-b rounded text-gray-700 p-2 text-sm hover:bg-gray-200 cursor-pointer">
-                          <div class="font-semibold">{{ s.name }}</div>
-                          <div class="text-gray-400 text-xs">{{ s.description }}</div>
-                        </div>
                       </div>
                     </div>
-
-                  </div>
-
-                  <AddressSelector v-if="form.from_repo_id || form.order_type==orderFrom[1]" ref="addressSelector"
-                                   :clearable="form.order_type==orderFrom[1]"
-                                   :editable="form.order_type==orderFrom[1]" class="my-2 " type="repo"
-                                   :label="__('address')"
-                                   @change="updateAddress($event) "
-                                   :error="form.errors.from_address ||form.errors.from_postal_code || form.errors.from_province_id || form.errors.from_county_id|| form.errors.from_location "/>
-
-                </div>
-              </div>
-
-
-              <div class="my-2">
-                <div class="border p-2 rounded border-gray-300">
-                  <InputLabel for="products" :value="__('products')"/>
-                  <InputError :message="form.errors.products"/>
-                  <div class="my-4">
-                    <ProductSelector v-if="form.from_repo_id" ref="variationSelector"
-                                     :link="route('admin.panel.product.tree')+`?repo_id=${form.from_repo_id}`"
-                                     :multi="true" mode="count"
-                                     @change="($e)=>form.products=$e.map(e=>{ e.qty=(form.products.filter(el=>el.id==e.id)[0] ||{qty:0}).qty; return e;})"
-                                     :label="__('products')"
-                                     :error="``"/>
-                    <div class="     w-full overflow-x-auto   md:rounded-lg">
-                      <table ref="tableRef "
-                             class=" table-auto   text-sm   text-gray-500  ">
-                        <thead
-                            class="   sticky top-0 shadow-md   text-xs text-gray-700   bg-gray-50 ">
-                        <!--         table header-->
-                        <tr class="text-sm text-center ">
-
-                          <th v-if="form.order_type==__('internal')" scope="col"
-                              class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class="px-0">    {{ __('id') }} </span>
-                            </div>
-                          </th>
-                          <th scope="col"
-                              class="px-4 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class="px-2">  {{ __('name') }}</span>
-                            </div>
-                          </th>
-
-
-                          <th scope="col"
-                              class=" py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class=" ">    {{ __('grade') }} </span>
-                            </div>
-                          </th>
-
-                          <th scope="col"
-                              class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class="px-2">    {{ __('pack') }} </span>
-                            </div>
-                          </th>
-
-                          <th scope="col"
-                              class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class=" ">    {{ __('weight') }} </span>
-                            </div>
-                          </th>
-
-                          <th scope="col"
-                              class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class="px-2">    {{ __('fee') }} </span>
-                            </div>
-                          </th>
-
-
-                          <th scope="col"
-                              class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
-                            <div class="flex items-center justify-center">
-                              <span class="px-2">    {{ __('count') }} </span>
-                            </div>
-                          </th>
-
-                          <th scope="col" class="px-2 py-3">
-                            {{ __('actions') }}
-                          </th>
-                        </tr>
-                        </thead>
-                        <tbody
-                            class="    overflow-y-scroll   text-xs   ">
-                        <tr v-for="(d,idx) in form.products"
-                            class="text-center border-b hover:bg-gray-50 " :class="idx%2==1?'bg-gray-50':'bg-white'">
-
-                          <td v-if="form.order_type==__('internal')" class="px-2 py-4    ">
-                            {{ d.id }}
-                          </td>
-                          <td
-                              class="flex  text-xs items-center px-1 py-4 text-gray-900  ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
-                                cropText(d.name, 30)
-                              }}
-                            </div>
-                            <div v-else class=" min-w-[10rem]">
-                              <Selector ref="productSelector" v-model="d.id"
-                                        :data="$page.props.products"
-                                        :error="form.errors[`products.${idx}.id`]"
-                                        :label="__('')" classes=""
-                                        :id="`id${idx}`">
-
-                              </Selector>
-                            </div>
-                          </td>
-
-
-                          <td class="px-2 py-4    ">
-
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
-                                d.grade
-                              }}
-                            </div>
-                            <div v-else class=" min-w-[8rem]">
-                              <Selector ref="gradeSelector" v-model="d.grade"
-                                        :data="$page.props.grades.map(e=>{return{id:e,name:e}})"
-                                        :error="form.errors[`products.${idx}.grade`]"
-                                        :label="__('')" classes=""
-                                        :id="`grade${idx}`">
-
-                              </Selector>
-                            </div>
-                          </td>
-
-                          <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
-                                getPack(d.pack_id)
-                              }}
-                            </div>
-                            <div v-else class=" min-w-[10rem]">
-                              <Selector ref="packSelector" v-model="d.pack_id"
-                                        :data="$page.props.packs"
-                                        @change="($e)=> {if(d.pack_id==1)d.weight=1}"
-                                        :error="form.errors[`products.${idx}.pack_id`]"
-                                        :label="__('')" classes=""
-                                        :id="`pack${idx}`">
-
-                              </Selector>
-                            </div>
-
-                          </td>
-                          <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
-                                parseFloat(d.weight)
-                              }}
-                            </div>
-                            <TextInput v-else
-                                       :id="`weight${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       :disabled="d.pack_id==1? true:false"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.weight"
-                                       autocomplete="weight"
-                                       :error="form.errors[`products.${idx}.weight`]">
-
-                            </TextInput>
-
-
-                          </td>
-                          <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
-                                asPrice(d.price)
-                              }}
-                            </div>
-                            <TextInput v-else
-                                       :id="`price${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.price"
-                                       autocomplete="price"
-                                       :error="form.errors[`products.${idx}.price`]">
-
-                            </TextInput>
-                          </td>
-
-
-                          <td class="px-2 py-4   ">
-                            <div v-if="form.order_type==__('internal')" class="flex items-center font-semibold ">{{
-                                d.in_repo ? parseFloat(d.in_repo) : 0
-                              }}/
-                              <TextInput
-                                  :id="`qty${d.id}`"
-                                  type="number"
-                                  :placeholder="``"
-                                  classes=" p-0 max-w-[5rem]"
-                                  v-model="d.qty"
-                                  autocomplete="in_repo"
-                                  :error="form.errors[`products.${idx}.qty`]">
-
-                              </TextInput>
-                            </div>
-                            <TextInput v-else
-                                       :id="`qty${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.qty"
-                                       autocomplete="in_repo"
-                                       :error="form.errors[`products.${idx}.qty`]">
-
-                            </TextInput>
-                          </td>
-
-                          <td class="px-2 py-4">
-                            <!-- Actions Group -->
-                            <div
-                                class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
-                                role="group">
-                              <PrimaryButton type="button"
-                                             @click="form.products.splice(idx,1);$refs.variationSelector.selecteds.splice(idx,1) "
-                                             class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
-                                <TrashIcon class="w-4 h-4 "/>
-                              </PrimaryButton>
-
-                            </div>
-                          </td>
-                        </tr>
-
-                        </tbody>
-                      </table>
-                      <PrimaryButton v-if="form.order_type==__('external')" type="button"
-                                     @click="form.products.push({})"
-                                     class="bg-green-500 hover:bg-green-400 text-sm  my-2">
-                        <PlusIcon class="w-4 h-4 mx-4"/>
-                      </PrimaryButton>
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div class="flex flex-col space-y-2 text-sm text-gray-600 my-2 p-2 border rounded">
-                  <div class="flex items-center">
-                    <div>{{ __('count') }}:</div>
-                    <div class="font-semibold mx-1">{{
-                        asPrice(mySum(form.products.map(e => parseFloat(e.qty))))
-                      }}
-                    </div>
-                  </div>
-                  <div class="flex items-center">
-                    <div>{{ __('price') }}:</div>
-                    <div class="font-semibold mx-1">{{ asPrice(mySum(form.products.map(e => e.qty * e.price))) }}</div>
-                  </div>
-                  <div class="flex items-center">
-                    <div>{{ __('shipping_price') }}:</div>
-                    <TextInput
-                        id="shipping_price"
-                        type="number"
-                        placeholder=""
-                        classes=" p-1 mx-1   "
-                        v-model="form.total_shipping_price"
-                        autocomplete="total_shipping_price"
-                        :error="form.errors.total_shipping_price">
-                    </TextInput>
-                  </div>
-                  <div class="flex items-center">
-                    <div>{{ __('discount') }}:</div>
-                    <TextInput
-                        id="discount"
-                        type="number"
-                        placeholder=""
-                        classes=" p-1 mx-1   "
-                        v-model="form.total_discount"
-                        autocomplete="total_discount"
-                        :error="form.errors.total_discount">
-                    </TextInput>
-                  </div>
-                  <div class="flex items-center border-t py-2">
-                    <div class="font-bold">{{ __('sum') }}:</div>
-                    <div class="font-semibold mx-1">{{
-                        asPrice(mySum([mySum(form.products.map(e => e.qty * e.price)), Math.abs(form.total_shipping_price), -Math.abs(form.total_discount)]))
-                      }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="my-2">
-                <Selector ref="statusSelector" v-model="form.status"
-                          :data="$page.props.statuses.map((e)=>{return {id:e,name:e}})"
-                          :error="form.errors.status"
-                          :label="__('status')"
-                          id="status">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
                   </template>
-                </Selector>
+                </UserSelector>
+              </div>
+              <div class="my-2">
+                <OrderSelector
+                    :error="form.errors"
+                    :link="route('admin.panel.order.merged.search')+`?agency_id=${form.agency_id}` "
+                    :label="__('orders')"
+                    :id="'orders'" v-model:selecteds="form.ordersData" :preload="null">
+
+                </OrderSelector>
               </div>
 
 
@@ -481,6 +164,7 @@ import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
 import CitySelector from "@/Components/CitySelector.vue";
 import ProductSelector from "@/Components/ProductSelector.vue";
+import OrderSelector from "@/Components/OrderSelector.vue";
 
 
 export default {
@@ -490,7 +174,11 @@ export default {
       orderFrom: [this.__('internal'), this.__('external')],
       form: useForm({
 
-        driver_id:null,
+        agency_id: this.$page.props.agency.id,
+        driver_id: null,
+        car_id: null,
+        ordersData: [],
+        orders: [],
       }),
 
     }
@@ -535,6 +223,7 @@ export default {
     ProductSelector,
     TrashIcon,
     PlusIcon,
+    OrderSelector,
 
   },
   mounted() {
@@ -572,8 +261,10 @@ export default {
 
       this.form.clearErrors();
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
-
-      this.form.post(route('admin.panel.repository.order.create'), {
+      this.form.orders = this.myMap(this.form.ordersData, e => {
+        return {id: e.id, type: e.type, from_agency_id: e.from_agency_id, status: e.status,}
+      })
+      this.form.post(route('admin.panel.shipping.create'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

@@ -12,6 +12,7 @@ use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
 use App\Models\RepositoryOrder;
+use App\Models\Shipping;
 use App\Models\ShippingMethod;
 use App\Models\User;
 use App\Models\Variation;
@@ -119,6 +120,9 @@ class AdminPolicy
                 case    Car::class:
                     $res = $admin->hasAccess('create_car');
                     break;
+                case    Shipping::class:
+                    $res = $admin->hasAccess('create_shipping');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -196,6 +200,9 @@ class AdminPolicy
                     break;
                 case   $item instanceof Order :
                     $res = $admin->hasAccess('edit_order');
+                    break;
+                case   $item instanceof Shipping :
+                    $res = $admin->hasAccess('edit_shipping');
                     break;
             }
 

@@ -38,6 +38,8 @@ class RepositoryOrder extends Model
         'total_items',
         'total_price',
         'total_discount',
+        'shipping_id',
+        'shipping_method_id',
     ];
 
     public function items()

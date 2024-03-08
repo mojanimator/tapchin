@@ -158,10 +158,10 @@
                 >
                   <template v-for="(col,idx) in cols">
                     <td v-if="idx==0"
-                        class="flex  items-center px-2 py-2 text-gray-900 whitespace-nowrap dark:text-white">
+                        class="flex justify-center   items-center px-2 py-2 text-gray-900 whitespace-nowrap dark:text-white">
                       <!--                    <Image class="w-10 h-10 rounded-full" :src="`${route(`storage.users`)}/${d.id}.jpg`"-->
                       <!--                           :alt="cropText(d.name,5)"/>-->
-                      <div class="text-base text-sm font-semibold">{{ cropText(d[col], 40) }}</div>
+                      <div class="   text-sm font-semibold">{{ cropText(d[col], 40) }}</div>
                       <div class="font-normal text-gray-500"></div>
                     </td>
 

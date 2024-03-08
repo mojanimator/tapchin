@@ -101,6 +101,12 @@ class RepositoryOrderController extends Controller
                 'total_items' => $cart->total_items,
                 'total_discount' => $cart->total_discount,
                 'total_price' => $cart->total_price,
+
+                'shipping_method_id' => $cart->shipping_method_id,
+                'shipping_id' => null,
+                'delivery_date' => $cart->delivery_date,
+                'delivery_timestamp' => $cart->delivery_timestamp,
+
             ]);
             if ($order) {
                 $items = [];
@@ -121,8 +127,7 @@ class RepositoryOrderController extends Controller
                             'order_id' => $order->id,
                             'variation_id' => $cartItem->variation_id,
                             'qty' => $cartItem->qty,
-                            'shipping_method_id' => $methodId,
-                            'shipping_id' => null,
+
                             'repo_id' => $cartItem->repo_id,
                             'total_price' => $cartItem->total_price ?? 0,
                             'discount_price' => $cartItem->discount_price ?? 0,

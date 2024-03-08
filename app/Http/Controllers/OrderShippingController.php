@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\OrderShipping;
+use App\Models\Shipping;
 use Illuminate\Http\Request;
 
 class OrderShippingController extends Controller
@@ -41,10 +41,10 @@ class OrderShippingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\OrderShipping  $orderShipping
+     * @param  \App\Models\Shipping  $orderShipping
      * @return \Illuminate\Http\Response
      */
-    public function show(OrderShipping $orderShipping)
+    public function show(Shipping $orderShipping)
     {
         //
     }
@@ -52,10 +52,10 @@ class OrderShippingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\OrderShipping  $orderShipping
+     * @param  \App\Models\Shipping  $orderShipping
      * @return \Illuminate\Http\Response
      */
-    public function edit(OrderShipping $orderShipping)
+    public function edit(Shipping $orderShipping)
     {
         //
     }
@@ -64,10 +64,10 @@ class OrderShippingController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\OrderShipping  $orderShipping
+     * @param  \App\Models\Shipping  $orderShipping
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, OrderShipping $orderShipping)
+    public function update(Request $request, Shipping $orderShipping)
     {
         //
     }
@@ -75,10 +75,10 @@ class OrderShippingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\OrderShipping  $orderShipping
+     * @param  \App\Models\Shipping  $orderShipping
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrderShipping $orderShipping)
+    public function destroy(Shipping $orderShipping)
     {
         //
     }

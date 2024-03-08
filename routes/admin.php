@@ -197,6 +197,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('order/agency/update', [RepositoryOrderController::class, 'update'])->name('admin.panel.order.agency.update');
         Route::get('order/agency/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.order.agency.edit');
 
+        Route::get('order/merged/search', [OrderController::class, 'searchMerged'])->name('admin.panel.order.merged.search');
 
         PanelController::makeInertiaRoute('get', 'shipping/method/index', 'admin.panel.shipping-method.index', 'Panel/Admin/Shipping/Method/Index',
             []
@@ -213,10 +214,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
 
         PanelController::makeInertiaRoute('get', 'shipping/index', 'admin.panel.shipping.index', 'Panel/Admin/Shipping/Index',
-            []
+            ['shipping_statuses' => Variable::SHIPPING_STATUSES]
         );
         PanelController::makeInertiaRoute('get', 'shipping/create', 'admin.panel.shipping.create', 'Panel/Admin/Shipping/Create',
-            []
+            ['order_statuses' => Variable::ORDER_STATUSES]
         );
         Route::get('shipping/search', [ShippingController::class, 'searchPanel'])->name('admin.panel.shipping.search');
         Route::patch('shipping/update', [ShippingController::class, 'update'])->name('admin.panel.shipping.update');

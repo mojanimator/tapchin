@@ -50,7 +50,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'accesses' => $user && $user instanceof Admin ? $user->accesses() : [],
             'isAdmin' => $user && $user instanceof Admin,
-            'agency' => $user && $user instanceof Admin ? Agency::find($user->agency_id) : null,
+            'agency' => $user && $user instanceof Admin ? Agency::find($user->agency_id) : (object)[],
             'agency_types' => Variable::AGENCY_TYPES,
             'location' => $request->url(),
 //            'user' => optional(auth()->user())->only(['id', 'fullname', 'username',]),

@@ -392,7 +392,6 @@ export default {
       params: {
         page: 1,
         search: null,
-        is_to_agency: true,
         paginate: this.$page.props.pageItems[0],
         order_by: null,
         dir: 'DESC',
