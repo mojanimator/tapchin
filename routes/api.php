@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BotController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Route::post('senderror', [\App\Http\Controllers\Controller::class, 'sendError'])
 Route::post('/bot/getupdates', [BotController::class, 'getupdates']);
 Route::post('/bot/sendmessage', [BotController::class, 'sendmessage']);
 Route::get('/bot/getme', [BotController::class, 'myInfo']);
+
+Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('eblagh.payment.done');
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

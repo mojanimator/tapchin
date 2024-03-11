@@ -34,7 +34,9 @@ class ShippingRequest extends FormRequest
     public function rules()
     {
         $user = $this->user();
+        $editMode = (bool)$this->id;
         $tmp = [];
+
 //        $allowedAgencies = $user->allowedAgencies(Agency::find($user->agency_id))->pluck('id');
 
         if (!$this->cmnd) {
@@ -58,7 +60,7 @@ class ShippingRequest extends FormRequest
                 $tmp = array_merge($tmp, [
                     "orders.$idx.type" => ['required', Rule::in(['user', 'agency'])],
                     "orders.$idx.from_agency_id" => ['required', Rule::in($allowedAgencies), Rule::in(optional($order)->agency_id),],
-                    "orders.$idx.status" => ['required', Rule::in(['ready'], Rule::in([$order->status]))],
+                    "orders.$idx.status" => ['required', $editMode ? null : Rule::in(['ready'], Rule::in([$order->status]))],
                 ]);
 
             }

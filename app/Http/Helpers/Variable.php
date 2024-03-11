@@ -2,6 +2,8 @@
 
 namespace App\Http\Helpers;
 
+use App\Models\Admin;
+use App\Models\Agency;
 use App\Models\Article;
 use App\Models\ArticleTransaction;
 use App\Models\Banner;
@@ -11,9 +13,11 @@ use App\Models\BusinessTransaction;
 use App\Models\Car;
 use App\Models\Driver;
 use App\Models\Message;
+use App\Models\Order;
 use App\Models\Podcast;
 use App\Models\PodcastTransaction;
 use App\Models\Product;
+use App\Models\RepositoryOrder;
 use App\Models\Setting;
 use App\Models\Site;
 use App\Models\SiteTransaction;
@@ -116,7 +120,9 @@ class Variable
     const SUCCESS_STATUS = 200;
     const ERROR_STATUS = 422;
 
-    const DATA_TRANSACTION_TYPES = ['view', 'transfer'];
+    const  TRANSACTION_TYPES = ['pay', 'profit', 'settlement', 'shipping'];
+    const  TRANSACTION_MODELS = ['order' => Order::class, 'repo-order' => RepositoryOrder::class, 'admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
+    const  PAYER_TYPES = ['admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
     const REF_TYPES = ['register',];
     const BANK_GATEWAY = 'nextpay';
     const PAY_TIMEOUT = 1;
@@ -182,6 +188,7 @@ class Variable
     const NOTIFICATION_LIMIT = 5;
     const CITY_ID = null; //61 تجریش
     const RATIOS = ['slider' => 1.8];
+    const PACKAGE = 'com.dabel.dabelchin';
 
     static $CITIES = [];
     public static $BANK = 'zarinpal';
@@ -189,7 +196,8 @@ class Variable
     static function getPaymentMethods()
     {
         return [
-            ['name' => __('bank_payment'), 'selected' => true]
+            ['name' => __('online_payment'), 'key' => 'online', 'selected' => true, 'active' => true],
+            ['name' => __('local_payment'), 'key' => 'local', 'selected' => true, 'active' => false]
         ];
     }
 
@@ -226,6 +234,10 @@ class Variable
             ['key' => 'social_phone', 'value' => '09351414815', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_address', 'value' => __('social_address'), "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'order_reserve_minutes', 'value' => 30, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_level0_percent', 'value' => 15, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_level1_percent', 'value' => 0.5, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_level2_percent', 'value' => 82, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_level3_percent', 'value' => 2.5, "created_at" => \Carbon\Carbon::now(),],
 
         ];
     }

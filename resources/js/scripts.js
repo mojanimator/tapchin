@@ -162,6 +162,7 @@ window.f2e = function (str) {
         let re = new RegExp(per[i], "g");
         str = str.replace(re, eng[i]);
     }
+
     return str;
 
 

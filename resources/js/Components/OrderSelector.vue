@@ -105,8 +105,8 @@
           <tr v-for="(d,idx) in selecteds"
               class="text-center border-b hover:bg-gray-50 " :class="idx%2==1?'bg-gray-50':'bg-white'">
 
-            <td class="px-2 py-4    ">
-              {{ d.id }}
+            <td class="px-2 py-4    " style="font-family: Serif!important;">
+              {{ `${d.type == 'agency' ? 'A' : ''}${f2e(d.id)}` }}
             </td>
             <td class="px-2 py-4    ">
               {{ d.from_repo_id }}
@@ -140,15 +140,33 @@
             <td>
               {{ `${toShamsi(d.delivery_date)}\n${d.delivery_timestamp}` }}
             </td>
-            <td class="px-2 py-4    ">
-              <div type="button"
-                   :id="`statusOrder${d.id}`"
-                   aria-expanded="false"
-                   data-te-ripple-color="light"
-                   class="  min-w-[5rem]  px-1  items-center text-center rounded-md py-[.2rem]"
-                   :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
+            <td class="px-2 py-4    " data-te-dropdown-ref>
+              <button type="button"
+                      :id="`dropdownStatusSetting${d.id}`"
+                      data-te-dropdown-toggle-ref
+                      aria-expanded="false"
+                      data-te-ripple-init
+                      data-te-ripple-color="light"
+                      class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                      :class="`bg-${getStatus('order_statuses', d.status).color}-100 hover:bg-${getStatus('order_statuses', d.status).color}-200 text-${getStatus('order_statuses', d.status).color}-500`">
                 {{ getStatus('order_statuses', d.status).name }}
-              </div>
+              </button>
+              <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
+                  class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                  tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                  :aria-labelledby="`dropdownStatusSetting${d.id}`">
+
+                <li v-for="(s,ix) in d.statuses" role="menuitem"
+                    @click="showDialog('danger',s.message,__('accept'),editOrder,{'idx':idx,'id':d.id,'type':d.type,'cmnd':'status','status':s.name}) "
+                    class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                  <div class="flex items-center justify-center    px-6 py-2   "
+                       :class="` hover:bg-gray-200 text-${s.color}-500`">
+                    {{ __(s.name) }}
+                  </div>
+                  <hr class="border-gray-200 ">
+                </li>
+
+              </ul>
             </td>
 
 
@@ -474,9 +492,14 @@ export default {
 
     const modalEl = document.getElementById(`modalOrders-${this.id}`);
     this.Modal = new Modal(modalEl);
+
     if (this.preload && this.preload.length > 0) {
       this.$emit('update:selecteds', this.preload);
     }
+
+    this.$nextTick(() => {
+      this.initTableDropdowns();
+    });
   },
   methods: {
     clear() {
@@ -574,6 +597,42 @@ export default {
             }
 
 
+            this.selected = null;
+
+
+          })
+
+          .catch((error) => {
+            this.errorMessage = this.getErrors(error);
+            if (error.response && error.response.data) {
+              this.errors = error.response.data.errors || {};
+
+            }
+            this.showToast('danger', this.errorMessage);
+          })
+          .finally(() => {
+            // always executed
+            this.isLoading(false);
+          });
+    },
+    editOrder(params) {
+      this.isLoading(true);
+      this.errors = {};
+      window.axios.patch(route(`admin.panel.order.${params.type}.update`), params,
+          {})
+          .then((response) => {
+            if (response.data && response.data.message) {
+              this.showToast('success', response.data.message);
+
+            }
+
+            if (response.data.status) {
+              this.selecteds[params.idx].status = response.data.status;
+              if (response.data.statuses)
+                this.selecteds[params.idx].statuses = response.data.statuses;
+            } else {
+              this.getData();
+            }
             this.selected = null;
 
 

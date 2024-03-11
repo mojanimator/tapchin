@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 use App\Models\Payment;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Mockery\Exception;
 
@@ -92,6 +93,7 @@ class Pay
                         "order_id" => "$orderId",
 //                        "metadata" => ["order_id" => $orderId, "email" => $mail, 'fullname' => $payerName, "mobile" => $phone],
                     );
+
                     $response = Http::withHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json', /*,'Content-Length' => strlen(json_encode($data)),*/])
                         ->withUserAgent('ZarinPal Rest Api v4')
                         ->post("https://api.zarinpal.com/pg/v4/payment/request.json",
@@ -158,7 +160,7 @@ class Pay
                     if ($request && $request->Status == 'OK') {
                         $data = array(
                             "merchant_id" => env('ZARINPAL_TOKEN'),
-                            "amount" => (Payment::where('order_id', $request->Authority)->first())->amount,
+                            "amount" => (Transaction::where('pay_id', $request->Authority)->sum('amount') ?? 0) * 10,
                             "authority" => $request->Authority,
                         );
                         $response = Http::withHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json',])

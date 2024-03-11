@@ -37,7 +37,9 @@
             <form @submit.prevent="submit">
 
               <div class="my-2">
-                <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
+
+                <UserSelector :colsData="['id','name','phone','agency_id']"
+                              :labelsData="['id','name','phone','agency_id']"
                               :callback="{'level':getAgency}" :error="form.errors.repo_id"
                               :link="route('admin.panel.repository.search')+(`?status=active` )"
                               :label="__('repository')"

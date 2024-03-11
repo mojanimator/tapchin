@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->foreign('repo_id')->references('id')->on('repositories')->onDelete('no action');
             $table->unsignedBigInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+            $table->unsignedBigInteger('transaction_id')->nullable();
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('no action');
 
             $table->foreignId('user_id')->nullable()->index();
             $table->enum('status', array_column(Variable::ORDER_STATUSES, 'name'))->index();
@@ -46,7 +48,7 @@ return new class extends Migration {
             $table->foreign('shipping_method_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->date('delivery_date')->nullable();//deliver|cancel
             $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
-
+            $table->enum('pay_type', array_column(Variable::getPaymentMethods(), 'key'))->nullable();//deliver|cancel
         });
     }
 

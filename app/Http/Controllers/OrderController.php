@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Pay;
+use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
 use App\Models\Admin;
@@ -11,6 +13,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\RepositoryOrder;
 use App\Models\Shipping;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserFinancial;
 use App\Models\Variation;
@@ -41,33 +44,35 @@ class OrderController extends Controller
                     if (!$availableStatuses->where('name', $status)->first())
                         return response()->json(['message' => __('action_not_allowed'), 'status' => $data->status,], $errorStatus);
 
+                    $shipping = Shipping::find($data->shipping_id);
+                    if ($data->shipping_id && !$shipping)
+                        return response()->json(['message' => __('shipping_not_found'), 'status' => $data->status,], $errorStatus);
+
                     if ($data->shipping_id)
-                        if ($data->status == 'sending' && !in_array($status, ['refunded', 'rejected', 'delivered']))
+                        if ($data->status == 'sending' && !in_array($status, ['canceled', 'refunded', 'rejected', 'delivered']))
                             return response()->json(['message' => __('shipping_orders_cant_be_edited'), 'status' => $data->status,], $errorStatus);
-                        elseif ($status == 'delivered') {
-                            $shipping = Shipping::find($data->shipping_id);
-                            if (!$shipping)
-                                return response()->json(['message' => __('shipping_not_found'), 'status' => $data->status,], $errorStatus);
-                            $data->done_at = Carbon::now();
+                    if ($status == 'delivered') {
+                        $data->done_at = Carbon::now();
+                        if ($shipping)
                             $shipping->order_delivered_qty++;
-                            //change status to done if no shipping order
-                            if (Order::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0
-                                && RepositoryOrder::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0) {
-                                $shipping->status = 'done';
-                            }
-                            $shipping->save();
-                        }
+
+                        //TODO:: split transaction percents
+                    }
 
                     $data->status = $status;
 
-                    if ($status == 'refunded' || $status == 'rejected') {
+                    if ($status == 'refunded' || $status == 'rejected' || $status == 'canceled') {
 
 //                        $data->status = 'canceled';
                         $data->status = $status;
+                        if ($status == 'refunded' || $status == 'rejected') {
+                            $userF = UserFinancial::firstOrNew(['user_id' => $data->user_id]);
+                            if (!$data->user_id)
+                                return response()->json(['message' => __('user_not_found'), 'status' => $data->status,], $errorStatus);
+                            $userF->wallet += $data->total_price;
+                            $userF->save();
+                        }
                         //return order to repo
-                        $userF = UserFinancial::firstOrNew(['user_id' => $data->user_id]);
-                        if (!$data->user_id)
-                            return response()->json(['message' => __('user_not_found'), 'status' => $data->status,], $errorStatus);
 
                         foreach ($data->items()->get() as $item) {
                             $variation = Variation::find($item->variation_id);
@@ -76,12 +81,22 @@ class OrderController extends Controller
                                 $variation->save();
                             }
                         }
-                        $userF->wallet += $data->total_price;
+
                         //TODO: Save transaction
-                        $userF->save();
+
                         //return price to user wallet
                     }
                     $data->save();
+
+                    //change status to done if no shipping order
+
+                    if ($shipping) {
+                        if (Order::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0
+                            && RepositoryOrder::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0) {
+                            $shipping->status = 'done';
+                        }
+                        $shipping->save();
+                    }
                     return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
 
 
@@ -98,7 +113,7 @@ class OrderController extends Controller
 
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
-                Telegram::log(null, 'repository_edited', $data);
+                Telegram::log(null, 'order_edited', $data);
             } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
             return back()->with($res);
         }
@@ -127,7 +142,7 @@ class OrderController extends Controller
         }
 
 //split cart to each repo
-
+        $orders = collect([]);
         //create order for each repo
         foreach ($cart->orders as $cart) {
 
@@ -156,6 +171,13 @@ class OrderController extends Controller
 
             ]);
             if ($order) {
+
+                $orders->add(['id' => $order->id,
+                    'total_items_price' => $cart->total_items_price,
+                    'total_price' => $cart->total_price,
+                    'user_id' => $cart->user_id,
+                    'agency_id' => $cart->agency_id]);
+
                 $items = [];
                 $shippings = [];
                 foreach ($cart->shipments as $shipment) {
@@ -190,7 +212,40 @@ class OrderController extends Controller
                     Cart::find($cart->id)->delete();
             }
         }
-        return response()->json(['message' => __('redirect_to_payment_page'), 'url' => 'https://tapchin.ir'], Variable::SUCCESS_STATUS);
+//        $order_id = Carbon::now()->getTimestampMs();
+        $order_ids_string = $orders->pluck('id')->join('-');
+        $price = $orders->sum('total_price');
+
+        $description = sprintf(__('pay_orders_*_*'), $order_ids_string, $user->phone);
+
+        $response = Pay::makeUri($order_ids_string, "{$price}0", $user->fullname, $user->phone, $user->email, $description, optional($user)->id, Variable::$BANK);
+
+        if ($response['status'] != 'success')
+            return response()->json(['status' => 'danger', 'message' => $response['message']], Variable::ERROR_STATUS);
+
+        else { //success
+            foreach ($orders as $o) {
+
+                $t = Transaction::create([
+                    'title' => sprintf(__('pay_orders_*_*'), $o['id'], $user->phone),
+                    'type' => "pay",
+                    'for_type' => 'order',
+                    'for_id' => $o['id'],
+                    'from_type' => 'user',
+                    'from_id' => $o['user_id'],
+                    'to_type' => 'agency',
+                    'to_id' => 1,
+                    'info' => null,
+                    'coupon' => null,
+                    'payed_at' => null,
+                    'amount' => $o['total_price'],
+                    'pay_id' => $response['order_id'],
+                ]);
+                Order::where('id', $o['id'])->update(['transaction_id' => $t->id]);
+
+            }
+            return response(['status' => 'success', 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
+        }
     }
 
     protected
@@ -367,9 +422,21 @@ class OrderController extends Controller
         $query2->with('items.variation:id,name,weight,pack_id');
 
         $res = $query1->union($query2)->orderBy($orderBy, $dir);
+
         if ($request->for_edit)
-            return $res->get();
-        return $res->paginate($paginate, ['*'], 'page', $page);
+            return $res->get()->map(function ($e) {
+                $e->statuses = $e->getAvailableStatuses();
+                return $e;
+            });
+        return tap($res->paginate($paginate, ['*'], 'page', $page), function ($paginated) {
+            return $paginated->getCollection()->transform(
+                function ($item) {
+                    $item->statuses = $item->getAvailableStatuses();
+                    return $item;
+                }
+
+            );
+        });
     }
 
 }

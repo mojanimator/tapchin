@@ -42,7 +42,7 @@ class ShippingController extends Controller
                     if (!$order || $allowedAgencies->where('id', $order->agency_id)->first())
                         return response()->json(['message' => __('item_not_found'),], $errorStatus);
 
-                    if (in_array($order->status, ['delivered']))
+                    if (in_array($order->status, ['delivered', 'canceled', 'refunded', 'rejected']))
                         return response()->json(['message' => __('order_cant_be_remove'), 'status' => $data->status,], $errorStatus);
 
                     if ($order->status == 'shipping') {
@@ -51,6 +51,13 @@ class ShippingController extends Controller
                     $data->order_qty = $data->order_qty - 1;
                     $order->shipping_id = null;
                     $order->save();
+
+                    //change status to done if no shipping order
+                    if (Order::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0
+                        && RepositoryOrder::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0) {
+                        $data->status = 'done';
+                    }
+
                     $data->save();
 
                     return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
@@ -120,6 +127,13 @@ class ShippingController extends Controller
             Order::whereIn('id', $request->user_orders)->update([/*'status' => 'sending', */ 'shipping_id' => $data->id]);
             RepositoryOrder::whereIn('id', $request->agency_orders)->update([/*'status' => 'sending',*/ 'shipping_id' => $data->id]);
 
+            //change status to done if no shipping order
+            if (Order::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0
+                && RepositoryOrder::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0) {
+                $request->merge([
+                    'status' => 'done',
+                ]);
+            }
 
             if ($data->update($request->all())) {
 

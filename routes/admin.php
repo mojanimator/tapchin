@@ -220,7 +220,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             ['order_statuses' => Variable::ORDER_STATUSES]
         );
         Route::get('shipping/search', [ShippingController::class, 'searchPanel'])->name('admin.panel.shipping.search');
-        Route::patch('shipping/update', [ShippingController::class, 'update'])->name('admin.panel.shipping.update');
+//        Route::patch('shipping/update', [ShippingController::class, 'update'])->name('admin.panel.shipping.update');
         Route::post('shipping/create', [ShippingController::class, 'create'])->name('admin.panel.shipping.create')->middleware("can:create,App\Models\Admin,App\Models\Shipping,'1'");
         Route::get('shipping/{shipping}', [ShippingController::class, 'edit'])->name('admin.panel.shipping.edit');
 

@@ -15,7 +15,9 @@ use App\Models\Repository;
 use App\Models\RepositoryCart;
 use App\Models\RepositoryCartItem;
 use App\Models\RepositoryOrder;
+use App\Models\Shipping;
 use App\Models\ShippingMethod;
+use App\Models\UserFinancial;
 use App\Models\Variation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -298,5 +300,142 @@ class RepositoryOrderController extends Controller
             'data' => $data,
             'canEdit' => $canEdit,
         ]);
+    }
+
+    public function update(RepositoryOrderRequest $request)
+    {
+        $response = ['message' => __('response_error')];
+        $errorStatus = Variable::ERROR_STATUS;
+        $successStatus = Variable::SUCCESS_STATUS;
+        $id = $request->id;
+        $cmnd = $request->cmnd;
+        $status = $request->status;
+        $data = RepositoryOrder::find($id);
+        if (!starts_with($cmnd, 'bulk'))
+            $this->authorize('edit', [Admin::class, $data]);
+
+        if ($cmnd) {
+            switch ($cmnd) {
+                case 'status':
+                    $availableStatuses = $data->getAvailableStatuses();
+
+                    if (!$availableStatuses->where('name', $status)->first())
+                        return response()->json(['message' => __('action_not_allowed'), 'status' => $data->status,], $errorStatus);
+
+                    $shipping = Shipping::find($data->shipping_id);
+                    if ($data->shipping_id && !$shipping)
+                        return response()->json(['message' => __('shipping_not_found'), 'status' => $data->status,], $errorStatus);
+
+                    if ($data->shipping_id)
+                        if ($data->status == 'sending' && !in_array($status, ['canceled', 'refunded', 'rejected', 'delivered']))
+                            return response()->json(['message' => __('shipping_orders_cant_be_edited'), 'status' => $data->status,], $errorStatus);
+                    if ($status == 'delivered') {
+
+                        $data->done_at = Carbon::now();
+                        if ($shipping)
+                            $shipping->order_delivered_qty++;
+
+                        //change variations agency and repo
+                        foreach ($data->items()->get() as $item) {
+                            $variation = Variation::find($item->variation_id);
+                            //find in destination repo or create new
+                            if (!$variation) continue;
+                            $destinationVariation = Variation::where([
+                                'repo_id' => $data->to_repo_id,
+                                'product_id' => $variation->product_id,
+                                'grade' => $variation->grade,
+                                'pack_id' => $variation->pack_id,
+                                'weight' => $variation->weight,
+
+                            ])->first();
+                            //create variation in destination repo
+                            if (!$destinationVariation) {
+                                $destinationVariation = Variation::create([
+                                    'repo_id' => $data->to_repo_id,
+                                    'in_repo' => $item->qty,
+                                    'in_shop' => 0,
+                                    'product_id' => $variation->product_id,
+                                    'grade' => $variation->grade,
+                                    'pack_id' => $variation->pack_id,
+                                    'agency_id' => $data->to_agency_id,
+                                    'weight' => $variation->weight,
+                                    'price' => $variation->price,
+                                    'description' => $variation->description,
+                                    'name' => $item->name,
+                                    'category_id' => $variation->category_id,
+                                    'agency_level' => optional(Agency::find($data->to_agency_id))->level,
+                                    'in_auction' => false,
+                                ]);
+                            } else {
+                                $destinationVariation->in_repo += $item->qty;
+                                $destinationVariation->save();
+                            }
+
+                        }
+                        Telegram::log(null, 'order_delivered', $data);
+
+                    }
+
+                    $data->status = $status;
+
+                    if ($status == 'refunded' || $status == 'rejected' || $status == 'canceled') {
+
+//                        $data->status = 'canceled';
+                        $data->status = $status;
+                        //return price to user wallet
+                        if ($status == 'refunded' || $status == 'rejected') {
+                            $userF = UserFinancial::firstOrNew(['user_id' => $data->user_id]);
+                            if (!$data->user_id)
+                                return response()->json(['message' => __('user_not_found'), 'status' => $data->status,], $errorStatus);
+                            $userF->wallet += $data->total_price;
+                            $userF->save();
+                        }
+                        //return order to repo
+
+                        foreach ($data->items()->get() as $item) {
+                            $variation = Variation::find($item->variation_id);
+                            if ($variation) {
+                                $variation->in_repo += $item->qty;
+                                $variation->save();
+                            }
+                        }
+
+                        //TODO: Save transaction
+
+
+                    }
+                    $data->save();
+
+                    //change status to done if no shipping order
+
+                    if ($shipping) {
+                        if (Order::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0
+                            && RepositoryOrder::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0) {
+                            $shipping->status = 'done';
+                        }
+                        $shipping->save();
+                    }
+                    return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
+
+
+            }
+        } elseif ($data) {
+
+
+            $request->merge([
+//                'cities' => json_encode($request->cities ?? [])
+            ]);
+
+
+            if ($data->update($request->all())) {
+
+                $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+//                dd($request->all());
+                Telegram::log(null, 'repository_edited', $data);
+            } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
+            return back()->with($res);
+        }
+
+        return response()->json($response, $errorStatus);
     }
 }

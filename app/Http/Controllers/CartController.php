@@ -324,7 +324,7 @@ class CartController extends Controller
             } else {
                 $methodId = 'repo-' . $repo->id;
                 $errorMessage = null;
-                $needSelfReceive = true;
+                $needSelfReceive = !$shipments[$idx] || $cartItem->visit_checked;
             }
             $default['id'] = $methodId;
             if ($errorMessage) {
@@ -499,7 +499,7 @@ class CartController extends Controller
         $cart->total_price = $cart->total_items_price + $cart->total_shipping_price;
         $cart->need_address = $needAddress;
         $cart->need_self_receive = $needSelfReceive;
-        $cart->payment_methods = Variable::getPaymentMethods();
+        $cart->payment_methods = collect(Variable::getPaymentMethods())->where('active', true)->all();
 //        if ($user) {
 //            $res = User::getLocation(Variable::$CITIES);
 //            $addresses = $user->addresses;

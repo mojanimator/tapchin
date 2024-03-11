@@ -37,6 +37,7 @@ use App\Http\Helpers\SMSHelper;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
+use App\Models\Agency;
 use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;

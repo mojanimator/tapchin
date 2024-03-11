@@ -346,7 +346,7 @@ export default {
 
     }
   },
-  props: ['id', 'label', 'type', 'data', 'modelValue', 'editable', 'clearable', 'error'],
+  props: ['id', 'label', 'type', 'data', 'preloadData', 'modelValue', 'editable', 'clearable', 'error'],
   emits: ['change', 'updateCart'],
   components: {
     PrimaryButton,
@@ -374,6 +374,9 @@ export default {
 
     if (this.$page.props.auth.user) {
       this.addresses = this.$page.props.auth.user.addresses;
+    }
+    if (this.preloadData) {
+      this.preload(this.preloadData);
     }
     this.emitter.on('updateCart', (cart) => {
 

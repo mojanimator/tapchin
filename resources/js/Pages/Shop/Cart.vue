@@ -31,11 +31,11 @@
           <div class="text-neutral-400 pb-2">{{ __('delivery_address') }}</div>
 
 
-          <AddressSelector v-if="cart.need_address ||  page!='cart'" :editable="page!='cart'" :clearable="true"
-                           class=" "
+          <AddressSelector v-if="cart.need_address ||  page!='cart' " :editable="page!='cart'" :clearable="true"
+                           class=" " ref="addressSelector"
                            @change="update({address_idx:$event})"
                            :error="cart.errors &&   cart.errors.filter((e)=>e.type=='address').length>0?cart.errors.filter((e)=>e.type=='address')[0].message :null"
-                           :preload="(cart.address)" type="cart"/>
+                           :preload-data=" cart.address " type="cart"/>
 
           <div v-show="  page=='payment' && cart.orders.length>0 && cart.need_self_receive"
                class="text-primary-500 font-bold py-2">
@@ -309,6 +309,7 @@ export default {
     this.update();
     this.emitter.on('updateCart', (cart) => {
       this.cart = cart;
+
     });
 
   },
