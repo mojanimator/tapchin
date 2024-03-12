@@ -35,9 +35,9 @@ class Transaction extends Model
         $percents = Setting::where('key', 'like', "order_percent_level_%")->get();
 
         //split shipping
-        if ($order->shipping_price && $shipping) {
+        if ($order->total_shipping_price && $shipping) {
             $t = Transaction::create([
-                'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, optional($shipping)->agency_id),
+                'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
                 'type' => "shipping",
                 'for_type' => 'order',
                 'for_id' => $order->id,
@@ -49,20 +49,20 @@ class Transaction extends Model
                 'info' => null,
                 'coupon' => null,
                 'payed_at' => Carbon::now(),
-                'amount' => $order->shipping_price,
+                'amount' => $order->total_shipping_price,
                 'pay_id' => null,
             ]);
-            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => optional($shipping)->agency_id]);
+            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
             $agencyF->payment_balance += $order->shipping_price;
             $agencyF->save();
         }
 
         $agency = Agency::find($order->agency_id);
         if (!$agency) return;
-        $percent = $percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0;
+        $percent = ($percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0);
         if ($percent > 0) {
             $t = Transaction::create([
-                'title' => sprintf(__('profit_order_agency_*_*_*'), $order->id, optional($shipping)->agency_id),
+                'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, $agency->id),
                 'type' => "profit",
                 'for_type' => 'order',
                 'for_id' => $order->id,
@@ -74,7 +74,7 @@ class Transaction extends Model
                 'info' => null,
                 'coupon' => null,
                 'payed_at' => Carbon::now(),
-                'amount' => floor($percent * $order->total_items_price),
+                'amount' => floor($percent / 100 * $order->total_items_price),
                 'pay_id' => null,
             ]);
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
@@ -82,31 +82,34 @@ class Transaction extends Model
             $agencyF->save();
         }
         //  split percents
-        foreach (Agency::find($agency->parent_id) as $agency) {
+        $agencyItem = Agency::find($agency->parent_id);
+        while ($agencyItem != null) {
             //not pay to central
-            if (!$agency || $agency->level == '0') break;
-            $percent = $percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0;
+
+            if (!$agencyItem || $agencyItem->level == '0') break;
+            $percent = $percents->where('key', "order_percent_level_$agencyItem->level")->first()->value ?? 0;
             if ($percent <= 0) continue;
             $t = Transaction::create([
-                'title' => sprintf(__('profit_order_agency_*_*_*'), $order->id, optional($shipping)->agency_id),
+                'title' => sprintf(__('profit_order_agency_*_*_*'), $percent, $order->id, $agencyItem->id),
                 'type' => "profit",
                 'for_type' => 'order',
                 'for_id' => $order->id,
                 'from_type' => 'agency',
                 'from_id' => 1,
                 'to_type' => 'agency',
-                'to_id' => $agency->id,
+                'to_id' => $agencyItem->id,
                 'is_success' => true,
                 'info' => null,
                 'coupon' => null,
                 'payed_at' => Carbon::now(),
-                'amount' => floor($percent * $order->total_items_price),
+                'amount' => floor($percent / 100 * $order->total_items_price),
                 'pay_id' => null,
             ]);
-            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
+            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agencyItem->id]);
             $agencyF->payment_balance += $t->amount;
             $agencyF->save();
 
+            $agencyItem = Agency::find($agencyItem->parent_id);
         }
     }
 }

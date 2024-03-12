@@ -43,7 +43,7 @@ return new class extends Migration {
             $table->timestamps();
             $table->timestamp('done_at')->nullable();//deliver|cancel
             $table->unsignedBigInteger('shipping_id')->nullable();
-            $table->foreign('shipping_id')->references('id')->on('order_shipping')->onDelete('no action');
+            $table->foreign('shipping_id')->references('id')->on('shippings')->onDelete('no action');
             $table->unsignedBigInteger('shipping_method_id')->nullable();
             $table->foreign('shipping_method_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->date('delivery_date')->nullable();//deliver|cancel
