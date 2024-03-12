@@ -86,7 +86,7 @@ class TransactionController extends Controller
                 'pay_id' => $token,
                 'amount' => $p->amount ?? 0,
                 'type' => __('order') . " " . join(',', $transaction->pluck('for_id')),
-                'link' => ('dabel://' . Variable::PACKAGE)
+                'link' => $market == 'bank' ? ('dabel://' . Variable::PACKAGE) : url('')
             ]);
         }
 
