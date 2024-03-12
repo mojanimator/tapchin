@@ -276,6 +276,8 @@ class RepositoryOrderController extends Controller
         if ($isToAgency)
             $query->whereIntegerInRaw('to_agency_id', $agencyIds);
 
+        $query->with('items.variation:id,name,weight,pack_id');
+
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
             return $paginated->getCollection()->transform(
                 function ($item) use ($agencies,) {

@@ -7,6 +7,7 @@ use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;
 use App\Models\Notification;
+use App\Models\Order;
 use App\Models\Podcast;
 use App\Models\Project;
 use App\Models\ProjectItem;
@@ -125,26 +126,7 @@ class UserPolicy
 
 
         switch (true) {
-            case $item instanceof User   :
-                if (in_array($user->role, ['ad',]))
-                    return true;
-                break;
-            case $item instanceof Podcast :
-            case $item instanceof Video :
-            case $item instanceof Banner :
-            case $item instanceof Text :
-                $res = in_array($user->role, ['ad',]) || $user->role == 'us' && (optional($item)->owner_id == $user->id || optional($item->projectItem)->operator_id == $user->id);
-            case $item instanceof Site :
-            case $item instanceof Business :
-            case $item instanceof Article :
-            case $item instanceof Notification :
-            case $item instanceof Ticket :
-            case $item instanceof Transfer :
-                $res = in_array($user->role, ['ad',]) || $user->role == 'us' && optional($item)->owner_id == $user->id;
-                break;
-            case $item instanceof Project :
-                $res = $user->role == 'us' && (optional($item)->owner_id == $user->id) || in_array($user->role, ['ad',]);
-                break;
+
         }
         if ($abort && empty($res))
             return abort(403, __("access_denied"));

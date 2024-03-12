@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('panel')}}</title>
+      <title>{{__('orders_list')}}</title>
     </template>
 
 
@@ -13,10 +13,10 @@
             class="flex  items-center justify-between px-4 py-2 text-primary-500 border-b md:py-4">
           <div class="flex">
             <Bars2Icon class="h-7 w-7 mx-3"/>
-            <h5 class="  font-semibold">{{ __('variations_list') }}</h5>
+            <h5 class="  font-semibold">{{ __('orders_list') }}</h5>
           </div>
           <div>
-            <Link v-if="hasAccess('create_repository_order')" :href="route('admin.panel.repository.order.create')"
+            <Link v-if="hasAccess('create_order')" :href="route('admin.panel.repository.order.create')"
                   class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
             >
               {{ __('new_order') }}
@@ -146,6 +146,14 @@
 
                     <th scope="col"
                         class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('items') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
                         @click="params.order_by='receiver_fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
                         <span class="px-2">    {{ __('receiver') }} </span>
@@ -183,6 +191,14 @@
                         @click="params.order_by='total_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
                         <span class="px-2">    {{ __('total_price') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='created_at';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('created_at') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
@@ -268,6 +284,13 @@
                     <td class="px-2 py-4    ">
                       {{ d.repo_id }}
                     </td>
+                    <td class="px-2 py-4    ">
+                      <div v-for="(item ,ix) in d.items" class="text-xs " :class="{'border-b':ix+1<d.items.length}">
+                        {{
+                          `${item.name} ( ${parseFloat(item.qty)} ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`
+                        }}
+                      </div>
+                    </td>
                     <td class="px-2 py-4   text-xs ">
                       {{ `${d.receiver_fullname || ''}\n${d.receiver_phone || ''}` }}
                     </td>
@@ -284,6 +307,9 @@
                     </td>
                     <td>
                       {{ asPrice(d.total_price) }}
+                    </td>
+                    <td>
+                      {{ toShamsi(d.created_at, true) }}
                     </td>
                     <td class="px-2 py-4    " data-te-dropdown-ref>
                       <button

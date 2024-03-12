@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('new_text')}}</title>
+      <title>{{__('edit_product')}}</title>
     </template>
 
 
@@ -12,7 +12,7 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('new_text') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_product') }}</h1>
 
       </div>
 
@@ -20,108 +20,62 @@
       <div class="px-2  md:px-4">
 
         <div
-            class="    mx-auto md:max-w-5xl   mt-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
+            class="    mx-auto md:max-w-2xl   mt-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
 
 
           <div
-              class="flex flex-col mx-2   col-span-2 w-full     px-2"
+              class="flex flex-col mx-2 text-gray-500   col-span-2 w-full     px-2"
           >
+            <div class="flex-col   m-2  rounded-lg    w-full mx-auto    ">
+              <div class="font-semibold">{{ __('main_product_image') }}</div>
+              <div class="my-2 flex max-w-[150px]" v-if="$page.props.data">
+                <ImageUploader mode="edit"
+                               :link="route('admin.panel.variation.update')"
+                               :preload="$page.props.data.thumb_img" ref="imageCropperThumb"
+                               :label="__('product_image_jpg')" :for-id="$page.props.data.id"
+                               :cropRatio="1" :id="'img-'+'thumb'"
+                               class="   "/>
+                <InputError class="mt-1 text-xs" :message="form.errors.image_thumb ? form.errors.image_thumb :null "/>
 
-            <form @submit.prevent=" submit ">
+              </div>
+              <div>{{ __('gallery') }}</div>
 
-              <div class="flex items-center">
-                <Tooltip class="p-2 " :content="__('help_lang')">
-                  <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
-                </Tooltip>
-                <RadioGroup ref="langSelector" class="grow" name="lang" :items="$page.props.langs"/>
+              <div class="my-2 flex flex-wrap items-stretch" v-if="$page.props.data">
+                <div v-for="(data,idx) in $page.props.data.images"
+                     class="m-1  max-w-[150px]   ">
+                  <ImageUploader mode="edit"
+                                 :link="route('admin.panel.variation.update')"
+                                 :preload="$page.props.data.images[idx]" ref="imageCropper"
+                                 :label="__('product_image_jpg')" :for-id="$page.props.data.id"
+                                 :cropRatio="1" :id="'img-'+idx"
+                                 class="   "/>
+                  <InputError class="mt-1 text-xs" :message="form.errors.images ? form.errors.images.idx:null "/>
+                </div>
+
               </div>
 
+            </div>
+            <form @submit.prevent="submit">
 
               <div class="my-2">
                 <TextInput
-                    id="title"
+                    id="name"
                     type="text"
-                    :placeholder="__('title')"
+                    :placeholder="__('name')"
                     classes="  "
-                    v-model="form.title"
-                    autocomplete="title"
-                    :error="form.errors.title"
+                    v-model="form.name"
+                    autocomplete="name"
+                    :error="form.errors.name"
                 >
                   <template v-slot:prepend>
                     <div class="p-3">
                       <Bars2Icon class="h-5 w-5"/>
                     </div>
                   </template>
-
-                </TextInput>
-
-              </div>
-              <div class="my-2">
-                <TextInput
-                    id="author"
-                    type="text"
-                    :placeholder="__('author')"
-                    classes="  "
-                    v-model="form.author"
-                    autocomplete="author"
-                    :error="form.errors.author"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <PencilIcon class="h-5 w-5"/>
-                    </div>
-                  </template>
-
-                </TextInput>
-
-              </div>
-
-              <div class="my-2">
-                <Selector ref="categorySelector" :data="$page.props.categories" :label="__('category')"
-                          id="category_id" v-model="form.category_id">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
-                  </template>
-                </Selector>
-              </div>
-
-              <div class="my-2">
-                <TagInput
-                    id="tags"
-                    :placeholder="__('tags')"
-                    classes="  "
-                    v-model="form.tags"
-                    autocomplete="tags"
-                    :error="form.errors.tags"
-                >
-                </TagInput>
-              </div>
-              <div class="my-2">
-                <TextInput
-                    :multiline="true"
-                    id="summary"
-                    type="text"
-                    :placeholder="__('summary')"
-                    classes="  "
-                    v-model="form.summary"
-                    autocomplete="summary"
-                    :error="form.errors.summary"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <ChatBubbleBottomCenterTextIcon class="h-5 w-5"/>
-                    </div>
-                  </template>
-
                 </TextInput>
               </div>
-              <!--                text content-->
-              <div class="my-2">
-                <TextEditor mode="create" :lang="$page.props.locale" :id="`editor`"
-                            :ref="`editor`"/>
-              </div>
+
+
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
                 <div
                     class=" bg-primary rounded  text-xs leading-none py-[.1rem] text-center text-white duration-300 "
@@ -133,11 +87,11 @@
 
               <div class="    mt-4">
 
-                <PrimaryButton class="w-full  "
+                <PrimaryButton @click="submit" type="button" class="w-full flex items-center justify-center"
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                   <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
-                  <span class=" text-lg  ">  {{ __('register_info') }}  </span>
+                  <span class=" text-lg  ">  {{ __('register_info') }} </span>
                 </PrimaryButton>
 
               </div>
@@ -165,14 +119,17 @@ import {
   EyeIcon,
   FolderPlusIcon,
   Bars2Icon,
-  ChatBubbleBottomCenterTextIcon,
+  LinkIcon,
   Squares2X2Icon,
+  PencilSquareIcon,
   SignalIcon,
+  ChatBubbleBottomCenterTextIcon,
   PencilIcon,
-
+  XMarkIcon,
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
 import Checkbox from '@/Components/Checkbox.vue';
+import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -182,32 +139,37 @@ import LoadingIcon from "@/Components/LoadingIcon.vue";
 import Popover from "@/Components/Popover.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TagInput from "@/Components/TagInput.vue";
+import ImageUploader from "@/Components/ImageUploader.vue";
 import Selector from "@/Components/Selector.vue";
 import ProvinceCounty from "@/Components/ProvinceCounty.vue";
 import PhoneFields from "@/Components/PhoneFields.vue";
 import SocialFields from "@/Components/SocialFields.vue";
+import Article from "@/Components/Article.vue";
 import TextEditor from "@/Components/TextEditor.vue";
+import UserSelector from "@/Components/UserSelector.vue";
+import AddressSelector from "@/Components/AddressSelector.vue";
+import CitySelector from "@/Components/CitySelector.vue";
 
 
 export default {
 
   data() {
     return {
-
+      data: this.$page.props.data || {},
       form: useForm({
-        lang: null,
-        author: null,
-        title: null,
-        content: null,
-        category_id: null,
-        tags: '',
-        summary: '',
+        id: null,
+        name: null,
+        uploading: false,
+        category_id: false,
+        tags: false,
 
       }),
-
+      img: null,
     }
   },
   components: {
+    TextEditor,
+    ImageUploader,
     LoadingIcon,
     Head,
     Link,
@@ -226,7 +188,7 @@ export default {
     Tooltip,
     FolderPlusIcon,
     Bars2Icon,
-    ChatBubbleBottomCenterTextIcon,
+    LinkIcon,
     TagInput,
     QuestionMarkCircleIcon,
     Selector,
@@ -234,43 +196,63 @@ export default {
     ProvinceCounty,
     PhoneFields,
     SocialFields,
+    PencilSquareIcon,
+    Article,
     SignalIcon,
-    TextEditor,
+    ChatBubbleBottomCenterTextIcon,
     PencilIcon,
+    UserSelector,
+    XMarkIcon,
+    AddressSelector,
+    CitySelector,
+  },
+  created() {
 
   },
   mounted() {
-    // this.log(this.$page.props)
+
+    // console.log(this.data);
+
+
+    this.form.id = this.data.id;
+    this.form.name = this.data.name;
+
   },
   methods: {
+
+
     submit() {
-      this.form.content = this.$refs.editor.getData();
-      this.form.lang = this.$refs.langSelector.selected;
+
+
       // this.form.category_id = this.$refs.categorySelector.selected;
       this.form.clearErrors();
 
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
-
-      this.form.post(route('text.create'), {
+      // this.images = [];
+      // for (let i = 0; i < this.$page.props.max_images_limit; i++) {
+      //   let tmp = this.$refs.imageCropper[i].getCroppedData();
+      //   if (tmp) this.images.push(tmp);
+      // }
+      this.form.patch(route('admin.panel.variation.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {
-
-          // else {
           if (this.$page.props.flash.status)
             this.showAlert(this.$page.props.flash.status, this.$page.props.flash.message);
-          //   this.form.reset();
-          // }
+
         },
         onError: () => {
           this.showToast('danger', Object.values(this.form.errors).join("<br/>"));
         },
         onFinish: (data) => {
           // this.isLoading(false,);
+          if (this.$page.props.flash.status)
+            this.showAlert(this.$page.props.flash.status, this.$page.props.flash.message);
         },
       });
-    }
+    },
+
   },
-  watch: {},
+
 }
 </script>

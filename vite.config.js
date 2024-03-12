@@ -5,6 +5,9 @@ import manifestSRI from 'vite-plugin-manifest-sri';
 import legacy from '@vitejs/plugin-legacy'
 import ckeditor5 from '@ckeditor/vite-plugin-ckeditor5';
 import {VitePWA} from 'vite-plugin-pwa'
+import {createRequire} from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 export default defineConfig({
 

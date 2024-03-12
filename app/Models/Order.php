@@ -49,6 +49,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class, 'agency_id');
+    }
+
     public function getAvailableStatuses()
     {
         $statuses = collect(Variable::ORDER_STATUSES)->map(function ($e) {

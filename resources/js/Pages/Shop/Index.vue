@@ -114,7 +114,9 @@
         {{ __('no_product_in_selected_city') }}
       </div>
     </section>
-    <LoadingIcon v-show="loading" ref="loader" type="linear"/>
+    <div ref="loader">
+      <LoadingIcon v-show="loading" type="linear"/>
+    </div>
   </Scaffold>
 
 </template>
@@ -187,7 +189,7 @@ export default {
   setup(props) {
 
   }, mounted() {
-    // this.setScroll(this.$refs.loader.$el);
+    this.setScroll(this.$refs.loader);
     // this.getData();
   },
   methods: {
@@ -208,7 +210,8 @@ export default {
             // this.data = this.data.concat(response.data.data);
             this.total = response.data.total;
             this.params.page = response.data.current_page + 1;
-            this.products = response.data.data;
+            // this.products = response.data.data;
+            this.products = this.products.concat(response.data.data);
             // console.log(response.data);
           })
           .catch((error) => {
@@ -231,7 +234,6 @@ export default {
         let top_of_screen = window.pageYOffset;
 
         if ((bottom_of_screen + 300 > top_of_element) && (top_of_screen < bottom_of_element + 200) && !this.loading) {
-
           this.getData();
           // scrolled = true;
 //                        console.log('visible')

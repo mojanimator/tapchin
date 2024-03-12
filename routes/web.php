@@ -139,45 +139,51 @@ Route::get('/', function (Request $request) {
     ]);
 })->name('/');
 
-Route::middleware(['auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified'])->prefix('panel')->group(function ($route) {
+Route::group(['prefix' => '', 'namespace' => 'User'], function () {
+    Route::middleware(['auth:sanctum',
+        config('jetstream.auth_session'),
+        'verified'])->prefix('panel')->group(function ($route) {
 
 
-    Route::get('', [PanelController::class, 'index'])->name('panel.index');
+        Route::get('', [PanelController::class, 'index'])->name('user.panel.index');
 
-    Route::post('transaction/chart', [PanelController::class, 'chartLogs'])->name('transaction.chart');
+        Route::post('transaction/chart', [PanelController::class, 'chartLogs'])->name('transaction.chart');
 
 
 //    PanelController::makeInertiaRoute('get', 'site/edit/{site}', 'panel.site.edit', 'Panel/Site/Edit', ['categories' => Site::categories('parents'), 'site_statuses' => Variable::SITE_STATUSES, 'site' => $tmp = Site::with('category')->find(request()->segment(count(request()->segments())))], 'can:edit,App\Models\User,App\Models\Site,"","' . $tmp . '"');
 
 
-    PanelController::makeInertiaRoute('get', 'notification/index', 'panel.notification.index', 'Panel/Notification/Index',
-        [
+        PanelController::makeInertiaRoute('get', 'notification/index', 'panel.notification.index', 'Panel/Notification/Index',
+            [
 
-        ]
-    );
-    PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.ticket.index', 'Panel/Ticket/Index',
-        [
-            'statuses' => Variable::TICKET_STATUSES
+            ]
+        );
+        PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.ticket.index', 'Panel/Ticket/Index',
+            [
+                'statuses' => Variable::TICKET_STATUSES
 
-        ]);
-    PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.ticket.create', 'Panel/Ticket/Create',
-        [
-            'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
-        ]);
-
-
-    PanelController::makeInertiaRoute('get', 'profile/edit', 'panel.profile.edit', 'Panel/Profile/Edit',
-        [
-            'accesses' => []
-        ]);
-    PanelController::makeInertiaRoute('get', 'password/edit', 'panel.profile.password.edit', 'Panel/Profile/PasswordEdit',
-        [
-        ]);
+            ]);
+        PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.ticket.create', 'Panel/Ticket/Create',
+            [
+                'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
+            ]);
 
 
-    /**  Admin Panel **/
+        PanelController::makeInertiaRoute('get', 'profile/edit', 'panel.profile.edit', 'Panel/Profile/Edit',
+            [
+                'accesses' => []
+            ]);
+        PanelController::makeInertiaRoute('get', 'password/edit', 'panel.profile.password.edit', 'Panel/Profile/PasswordEdit',
+            [
+            ]);
+
+        PanelController::makeInertiaRoute('get', 'order/index', 'user.panel.order.index', 'Panel/User/Order/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
+        Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
+        Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
+        Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
+
+    });
+
 });
 
 
@@ -217,6 +223,7 @@ Route::middleware(['auth:sanctum',
     Route::get('/checkout/shipping', [ShopController::class, 'shippingPage'])->name('checkout.shipping');
     Route::get('/checkout/payment', [ShopController::class, 'paymentPage'])->name('checkout.payment');
     Route::post('/order/create', [OrderController::class, 'create'])->name('order.create');
+
 
 });
 

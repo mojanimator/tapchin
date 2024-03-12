@@ -8,10 +8,12 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\Car;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\RepositoryOrder;
+use App\Models\Setting;
 use App\Models\Shipping;
 use App\Models\Transaction;
 use App\Models\User;
@@ -24,6 +26,52 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
+    public function userUpdate(Request $request)
+    {
+        $errorStatus = Variable::ERROR_STATUS;
+        $successStatus = Variable::SUCCESS_STATUS;
+        $user = $request->user();
+        $data = Order::find($request->id);
+        if (!$data || $data->user_id != $user->id)
+            return response()->json(['message' => __('order_not_found'), 'status' => $data->status,], $errorStatus);
+
+        switch ($request->cmnd) {
+            case 'pay':
+                if ($data->status != 'pending')
+                    return response()->json(['message' => __('order_not_in_pay_status'), 'status' => $data->status,], $errorStatus);
+
+                $description = sprintf(__('pay_orders_*_*'), $data->id, $user->phone);
+
+                $response = Pay::makeUri(Carbon::now()->getTimestampMs(), "{$data->total_price}0", $user->fullname, $user->phone, $user->email, $description, $user->id, Variable::$BANK);
+
+                $t = Transaction::where('for_type', 'order')
+                    ->where('for_id', $data->id)
+                    ->where('from_type', 'user')
+                    ->where('from_id', $user->id);
+                if ($t) $t->update(['pay_id' => $response['order_id']]);
+                if (!$t) {
+                    $t = Transaction::create([
+                        'title' => sprintf(__('pay_orders_*_*'), $data->id, $user->phone),
+                        'type' => "pay",
+                        'for_type' => 'order',
+                        'for_id' => $data->id,
+                        'from_type' => 'user',
+                        'from_id' => $user->id,
+                        'to_type' => 'agency',
+                        'to_id' => 1,
+                        'info' => null,
+                        'coupon' => null,
+                        'payed_at' => null,
+                        'amount' => $data->total_price,
+                        'pay_id' => $response['order_id'],
+                    ]);
+                }
+                return response(['status' => $data->status, 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
+
+                break;
+        }
+    }
+
     public function update(OrderRequest $request)
     {
         $response = ['message' => __('response_error')];
@@ -32,6 +80,7 @@ class OrderController extends Controller
         $id = $request->id;
         $cmnd = $request->cmnd;
         $status = $request->status;
+        $user = $request->user();
         $data = Order::find($id);
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
@@ -51,12 +100,15 @@ class OrderController extends Controller
                     if ($data->shipping_id)
                         if ($data->status == 'sending' && !in_array($status, ['canceled', 'refunded', 'rejected', 'delivered']))
                             return response()->json(['message' => __('shipping_orders_cant_be_edited'), 'status' => $data->status,], $errorStatus);
+
                     if ($status == 'delivered') {
+
                         $data->done_at = Carbon::now();
                         if ($shipping)
                             $shipping->order_delivered_qty++;
 
-                        //TODO:: split transaction percents
+                        Transaction::splitProfits($data, $shipping);
+
                     }
 
                     $data->status = $status;
@@ -251,7 +303,7 @@ class OrderController extends Controller
     protected
     function searchPanel(Request $request)
     {
-        $admin = $request->user();
+        $userAdmin = $request->user();
 
         $search = $request->search;
         $page = $request->page ?: 1;
@@ -263,23 +315,36 @@ class OrderController extends Controller
         $isToAgency = $request->is_to_agency;
         $query = Order::query()->select('*');
 
-        $myAgency = Agency::find($admin->agency_id);
-
-        $agencies = $admin->allowedAgencies($myAgency)->get();
-        $agencyIds = $agencies->pluck('id');
-
+        $agencies = [];
+        if ($userAdmin instanceof Admin) {
+            $myAgency = Agency::find($userAdmin->agency_id);
+            $agencies = $userAdmin->allowedAgencies($myAgency)->get();
+            $agencyIds = $agencies->pluck('id');
+        }
         if ($search)
             $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
         if ($status)
             $query = $query->where('status', $status);
-        $query->whereIntegerInRaw('agency_id', $agencyIds);
 
+        if ($userAdmin instanceof Admin)
+            $query->whereIntegerInRaw('agency_id', $agencyIds);
+        if ($userAdmin instanceof User)
+            $query->where('user_id', $userAdmin->id)->with('agency:id,name,phone');
 
-        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
+        $query->with('items.variation:id,name,weight,pack_id');
+
+        $timeout = Setting::getValue('order_reserve_minutes') ?? 0;
+        $now = Carbon::now();
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies, $userAdmin, $timeout, $now) {
             return $paginated->getCollection()->transform(
-                function ($item) use ($agencies) {
-                    $item->statuses = $item->getAvailableStatuses();
-                    $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
+                function ($item) use ($agencies, $userAdmin, $timeout, $now) {
+
+                    if ($userAdmin instanceof Admin) {
+                        $item->statuses = $item->getAvailableStatuses();
+                        $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
+                    }
+                    if ($timeout && $item->status == 'pending')
+                        $item->pay_timeout = ($t = $now->diffInMinutes($item->created_at->addMinutes($timeout), false)) > 0 ? "$t " . __('minute') : null;
 
                     return $item;
                 }

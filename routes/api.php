@@ -23,6 +23,7 @@ Route::get('/bot/getme', [BotController::class, 'myInfo']);
 Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('eblagh.payment.done');
 
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

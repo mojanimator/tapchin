@@ -72,18 +72,18 @@
     </div>
     <!-- mobile menu -->
     <div
-        class="hidden mobile-menu flex flex-col   bg-gradient-to-b from-primary-400   to-primary-600 px-4 shadow-md p-4">
-      <Link :href="route('/')" class="px-4 nav-ite" :class="navClasses('/')">
+        class="hidden mobile-menu flex flex-col duration-300  bg-primary-500 px-4 shadow-md p-4">
+      <Link :href="route('/')" class="px-4 mobile nav-item" :class="navClasses('/')">
         {{ __('home') }}
       </Link>
 
-      <Link :href="route('shop.index')" class="nav-ite" :class="navClasses('shop')">
+      <Link :href="route('shop.index')" class="mobile nav-item" :class="navClasses('shop')">
         {{ __('shop') }}
       </Link>
-      <Link :href="route('article.index')" class="nav-ite" :class="navClasses('article')">
+      <Link :href="route('article.index')" class="mobile nav-item" :class="navClasses('article')">
         {{ __('articles') }}
       </Link>
-      <button @click="scrollTo('footer') " class="nav-item " :class="navClasses('page.contact_us')">
+      <button @click="scrollTo('footer') " class=" mobile nav-item " :class="navClasses('page.contact_us')">
         {{ __('contact_us') }}
       </button>
       <!--      <Link :href="route('page.contact_us')" class="nav-ite " :class="navClasses('page.contact_us')">-->
@@ -132,9 +132,9 @@ export default {
   },
   methods: {
     navClasses(item) {
-      let base = "py-4 px-1 lg:px-2  text-white font-semibold  transition  duration-300 hover:border-primary-500 hover:text-primary-900 hover:border-b-4 transition  duration-300 ";
+      let base = "py-4 rounded-lg px-2 lg:px-2    font-semibold  transition    hover:bg-primary-400 hover:text-white  duration-300 ";
       if (item && (this.route().current(`${item}.*`) || this.route().current(`${item}`)))
-        base += "border-b-4 border-primary-200";
+        base = "py-4 active rounded-lg px-2 lg:px-2 text-primary-500  bg-primary-100   font-semibold  transition    hover:bg-primary-400 hover:text-white  duration-300 ";
       return base;
     },
     setScrollListener() {
@@ -163,6 +163,7 @@ export default {
         }
         return;
       } else {
+
         nav.classList.add("bg-transparent");
         nav.classList.remove("bg-white");
         nav.classList.add("text-white");
@@ -170,8 +171,10 @@ export default {
         nav.classList.remove("shadow-lg");
 
         for (let el of links) {
-          el.classList.add("text-white");
-          el.classList.remove("text-primary-500");
+          if (!el.classList.contains("active")) {
+            el.classList.add("text-white");
+            el.classList.remove("text-primary-500");
+          }
         }
         for (let el of buttons) {
           el.classList.remove("bg-white");
@@ -188,6 +191,7 @@ export default {
         /*Apply classes for slide in bar*/
         scrollpos = window.scrollY;
         for (let el of links) {
+          if (el.classList.contains('mobile')) continue;
           el.classList.remove("text-primary-500");
           el.classList.add("text-white");
         }
@@ -199,8 +203,10 @@ export default {
           nav.classList.add("shadow-lg");
 
           for (let el of links) {
+            if (el.classList.contains('mobile')) continue;
             el.classList.remove("text-white");
             el.classList.add("text-primary-500");
+
           }
           for (let el of buttons) {
             el.classList.add("bg-white");
@@ -218,8 +224,14 @@ export default {
           nav.classList.remove("shadow-lg");
 
           for (let el of links) {
-            el.classList.add("text-white");
-            el.classList.remove("text-primary-500");
+
+            if (!el.classList.contains("active")) {
+              el.classList.add("text-white");
+              el.classList.remove("text-primary-500");
+            } else {
+              el.classList.add("text-primary-500");
+              el.classList.remove("text-white");
+            }
           }
           for (let el of buttons) {
             el.classList.remove("bg-white");

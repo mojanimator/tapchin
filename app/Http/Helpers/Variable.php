@@ -234,10 +234,10 @@ class Variable
             ['key' => 'social_phone', 'value' => '09351414815', "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'social_address', 'value' => __('social_address'), "created_at" => \Carbon\Carbon::now(),],
             ['key' => 'order_reserve_minutes', 'value' => 30, "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'order_level0_percent', 'value' => 15, "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'order_level1_percent', 'value' => 0.5, "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'order_level2_percent', 'value' => 82, "created_at" => \Carbon\Carbon::now(),],
-            ['key' => 'order_level3_percent', 'value' => 2.5, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_percent_level_0', 'value' => 15, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_percent_level_1', 'value' => 0.5, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_percent_level_2', 'value' => 82, "created_at" => \Carbon\Carbon::now(),],
+            ['key' => 'order_percent_level_3', 'value' => 2.5, "created_at" => \Carbon\Carbon::now(),],
 
         ];
     }
