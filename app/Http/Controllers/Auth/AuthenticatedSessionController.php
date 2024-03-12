@@ -80,7 +80,7 @@ class AuthenticatedSessionController extends Controller
 
 
         return $this->loginPipeline($request)->then(function ($request) {
-            return to_route(auth()->user()?->isAdmin() ? 'panel.admin.index' : 'panel.index');
+            return to_route(auth()->user()?->isAdmin() ? 'panel.admin.index' : 'user.panel.index');
         });
     }
 

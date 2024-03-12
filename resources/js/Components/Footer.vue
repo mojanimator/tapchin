@@ -67,7 +67,7 @@
 
           </p>
           <p class="hover:text-primary-900">
-            <a :href="route('panel.index')" class=""> {{ __('panel') }}</a>
+            <a :href="route('user.panel.index')" class=""> {{ __('panel') }}</a>
 
           </p>
         </div>

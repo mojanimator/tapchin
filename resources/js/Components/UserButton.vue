@@ -40,7 +40,7 @@
             <hr class="border-gray-200 dark:border-gray-700  ">
           </li>
           <li>
-            <Link :href="isAdmin()?route('admin.panel.index'):route('panel.index')"
+            <Link :href="isAdmin()?route('admin.panel.index'):route('user.panel.index')"
                   class="flex px-4 py-4 text-sm text-gray-600 capitalize transition-colors duration-200 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
               {{ __('dashboard') }}
             </Link>
@@ -109,7 +109,7 @@ export default {
     },
     profileLink() {
       if (this.$page.props.auth.user)
-        return this.route('panel.index');
+        return this.route('user.panel.index');
       else return this.route('login');
     },
   }

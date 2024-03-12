@@ -47,7 +47,7 @@
 
             </div>
             <div class=" z-10 p-3    flex  items-center">
-              <PrimaryButton v-if="false" @click="$inertia.visit(route('panel.index'))" class="mx-2 p-2 grow">{{
+              <PrimaryButton v-if="false" @click="$inertia.visit(route('user.panel.index'))" class="mx-2 p-2 grow">{{
                   __('adv_create')
                 }}
               </PrimaryButton>
@@ -117,7 +117,7 @@
                 </div>
               </div>
             </Link>
-            <Link :href="route('panel.index')"
+            <Link :href="route('user.panel.index')"
                   class="flex cursor-pointer hover:scale-[101%] duration-300 gap-4 bg-gradient-to-l from-primary-50 via-gray-50 to-primary-100 shadow-md rounded-lg px-4 py-8 items-center">
               <WrenchScrewdriverIcon class="w-12 h-12   text-primary-500"/>
               <div class="flex flex-col   space-y-2 items-center  ">

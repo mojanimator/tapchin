@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
             'locale' => function () {
                 return app()->getLocale();
             },
+            'slides' => [],
             'statuses' => Variable::STATUSES,
             'categories' => \App\Models\Category::get(),
             'langs' => Variable::LANGS,

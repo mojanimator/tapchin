@@ -15,7 +15,7 @@ export default {
     Head, Link, ApplicationLogo, Alert, Dialog, Toast, LoadingIcon,
   },
   mounted() {
-    // window.tailwindElements();
+    window.tailwindElements();
     this.emitter.on('showToast', (e) => {
       if (this.$refs.toast)
         this.$refs.toast.show(e.type, e.message);
