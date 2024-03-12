@@ -52,9 +52,9 @@ class Transaction extends Model
                 'amount' => $order->total_shipping_price,
                 'pay_id' => null,
             ]);
-            
+
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
-            $agencyF->payment_balance += $order->shipping_price;
+            $agencyF->payment_balance += $order->total_shipping_price;
             $agencyF->save();
         }
 
