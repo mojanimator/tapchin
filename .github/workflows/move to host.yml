@@ -11,12 +11,12 @@ jobs:
       - name: Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: ftp.tapchin.ir
+          server: ftp.dabelchin.ir
           protocol: ftps
           port: 21
-          username: sportir
+          username: dabelchin
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /tapchin/
+          server-dir: /dabelchin/
           dangerous-clean-slate: false
           exclude: |
             **/.git*
