@@ -24,4 +24,3 @@ jobs:
             **/node_modules/**
             vendor/**
             server.php
-            app/**
