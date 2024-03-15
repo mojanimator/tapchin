@@ -233,9 +233,12 @@ Route::middleware(['auth:sanctum',
     Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.ticket.edit');
 
 
-    Route::get('/checkout/shipping', [ShopController::class, 'shippingPage'])->name('checkout.shipping');
-    Route::get('/checkout/payment', [ShopController::class, 'paymentPage'])->name('checkout.payment');
-    Route::post('/order/create', [OrderController::class, 'create'])->name('order.create');
+    Route::get('checkout/shipping', [ShopController::class, 'shippingPage'])->name('checkout.shipping');
+    Route::get('checkout/payment', [ShopController::class, 'paymentPage'])->name('checkout.payment');
+    Route::post('order/create', [OrderController::class, 'create'])->name('order.create');
+    Route::get('order/{order}', [OrderController::class, 'edit'])->name('order.edit');
+
+    Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('panel.order.factor');
 
 
 });

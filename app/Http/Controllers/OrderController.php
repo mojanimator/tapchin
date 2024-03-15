@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\RepositoryOrder;
 use App\Models\Setting;
 use App\Models\Shipping;
+use App\Models\ShippingMethod;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\UserFinancial;
@@ -27,12 +28,54 @@ use Inertia\Inertia;
 class OrderController extends Controller
 {
 
+    public function factor(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $data = Order::with('items.variation:id,name,weight,pack_id')->find($id);
+
+        $this->authorize('edit', [get_class($user), $data]);
+
+        $agency = Agency::find($data->agency_id);
+
+        if ($agency && !$agency->address)
+            $agency->address = optional(Agency::find($agency->parent_id))->address;
+        if (!$agency)
+            Agency::find(1);
+        if (($user instanceof Admin) && !$user->allowedAgencies(Agency::find($user->agency_id))->where('id', $data->agency_id)->exists())
+            return response()->json(['message' => __('order_not_found'),], Variable::ERROR_STATUS);
+
+        $data->order_id = "$data->id";
+        $data->shipping_method = ShippingMethod::select('id', 'name', 'description')->find($data->shipping_method_id);
+        $data->transaction = Transaction::where([
+            'for_type' => 'order',
+            'for_id' => $data->id,
+            'type' => 'pay'
+        ])->whereNotNull('payed_at')->select('title', 'pay_id', 'payed_at', 'pay_gate')->first();
+        $data->from = $agency;
+        $data->to = (object)[
+            'name' => $data->receiver_fullname,
+            'phone' => $data->receiver_phone,
+            'province_id' => $data->province_id,
+            'county_id' => $data->province_id,
+            'district_id' => $data->province_id,
+            'postal_code' => $data->postal_code,
+            'address' => $data->address,
+        ];
+        return Inertia::render('Panel/Order/Factor', [
+            'statuses' => Variable::STATUSES,
+            'data' => $data,
+            'error_message' => __('order_not_found'),
+        ]);
+    }
+
     public function edit(Request $request, $id)
     {
         $user = $request->user();
 
         $data = Order::with('items.variation:id,name,weight,pack_id')->find($id);
         $this->authorize('edit', [get_class($user), $data]);
+
 
         return Inertia::render('Panel/Order/Edit', [
             'statuses' => Variable::STATUSES,
@@ -68,6 +111,7 @@ class OrderController extends Controller
                     $t = Transaction::create([
                         'title' => sprintf(__('pay_orders_*_*'), $data->id, $user->phone),
                         'type' => "pay",
+                        'pay_gate' => Variable::$BANK,
                         'for_type' => 'order',
                         'for_id' => $data->id,
                         'from_type' => 'user',
@@ -296,6 +340,7 @@ class OrderController extends Controller
                 $t = Transaction::create([
                     'title' => sprintf(__('pay_orders_*_*'), $o['id'], $user->phone),
                     'type' => "pay",
+                    'pay_gate' => Variable::$BANK,
                     'for_type' => 'order',
                     'for_id' => $o['id'],
                     'from_type' => 'user',

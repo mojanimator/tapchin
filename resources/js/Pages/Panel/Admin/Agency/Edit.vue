@@ -36,12 +36,15 @@
             </div>
             <form @submit.prevent="submit">
               <div class="my-2">
-                <Selector ref="typeSelector"
-                          :data="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level)"
-                          :label="__('agency_type')"
-                          :error="form.errors.type_id"
-                          @change="updateFilteredAgencies()"
-                          id="type_id" v-model="form.type_id">
+
+                <Selector
+                    v-show="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level).length>0"
+                    ref="typeSelector"
+                    :data="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level)"
+                    :label="__('agency_type')"
+                    :error="form.errors.type_id"
+                    @change="updateFilteredAgencies()"
+                    id="type_id" v-model="form.type_id">
                   <template v-slot:append>
                     <div class="  p-3">
                       <Squares2X2Icon class="h-5 w-5"/>
@@ -50,11 +53,12 @@
                 </Selector>
               </div>
               <div class="my-2" v-if=" form.type_id==1 ">
-                <Selector ref="provincesSelector" :multiple="true"
-                          :data="$page.props.cities.filter((e)=>e.level==1)"
-                          :label="__('supported_provinces')"
-                          :error="form.errors.supported_provinces"
-                          id="supported_provinces" v-model="form.supported_provinces">
+                <Selector
+                    ref="provincesSelector" :multiple="true"
+                    :data="$page.props.cities.filter((e)=>e.level==1)"
+                    :label="__('supported_provinces')"
+                    :error="form.errors.supported_provinces"
+                    id="supported_provinces" v-model="form.supported_provinces">
                   <template v-slot:append>
                     <div class="  p-3">
                       <Squares2X2Icon class="h-5 w-5"/>
@@ -63,11 +67,14 @@
                 </Selector>
               </div>
               <div class="my-2" v-if="form.type_id">
-                <Selector ref="parentSelector"
-                          :data="filteredAgencies"
-                          :label="__('parent_agency')"
-                          :error="form.errors.parent_id"
-                          id="parent_id" v-model="form.parent_id">
+
+                <Selector
+                    v-show="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level).length>0"
+                    ref="parentSelector"
+                    :data="filteredAgencies"
+                    :label="__('parent_agency')"
+                    :error="form.errors.parent_id"
+                    id="parent_id" v-model="form.parent_id">
                   <template v-slot:append>
                     <div class="  p-3">
                       <Squares2X2Icon class="h-5 w-5"/>

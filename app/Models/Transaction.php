@@ -25,6 +25,7 @@ class Transaction extends Model
         'pay_id',
         'coupon',
         'payed_at',
+        'pay_gate',
     ];
 
     protected $casts = [

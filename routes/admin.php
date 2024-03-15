@@ -199,10 +199,13 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('order/user/update', [OrderController::class, 'update'])->name('admin.panel.order.user.update');
         Route::get('order/user/{order}', [OrderController::class, 'edit'])->name('admin.panel.order.user.edit');
 
+        Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('panel.order.factor');
+
         PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');
         Route::patch('order/agency/update', [RepositoryOrderController::class, 'update'])->name('admin.panel.order.agency.update');
         Route::get('order/agency/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.order.agency.edit');
+        Route::get('order/agency/factor/{order}', [RepositoryOrderController::class, 'factor'])->name('admin.panel.order.agency.factor');
 
         Route::get('order/merged/search', [OrderController::class, 'searchMerged'])->name('admin.panel.order.merged.search');
 

@@ -66,6 +66,7 @@
     "video.js": "^8.5.2",
     "vue-dragscroll": "^4.0.5",
     "vue-plugin-load-script": "^2.1.1",
+    "vue3-barcode": "^1.0.1",
     "vue3-persian-datetime-picker": "^1.2.2",
     "vue3-recaptcha2": "^1.8.0"
   }

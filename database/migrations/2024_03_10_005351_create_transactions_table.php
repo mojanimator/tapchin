@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->unsignedInteger('amount')->default(0);
             $table->string('pay_id', 50)->nullable()->index();
             $table->string('coupon', 10)->nullable();
+            $table->string('pay_gate', 10)->nullable();
             $table->timestamps();
             $table->timestamp('payed_at')->nullable();
         });
