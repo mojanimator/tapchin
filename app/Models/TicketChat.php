@@ -12,9 +12,14 @@ class TicketChat extends Model
     protected $table = 'ticket_chats';
     public $timestamps = false;
     protected $fillable = [
-        'from_id', 'ticket_id', 'message', 'user_seen', 'admin_seen', 'created_at',
+        'from_id',
+        'from_type',
+        'ticket_id',
+        'message',
+        'from_seen',
+        'to_seen',
+        'created_at',
     ];
-
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,7 +42,7 @@ class TicketChat extends Model
 
     public function owner()
     {
-        return $this->belongsTo(User::class, 'from_id');
+        return $this->morphTo();
     }
 
     public function getCreatedAtAttribute($value)

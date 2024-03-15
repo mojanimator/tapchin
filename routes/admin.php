@@ -22,6 +22,7 @@ use App\Http\Controllers\RepositoryShopController;
 use App\Http\Controllers\RepositoryTransportController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\ShippingMethodController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\VariationController;
 use App\Http\Helpers\Variable;
 use App\Models\Agency;
@@ -75,24 +76,28 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
                 'sliderRatio' => Variable::RATIOS['slider'],
             ]);
 
-        PanelController::makeInertiaRoute('get', 'notification/index', 'admin.panel.notification.index', 'Panel/Admin/Notification/Index',
+        PanelController::makeInertiaRoute('get', 'notification/index', 'panel.notification.index', 'Panel/Admin/Notification/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'notification/create', 'admin.panel.notification.create', 'Panel/Admin/Notification/Create',
+        PanelController::makeInertiaRoute('get', 'notification/create', 'panel.notification.create', 'Panel/Admin/Notification/Create',
             [
 
             ]);
 
-        PanelController::makeInertiaRoute('get', 'ticket/index', 'admin.panel.ticket.index', 'Panel/Ticket/Index',
+        PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.ticket.index', 'Panel/Ticket/Index',
             [
                 'statuses' => Variable::TICKET_STATUSES
 
             ]);
-        PanelController::makeInertiaRoute('get', 'ticket/create', 'admin.panel.ticket.create', 'Panel/Ticket/Create',
+        PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.ticket.create', 'Panel/Ticket/Create',
             [
                 'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
             ]);
+        Route::get('ticket/search', [TicketController::class, 'searchPanel'])->name('admin.panel.ticket.search');
+        Route::patch('ticket/update', [TicketController::class, 'update'])->name('admin.panel.ticket.update');
+        Route::post('ticket/create', [TicketController::class, 'create'])->name('admin.panel.ticket.create')->middleware("can:create,App\Models\Admin,App\Models\Ticket,'1'");
+        Route::get('ticket/{agency}', [TicketController::class, 'edit'])->name('admin.panel.ticket.edit');
 
         PanelController::makeInertiaRoute('get', 'user/index', 'admin.panel.user.index', 'Panel/User/Index',
             [

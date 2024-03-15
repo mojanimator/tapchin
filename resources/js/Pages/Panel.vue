@@ -145,7 +145,7 @@
                   <div class=""></div>
                 </div>
               </div>
-              <Chart key="advertises" id="advertises" :units="[__('view'),__('currency'),__('meta')]"
+              <Chart key="advertises" id="advertises"
                      :log-link="route('transaction.chart')"
                      :parent-params="{user_id:user.id,type:'data'}"
               />

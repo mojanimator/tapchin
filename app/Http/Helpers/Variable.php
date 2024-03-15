@@ -157,20 +157,6 @@ class Variable
         Car::class => 'cars',
     ];
     const NOTIFICATION_TYPES = [
-        "business_approve",
-        "business_reject",
-        "site_approve",
-        "site_reject",
-        "text_approve",
-        "text_reject",
-        "article_approve",
-        "article_reject",
-        "banner_approve",
-        "banner_reject",
-        "video_approve",
-        "video_reject",
-        "podcast_approve",
-        "podcast_reject",
         "pay",
         "access_change",
         "ticket_answer"

@@ -115,27 +115,8 @@ class UserPolicy
         return false;
     }
 
+
     public function edit(User $user, $item, $abort = true, $data = null)
-    {
-//        dd(request()->route()->parameter('site'));
-        if ($user->is_block) {
-            return abort(403, __("user_is_blocked"));
-        }
-        if (!$item)
-            return abort(403, __("item_not_found"));
-
-
-        switch (true) {
-
-        }
-        if ($abort && empty($res))
-            return abort(403, __("access_denied"));
-        if (!empty($res))
-            return true;
-        return false;
-    }
-
-    public function update(User $user, $item, $abort = true, $data = null)
     {
 
         if ($user->status == 'inactive') {
@@ -162,9 +143,12 @@ class UserPolicy
             case $item instanceof Business  :
             case $item instanceof Article  :
             case $item instanceof Notification  :
-            case $item instanceof Ticket  :
             case $item instanceof Transfer  :
                 $res = $user->role == 'us' && optional($item)->owner_id == $user->id || in_array($user->role, ['ad',]);
+                break;
+            case $item instanceof Ticket  :
+                $res = ($item->from_id == $user->id && $item->from_type == 'user') || ($item->to_id == $user->id && $item->to_type == 'user');
+
                 break;
         }
         if ($abort && empty($res))

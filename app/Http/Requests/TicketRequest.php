@@ -65,7 +65,7 @@ class TicketRequest extends FormRequest
             'message.required' => sprintf(__("validator.required"), __('message')),
             'message.max' => sprintf(__("validator.max_len"), __('message'), 65535, mb_strlen($this->message)),
 
-            'attachments.max' => sprintf(__("validator.max_items"), __('attachments'), Variable::TICKET_ATTACHMENT_MAX_LEN),
+            'attachments.max' => sprintf(__("validator.max_items"), __('attachments'), Variable::TICKET_ATTACHMENT_MAX_LEN, count($this->attachments ?? [])),
             'attachments.*.mimes' => sprintf(__("validator.invalid_format"), __("attachment"), implode(",", Variable::TICKET_ATTACHMENT_ALLOWED_MIMES)),
 
         ];

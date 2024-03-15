@@ -25,7 +25,7 @@ class NotificationController extends Controller
     {
         $data = Notification::whereId($notification)->with('owner:id,fullname,phone')->first();
 
-        return Inertia::render('Panel/Admin/Notification/Edit', [
+        return Inertia::render('Panel/Notification/Edit', [
             'types' => Variable::NOTIFICATION_TYPES,
             'data' => $data,
         ]);

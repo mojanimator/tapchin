@@ -208,16 +208,29 @@ Route::middleware(['auth:sanctum',
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('profile.password.reset');
 
-    Route::get('panel/notification/search', [NotificationController::class, 'searchPanel'])->name('panel.notification.search');
-    Route::get('panel/ticket/search', [TicketController::class, 'searchPanel'])->name('panel.ticket.search');
 
+    PanelController::makeInertiaRoute('get', 'notification/index', 'user.panel.notification.index', 'Panel/Notification/Index',
+        [
 
+        ]);
+    PanelController::makeInertiaRoute('get', 'notification/create', 'user.panel.notification.create', 'Panel/Notification/Create',
+        [
+
+        ]);
+    Route::get('notification/search', [NotificationController::class, 'searchPanel'])->name('panel.notification.search');
     Route::get('notification/edit/{notification}', [NotificationController::class, 'edit'])->name('panel.notification.edit');
-    Route::patch('notification/update', [NotificationController::class, 'update'])->name('notification.update');
-    Route::delete('notification/delete/{notification}', [NotificationController::class, 'delete'])->name('panel.admin.notification.delete');
+    Route::patch('notification/update', [NotificationController::class, 'update'])->name('panel.notification.update');
 
+    PanelController::makeInertiaRoute('get', 'ticket/index', 'user.panel.ticket.index', 'Panel/Ticket/Index',
+        [
+            'ticket_statuses' => Variable::TICKET_STATUSES
+        ]);
+    PanelController::makeInertiaRoute('get', 'ticket/create', 'user.panel.ticket.create', 'Panel/Ticket/Create',
+        [
+        ]);
+    Route::get('ticket/search', [TicketController::class, 'searchPanel'])->name('panel.ticket.search');
+    Route::patch('ticket/update', [TicketController::class, 'update'])->name('panel.ticket.update');
     Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.ticket.edit');
-    Route::patch('ticket/update', [TicketController::class, 'update'])->name('ticket.update');
 
 
     Route::get('/checkout/shipping', [ShopController::class, 'shippingPage'])->name('checkout.shipping');

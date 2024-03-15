@@ -31,8 +31,10 @@ class CreateProvinceCountyTable extends Migration
             $table->string('longitude', 30)->nullable();
             $table->string('slug', 100)->index();
             $table->enum('level', [1, 2, 3])->default(1);
-            $table->json('tags')->default(json_encode([]));
-            $table->json('bbox')->default(json_encode([]));
+            $table->json('tags')->nullable()/*->default(json_encode([]))*/
+            ;
+            $table->json('bbox')->nullable()/*default(json_encode([]))*/
+            ;
             $table->boolean('has_child')->default(false);
             $table->unsignedSmallInteger('radius')->default(0);
         });

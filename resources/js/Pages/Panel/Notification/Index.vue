@@ -15,7 +15,7 @@
           <h1 class="text-2xl font-semibold">{{ __('notifications_list') }}</h1>
         </div>
         <div v-if="isAdmin()">
-          <Link :href="route('panel.notification.create')"
+          <Link :href="route('admin.panel.notification.create')"
                 class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
           >
             {{ __('new_notification') }}
@@ -174,8 +174,8 @@
               <span class="text-slate-400 text-sm  m-2">{{ d.description }}     </span>
               <span class="flex justify-end">
               <Link v-if="createLink(d)" :href="createLink(d)"
-                    :class="d.type ? d.type.includes('reject')? 'bg-danger-100 hover:bg-danger-200 text-danger':d.type.includes('approve')?'bg-success-100 hover:bg-success-200 text-success':'bg-primary-100 hover:bg-primary-200 text-primary':'bg-primary-100 hover:bg-primary-200 text-primary' "
-                    class="mx-2  rounded px-8 py-2  ">
+                    :class="d.type ? d.type.includes('reject')? 'bg-danger-100 hover:bg-danger-200 text-danger':d.type.includes('approve')?'bg-success-100 hover:bg-success-200 text-success':'bg-primary-100 hover:bg-primary-200 text-primary-500':'bg-primary-100 hover:bg-primary-200 text-primary' "
+                    class="mx-2  rounded px-8 py-1  ">
                 {{ __('more...') }}
               </Link>
               </span>
@@ -456,7 +456,7 @@ export default {
       if (!data) return '';
       if (data.link) return data.link;
       if (data.data_id && data.type)
-        return route('/') + "/" + data.type.split("_")[0] + "/edit/" + data.data_id;
+        return route('/') + "/" + data.type.split("_")[0] + "/" + data.data_id;
       return '';
     }
   },

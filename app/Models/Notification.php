@@ -16,6 +16,7 @@ class Notification extends Model
         'data_id',
         'type',
         'owner_id',
+        'owner_type',
         'description',
     ];
 

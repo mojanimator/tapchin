@@ -14,6 +14,7 @@ use App\Models\Repository;
 use App\Models\RepositoryOrder;
 use App\Models\Shipping;
 use App\Models\ShippingMethod;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Variation;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -123,6 +124,9 @@ class AdminPolicy
                 case    Shipping::class:
                     $res = $admin->hasAccess('create_shipping');
                     break;
+                case    Ticket::class:
+                    $res = $admin->hasAccess('create_ticket');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -134,7 +138,6 @@ class AdminPolicy
 
     public function edit(Admin $admin, $item, $abort = true, $option = null)
     {
-
         if (!$item) {
             $message = __("item_not_found");
 
@@ -203,6 +206,9 @@ class AdminPolicy
                     break;
                 case   $item instanceof Shipping :
                     $res = $admin->hasAccess('edit_shipping');
+                    break;
+                case   $item instanceof Ticket :
+                    $res = $admin->hasAccess('edit_ticket');
                     break;
             }
 

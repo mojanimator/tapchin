@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('name', 200);
             $table->string('phone', 20)->nullable();
             $table->string('postal_code', 20)->nullable();
-            $table->json('access')->nullable()->index();;
+            $table->json('access')->nullable();
             $table->enum('level', array_column(Variable::AGENCY_TYPES, 'level'))->default(array_column(Variable::AGENCY_TYPES, 'level')[count(Variable::AGENCY_TYPES) - 1]);
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('agencies')->onDelete('no action');

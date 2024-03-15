@@ -15,7 +15,7 @@
           <h1 class="text-2xl font-semibold">{{ __('tickets_list') }}</h1>
         </div>
         <div>
-          <Link :href="route(`panel.${isAdmin()?'admin.':''}ticket.create`)"
+          <Link :href="route(`${isAdmin()?'admin':'user'}.panel.ticket.create`)"
                 class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
           >
             {{ __('new_ticket') }}
@@ -118,7 +118,7 @@
                 </div>
               </th>
               <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
                   @click="params.order_by='subject';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
                   <span class="px-2">  {{ __('subject') }}</span>
@@ -128,7 +128,7 @@
 
 
               <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
                   @click="params.order_by='status';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
                   <span class="px-2">    {{ __('status') }} </span>
@@ -136,7 +136,7 @@
                 </div>
               </th>
               <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
                   @click="params.order_by='updated_at';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
                   <span class="px-2">    {{ __('update') }} </span>
@@ -168,7 +168,8 @@
 
             </tr>
 
-            <tr v-for="(d,idx) in data" @click="$inertia.visit(route('panel.ticket.edit',d.id))"
+            <tr v-for="(d,idx) in data"
+                @click="$inertia.visit(route(`panel.ticket.edit`,d.id))"
                 class="bg-white cursor-pointer hover:bg-gray-400 text-center border-b hover:bg-gray-50">
 
               <td v-if="false" class="w-4 p-4" @click="d.selected=!d.selected">
@@ -181,8 +182,9 @@
               <td
                   class="flex  items-center px-6 py-4 text-gray-700 whitespace-nowrap">
 
-                <Link class="px-3 hover:text-gray-500" :href="route('panel.ticket.edit',d.id)">
-                  <div class="text-base font-semibold">{{ cropText(d.subject, 40) }}</div>
+                <Link class="px-3 hover:text-gray-500"
+                      :href="route(`panel.ticket.edit`,d.id)">
+                  <div class="text-base text-xs font-semibold">{{ cropText(d.subject, 40) }}</div>
                   <div class="font-normal text-gray-500">{{ }}</div>
                 </Link>
               </td>
@@ -191,9 +193,9 @@
               <td class="px-2 py-4     ">
                 <div
                     id="dropdownStatusSetting"
-                    class=" select-none  w-fit mx-auto  px-1    items-center text-center rounded-md py-[.2rem]"
-                    :class="`bg-${getStatus('ticket', d.status).color}-100 hover:bg-${getStatus('ticket', d.status).color}-200 text-${getStatus('ticket', d.status).color}-500`">
-                  {{ getStatus('ticket', d.status).name }}
+                    class=" select-none text-xs  w-fit mx-auto  px-1    items-center text-center rounded-md py-[.2rem]"
+                    :class="`bg-${getStatus('ticket_statuses', d.status).color}-100 hover:bg-${getStatus('ticket_statuses', d.status).color}-200 text-${getStatus('ticket_statuses', d.status).color}-500`">
+                  {{ getStatus('ticket_statuses', d.status).name }}
                 </div>
 
               </td>
@@ -279,7 +281,7 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('panel.ticket.search'), {
+      window.axios.get(route(`panel.ticket.search`), {
         params: this.params
       }, {
         onUploadProgress: function (axiosProgressEvent) {

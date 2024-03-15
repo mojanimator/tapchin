@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('title', 100);
             $table->enum('type', Variable::TRANSACTION_TYPES)->index()->nullable();
             $table->enum('for_type', array_keys(Variable::TRANSACTION_MODELS))->nullable();
-            $table->json('for_id')->nullable()->index();
+            $table->unsignedBigInteger('for_id')->nullable()->index();
             $table->enum('from_type', array_keys(Variable::PAYER_TYPES))->nullable();
             $table->unsignedBigInteger('from_id')->nullable();
             $table->enum('to_type', array_keys(Variable::PAYER_TYPES))->nullable();

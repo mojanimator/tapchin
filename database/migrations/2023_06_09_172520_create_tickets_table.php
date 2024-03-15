@@ -15,12 +15,19 @@ return new class extends Migration {
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('agency_id')->nullable();
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+
+
             $table->string('subject', 100);
             $table->enum('status', array_column(Variable::TICKET_STATUSES, 'name'));
-            $table->bigInteger('owner_id')->unsigned();
+            $table->unsignedBigInteger('from_id')->index();
+            $table->enum('from_type', array_keys(Variable::PAYER_TYPES))->nullable()->index();
+            $table->unsignedBigInteger('to_id')->index();
+            $table->enum('to_type', array_keys(Variable::PAYER_TYPES))->nullable()->index();
+
             $table->timestamps();
 
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('no action');
 
         });
     }

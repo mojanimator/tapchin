@@ -65,7 +65,7 @@
 
               <div class="my-2">
                 <TextEditor :label="__('message')" mode="simple" :lang="$page.props.locale" :id="`editor`"
-                            :ref="`text`"/>
+                            :ref="`text`" :error="form.errors.message"/>
               </div>
 
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
@@ -101,7 +101,7 @@
               </div>
               <div class="    mt-4">
 
-                <PrimaryButton class="w-full  "
+                <PrimaryButton class="w-full   flex justify-center items-center"
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                   <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -219,7 +219,7 @@ export default {
 
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
 
-      this.form.post(route('ticket.create'), {
+      this.form.post(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.ticket.create`), {
         preserveScroll: false,
 
         onSuccess: (data) => {
@@ -232,7 +232,7 @@ export default {
               uploading: true,
               attachments: attachments,
             }))
-                .post(route('ticket.create'), {
+                .post(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.ticket.create`), {
                   preserveScroll: false,
                   onSuccess: (data) => {
 

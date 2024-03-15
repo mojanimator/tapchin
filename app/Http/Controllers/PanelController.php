@@ -53,10 +53,13 @@ class PanelController extends Controller
     protected function index(Request $request)
     {
         $params = [];
-        $user = auth()->user();
+        $user = $request->user();
         $role = optional($user)->role;
 
-        $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->where('owner_id', optional($user)->id)->groupBy('status')->get();
+        $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->where(function ($query) use ($user) {
+            $query->orWhere(['from_id' => optional($user)->id, 'from_type' => 'user'])
+                ->orWhere(['to_id' => optional($user)->id, 'to_type' => 'user']);
+        })->groupBy('status')->get();
 
         return Inertia::render('Panel', $params);
     }
@@ -64,7 +67,7 @@ class PanelController extends Controller
     protected function admin(Request $request)
     {
         $params = [];
-        $user = auth()->user();
+        $user = $request->user();
         $role = optional($user)->role;
         $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->groupBy('status')->get();
         $messages = Message::select('type', DB::raw('COUNT(*) AS count'))->groupBy('type')->get();

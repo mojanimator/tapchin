@@ -69,9 +69,9 @@
             <div class="relative">
               <div v-for="(ch,idx) in data.chats" :key="ch.id"
                    class="flex flex-col   my-2   p-4 rounded-lg   bg-white shadow-md">
-                <div
-                    @click="showDialog('danger',__('remove_item?'),__('remove'),removeMessage,{cmnd:'del-chat',ticket_id:data.id,chat_id:ch.id,idx:idx})"
-                    class="absolute p-2 bg-danger text-white rounded cursor-pointer hover:bg-danger-400 end-1">
+                <div v-if="isAdmin()"
+                     @click="showDialog('danger',__('remove_item?'),__('remove'),removeMessage,{cmnd:'del-chat',ticket_id:data.id,chat_id:ch.id,idx:idx})"
+                     class="absolute p-2 bg-danger text-white rounded cursor-pointer hover:bg-danger-400 end-1">
                   <XMarkIcon class="w-5 h-5"/>
                 </div>
                 <div class="flex  items-start "
@@ -227,7 +227,7 @@
                       </div>
                       <div class="    mt-4">
 
-                        <PrimaryButton class="w-full  "
+                        <PrimaryButton class="w-full justify-center items-center flex "
                                        :class="{ 'opacity-25': form.processing }"
                                        :disabled="form.processing">
                           <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -387,7 +387,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.post(route('ticket.update'), {
+      this.form.post(route(`panel.ticket.update`), {
         preserveScroll: false,
 
         onSuccess: (data) => {

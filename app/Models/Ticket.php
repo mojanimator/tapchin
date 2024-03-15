@@ -12,7 +12,15 @@ class Ticket extends Model
     protected $table = 'tickets';
     public $timestamps = true;
     protected $fillable = [
-        'subject', 'status', 'owner_id', 'created_at', 'updated_at'
+        'subject',
+        'agency_id',
+        'status',
+        'from_id',
+        'from_type',
+        'to_id',
+        'to_type',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -42,5 +50,15 @@ class Ticket extends Model
     {
         if (!$value) return $value;
         return \Morilog\Jalali\CalendarUtils::strftime('Y/m/d | H:i', strtotime($value));
+    }
+
+    public function isResponse($me)
+    {
+        return ($me instanceof Admin) &&
+            (
+                ($this->from_type == 'user' || $this->to_type == 'user')
+                ||
+                ($this->from_type == 'admin' && $this->to_type == 'admin' && $me->agency_id == 1)
+            );
     }
 }

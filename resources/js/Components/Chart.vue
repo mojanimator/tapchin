@@ -9,8 +9,7 @@
           <div class="row  align-items-center px-1">
             <div class="flex items-center flex-wrap gap-1  justify-around">
               <div class="flex flex-wrap items-center justify-between  gap-2   ">
-                <RadioGroup @change.prevent="updateUnit" class="grow" :name="`unit-${id}`"
-                            :items="units"/>
+
 
                 <RadioGroup @change.prevent="updateTimestamp" class="grow"
                             :name="`timestamp-${id}`"

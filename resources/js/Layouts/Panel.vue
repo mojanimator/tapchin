@@ -477,7 +477,7 @@
 
           <!-- Support links -->
           <li class="relative  ">
-            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'panel.ticket.*' )}"
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.ticket.*' )}"
                class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
                data-te-sidenav-link-ref>
               <LightBulbIcon class="w-5 h-5  "/>
@@ -489,25 +489,25 @@
                                              </span>
             </a>
             <ul
-                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'panel.ticket.*' )?true:null }"
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'admin.panel.ticket.*' )?true:null }"
                 class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
                 data-te-collapse-item data-te-sidenav-collapse-ref>
               <li class="relative ps-7">
 
-                <Link :href="route('panel.notification.index')" role="menuitem"
-                      :class="subMenuIsActive( 'panel.notification.index' )"
+                <Link :href="route('admin.panel.notification.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.notification.index' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('notifications') }}
                 </Link>
-                <Link :href="route('panel.ticket.index')" role="menuitem"
-                      :class="subMenuIsActive( 'panel.ticket.index' )"
+                <Link :href="route('admin.panel.ticket.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.ticket.index' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('tickets') }}
                 </Link>
-                <Link :href="route('panel.ticket.create')" role="menuitem"
-                      :class="subMenuIsActive ( 'panel.ticket.create' )"
+                <Link :href="route('admin.panel.ticket.create')" role="menuitem"
+                      :class="subMenuIsActive ( 'admin.panel.ticket.create' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <PlusSmallIcon class="w-5 h-5 mx-1"/>
                   {{ __('new_ticket') }}
@@ -554,6 +554,7 @@
             </div>
           </li>
         </ul>
+        <!--         Users Menu-->
         <ul v-else id="scrollContainer" class="relative m-0 list-none    text-primary-500"
             data-te-sidenav-menu-ref>
 
@@ -601,6 +602,48 @@
               </li>
 
             </ul>
+
+            <!-- Support links -->
+          <li class="relative  ">
+            <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'user.panel.ticket.*' )}"
+               class="flex   cursor-pointer items-center truncate   px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
+               data-te-sidenav-link-ref>
+              <LightBulbIcon class="w-5 h-5  "/>
+              <span class="mx-2 text-sm "> {{ __('support') }} </span>
+              <span
+                  class="  right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&>svg]:text-gray-600"
+                  data-te-sidenav-rotate-icon-ref>
+                                             <ChevronDownIcon class="h-5 w-5"/>
+                                             </span>
+            </a>
+            <ul
+                v-bind="{ 'data-te-collapse-show':menuIsActive ( 'user.panel.ticket.*' ) || menuIsActive ( 'user.panel.notification.*' ) ?true:null }"
+                class="  !visible relative m-0 hidden list-none    data-[te-collapse-show]:block "
+                data-te-collapse-item data-te-sidenav-collapse-ref>
+              <li class="relative ps-7">
+
+                <Link :href="route('user.panel.notification.index')" role="menuitem"
+                      :class="subMenuIsActive( 'user.panel.notification.index' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <Bars2Icon class="w-5 h-5 mx-1"/>
+                  {{ __('notifications') }}
+                </Link>
+                <Link :href="route('user.panel.ticket.index')" role="menuitem"
+                      :class="subMenuIsActive( 'user.panel.ticket.index' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <Bars2Icon class="w-5 h-5 mx-1"/>
+                  {{ __('tickets') }}
+                </Link>
+                <Link :href="route('user.panel.ticket.create')" role="menuitem"
+                      :class="subMenuIsActive ( 'user.panel.ticket.create' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <PlusSmallIcon class="w-5 h-5 mx-1"/>
+                  {{ __('new_ticket') }}
+                </Link>
+              </li>
+
+            </ul>
+          </li>
           </li>
 
 

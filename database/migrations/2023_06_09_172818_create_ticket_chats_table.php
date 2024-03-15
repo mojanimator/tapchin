@@ -14,10 +14,12 @@ return new class extends Migration {
     {
         Schema::create('ticket_chats', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('from_id')->unsigned();
+
+            $table->morphs('from');
+//            $table->bigInteger('from_id')->unsigned();
             $table->bigInteger('ticket_id')->unsigned();
-            $table->boolean('user_seen')->default(false);
-            $table->boolean('admin_seen')->default(false);
+            $table->boolean('from_seen')->default(false);
+            $table->boolean('to_seen')->default(false);
 
             $table->text('message', 2048);
             $table->timestamp('created_at')->useCurrent();
