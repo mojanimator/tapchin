@@ -95,6 +95,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
                 'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
             ]);
 
+        
         Route::get('ticket/search', [TicketController::class, 'searchPanel'])->name('admin.panel.ticket.search');
         Route::patch('ticket/update', [TicketController::class, 'update'])->name('admin.panel.ticket.update');
         Route::post('ticket/create', [TicketController::class, 'create'])->name('admin.panel.ticket.create')->middleware("can:create,App\Models\Admin,App\Models\Ticket,'1'");
