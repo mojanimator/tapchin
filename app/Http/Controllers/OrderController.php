@@ -22,9 +22,24 @@ use App\Models\Variation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+
+    public function edit(Request $request, $id)
+    {
+        $user = $request->user();
+
+        $data = Order::with('items.variation:id,name,weight,pack_id')->find($id);
+        $this->authorize('edit', [get_class($user), $data]);
+
+        return Inertia::render('Panel/Order/Edit', [
+            'statuses' => Variable::STATUSES,
+            'data' => $data,
+
+        ]);
+    }
 
     public function userUpdate(Request $request)
     {

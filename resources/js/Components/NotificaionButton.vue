@@ -21,7 +21,7 @@
         data-te-dropdown-menu-ref>
       <li class="  p-2 text-primary text-center bg-primary-100 rounded hover:bg-primary hover:text-white cursor-pointer  ">
 
-        <Link :href="route(`${ this.isAdmin() ? 'admin.' : ''}panel.notification.index`)">{{ __('see_all') }}</Link>
+        <Link :href="route(`panel.notification.index`)">{{ __('see_all') }}</Link>
 
       </li>
       <template v-if="!error">
@@ -98,13 +98,13 @@ export default {
 
       if (data.data_id && data.type)
         return route('/') + "/" + data.type.split("_")[0] + `/${data.type === 'ticket_answer' ? '' : 'edit/'}` + data.data_id;
-      return route(`${this.isAdmin() ? 'admin.' : ''}panel.notification.index`);
+      return route(`panel.notification.index`);
     },
     resetNotifications() {
       if (this.error)
         this.getData();
       if (this.badge && this.badge > 0)
-        window.axios.patch(route('notification.update'), {cmnd: 'reset'},
+        window.axios.patch(route('panel.notification.update'), {cmnd: 'reset'},
         )
             .then((response) => {
               if (response.data && response.data.message) {

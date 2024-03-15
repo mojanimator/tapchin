@@ -150,6 +150,10 @@ class UserPolicy
                 $res = ($item->from_id == $user->id && $item->from_type == 'user') || ($item->to_id == $user->id && $item->to_type == 'user');
 
                 break;
+            case $item instanceof Order  :
+                $res = $item->user_id == $user->id;
+
+                break;
         }
         if ($abort && empty($res))
             return abort(403, __("access_denied"));

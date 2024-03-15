@@ -76,21 +76,21 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
                 'sliderRatio' => Variable::RATIOS['slider'],
             ]);
 
-        PanelController::makeInertiaRoute('get', 'notification/index', 'panel.notification.index', 'Panel/Admin/Notification/Index',
+        PanelController::makeInertiaRoute('get', 'notification/index', 'admin.panel.notification.index', 'Panel/Admin/Notification/Index',
             [
 
             ]);
-        PanelController::makeInertiaRoute('get', 'notification/create', 'panel.notification.create', 'Panel/Admin/Notification/Create',
+        PanelController::makeInertiaRoute('get', 'notification/create', 'admin.panel.notification.create', 'Panel/Admin/Notification/Create',
             [
 
             ]);
 
-        PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.ticket.index', 'Panel/Ticket/Index',
+        PanelController::makeInertiaRoute('get', 'ticket/index', 'admin.panel.ticket.index', 'Panel/Ticket/Index',
             [
                 'statuses' => Variable::TICKET_STATUSES
 
             ]);
-        PanelController::makeInertiaRoute('get', 'ticket/create', 'panel.ticket.create', 'Panel/Ticket/Create',
+        PanelController::makeInertiaRoute('get', 'ticket/create', 'admin.panel.ticket.create', 'Panel/Ticket/Create',
             [
                 'attachment_allowed_mimes' => implode(',.', Variable::TICKET_ATTACHMENT_ALLOWED_MIMES),
             ]);

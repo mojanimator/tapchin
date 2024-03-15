@@ -6,10 +6,10 @@
     </template>
 
     <div
-        class="relative    bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500 to-lime-600">
+        class="relative    bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500 to-emerald-800">
       <!--Hero-->
       <div
-          class="opacity-70   bg-no-repeat  bg-cover  blur-sm   z-0 absolute  bottom-2     w-full   h-full      "
+          class="opacity-60   bg-no-repeat  bg-cover  blur-sm   z-0 absolute  bottom-2     w-full   h-full      "
           :style="`background-image: url(${heroImage})`"></div>
 
 
@@ -25,7 +25,8 @@
           <!--Left Col-->
           <div
               class="flex flex-col max-w-lg text-white w-full    justify-center   text-center  ">
-            <p class="   text-xl lg:text-2xl  mb-8 z-10   delay-300">
+
+            <p class="   font-bold  text-xl py-4 shadow-[rgba(0,0,15,0.1)_0px_5px_20px_0px] shadow-primary-400 lg:text-2xl  mb-8 z-10   delay-300">
               {{ heroText }}
             </p>
             <!--                        search-->
@@ -51,7 +52,7 @@
 
 
             </div>
-            <div class=" p-3    gap-2 grid  grid-cols-2 sm:grid-cols-2 items-center">
+            <div class=" p-3    gap-2 grid  grid-cols-2 md:grid-cols-4 items-center">
 
               <SecondaryButton @click="$inertia.visit(route('shop.index'))"
                                class="   grow    "

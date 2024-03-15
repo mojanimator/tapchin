@@ -13,9 +13,9 @@ defineProps({
 <template>
   <button
       :type="type"
-      class="    group text-primary-500  z-10">
+      class=" bg-white hover:bg-gray-100 rounded-lg  group text-primary-500  z-10">
     <div :class="classes"
-         class=" bg-white start-0 top-0 w-full h-full rounded-lg  p-2  duration-300 group-hover:bg-gray-200   ">
+         class="p-2 rounded-lg  start-0 top-0 w-full h-full     duration-300   ">
 
       <slot/>
     </div>
