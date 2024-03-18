@@ -39,7 +39,7 @@ return new class extends Migration {
             $table->json('settings')->nullable()->default(null);
             $table->string('telegram_id', 50)->nullable()->index();
             $table->string('bale_id', 50)->nullable()->index();
-            $table->string('ref_id', 10);
+            $table->string('ref_id', 10)->nullable();
 
             $table->rememberToken();
             $table->timestamps();

@@ -38,7 +38,7 @@ return new class extends Migration {
             $table->unsignedInteger('meta_wallet')->default(0);
 //            $table->unsignedInteger('wallet')->default(0);
 //            $table->string('card', 16)->default(null)->nullable();
-            $table->string('ref_id', 10);
+            $table->string('ref_id', 10)->nullable();
             $table->string('push_id', 20)->nullable();
             $table->timestamp('expires_at')->nullable()->default(null);
             $table->json('settings')->nullable()->default(null);
