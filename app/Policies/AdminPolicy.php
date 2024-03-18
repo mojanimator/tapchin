@@ -127,6 +127,9 @@ class AdminPolicy
                 case    Ticket::class:
                     $res = $admin->hasAccess('create_ticket');
                     break;
+                case    Admin::class:
+                    $res = $admin->hasAccess('create_admin');
+                    break;
             }
 
         if ($abort && empty($res))
@@ -209,6 +212,12 @@ class AdminPolicy
                     break;
                 case   $item instanceof Ticket :
                     $res = $admin->hasAccess('edit_ticket');
+                    break;
+                case   $item instanceof User :
+                    $res = $admin->hasAccess('edit_user');
+                    break;
+                case   $item instanceof Admin :
+                    $res = $admin->hasAccess('edit_admin');
                     break;
             }
 

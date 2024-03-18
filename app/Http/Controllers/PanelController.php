@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Variable;
+use App\Models\Agency;
 use App\Models\Article;
 use App\Models\Banner;
 use App\Models\Business;
@@ -69,24 +70,22 @@ class PanelController extends Controller
         $params = [];
         $user = $request->user();
         $role = optional($user)->role;
-        $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->groupBy('status')->get();
+        $allowedAgencies = $user->allowedAgencies(Agency::find($user->agency_id))->pluck('id');
+        $tickets = Ticket::select('status', DB::raw('COUNT(*) AS count'))->whereIntegerInRaw('agency_id', $allowedAgencies)->groupBy('status')->get();
         $messages = Message::select('type', DB::raw('COUNT(*) AS count'))->groupBy('type')->get();
-        $users = User::select('id', 'is_active', 'is_block', 'role')->get();
+        $users = User::select('status', DB::raw('COUNT(*) AS count'))->groupBy('status')->get();
 
 
         $params = [
-            'users' => [['color' => 'primary', 'title' => __('admin'), 'count' => $users->whereIn('role', ['ad', 'go'])->count(),],
-                ['color' => 'teal', 'title' => __('sum'), 'count' => $users->count()],
-                ['color' => 'orange', 'title' => __('inactive'), 'count' => $users->where('is_active', false)->count()],
-                ['color' => 'danger', 'title' => __('blocked'), 'count' => $users->where('is_block', true)->count()],],
             'tickets' => array_map(function ($el) use ($tickets) {
                 return ['title' => $el['name'], 'value' => optional($tickets->where('status', $el['name'])->first())->count ?? 0];
             }, Variable::TICKET_STATUSES),
             'messages' => array_map(function ($el) use ($messages) {
                 return ['title' => $el['name'], 'color' => $el['color'] ?? 'gray', 'value' => optional($messages->where('type', $el['name'])->first())->count ?? 0];
             }, Variable::MESSAGE_STATUSES),
-            'hasAdvertise' => true,
-            'adminBalance' => Setting::getValue('iran_wallet'),
+            'users' => array_map(function ($el) use ($users) {
+                return ['title' => $el['name'], 'color' => $el['color'] ?? 'gray', 'value' => optional($users->where('type', $el['name'])->first())->count ?? 0];
+            }, Variable::USER_STATUSES),
 
 
 //            'projectItems' => array_map(function ($el) use ($projectItems) {

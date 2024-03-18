@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class AdminFinancial extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'admin_id',
+        'wallet',
+        'card',
+        'sheba',
+    ];
 }

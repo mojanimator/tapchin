@@ -113,7 +113,7 @@
               <div class="my-4">
                 <TextInput
                     id="card"
-                    type="text"
+                    type="number"
                     :placeholder="__('card')"
                     classes="  "
                     v-model="form.card"
@@ -122,12 +122,31 @@
                     :admin="true"
                     :error="form.errors.card"
                 >
-                  <template v-slot:prepend>
-                    <div class="p-3">
+                  <template v-slot:append>
+                    <div class="p- px-0">
                       <CreditCardIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
+                </TextInput>
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    v-model:verified="form.sheba"
+                    :error="form.errors.sheba"
+                >
+                  <template v-slot:append>
+                    <div class="p-1">
+                      <strong>IR</strong>
+                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                    </div>
+                  </template>
                 </TextInput>
               </div>
               <div class="my-4">

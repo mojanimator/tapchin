@@ -19,24 +19,34 @@
         <!-- State cards -->
         <div class="grid   gap-4 p-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3  ">
 
-          <!-- wallet card -->
-          <div v-if="false" :class="cardShadow"
-               class="flex   items-center justify-between p-4 bg-white  rounded-lg ">
-            <div>
-              <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
-                {{ __('site_balance') }}
+
+          <!-- financial card -->
+          <section v-if="agency" :class="cardShadow"
+                   class="flex   hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-between p-4 bg-white  rounded-lg ">
+            <div class="flex flex-col">
+              <h6 class="text-md font-bold border-b  py-3 tracking-wider text-gray-500 uppercase">
+                {{ agency.name }}
+                <span class="text-xs ">{{ `(${getAgency(agency.level)})` }}</span>
               </h6>
-              <span class="text-xl font-semibold"> {{ asPrice(adminBalance) }} {{ __('currency') }}</span>
-
+              <div class="flex flex-wrap text-gray-700 my-2">
+                <div class="flex text-sm mx-2">
+                  <div class="font-bold">{{ `${__('balance')}: ` }}</div>
+                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.payment_balance) : 0 }}</div>
+                  <TomanIcon class="h-[1rem] "/>
+                </div>
+                <div class="flex text-sm mx-2">
+                  <div class="font-bold">{{ `${__('debit')}: ` }}</div>
+                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.parent_debit) : 0 }}</div>
+                  <TomanIcon class="h-[1rem] "/>
+                </div>
+              </div>
             </div>
-
             <div>
-              <CurrencyDollarIcon class="w-12 h-12 text-primary-300 "/>
+              <IdentificationIcon class="w-12 h-12 text-primary-300 "/>
             </div>
 
-          </div>
-          <!-- setting card -->
-          <Link :href="route('admin.panel.setting.index')" :class="cardShadow"
+          </section>  <!-- setting card -->
+          <Link v-if="hasAccess('view_settings')" :href="route('admin.panel.setting.index')" :class="cardShadow"
                 class="flex   hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-between p-4 bg-white  rounded-lg ">
             <div>
               <h6 class="text-xl font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -44,14 +54,13 @@
               </h6>
 
             </div>
-
             <div>
               <Cog6ToothIcon class="w-12 h-12 text-primary-300 "/>
             </div>
 
           </Link>
           <!-- ticket card -->
-          <Link v-if="false" :href="route('panel.ticket.index')" :class="cardShadow"
+          <Link :href="route('panel.ticket.index')" :class="cardShadow"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
               <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -104,7 +113,8 @@
           </Link>
 
           <!-- users card -->
-          <Link :href="route('admin.panel.user.index')" :class="cardShadow"
+          <Link v-if="route().check('admin.panel.user.index')" :href="route('admin.panel.user.index')"
+                :class="cardShadow"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
               <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -283,10 +293,12 @@ import {
   Cog6ToothIcon,
   TicketIcon,
   UserIcon,
-  BriefcaseIcon
+  BriefcaseIcon,
+  IdentificationIcon,
 } from "@heroicons/vue/24/outline";
 import {inject, watchEffect} from "vue";
 import Chart from "@/Components/Chart.vue";
+import TomanIcon from "@/Components/TomanIcon.vue";
 
 export default {
   setup(props) {
@@ -304,6 +316,7 @@ export default {
       isMobileSubMenuOpen: false,
       isOn: false,
       user: this.$page.props.auth.user,
+      agency: this.$page.props.agency,
       tickets: this.$page.props.tickets,
       messages: this.$page.props.messages,
       projectItems: this.$page.props.projectItems,
@@ -315,10 +328,12 @@ export default {
       queue: this.$page.props.queue,
       adminBalance: this.$page.props.adminBalance,
       cardShadow: 'shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]',
+
     }
   },
   // emits: ['showToast'],
   components: {
+    TomanIcon,
     Chart,
     Panel,
     CurrencyDollarIcon,
@@ -328,6 +343,7 @@ export default {
     Cog6ToothIcon,
     UserIcon,
     BriefcaseIcon,
+    IdentificationIcon,
   },
   mounted() {
     // console.log(this.$emit('showToast'))

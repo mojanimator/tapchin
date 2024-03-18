@@ -41,4 +41,9 @@ class Agency extends Model
     {
         return $this->hasOne(Admin::class, 'agency_id');
     }
+
+    public function financial()
+    {
+        return $this->hasOne(AgencyFinancial::class, 'agency_id');
+    }
 }

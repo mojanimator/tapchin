@@ -12,17 +12,14 @@
           class="flex items-center justify-between px-4 py-2 text-primary-500 border-b md:py-4">
         <div class="flex">
           <Bars2Icon class="h-7 w-7 mx-3"/>
-          <h1 class="text-2xl font-semibold">{{ __('settings') }}</h1>
+          <h1 class="text-2xl font-semibold">{{ __('admins_list') }}</h1>
         </div>
         <div>
-          <button @click="params.id=null;params.key=null;params.value=null;modal.show()"
-                  data-te-toggle="modal"
-                  data-te-target="#settingModal"
-                  data-te-ripple-init
-                  class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+          <Link :href="route('admin.panel.admin.create')"
+                class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
           >
-            {{ __('new_setting') }}
-          </button>
+            {{ __('new_admin') }}
+          </Link>
         </div>
       </div>
       <!-- Content -->
@@ -73,7 +70,7 @@
                 </button>
 
                 <!--     menu -->
-                <div ref="userMenu" data-te-dropdown-menu-ref
+                <div ref="adminMenu" data-te-dropdown-menu-ref
                      class="min-w-[12rem] absolute z-[1000] start-0 text-gray-500  m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-start text-base shadow-lg [&[data-te-dropdown-show]]:block"
                      tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
 
@@ -103,7 +100,7 @@
                   @click="params.search=null; getData() ">
                 <XMarkIcon class="w-4 h-4 "/>
               </div>
-              <input type="text" id="table-search-users" v-model="params.search" @keydown.enter="getData()"
+              <input type="text" id="table-search-admins" v-model="params.search" @keydown.enter="getData()"
                      class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                      :placeholder="__('search')">
             </div>
@@ -122,18 +119,51 @@
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='title';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='fullname';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">  {{ __('key') }}</span>
+                  <span class="px-2">  {{ __('fullname') }}</span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
 
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='view';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='agency_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('value') }} </span>
+                  <span class="px-2">    {{ __('agency') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='phone';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('phone') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='status';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('status') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='role';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('role') }}  </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='access';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('access') }}  </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
@@ -206,35 +236,127 @@
               </td>
               <td
                   class="flex  items-center px-6 py-4 text-gray-900 whitespace-nowrap">
-
-                {{ d.key }}
+                <Image class="w-10 h-10 rounded-full" :src="`${route('storage.admins')}/${d.id}.jpg`"
+                       :alt="cropText(d.fullname,5)"/>
+                <Link class="px-3 text-xs hover:text-gray-500" :href="route('admin.panel.admin.edit',d.id)">
+                  <div class="  font-semibold">{{ cropText(d.fullname, 30) }}</div>
+                </Link>
               </td>
 
-              <td class="px-2 py-4">
-                {{ d.value }}
+              <td class="px-2 py-4    ">
+                <div v-if="d.agency">
+                  <div> {{ `(${d.agency.id})` }}</div>
+                  <div> {{ `${d.agency.name || ''}` }}</div>
+
+                </div>
               </td>
 
+              <td class="px-8 py-4">
+                {{ d.phone }}
+              </td>
+
+              <td class="px-2 py-4    " data-te-dropdown-ref>
+                <button
+                    :id="`dropdownStatusSetting${d.id}`"
+                    data-te-dropdown-toggle-ref
+                    aria-expanded="false"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                    :class="`bg-${getStatus('user_statuses', d.status).color}-100 hover:bg-${getStatus('user_statuses', d.status).color}-200 text-${getStatus('user_statuses', d.status).color}-500`">
+                  {{ getStatus('user_statuses', d.status).name }}
+                </button>
+                <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
+                    class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                    tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                    :aria-labelledby="`dropdownStatusSetting${d.id}`">
+
+                  <li v-for="(s,ix) in  $page.props.user_statuses " role="menuitem"
+                      @click=" edit ({'idx':idx,'id':d.id,'cmnd':'status','status':s.name}) "
+                      class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                    <div class="flex items-center justify-center    px-6 py-2   "
+                         :class="` hover:bg-gray-200 text-${s.color}-500`">
+                      {{ __(s.name) }}
+                    </div>
+                    <hr class="border-gray-200 ">
+                  </li>
+
+                </ul>
+              </td>
+
+              <td class="px-2 py-4    " data-te-dropdown-ref>
+                <button
+                    :id="`dropdownRole${d.id}`"
+                    data-te-dropdown-toggle-ref
+                    aria-expanded="false"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    class="  min-w-[5rem]  px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                    :class="`bg-gray-100 hover:bg-gray-200 text-gray-500`">
+                  {{ __(d.role) }}
+                </button>
+                <ul :ref="`roleMenu${d.id}`" data-te-dropdown-menu-ref
+                    class="  absolute z-[1000]   m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                    tabindex="-1" role="menu" aria-orientation="vertical" aria-label="Role menu"
+                    :aria-labelledby="`dropdownRole${d.id}`">
+
+                  <li v-for="(s,ix) in  $page.props.admin_roles " role="menuitem"
+                      @click=" edit ({'idx':idx,'id':d.id,'cmnd':'role','role':s }) "
+                      class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                    <div class="flex items-center justify-center    px-6 py-2   "
+                         :class="` hover:bg-gray-200 text-gray-500`">
+                      {{ __(s) }}
+                    </div>
+                    <hr class="border-gray-200 ">
+                  </li>
+
+                </ul>
+              </td>
+
+
+              <td
+                  class="px-2 py-4    " data-te-dropdown-ref>
+                <button
+                    id="dropdownViewFee"
+                    data-te-dropdown-toggle-ref
+                    aria-expanded="false"
+                    data-te-ripple-init
+                    data-te-ripple-color="light"
+                    class="  min-w-[5rem] bg-gray-100 hover:bg-gray-200 px-1 cursor-pointer items-center text-center rounded-md py-[.2rem]"
+                    :class="`bg-gray-100 hover:bg-gray-200 text-gray-500`"
+                >
+                  {{ (d.access || []).length }}
+                </button>
+                <ul ref="dropdownViewFeeMenu" data-te-dropdown-menu-ref
+                    class="p-2  absolute z-[1000]    hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                    tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                    aria-labelledby="dropdownViewFee">
+                  <li
+                      class="   text-sm  ">
+                    <div class=" ">
+                      <div v-for="(access,ix) in (d.access || [])" class=" px-6">
+                        {{ access }}
+                      </div>
+                    </div>
+
+                  </li>
+
+
+                </ul>
+              </td>
 
               <td class="px-2 py-4">
                 <!-- Actions Group -->
                 <div
                     class=" inline-flex rounded-md shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                     role="group">
-                  <button @click="params.id=d.id;params.key=d.key;params.value=d.value; modal.show()"
-                          data-te-toggle="modal"
-                          data-te-target="#settingModal"
-                          data-te-ripple-init
-                          class="inline-flex items-center rounded-s  justify-center px-4 py-2 bg-orange-500 border border-transparent    transition-all duration-500 text-white     hover:bg-orange-400 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                  >
+                  <Link
+                      type="button" :href="route('admin.panel.admin.edit',d.id)"
+                      class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
+                      data-te-ripple-init
+                      data-te-ripple-color="light">
                     {{ __('edit') }}
-                  </button>
-                  <button @click=" showDialog('danger',__('remove_item?'), __('remove') , removeData,d.id )"
-                          type="button"
-                          class="inline-block rounded-e  bg-red-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-red-400   focus:outline-none focus:ring-0  "
-                          data-te-ripple-init
-                          data-te-ripple-color="light">
-                    {{ __('remove') }}
-                  </button>
+                  </Link>
 
                   <!--                  <button -->
                   <!--                      type="button"-->
@@ -253,144 +375,6 @@
         </div>
 
       </div>
-
-      <!-- Modal -->
-      <div
-          data-te-modal-init
-          class="fixed left-0 top-0 backdrop-blur z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
-          id="settingModal"
-          tabindex="-1"
-          aria-labelledby="settingModalLabel"
-          aria-hidden="true">
-        <div
-            data-te-modal-dialog-ref
-            class="pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 px-2 sm:px-4 md:px8 min-[576px]:max-w-5xl">
-          <div
-              class="min-[576px]:shadow-[0_0.5rem_1rem_rgba(#000, 0.15)] pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none">
-            <div
-                class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 p-4">
-              <!--Modal title-->
-              <h5
-                  class="text-xl font-medium leading-normal text-neutral-800"
-                  id="settingModalLabel">
-
-              </h5>
-              <!--Close button-->
-              <button
-                  :class="`text-danger`"
-                  type="button"
-                  class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
-                  data-te-modal-dismiss
-                  aria-label="Close">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="h-6 w-6">
-                  <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-              </button>
-            </div>
-
-            <!--Modal body-->
-            <div class="relative flex-auto p-4" data-te-modal-body-ref>
-              <div
-                  class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
-                <FolderPlusIcon class="h-7 w-7 mx-3"/>
-
-                <h1 class="text-2xl font-semibold">{{ __('new_setting') }}</h1>
-
-              </div>
-
-
-              <div class="px-2  md:px-4">
-
-                <div
-                    class="    mx-auto md:max-w-3xl   mt-6 px-2 md:px-4 py-4   overflow-hidden  rounded-lg  ">
-
-
-                  <div
-                      class="flex flex-col mx-2   col-span-2 w-full     px-2"
-                  >
-
-                    <form @submit.prevent="addEditData">
-
-
-                      <div class="my-2">
-                        <TextInput
-                            id="key"
-                            type="text"
-                            :placeholder="__('key')"
-                            classes="  "
-                            v-model="params.key"
-                            autocomplete="key"
-                            :error="params.errors.key"
-                        >
-                          <template v-slot:prepend>
-                            <div class="p-3">
-                              <Bars2Icon class="h-5 w-5"/>
-                            </div>
-                          </template>
-
-                        </TextInput>
-                      </div>
-
-                      <div class="my-2">
-                        <TextInput
-                            id="value"
-                            type="text"
-                            :placeholder="__('value')"
-                            classes="  "
-                            v-model="params.value"
-                            autocomplete="value"
-                            :error="params.errors.value"
-                        >
-                          <template v-slot:prepend>
-                            <div class="p-3">
-                              <Bars2Icon class="h-5 w-5"/>
-                            </div>
-                          </template>
-
-                        </TextInput>
-                      </div>
-
-                      <div v-if="loading" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
-                        <div
-                            class=" bg-primary rounded  text-xs leading-none py-[.1rem] text-center text-white duration-300 "
-                            :class="{' animate-pulse': loading}"
-                            :style="`width: 100%`">
-                        </div>
-                      </div>
-
-                      <div class="    mt-4">
-
-                        <PrimaryButton class="w-full  "
-                                       :class="{ 'opacity-25': loading}"
-                                       :disabled="loading">
-                          <LoadingIcon class="w-4 h-4 mx-3 " v-if="  loading"/>
-                          <span class=" text-lg  ">  {{ __('register_info') }}</span>
-                        </PrimaryButton>
-
-                      </div>
-
-                    </form>
-                  </div>
-
-
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-      </div>
-
     </template>
 
 
@@ -409,16 +393,11 @@ import {
   HomeIcon,
   XMarkIcon,
   ArrowsUpDownIcon,
-  FolderPlusIcon,
-  PlusIcon,
 
 } from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue"
 import Tooltip from "@/Components/Tooltip.vue"
-import LoadingIcon from "@/Components/LoadingIcon.vue"
-import {Modal} from "tw-elements";
-import TextInput from "@/Components/TextInput.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {Dropdown} from "tw-elements";
 
 export default {
   data() {
@@ -429,21 +408,15 @@ export default {
         paginate: this.$page.props.pageItems[0],
         order_by: null,
         dir: 'DESC',
-        id: null,
-        key: null,
-        value: null,
-        errors: {},
       },
       data: [],
       pagination: {},
       toggleSelect: false,
       loading: false,
       error: null,
-      selected: null,
     }
   },
   components: {
-    TextInput,
     Head,
     Link,
     HomeIcon,
@@ -456,16 +429,12 @@ export default {
     Pagination,
     ArrowsUpDownIcon,
     Tooltip,
-    LoadingIcon,
-    FolderPlusIcon,
-    PlusIcon,
-    PrimaryButton,
   },
   mounted() {
+    this.tableWrapper = document.querySelector('table').parentElement;
 
     this.getData();
-    const modalEl = document.getElementById('settingModal');
-    this.modal = new Modal(modalEl);
+
     // this.showDialog('danger', 'message',()=>{});
     // this.isLoading(false);
   },
@@ -474,17 +443,22 @@ export default {
 
       this.loading = true;
       this.data = [];
-      window.axios.get(route('admin.panel.setting.search'), {
+      window.axios.get(route('admin.panel.admin.search'), {
         params: this.params
       }, {})
           .then((response) => {
             this.data = response.data.data;
             this.data.forEach(el => {
               el.selected = false;
+              el.accesses = el.accesses ? el.accesses.split(',') : [];
             });
             delete response.data.data;
             this.pagination = response.data;
 
+            this.$nextTick(() => {
+              this.initTableDropdowns();
+              this.setTableHeight();
+            });
           })
 
           .catch((error) => {
@@ -515,6 +489,12 @@ export default {
             this.loading = false;
           });
     },
+    setTableHeight() {
+      let a = window.innerHeight - this.tableWrapper.offsetTop;
+      // this.tableWrapper.classList.add(`h-[60vh]`);
+      this.tableWrapper.style.height = `${a}px`;
+      // this.tableWrapper.firstChild.classList.add(`overflow-y-scroll`);
+    },
     toggleAll() {
 
       this.toggleSelect = !this.toggleSelect;
@@ -522,61 +502,50 @@ export default {
         e.selected = this.toggleSelect;
       });
     },
-    addEditData() {
-      this.loading = true;
-      window.axios.patch(route('admin.panel.setting.update'), this.params,
+    edit(params) {
+      this.isLoading(true);
+      window.axios.patch(route('admin.panel.admin.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
-              this.modal.hide();
               this.showToast('success', response.data.message);
-              this.params.page = 1;
-              this.getData();
 
             }
+            if (response.data.wallet) {
+              this.data[params.idx].wallet = response.data.wallet;
+              this.user.wallet = response.data.wallet;
+            }
 
+            if (response.data.status) {
+              this.data[params.idx].status = response.data.status;
+            }
+            if (response.data.role) {
+              this.data[params.idx].role = response.data.role;
+            }
+            if (response.data.access) {
+              this.data[params.idx].access = response.data.access;
+            }
 
           })
 
           .catch((error) => {
             this.error = this.getErrors(error);
             if (error.response && error.response.data) {
-
-
+              if (error.response.data.charge) {
+                this.data[params.idx].charge = error.response.data.charge;
+              }
+              if (error.response.data.view_fee) {
+                this.data[params.idx].view_fee = error.response.data.view_fee;
+              }
+              if (error.response.data.meta) {
+                this.data[params.idx].meta = error.response.data.meta;
+              }
             }
             this.showToast('danger', this.error);
           })
           .finally(() => {
             // always executed
-            this.loading = false;
-          });
-    },
-    removeData(id) {
-      this.loading = true;
-      window.axios.delete(route('admin.panel.setting.delete', id), {},
-          {})
-          .then((response) => {
-            if (response.data && response.data.message) {
-              this.showToast('success', response.data.message);
-              this.params.page = 1;
-              this.getData();
-
-            }
-
-
-          })
-
-          .catch((error) => {
-            this.error = this.getErrors(error);
-            if (error.response && error.response.data) {
-
-
-            }
-            this.showToast('danger', this.error);
-          })
-          .finally(() => {
-            // always executed
-            this.loading = false;
+            this.isLoading(false);
           });
     },
     paginationChanged(data) {
@@ -585,51 +554,7 @@ export default {
       this.getData();
     },
     bulkAction(cmnd) {
-      if (this.data.filter(e => e.selected).length == 0) {
-        this.showToast('danger', this.__('nothing_selected'));
-        return;
-      }
-      this.isLoading(true);
-      const params = {
-        cmnd: cmnd, data: this.data.reduce((result, el) => {
-          if (el.selected) result.push(el.id);
-          return result;
-        }, [])
-      };
 
-      window.axios.patch(route('article.update'), params,
-          {
-            onUploadProgress: function (axiosProgressEvent) {
-            },
-
-            onDownloadProgress: function (axiosProgressEvent) {
-            }
-          })
-          .then((response) => {
-            if (response.data && response.data.message) {
-              this.showToast('success', response.data.message);
-
-            }
-            if (response.data && response.data.results) {
-              const res = response.data.results;
-              for (let i in this.data)
-                for (let j in res)
-                  if (res[j].id == this.data[i].id) {
-                    this.data[i].status = res[j].status;
-                    break;
-                  }
-            }
-
-          })
-
-          .catch((error) => {
-            this.error = this.getErrors(error);
-
-            this.showToast('danger', this.error);
-          })
-          .finally(() => {
-            this.isLoading(false);
-          });
     }
   },
 

@@ -408,7 +408,14 @@
                             data-te-ripple-color="light">
                           {{ __('details') }}
                         </Link>
-
+                        <Link
+                            type="button" :href="route('admin.panel.order.agency.factor',d.id)"
+                            class="flex mx-1 rounded  bg-indigo-500 text-white px-6  py-2 text-xs font-medium   leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
+                            data-te-ripple-init
+                            data-te-ripple-color="light">
+                          <PrinterIcon class="h-4 w-4"/>
+                          <span class="mx-1">{{ __('factor') }}</span>
+                        </Link>
                         <!--                  <button -->
                         <!--                      type="button"-->
                         <!--                      class="inline-block rounded-e bg-teal-500 px-6 py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-teal-400   focus:outline-none focus:ring-0  "-->
@@ -448,6 +455,7 @@ import {
   ArrowsUpDownIcon,
   Squares2X2Icon,
   CurrencyDollarIcon,
+  PrinterIcon,
 
 } from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue"
@@ -499,6 +507,7 @@ export default {
     Squares2X2Icon,
     Selector,
     CurrencyDollarIcon,
+    PrinterIcon,
   },
   mounted() {
 

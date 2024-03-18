@@ -36,7 +36,7 @@ class SettingRequest extends FormRequest
         $tmp = [];
 
         $tmp = array_merge($tmp, [
-            'key' => ['required', 'max:30', 'regex:/^[a-z]+(_[a-z]+)*$/', "unique:settings,key,$this->id"],
+            'key' => ['required', 'max:30', 'regex:/^[a-z0-9]+(_[a-z0-9]+)*$/', "unique:settings,key,$this->id"],
             'value' => ['required', 'max:1024',],
 
         ]);
@@ -50,12 +50,12 @@ class SettingRequest extends FormRequest
         return [
 
             'key.required' => sprintf(__("validator.required"), __('key')),
-            'key.max' => sprintf(__("validator.max_len"),__('key'), 30, mb_strlen($this->key)),
+            'key.max' => sprintf(__("validator.max_len"), __('key'), 30, mb_strlen($this->key)),
             'key.regex' => __("validator.key_contains"),
             'key.unique' => sprintf(__("validator.unique"), __('key')),
 
             'value.required' => sprintf(__("validator.required"), __('value')),
-            'value.max' => sprintf(__("validator.max_len"),__('value'), 1024, mb_strlen($this->value)),
+            'value.max' => sprintf(__("validator.max_len"), __('value'), 1024, mb_strlen($this->value)),
 
 
         ];

@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('admin_id')->nullable();
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('no action');
-
+            $table->unsignedInteger('wallet')->default(0);
             $table->string('card', 20)->nullable();
             $table->string('sheba', 30)->nullable();
             $table->timestamps();

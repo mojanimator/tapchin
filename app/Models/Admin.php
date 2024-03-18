@@ -27,6 +27,8 @@ class Admin extends Authenticatable
      */
     protected $fillable = [
         'fullname',
+        'agency_id',
+        'agency_level',
         'email',
         'email_verified_at',
         'phone',
@@ -38,11 +40,13 @@ class Admin extends Authenticatable
         'is_active',
         'is_block',
         'wallet_active',
+        'national_code',
         'password',
+        'status',
         'role',
         'access',
-        'card',
-        'sheba',
+//        'card',
+//        'sheba',
         'notifications',
         'wallet',
         'meta_wallet',
@@ -110,7 +114,7 @@ class Admin extends Authenticatable
 //            if ($j < 100)
 //                break;
         }
-        return $ref;
+        return "{$ref}a"; //for admins added a
     }
 
     public function isAdmin()
@@ -182,6 +186,7 @@ class Admin extends Authenticatable
 
         if (in_array($this->role, ['owner'])) return [
             'view_agency',
+            'view_admin',
             'view_repository',
             'view_shipping',
             'view_shipping-method',
@@ -195,6 +200,11 @@ class Admin extends Authenticatable
         ];
         return $this->access;
 
+    }
+
+    public function financial()
+    {
+        return $this->hasOne(AdminFinancial::class, 'admin_id');
     }
 
     public function agency()

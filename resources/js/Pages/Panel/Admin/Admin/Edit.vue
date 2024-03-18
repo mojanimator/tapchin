@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('edit_user')}}</title>
+      <title>{{__('edit_admin')}}</title>
     </template>
 
 
@@ -12,28 +12,16 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <PencilSquareIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('edit_user') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_admin') }}</h1>
 
       </div>
 
       <!-- Content -->
       <div class="px-2  md:px-4">
 
-        <div v-if="data && data.id" class="flex flex-col mt-4">
-          <div class="flex text-sm">
-            <div class="text-gray-500">{{ __('register_date') }}:</div>
-            <div class="text-primary-700 mx-2">{{ toShamsi(data.created_at) }}</div>
-          </div>
-          <div class="flex text-sm">
-            <div class="text-gray-500">{{ __('status') }}:</div>
-            <div class="mx-2" :class="`text-${data.is_block?'danger': !data.is_active? 'gray':'success'}-500`">{{
-                data.is_block ? __('block') : !data.is_active ? __('inactive') : __('active')
-              }}
-            </div>
-          </div>
-        </div>
-        <div v-if="data && data.id"
-             class="lg:grid      lg:grid-cols-3  mx-auto md:max-w-5xl   my-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
+
+        <div
+            class="lg:grid      lg:grid-cols-3  mx-auto md:max-w-5xl   my-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
           <div
               class="lg:flex-col  flex flex-wrap   self-center  md:m-2  lg:mx-2 md:items-center lg:items-stretch rounded-lg    ">
             <!--            <InputLabel class="m-2 w-full md:text-start lg:text-center"-->
@@ -42,10 +30,10 @@
             <div class="flex-col   m-2 items-center rounded-lg max-w-[8rem]  w-full mx-auto lg:mx-2   ">
               <div class="my-2">
                 <ImageUploader :replace="true"
-                               :preload="route('storage.users')+`/${data.id}.jpg`"
-                               mode="edit" :for-id="data.id"
-                               :link="route('admin.panel.user.update')"
-                               ref="imageCropper" :label="__('image_cover_jpg')" cropRatio="1" id="img"
+                               :preload="route('storage.admins')+`/${$page.props.data.id}.jpg`"
+                               mode="edit" :for-id="$page.props.data.id"
+                               :link="route('admin.panel.admin.update')"
+                               ref="imageCropper" :label="__('driver_image_jpg')" :cropRatio="3/4" id="img"
                                height="10" class="grow "/>
                 <InputError class="mt-1 " :message="form.errors.img"/>
               </div>
@@ -58,9 +46,34 @@
           >
             <form @submit.prevent="submit">
 
-              <div class="flex items-center">
+              <div class="flex flex-wrap items-center justify-center ">
 
-                <RadioGroup ref="roleSelector" class="grow" name="role" :items="['active','inactive','block',]"/>
+                <RadioGroup ref="statusSelector" class=" grow mx-2" name="status" v-model="form.status"
+                            :items="$page.props.statuses" :before-selected=" $page.props.data.status "/>
+                <RadioGroup ref="roleSelector" class=" grow mx-2" name="role" v-model="form.role"
+                            :before-selected=" $page.props.data.role "
+                            :items="$page.props.roles"/>
+              </div>
+              <div class="my-2" v-if="$page.props.agency && $page.props.agency.level<3">
+                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('agency')"
+                              :id="'agency'" v-model:selected="form.agency_id" :preload="$page.props.data.agency">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+
               </div>
               <div class="my-4">
                 <TextInput
@@ -83,67 +96,72 @@
 
 
               <div class="my-4">
-                <TextInput
-                    id="phone"
-                    type="text"
-                    :placeholder="__('phone')"
-                    classes="  "
-                    v-model="form.phone"
-                    autocomplete="phone"
-                    v-model:verified="form.phone_verified"
-                    :admin="true"
-                    :error="form.errors.phone"
-                >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <PhoneIcon class="h-5 w-5"/>
-                    </div>
-                  </template>
-
-                </TextInput>
-
+                <PhoneFields
+                    v-model:phone="form.phone"
+                    v-model:phone-verify="form.phone_verify"
+                    :phone-error="form.errors.phone"
+                    type="edit"
+                    for="admins"
+                    :verified="null"
+                    :activeButtonText="__('send_code')"
+                    :disable="null"
+                    :disableEdit="null"
+                    :phone-verify-error="form.errors.phone_verify"
+                />
               </div>
               <div class="my-4">
                 <TextInput
-                    id="email"
-                    type="email"
-                    :placeholder="__('email')"
+                    id="national_code"
+                    type="text"
+                    :placeholder="__('national_code')"
                     classes="  "
-                    v-model="form.email"
-                    autocomplete="email"
-                    v-model:verified="form.email_verified"
-                    :admin="true"
-                    :error="form.errors.email"
+                    v-model="form.national_code"
+                    autocomplete="card"
+                    :error="form.errors.national_code"
                 >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <AtSymbolIcon class="h-5 w-5"/>
+                  <template v-slot:append>
+                    <div class="">
+                      <IdentificationIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
                 </TextInput>
-
               </div>
               <div class="my-4">
                 <TextInput
                     id="card"
-                    type="text"
+                    type="number"
                     :placeholder="__('card')"
                     classes="  "
                     v-model="form.card"
                     autocomplete="card"
-                    v-model:verified="form.wallet_active"
-                    :admin="true"
                     :error="form.errors.card"
                 >
-                  <template v-slot:prepend>
-                    <div class="p-3">
+                  <template v-slot:append>
+                    <div class="p- px-0">
                       <CreditCardIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
                 </TextInput>
-
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    :error="form.errors.sheba"
+                >
+                  <template v-slot:append>
+                    <div class="p-1">
+                      <strong>IR</strong>
+                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                    </div>
+                  </template>
+                </TextInput>
               </div>
               <div class="my-4">
                 <TextInput
@@ -152,23 +170,22 @@
                     :placeholder="__('wallet')"
                     classes="  "
                     v-model="form.wallet"
-                    autocomplete="card"
+                    autocomplete="wallet"
                     :error="form.errors.wallet"
                 >
-                  <template v-slot:prepend>
-                    <div class="p-3">
-                      <CreditCardIcon class="h-5 w-5"/>
+                  <template v-slot:append>
+                    <div class="p- px-0">
+                      <BanknotesIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
                 </TextInput>
-
               </div>
               <div class="my-4">
                 <TextInput
                     id="password"
                     type="text"
-                    :placeholder="__('new_password')"
+                    :placeholder="__('password')"
                     classes="  "
                     v-model="form.password"
                     autocomplete="password"
@@ -183,16 +200,26 @@
                 </TextInput>
 
               </div>
+              <div class="my-4">
+                <TextInput
+                    id="password_verify"
+                    type="text"
+                    :placeholder="__('password_verify')"
+                    classes="  "
+                    v-model="form.password_confirmation"
+                    autocomplete="password"
+                    :error="form.errors.password_confirmation"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <KeyIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
 
-              <div class="my-4 text-gray-700">
-                <p class="text-sm my-1">{{ __('ref_link') }}</p>
-                <div @click="copyToClipboard(route('/') + `?ref=${data.ref_id}`)"
-                     class="text-left cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary p-2"
-                >{{
-                    route('/') + `?ref=${data.ref_id}`
-                  }}
-                </div>
+                </TextInput>
+
               </div>
+
 
               <div class="py-4"></div>
               <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
@@ -205,7 +232,7 @@
               </div>
               <div class="    mt-4">
 
-                <PrimaryButton class="w-full  "
+                <PrimaryButton class="w-full flex items-center justify-center "
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                   <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -245,6 +272,9 @@ import {
   AtSymbolIcon,
   PhoneIcon,
   KeyIcon,
+  IdentificationIcon,
+  XMarkIcon,
+  BanknotesIcon,
 
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
@@ -265,6 +295,7 @@ import ProvinceCounty from "@/Components/ProvinceCounty.vue";
 import PhoneFields from "@/Components/PhoneFields.vue";
 import SocialFields from "@/Components/SocialFields.vue";
 import EmailFields from "@/Components/EmailFields.vue";
+import UserSelector from "@/Components/UserSelector.vue";
 
 export default {
 
@@ -275,18 +306,19 @@ export default {
         id: null,
         fullname: null,
         phone: null,
-        phone_verified: null,
-        email_verified: null,
-        wallet_active: null,
-        email: null,
+        phone_verify: null,
+        agency_id: null,
         card: null,
-        wallet: null,
+        sheba: null,
+        national_code: null,
+        wallet: 0,
         password: null,
+        password_confirmation: null,
         status: null,
-        _method: 'patch',
+        role: null,
+        img: null,
 
       }),
-      img: null,
       profile: null,
     }
   },
@@ -325,6 +357,10 @@ export default {
     AtSymbolIcon,
     PhoneIcon,
     KeyIcon,
+    IdentificationIcon,
+    XMarkIcon,
+    UserSelector,
+    BanknotesIcon,
 
   },
   created() {
@@ -337,17 +373,16 @@ export default {
 
     // console.log(this.data);
     this.form.id = this.data.id;
-    this.form.status = this.data.is_block ? 'block' : this.data.is_active ? 'active' : 'inactive';
+    this.form.status = this.data.status;
     this.form.role = this.data.role;
     this.form.fullname = this.data.fullname;
     this.form.phone = this.data.phone;
-    this.form.email = this.data.email;
-    this.form.phone_verified = this.data.phone_verified;
-    this.form.email_verified = this.data.email_verified_at != null ? 1 : 0;
-    this.form.wallet_active = this.data.wallet_active ? 1 : 0;
-    this.form.card = this.data.card;
-    this.form.wallet = this.data.wallet;
-    this.$refs.roleSelector.selected = this.form.status;
+    this.form.national_code = this.data.national_code;
+    if (this.data.financial) {
+      this.form.card = this.data.financial.card;
+      this.form.sheba = this.data.financial.sheba;
+      this.form.wallet = this.data.financial.wallet;
+    }
 
   },
   methods: {
@@ -356,7 +391,6 @@ export default {
 
       // this.form.category_id = this.$refs.categorySelector.selected;
       this.form.clearErrors();
-      this.form.status = this.$refs.roleSelector.selected;
 
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
       // this.images = [];
@@ -364,7 +398,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('admin.panel.user.update'), {
+      this.form.patch(route('admin.panel.admin.update'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

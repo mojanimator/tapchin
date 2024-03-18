@@ -17,6 +17,7 @@ use App\Models\RepositoryCartItem;
 use App\Models\RepositoryOrder;
 use App\Models\Shipping;
 use App\Models\ShippingMethod;
+use App\Models\Transaction;
 use App\Models\UserFinancial;
 use App\Models\Variation;
 use Carbon\Carbon;
@@ -27,6 +28,55 @@ use Inertia\Inertia;
 class RepositoryOrderController extends Controller
 {
     //
+    public function factor(Request $request, $id)
+    {
+        $admin = $request->user();
+
+        $data = RepositoryOrder::with('items.variation:id,name,weight,pack_id')->find($id);
+
+        $this->authorize('edit', [Admin::class, $data]);
+
+        $agency = Agency::find($data->agency_id);
+
+        if ($agency && !$agency->address)
+            $agency->address = optional(Agency::find($agency->parent_id))->address;
+        if (!$agency)
+            Agency::find(1);
+        if (!$admin->allowedAgencies(Agency::find($admin->agency_id))->where('id', $data->agency_id)->exists())
+            return response()->json(['message' => __('order_not_found'),], Variable::ERROR_STATUS);
+
+        $data->order_id = "A$data->id";
+        $data->shipping_method = ShippingMethod::select('id', 'name', 'description')->find($data->shipping_method_id);
+        $data->transaction = Transaction::where([
+            'for_type' => 'order',
+            'for_id' => $data->id,
+            'type' => 'pay'
+        ])->whereNotNull('payed_at')->select('title', 'pay_id', 'payed_at', 'pay_gate')->first();
+
+        $data->from = (object)[
+            'name' => $data->from_fullname,
+            'phone' => $data->from_phone,
+            'province_id' => $data->from_province_id,
+            'county_id' => $data->from_province_id,
+            'district_id' => $data->from_province_id,
+            'postal_code' => $data->from_postal_code,
+            'address' => $data->from_address,
+        ];
+        $data->to = (object)[
+            'name' => $data->to_fullname,
+            'phone' => $data->to_phone,
+            'province_id' => $data->to_province_id,
+            'county_id' => $data->to_province_id,
+            'district_id' => $data->to_province_id,
+            'postal_code' => $data->to_postal_code,
+            'address' => $data->to_address,
+        ];
+        return Inertia::render('Panel/Order/Factor', [
+            'statuses' => Variable::STATUSES,
+            'data' => $data,
+            'error_message' => __('order_not_found'),
+        ]);
+    }
 
     public function createFromCard(Request $request)
     {

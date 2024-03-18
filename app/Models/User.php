@@ -78,7 +78,7 @@ class User extends Authenticatable
         'addresses' => 'array',
     ];
 
-    public function financials()
+    public function financial()
     {
         return $this->belongsTo(UserFinancial::class, 'user_id');
     }

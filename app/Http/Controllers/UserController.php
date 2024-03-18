@@ -55,8 +55,9 @@ class UserController extends Controller
 
     public function edit(Request $request, $id): Response
     {
-        $data = User::find($id);
-        $this->authorize('edit', [User::class, $data]);
+        $me = $request->user();
+        $data = User::with('financial')->find($id);
+        $this->authorize('edit', [get_class($me), $data]);
 
         return Inertia::render('Panel/Admin/User/Edit', [
             'data' => $data,
@@ -73,7 +74,7 @@ class UserController extends Controller
         $paginate = $request->paginate ?: 24;
 
         $query = User::query();
-        $query->select('id', 'fullname', 'email', 'phone', 'is_active', 'is_block', 'access', 'role', 'wallet');
+        $query->select();
 
         if ($search)
             $query = $query->where('fullname', 'like', "%$search%")->orWhere('phone', 'like', "%$search%");

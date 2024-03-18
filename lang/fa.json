@@ -846,5 +846,13 @@
   "total_items_price": "جمع هزینه اقلام",
   "final_price": "مجموع مبلغ نهایی",
   "print": "چاپ",
+  "balance": "اعتبار",
+  "debit": "بدهی",
+  "admins": "ادمین ها",
+  "admins_list": "لیست ادمین ها",
+  "new_admin": "ادمین جدید",
+  "create_admin": "ساخت ادمین",
+  "edit_admin": "ویرایش ادمین",
+  "password_verify": "تکرار رمزعبور",
   "": ""
 }

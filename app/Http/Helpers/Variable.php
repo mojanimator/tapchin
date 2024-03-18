@@ -67,8 +67,8 @@ class Variable
         ["name" => 'block', "color" => 'danger'],
     ];
     const  USER_STATUSES = [
-        ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'active', "color" => 'success'],
+        ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'block', "color" => 'danger'],
     ];
     const  TICKET_STATUSES = [
@@ -150,6 +150,7 @@ class Variable
         Article::class => 'articles',
         Ticket::class => 'tickets',
         User::class => 'users',
+        Admin::class => 'admins',
         Slider::class => 'slides',
         Product::class => 'products',
         Variation::class => 'variations',
