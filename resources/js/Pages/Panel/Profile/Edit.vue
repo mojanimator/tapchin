@@ -286,7 +286,6 @@ export default {
       this.form.card = this.data.financial.card;
       this.form.sheba = this.data.financial.sheba;
       this.form.wallet = this.data.financial.wallet;
-
     }
   },
   methods: {
