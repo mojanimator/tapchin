@@ -8,8 +8,10 @@ use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Admin;
 use App\Models\Podcast;
 use App\Models\User;
+use App\Models\UserFinancial;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,9 +30,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
+        $user = $request->user();
+        return Inertia::render('Panel/Profile/Edit', [
+            'user_statuses' => Variable::USER_STATUSES,
+            'data' => get_class($user)::with('financial')->find($user->id),
         ]);
     }
 
@@ -40,7 +43,7 @@ class ProfileController extends Controller
     public function update(ProfileRequest $request)
     {
         $request->user()->fill($request->validated());
-        $user = auth('sanctum')->user();
+        $user = $request->user();
 
         switch ($request->cmnd) {
             case   'upload-img':
@@ -86,16 +89,16 @@ class ProfileController extends Controller
                     return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
                 return back()->with($res);
         }
-        if (!$request->user()->isDirty()) return back();
+        User::whereId($user->id)->update([
+            'fullname' => $request->fullname,
+            'phone' => $request->phone,
+        ]);
+        UserFinancial::updateOrCreate(['user_id' => $user->id,],
+            [
+                'card' => $request->card,
+                'sheba' => $request->sheba,
+            ]);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-        if ($request->card && $request->user()->isDirty('card')) {
-            $request->user()->wallet_active = true;
-        }
-
-        $request->user()->save();
         $res = ['extra' => ['wallet_active' => $user->wallet_active], 'flash_status' => 'success', 'flash_message' => __('updated_successfully')];
         Telegram::log(null, 'user_edited', $user);
         return back()->with($res);

@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function financial()
     {
-        return $this->belongsTo(UserFinancial::class, 'user_id');
+        return $this->hasOne(UserFinancial::class, 'user_id');
     }
 
     public static function makeRefCode2()

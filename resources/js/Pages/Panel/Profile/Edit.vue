@@ -26,20 +26,21 @@
           </div>
           <div class="flex text-sm">
             <div class="text-gray-500">{{ __('status') }}:</div>
-            <div class="mx-2" :class="`text-${data.is_block?'danger': !data.is_active? 'gray':'success'}-500`">{{
-                data.is_block ? __('blocked') : !data.is_active ? __('inactive') : __('active')
+            <div class="mx-2" :class="`text-${getStatus('user_statuses',data.status).color}-500`">{{
+                __(data.status)
               }}
             </div>
           </div>
-          <div class="flex text-sm">
-            <div class="text-gray-500">{{ __('accesses') }}:</div>
-            <div v-for="(access,idx) in $page.props.accesses" class="ms-1">
-              <div class="bg-primary-100 rounded px-2 text-sm"
-                   v-if="data.access && data.access.split(',').indexOf(access.role)>-1">
-                {{ __(access.name) }}
-              </div>
+          <div class="flex text-sm items-center">
+            <div class="text-gray-500">{{ __('wallet') }}:</div>
+            <div class="mx-2" :class="`text-gray-700`">{{
+                data.wallet || 0
+              }}
+
             </div>
+            <TomanIcon class=" "/>
           </div>
+
 
         </div>
         <div v-if="data && data.id"
@@ -54,7 +55,7 @@
                 <ImageUploader :replace="true"
                                :preload="route('storage.users')+`/${data.id}.jpg`"
                                mode="edit" :for-id="data.id"
-                               :link="route('profile.update')"
+                               :link="route(`${ isAdmin() ? 'admin' : 'user'}.panel.profile.update`)"
                                ref="imageCropper" :label="__('image_cover_jpg')" cropRatio="1" id="img"
                                height="10" class="grow "/>
                 <InputError class="mt-1 " :message="form.errors.img"/>
@@ -99,35 +100,41 @@
                     :phone-verify-error="form.errors.phone_verify"
                 />
               </div>
-              <div class="my-2">
-                <EmailFields
-                    v-model:email="form.email"
-                    :email-error="form.errors.email"
-                    for="users"
-                    :verified="data.email_verified_at"
-                    :phone-verify-error="form.errors.email"
-                />
-              </div>
-
-              <div class="my-2">
+              <div class="my-4">
                 <TextInput
                     id="card"
-                    type="text"
+                    type="number"
                     :placeholder="__('card')"
                     classes="  "
                     v-model="form.card"
                     autocomplete="card"
-                    :verified="data.wallet_active"
                     :error="form.errors.card"
                 >
-                  <template v-slot:prepend>
-                    <div class="p-3">
+                  <template v-slot:append>
+                    <div class="p- px-0">
                       <CreditCardIcon class="h-5 w-5"/>
                     </div>
                   </template>
 
                 </TextInput>
-
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    :error="form.errors.sheba"
+                >
+                  <template v-slot:append>
+                    <div class="p-1">
+                      <strong>IR</strong>
+                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                    </div>
+                  </template>
+                </TextInput>
               </div>
 
               <div class="my-4 text-gray-700">
@@ -151,7 +158,7 @@
               </div>
               <div class="    mt-4">
 
-                <PrimaryButton class="w-full  "
+                <PrimaryButton class="w-full  flex items-center justify-center"
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                   <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -188,6 +195,7 @@ import {
   PencilSquareIcon,
   PaintBrushIcon,
   CreditCardIcon,
+  BanknotesIcon,
 
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
@@ -208,6 +216,7 @@ import ProvinceCounty from "@/Components/ProvinceCounty.vue";
 import PhoneFields from "@/Components/PhoneFields.vue";
 import SocialFields from "@/Components/SocialFields.vue";
 import EmailFields from "@/Components/EmailFields.vue";
+import TomanIcon from "@/Components/TomanIcon.vue";
 
 export default {
 
@@ -219,7 +228,8 @@ export default {
         fullname: null,
         phone: null,
         phone_verify: null,
-        email: null,
+        wallet: null,
+        sheba: null,
         card: null,
 
       }),
@@ -228,6 +238,7 @@ export default {
     }
   },
   components: {
+    TomanIcon,
     EmailFields,
     ImageUploader,
     LoadingIcon,
@@ -259,10 +270,11 @@ export default {
     PencilSquareIcon,
     PaintBrushIcon,
     CreditCardIcon,
+    BanknotesIcon,
 
   },
   created() {
-    this.data = this.$page.props.auth.user;
+    this.data = this.$page.props.data;
   },
   mounted() {
 
@@ -270,7 +282,12 @@ export default {
     this.form.fullname = this.data.fullname;
     this.form.phone = this.data.phone;
     this.form.email = this.data.email;
-    this.form.card = this.data.card;
+    if (this.data.financial) {
+      this.form.card = this.data.financial.card;
+      this.form.sheba = this.data.financial.sheba;
+      this.form.wallet = this.data.financial.wallet;
+
+    }
   },
   methods: {
     submit() {
@@ -285,7 +302,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('profile.update'), {
+      this.form.patch(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.profile.update`), {
         preserveScroll: false,
 
         onSuccess: (data) => {

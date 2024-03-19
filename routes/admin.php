@@ -24,6 +24,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\ShippingMethodController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationController;
 use App\Http\Helpers\Variable;
@@ -154,10 +155,10 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         );
 
 
-        PanelController::makeInertiaRoute('get', 'transaction/index', 'admin.panel.financial.transaction.index', 'Panel/Admin/Financial/Index',
-            [
-            ]
+        PanelController::makeInertiaRoute('get', 'transaction/index', 'admin.panel.financial.transaction.index', 'Panel/Financial/Transaction/Index',
+            []
         );
+        Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('admin.panel.financial.transaction.search');
 
 
         PanelController::makeInertiaRoute('get', 'agency/index', 'admin.panel.agency.index', 'Panel/Admin/Agency/Index',

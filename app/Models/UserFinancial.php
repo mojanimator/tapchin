@@ -13,5 +13,7 @@ class UserFinancial extends Model
 
     protected $fillable = [
         'user_id',
+        'card',
+        'sheba',
     ];
 }

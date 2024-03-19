@@ -153,9 +153,17 @@ Route::group(['prefix' => '', 'namespace' => 'User'], function () {
 //    PanelController::makeInertiaRoute('get', 'site/edit/{site}', 'panel.site.edit', 'Panel/Site/Edit', ['categories' => Site::categories('parents'), 'site_statuses' => Variable::SITE_STATUSES, 'site' => $tmp = Site::with('category')->find(request()->segment(count(request()->segments())))], 'can:edit,App\Models\User,App\Models\Site,"","' . $tmp . '"');
 
 
+        PanelController::makeInertiaRoute('get', 'password/edit', 'user.panel.profile.password.edit', 'Panel/Profile/PasswordEdit',
+            [
+            ]);
+        Route::get('profile/edit', [ProfileController::class, 'edit'])->name('user.panel.profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('user.panel.profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('user.panel.profile.destroy');
+        Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('user.panel.profile.password.reset');
+
+
         PanelController::makeInertiaRoute('get', 'notification/index', 'panel.notification.index', 'Panel/Notification/Index',
             [
-
             ]
         );
         PanelController::makeInertiaRoute('get', 'ticket/index', 'panel.ticket.index', 'Panel/Ticket/Index',
@@ -169,18 +177,15 @@ Route::group(['prefix' => '', 'namespace' => 'User'], function () {
             ]);
 
 
-        PanelController::makeInertiaRoute('get', 'profile/edit', 'panel.profile.edit', 'Panel/Profile/Edit',
-            [
-                'accesses' => []
-            ]);
-        PanelController::makeInertiaRoute('get', 'password/edit', 'panel.profile.password.edit', 'Panel/Profile/PasswordEdit',
-            [
-            ]);
-
         PanelController::makeInertiaRoute('get', 'order/index', 'user.panel.order.index', 'Panel/User/Order/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
         Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
         Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
+
+        PanelController::makeInertiaRoute('get', 'transaction/index', 'user.panel.financial.transaction.index', 'Panel/Financial/Transaction/Index',
+            []
+        );
+        Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('user.panel.financial.transaction.search');
 
     });
 
@@ -202,11 +207,6 @@ Route::middleware(['auth:sanctum',
     config('jetstream.auth_session'),
     'verified'])->group(function () {
 //    Route::patch('/user', [UserController::class, 'update'])->name('user.update');
-
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('profile.password.reset');
 
 
     PanelController::makeInertiaRoute('get', 'notification/index', 'user.panel.notification.index', 'Panel/Notification/Index',

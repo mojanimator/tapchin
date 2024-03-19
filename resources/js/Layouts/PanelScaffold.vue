@@ -146,12 +146,12 @@
                        tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
 
                        aria-labelledby="dropdownUserSetting">
-                    <Link :href="route('panel.profile.edit')" role="menuitem"
+                    <Link :href="route(`${isAdmin()?'admin':'user'}.panel.profile.edit`)" role="menuitem"
                           class="  block  p-4 text-sm text-gray-700 transition-colors hover:bg-gray-100">
                       {{ __('profile_setting') }}
                     </Link>
                     <hr class="border-gray-200 ">
-                    <Link :href="route('panel.profile.password.edit')" role="menuitem"
+                    <Link :href="route(`${isAdmin()?'admin':'user'}.panel.profile.password.edit`)" role="menuitem"
                           class="block p-4 text-sm text-gray-700 transition-colors hover:bg-gray-100">
                       {{ __('change_password') }}
                     </Link>

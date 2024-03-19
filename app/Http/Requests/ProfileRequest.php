@@ -44,7 +44,7 @@ class ProfileRequest extends FormRequest
                 'accesses' => ['nullable', 'array', 'max:' . count($roles),],
                 'accesses.*' => ['distinct', Rule::in($roles)],
                 'fullname' => ['required', 'min:3', 'max:100',/* Rule::unique('users', 'fullname')->ignore(optional($user)->id)*/],
-                'card' => ['nullable', 'digits:16', Rule::unique('users', 'card')->ignore(optional($user)->id)],
+                'card' => ['nullable', 'numeric', 'digits:16',],
                 'phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/', Rule::unique('users', 'phone')->ignore(optional($user)->id)],
                 'phone_verify' => [Rule::requiredIf(function () use ($request, $user, $phoneChanged, $editMode) {
                     return $phoneChanged
@@ -52,6 +52,7 @@ class ProfileRequest extends FormRequest
                 }), !$user || (!$editMode && $request->phone != $user->phone) ? Rule::exists('sms_verify', 'code')->where(function ($query) use ($request) {
                     return $query->where('phone', $request->phone);
                 }) : '',],
+                'sheba' => ['nullable', 'numeric', 'digits:24'],
             ]);
 
 
@@ -115,6 +116,15 @@ class ProfileRequest extends FormRequest
 
 
             'card.digits' => sprintf(__("validator.digits"), __('card'), 16),
+            'card.required' => sprintf(__("validator.required"), __('card')),
+            'card.unique' => sprintf(__("validator.unique"), __('card')),
+            'card.numeric' => sprintf(__("validator.numeric"), __('card')),
+
+            'sheba.required' => sprintf(__("validator.required"), __('sheba')),
+            'sheba.digits' => sprintf(__("validator.digits"), __('sheba'), 24),
+            'sheba.unique' => sprintf(__("validator.unique"), __('sheba')),
+            'sheba.numeric' => sprintf(__("validator.numeric"), __('sheba')),
+
 
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),

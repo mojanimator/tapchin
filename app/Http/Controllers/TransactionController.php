@@ -6,6 +6,8 @@ use App\eblagh\Helpers\Helper;
 use App\Http\Helpers\Pay;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
+use App\Models\Admin;
+use App\Models\Agency;
 use App\Models\Car;
 use App\Models\Order;
 use App\Models\Setting;
@@ -238,5 +240,63 @@ class TransactionController extends Controller
 
         }
         return null;
+    }
+
+    protected
+    function searchPanel(Request $request)
+    {
+        $userAdmin = $request->user();
+
+        $search = $request->search;
+        $page = $request->page ?: 1;
+        $orderBy = $request->order_by ?: 'id';
+        $orderBy = $orderBy == 'agency' ? 'agency_id' : $orderBy;
+        $dir = $request->dir ?: 'DESC';
+        $paginate = $request->paginate ?: 24;
+        $status = $request->status;
+        $query = Transaction::query()->select('*');
+        $agencies = [];
+
+        if ($userAdmin instanceof Admin) {
+            $myAgency = Agency::find($userAdmin->agency_id);
+//            $agencies = $userAdmin->allowedAgencies($myAgency)->select('id', 'name')->get();
+            $agencyIds = $userAdmin->allowedAgencies($myAgency)->pluck('id');
+            $query->orWhere(function ($query) use ($agencyIds) {
+                $query->where('from_type', 'agency')->whereIntegerInRaw('from_id', $agencyIds)->whereNotNull('payed_at');;
+            })->orWhere(function ($query) use ($agencyIds) {
+                $query->where('to_type', 'agency')->whereIntegerInRaw('to_id', $agencyIds)->whereNotNull('payed_at');;
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin) {
+                $query->where('from_type', 'admin')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin) {
+                $query->where('to_type', 'admin')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
+            });
+        } else {
+            $query->orWhere(function ($query) use ($userAdmin) {
+                $query->where('from_type', 'user')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
+            })->orWhere(function ($query) use ($userAdmin) {
+                $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
+            });
+        }
+        if ($search)
+            $query = $query->where(function ($query) use ($search) {
+                $query->orWhere('title', 'like', "%$search%")
+                    ->orWhere('pay_id', 'like', "%$search%");
+            });
+
+
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies, $userAdmin) {
+            return $paginated->getCollection()->transform(
+                function ($item) use ($agencies, $userAdmin) {
+                    return $item;
+                    if ($userAdmin instanceof Admin)
+                        $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
+
+
+                }
+
+            );
+        });
+
+
     }
 }

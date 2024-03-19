@@ -112,7 +112,7 @@ const submit = () => {
         </PrimaryButton>
 
       </div>
-      <div class="w-full mt-5">
+      <div v-if="!route().current('admin.login-form')" class="w-full mt-5">
         <span>{{ __('not_have_account?') }}</span>
         <Link
             v-if="canResetPassword"

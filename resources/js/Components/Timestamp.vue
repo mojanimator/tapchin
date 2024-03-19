@@ -97,7 +97,7 @@
            @click="$emit('change',(idx*row.length)+(ix))"
            :class=" (col.active?'cursor-pointer ':'opacity-50 cursor-default ')+(col.selected? ' shadow-md ':'  ') "
            v-for="(col,ix) in row">
-        <div>{{ `${padDigits(col.from, 2)}:00 ${__('to')} ${padDigits(col.to, 2)}:00` }}</div>
+        <div>{{ `${padDigits(col.from, 2)}:00 ${__('until')} ${padDigits(col.to, 2)}:00` }}</div>
         <div class="flex items-center mb-4">
           <input @click="$emit('change',(ix+1)*(idx+1))"
                  :id="`check${idx}${ix}`" type="checkbox" v-model="col.selected" :value="col.selected"

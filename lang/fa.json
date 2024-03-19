@@ -811,7 +811,8 @@
   "from_hour": "از ساعت",
   "to_hour": "تا ساعت",
   "time": "زمان",
-  "to": "تا",
+  "until": "تا",
+  "to": "به",
   "timestamp_is_inactive": "زمان تحویل انتخابی نامعتبر است",
   "delivery_time": "زمان تحویل",
   "ready_orders": "سفارشات آماده ارسال",
@@ -854,5 +855,9 @@
   "create_admin": "ساخت ادمین",
   "edit_admin": "ویرایش ادمین",
   "password_verify": "تکرار رمزعبور",
+  "for": "برای",
+  "from": "از",
+  "amount": "مقدار",
+  "pay_gate": "درگاه",
   "": ""
 }
