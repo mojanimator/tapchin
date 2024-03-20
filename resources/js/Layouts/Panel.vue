@@ -51,7 +51,7 @@
               </div>
               <div v-else class="flex">
 
-                <Link :href="route('panel.profile.edit')"
+                <Link :href="route(`${isAdmin()?'admin':'user'}.panel.profile.edit`)"
                       class="text-danger-700 bg-danger-200 hover:bg-danger-100 rounded-lg px-2 py-1 cursor-pointer">
                   {{ __('inactive') }}
                 </Link>

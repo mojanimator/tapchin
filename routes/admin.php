@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PackController;
 use App\Http\Controllers\PartnershipController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RepositoryCartController;
 use App\Http\Controllers\RepositoryController;
 use App\Http\Controllers\RepositoryOrderController;
@@ -322,6 +323,16 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('shipping/car/update', [CarController::class, 'update'])->name('admin.panel.shipping.car.update');
         Route::post('shipping/car/create', [CarController::class, 'create'])->name('admin.panel.shipping.car.create')->middleware("can:create,App\Models\Admin,App\Models\Car,'1'");
         Route::get('shipping/car/{car}', [CarController::class, 'edit'])->name('admin.panel.shipping.car.edit');
+
+
+        PanelController::makeInertiaRoute('get', 'password/edit', 'admin.panel.profile.password.edit', 'Panel/Profile/PasswordEdit',
+            [
+            ]);
+        Route::get('profile/edit', [ProfileController::class, 'edit'])->name('admin.panel.profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('admin.panel.profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('admin.panel.profile.destroy');
+        Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('admin.panel.profile.password.reset');
+
 
     });
 

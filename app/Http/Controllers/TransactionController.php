@@ -69,7 +69,7 @@ class TransactionController extends Controller
             $response = Pay::confirmPay($request);
 
 //            Telegram::sendMessage(Helper::$Dev[0], print_r($request->all(), true));
-            $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : [];
+            $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collet([]);
             $now = Carbon::now();
             foreach ($transactions as $transaction) {
                 $transaction->info = $response['info'];
@@ -79,15 +79,15 @@ class TransactionController extends Controller
                 $token = $response['order_id'];
                 $user = User::find($transaction->user_id);
                 $user_id = $transaction->user_id;
+                Telegram::log(null, 'transaction_created', $transaction);
                 $transaction->save();
             }
-
-            return view('layouts.payment')->with([
+            return view('payment')->with([
                 'status' => $status,
                 'lang' => 'fa',
                 'pay_id' => $token,
-                'amount' => $p->amount ?? 0,
-                'type' => __('order') . " " . join(',', $transaction->pluck('for_id')),
+                'amount' => $transactions->sum('amount'),
+                'type' => __('order') . " " . join(',', $transactions->pluck('for_id')),
                 'link' => $market == 'bank' ? ('dabel://' . Variable::PACKAGE) : url('')
             ]);
         }

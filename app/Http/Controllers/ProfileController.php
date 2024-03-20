@@ -93,6 +93,7 @@ class ProfileController extends Controller
             'fullname' => $request->fullname,
             'phone' => $request->phone,
         ]);
+
         UserFinancial::updateOrCreate(['user_id' => $user->id,],
             [
                 'card' => $request->card,
