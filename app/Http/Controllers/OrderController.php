@@ -324,16 +324,18 @@ class OrderController extends Controller
 
                 if (CartItem::where('cart_id', $cart->id)->delete())
                     Cart::find($cart->id)->delete();
+
+                $orderLog = $order;
+                $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id]);
+                $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
+                $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
+                $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
+                $orderLog->items = collect($items);
+                $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
+                $orderLog->user = $user;
+                return Telegram::log(null, 'order_created', $orderLog);
             }
-            $orderLog = $order;
-            $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id]);
-            $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
-            $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
-            $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
-            $orderLog->items = collect($items);
-            $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
-            $orderLog->user = $user;
-            Telegram::log(null, 'order_created', $orderLog);
+
         }
 //        $order_id = Carbon::now()->getTimestampMs();
         $order_ids_string = $orders->pluck('id')->join('-');
