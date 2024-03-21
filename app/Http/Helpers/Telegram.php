@@ -6,6 +6,7 @@ namespace App\Http\Helpers;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Pack;
 use App\Models\Site;
 use App\Models\User;
 use DateTimeZone;
@@ -503,6 +504,7 @@ class Telegram
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 🚩 " . "نام: " . $data->name;
                     $msg .= " ⭐ " . "سطح: " . $data->level;
@@ -511,6 +513,24 @@ class Telegram
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
                     $msg .= " 🪧 " . $data->address . PHP_EOL;
                     $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
+                    break;
+                case 'variation_created':
+                    $msg .= " 🟩 " . "یک محصول ساخته شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🔷 " . "نام: " . $data->name;
+                    $msg .= " 🔶 " . "بسته بندی: " . Pack::find($data->pack_id)->name ?? '';
+                    $msg .= " 🔷 " . "درجه: " . $data->grade;
+                    $msg .= " 🔶 " . "وزن: " . floatval($data->weight);
+                    $msg .= " 🟫 " . "در فروشگاه: " . floatval($data->in_shop);
+                    $msg .= " 🟪 " . "در انبار: " . floatval($data->in_repo);
+                    $msg .= " 🪙 " . "قیمت: " . number_format($data->price);
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
