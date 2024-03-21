@@ -175,7 +175,7 @@ class Pay
                     elseif (!empty($result['errors']))
                         return ['status' => 'danger', 'message' => $result['errors']['message']];
                     else
-                        return ['status' => 'danger', 'message' => $result];
+                        return ['status' => 'danger', 'message' => $result['message'] ?? $result];
                     break;
             }
         } catch (\Exception $e) {
