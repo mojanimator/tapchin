@@ -490,6 +490,7 @@ class Telegram
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province-$data->county-$data->district" . PHP_EOL;
                     $msg .= " 🪧 " . $data->address . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= $data->delivery_date ? (" 📅 " . "تحویل " . Jalalian::forge($data->delivery_date)->format('Y/m/d') . " ($data->delivery_timestamp) " . PHP_EOL) : '';
                     $msg .= " *️⃣ " . "کرایه " . number_format($data->total_shipping_price) . PHP_EOL;
                     $msg .= " #️⃣ " . "اقلام " . number_format($data->total_items_price) . PHP_EOL;
                     break;
