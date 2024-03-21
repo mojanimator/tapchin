@@ -333,7 +333,7 @@ class OrderController extends Controller
                 $orderLog->items = collect($items)->map(fn($e) => (object)$e);
                 $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
                 $orderLog->user = $user;
-                return Telegram::log(null, 'order_created', $orderLog);
+                Telegram::log(null, 'order_created', $orderLog);
             }
 
         }
