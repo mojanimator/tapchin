@@ -462,8 +462,10 @@ class Telegram
                 $us = User::find($data->owner_id);
             elseif (isset($data->user_id))
                 $us = User::find($data->user_id);
+            elseif (isset($data->user))
+                $us = $data->user;
             else
-                $us = auth()->user();
+                $us = auth('sanctum')->user();
             $user = auth('sanctum')->user();
             $admin = isset ($us) && (in_array($us->role, ['ad', 'go']));
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
