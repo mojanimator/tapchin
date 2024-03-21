@@ -468,7 +468,7 @@ class Telegram
             elseif (auth('sanctum')->user())
                 $us = auth('sanctum')->user();
             else
-                $us = (object)[];
+                $us = new User();
             $user = auth('sanctum')->user();
             $admin = $user instanceof Admin;
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
