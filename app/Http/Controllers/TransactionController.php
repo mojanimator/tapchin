@@ -83,9 +83,9 @@ class TransactionController extends Controller
                 if ($transaction->for_type == 'order') {
                     Order::where('id', $transaction->for_id)->update(['payed_at' => $now, 'status' => 'processing']);
                 }
+                $transaction->save();
                 $transaction->user = $user;
                 Telegram::log(null, 'transaction_created', $transaction);
-                $transaction->save();
             }
 
             return Inertia::render('Invoice', [
