@@ -107,7 +107,7 @@ class OrderController extends Controller
                     ->where('for_id', $data->id)
                     ->where('from_type', 'user')
                     ->where('from_id', $user->id);
-                if ($t) $t->update(['pay_id' => $response['order_id']]);
+                if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $data->total_price,]);
                 if (!$t) {
                     $t = Transaction::create([
                         'title' => sprintf(__('pay_orders_*_*'), $data->id, $user->phone),
