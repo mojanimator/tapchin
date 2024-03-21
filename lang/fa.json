@@ -863,5 +863,6 @@
   "pay_type": "موضوع پرداخت",
   "payment_success": "پرداخت موفق",
   "payment_fail": "پرداخت ناموفق",
+  "factor_payed_before": "این فاکتور قبلا پرداخت شده است",
   "": ""
 }

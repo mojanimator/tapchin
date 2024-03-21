@@ -172,10 +172,12 @@ class Pay
                     }
                     if (empty($result['errors']) && $result['data']['code'] == 100)
                         return ['status' => 'success', 'order_id' => $request->Authority, 'info' => $response->body()];
+                    if (empty($result['errors']) && $result['data']['code'] == 101)
+                        return ['status' => 'danger', 'message' => __('factor_payed_before')];
                     elseif (!empty($result['errors']))
                         return ['status' => 'danger', 'message' => $result['errors']['message']];
                     else
-                        return ['status' => 'danger', 'message' => $result['message'] ?? $result];
+                        return ['status' => 'danger', 'message' => $result['data'] ?? $result];
                     break;
             }
         } catch (\Exception $e) {
