@@ -304,7 +304,7 @@ class OrderController extends Controller
                         if (str_starts_with($methodId, 'repo-')) //visit-repo [change id to 1]
                             $methodId = 1;
                         $items[] = [
-                            'title' => "$product->name ( $cartItem->qty " . optional(Pack::find('id', $product->pack_id))->name . " " . __('kg') . " )",
+                            'title' => "$product->name ( $cartItem->qty " . optional(Pack::find($product->pack_id))->name . " " . __('kg') . " )",
                             'name' => $cartItem->name,
                             'order_id' => $order->id,
                             'variation_id' => $cartItem->variation_id,
