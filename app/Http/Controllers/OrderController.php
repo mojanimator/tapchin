@@ -330,7 +330,7 @@ class OrderController extends Controller
                 $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
                 $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
                 $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
-                $orderLog->items = collect($items);
+                $orderLog->items = collect($items)->map(fn($e) => (object)$e);
                 $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
                 $orderLog->user = $user;
                 return Telegram::log(null, 'order_created', $orderLog);
