@@ -69,7 +69,7 @@ class TransactionController extends Controller
         } else {
 
             $response = Pay::confirmPay($request);
-            $res = Telegram::log(Telegram::LOGS[0], 'transaction_created', Transaction::first());
+            return Telegram::log(null, 'transaction_created', Transaction::first());
 
 //            Telegram::sendMessage(Telegram::LOGS[0], print_r(Transaction::first()));
             $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collect([]);
