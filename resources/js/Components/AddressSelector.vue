@@ -447,7 +447,7 @@ export default {
 
       if (params.receiver_phone)
         params.receiver_phone = this.f2e(params.receiver_phone);
-      window.axios.patch(route('profile.update'), params,
+      window.axios.patch(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.profile.update`), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {

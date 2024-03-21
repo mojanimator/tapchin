@@ -177,7 +177,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.patch(route('profile.update'), {
+      this.form.patch(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.profile.update`), {
         preserveScroll: false,
 
         onSuccess: (data) => {
