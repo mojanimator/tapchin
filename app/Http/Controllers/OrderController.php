@@ -12,6 +12,7 @@ use App\Models\Car;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\Pack;
 use App\Models\RepositoryOrder;
 use App\Models\Setting;
 use App\Models\Shipping;
@@ -303,6 +304,7 @@ class OrderController extends Controller
                         if (str_starts_with($methodId, 'repo-')) //visit-repo [change id to 1]
                             $methodId = 1;
                         $items[] = [
+                            'title' => "$product->name ( $cartItem->qty " . optional(Pack::find('id', $product->pack_id))->name . " " . __('kg') . " )",
                             'name' => $cartItem->name,
                             'order_id' => $order->id,
                             'variation_id' => $cartItem->variation_id,

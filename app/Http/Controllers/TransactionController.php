@@ -79,8 +79,12 @@ class TransactionController extends Controller
                 $transaction->payed_at = $now;
                 $status = 'success';
                 $token = $response['order_id'];
-                $user = User::find($transaction->user_id);
+                $user = User::select('id', 'fullname', 'phone')->find($transaction->user_id);
                 $user_id = $transaction->user_id;
+                if ($transaction->for_type == 'order') {
+                    Order::where('id', $transaction->for_id)->update(['payed_at' => $now, 'status' => 'processing']);
+                }
+                $transaction->user = $user;
                 Telegram::log(null, 'transaction_created', $transaction);
                 $transaction->save();
             }

@@ -49,6 +49,8 @@ return new class extends Migration {
             $table->date('delivery_date')->nullable();//deliver|cancel
             $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
             $table->enum('pay_type', array_column(Variable::getPaymentMethods(), 'key'))->nullable();//deliver|cancel
+            $table->timestamp('payed_at')->nullable();
+
         });
     }
 

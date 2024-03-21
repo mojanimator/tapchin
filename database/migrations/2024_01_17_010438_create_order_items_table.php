@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->string('name', 200)->nullable();
+            $table->string('title', 1024)->nullable();
             $table->unsignedBigInteger('shipping_id')->nullable();
             $table->foreign('shipping_id')->references('id')->on('order_shipping')->onDelete('no action');
             $table->unsignedBigInteger('shipping_method_id')->nullable();
