@@ -546,7 +546,6 @@ class Telegram
                     $msg .= $data->email . PHP_EOL;
                     break;
                 case 'transaction_created':
-                    self::sendMessage(Telegram::LOGS[0], 'hi');
 
                     if ($data->amount > 0)
                         $msg .= " 🟢🟢🟢🛒 " . "یک تراکنش انجام شد" . PHP_EOL;
