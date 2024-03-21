@@ -1012,7 +1012,7 @@ class Telegram
                 Eitaa::logAdmins($msg, $type,);
             } else {
                 self::logAdmins($msg, null);
-                self::sendMessage(self::LOGS[0], $msg);
+                return $msg;
 //                Bale::logAdmins($msg, null);
 //                Eitaa::logAdmins($msg, $type,);
             }
