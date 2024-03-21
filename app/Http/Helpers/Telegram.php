@@ -478,7 +478,6 @@ class Telegram
             switch ($type) {
                 case 'order_created':
 
-
                     $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
