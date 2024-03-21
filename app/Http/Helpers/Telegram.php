@@ -1018,6 +1018,7 @@ class Telegram
             }
 
         } catch (\Exception $e) {
+            return $e->getTraceAsString();
             try {
                 self::sendMessage(self::LOGS[0], $e->getTraceAsString());
 //                Bale::logAdmins($e->getMessage(), $type);
