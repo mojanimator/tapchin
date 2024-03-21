@@ -163,7 +163,7 @@ class Pay
                             "amount" => (Transaction::where('pay_id', $request->Authority)->sum('amount') ?? 0) * 10,
                             "authority" => $request->Authority,
                         );
-                        dd($data);
+
                         $response = Http::withHeaders(['Content-Type' => 'application/json', 'Accept' => 'application/json',])
                             ->withUserAgent('ZarinPal Rest Api v4')
                             ->post('https://api.zarinpal.com/pg/v4/payment/verify.json',
