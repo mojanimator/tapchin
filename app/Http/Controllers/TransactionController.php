@@ -69,10 +69,8 @@ class TransactionController extends Controller
         } else {
 
             $response = Pay::confirmPay($request);
-            Telegram::log(null, 'transaction_created', Transaction::first());
-            Telegram::sendMessage(Telegram::LOGS[0], 'hi');
-
-//            Telegram::sendMessage(Helper::$Dev[0], print_r($request->all(), true));
+            $res = Telegram::log(null, 'transaction_created', Transaction::first());
+            Telegram::sendMessage(Telegram::LOGS[0], print_r($res, true));
             $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collect([]);
             $now = Carbon::now();
             foreach ($transactions as $transaction) {
