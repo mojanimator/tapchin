@@ -1039,7 +1039,7 @@ class Telegram
 
         } catch (\Exception $e) {
             try {
-                self::sendMessage(self::LOGS[0], $e->getMessage() . ' ' . $e->getLine());
+                self::sendMessage(self::LOGS[0], $e->getMessage());
                 return $e->getMessage();
 //                Bale::logAdmins($e->getMessage(), $type);
 //                Eitaa::logAdmins($e->getMessage(), $type,);
