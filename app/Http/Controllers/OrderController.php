@@ -326,7 +326,7 @@ class OrderController extends Controller
                     Cart::find($cart->id)->delete();
 
                 $orderLog = $order;
-                $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id]);
+                $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id])->get();
                 $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
                 $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
                 $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
