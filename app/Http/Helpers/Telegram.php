@@ -84,7 +84,7 @@ class Telegram
     static function logAdmins($msg, $mode = null)
     {
         $res = null;
-        foreach (Variable::LOGS as $log)
+        foreach (self::LOGS as $log)
             $res = self::sendMessage($log, $msg, $mode);
         return $res;
 
