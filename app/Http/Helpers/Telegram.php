@@ -3,6 +3,7 @@
 namespace App\Http\Helpers;
 
 
+use App\Models\Admin;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Site;
@@ -469,7 +470,7 @@ class Telegram
             else
                 $us = (object)[];
             $user = auth('sanctum')->user();
-            $admin = isset ($us) && (in_array($us->role, ['ad', 'go']));
+            $admin = $user instanceof Admin;
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
             $time = $now->format('%A, %d %B %Y ⏰ H:i');
             $msg = "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL;
