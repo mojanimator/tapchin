@@ -75,7 +75,6 @@ class TransactionController extends Controller
             $now = Carbon::now();
             foreach ($transactions as $transaction) {
                 $transaction->info = $response['info'];
-                $transaction->is_success = true;
                 $transaction->payed_at = $now;
                 $status = 'success';
                 $token = $response['order_id'];
