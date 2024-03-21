@@ -475,8 +475,24 @@ class Telegram
             $time = $now->format('%A, %d %B %Y ⏰ H:i');
             $msg = "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL;
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-
             switch ($type) {
+                case 'order_created':
+                    $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
+                    $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
+                    foreach ($data->items as $item) {
+                        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                        $msg .= " 🛒 " . $item->title . PHP_EOL;
+                    }
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province-$data->county-$data->district" . PHP_EOL;
+                    $msg .= " 🪧 " . $data->address . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " *️⃣ " . "کرایه " . number_format($data->total_shipping_price) . PHP_EOL;
+                    $msg .= " #️⃣ " . "اقلام " . number_format($data->total_items_price) . PHP_EOL;
+                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;

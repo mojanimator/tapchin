@@ -11,6 +11,7 @@ use App\Models\Agency;
 use App\Models\Car;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\City;
 use App\Models\Order;
 use App\Models\Pack;
 use App\Models\RepositoryOrder;
@@ -324,6 +325,15 @@ class OrderController extends Controller
                 if (CartItem::where('cart_id', $cart->id)->delete())
                     Cart::find($cart->id)->delete();
             }
+            $orderLog = $order;
+            $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id]);
+            $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
+            $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
+            $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
+            $orderLog->items = collect($items);
+            $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
+            $orderLog->user = $user;
+            Telegram::log(null, 'order_created', $orderLog);
         }
 //        $order_id = Carbon::now()->getTimestampMs();
         $order_ids_string = $orders->pluck('id')->join('-');
