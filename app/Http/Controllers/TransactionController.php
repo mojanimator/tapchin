@@ -105,7 +105,7 @@ class TransactionController extends Controller
                 'amount' => $transactions->sum('amount') ?? '_',
                 'type' => $transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_',
                 'link' => url(''),
-                'message' => $response['message'],
+                'message' => $response['message'] ?? '',
             ]);
 
         }
