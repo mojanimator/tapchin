@@ -17,6 +17,8 @@ use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
+use Morilog\Jalali\Jalalian;
 
 class TransactionController extends Controller
 {
@@ -69,7 +71,7 @@ class TransactionController extends Controller
             $response = Pay::confirmPay($request);
 
 //            Telegram::sendMessage(Helper::$Dev[0], print_r($request->all(), true));
-            $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collet([]);
+            $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collect([]);
             $now = Carbon::now();
             foreach ($transactions as $transaction) {
                 $transaction->info = $response['info'];
@@ -82,14 +84,27 @@ class TransactionController extends Controller
                 Telegram::log(null, 'transaction_created', $transaction);
                 $transaction->save();
             }
-            return view('payment')->with([
-                'status' => $status,
-                'lang' => 'fa',
-                'pay_id' => $token,
-                'amount' => $transactions->sum('amount'),
-                'type' => __('order') . " " . join(',', $transactions->pluck('for_id')),
-                'link' => $market == 'bank' ? ('dabel://' . Variable::PACKAGE) : url('')
+
+            return Inertia::render('Invoice', [
+                'lang' =>
+                    [
+                        'title' => $response['status'] == 'success' ? __('payment_success') : __('payment_fail'),
+                        'pay_id' => __('pay_id'),
+                        'pay_time' => __('time'),
+                        'pay_type' => __('pay_type'),
+                        'amount' => __('amount'),
+                        'return' => __('return'),
+                        'currency' => __('currency'),
+                    ],
+                'now' => Jalalian::now()->format('%A, %d %B %Y ⏰ H:i'),
+                'status' => $response['status'] ?? 'danger',
+                'pay_id' => $token ?? '_',
+                'amount' => $transactions->sum('amount') ?? '_',
+                'type' => $transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_',
+                'link' => url(''),
+                'message' => $response['message'],
             ]);
+
         }
 
 

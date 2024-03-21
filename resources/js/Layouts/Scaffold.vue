@@ -1,7 +1,7 @@
 <template>
   <App>
     <header :dir="dir()">
-      <Navbar :theme="navbarTheme"/>
+      <Navbar v-if="navbarTheme!='none'" :theme="navbarTheme"/>
     </header>
     <main :dir="dir()" class="min-h-screen ">
       <Head>
@@ -101,6 +101,7 @@ export default {
     this.emitter.on('loading', (e) => {
       this.loading = e;
     });
-  }
+  },
+  methods: {},
 }
 </script>

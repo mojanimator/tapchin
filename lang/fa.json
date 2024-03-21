@@ -844,6 +844,7 @@
   "row": "ردیف",
   "product_id": "کد محصول",
   "pay_id": "شناسه پرداخت",
+  "pay_time": "زمان پرداخت",
   "total_items_price": "جمع هزینه اقلام",
   "final_price": "مجموع مبلغ نهایی",
   "print": "چاپ",
@@ -859,5 +860,8 @@
   "from": "از",
   "amount": "مقدار",
   "pay_gate": "درگاه",
+  "pay_type": "موضوع پرداخت",
+  "payment_success": "پرداخت موفق",
+  "payment_fail": "پرداخت ناموفق",
   "": ""
 }
