@@ -464,8 +464,10 @@ class Telegram
                 $us = User::find($data->user_id);
             elseif (isset($data->user))
                 $us = $data->user;
-            else
+            elseif (auth('sanctum')->user())
                 $us = auth('sanctum')->user();
+            else
+                $us = (object)[];
             $user = auth('sanctum')->user();
             $admin = isset ($us) && (in_array($us->role, ['ad', 'go']));
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
@@ -1018,9 +1020,9 @@ class Telegram
             }
 
         } catch (\Exception $e) {
-            return $e->getTraceAsString();
             try {
                 self::sendMessage(self::LOGS[0], $e->getTraceAsString());
+                return $e->getTraceAsString();
 //                Bale::logAdmins($e->getMessage(), $type);
 //                Eitaa::logAdmins($e->getMessage(), $type,);
 //            return self::sendMessage(Variable::LOGS[0], $e->getMessage(), null);
