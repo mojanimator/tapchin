@@ -456,6 +456,7 @@ class Telegram
     {
 
         try {
+            Telegram::sendMessage(self::LOGS[0], "0");
 
             if ($data instanceof User)
                 $us = $data;
@@ -469,6 +470,7 @@ class Telegram
                 $us = auth('sanctum')->user();
             else
                 $us = new User();
+            Telegram::sendMessage(self::LOGS[0], "00");
             $user = auth('sanctum')->user();
             $admin = $user instanceof Admin;
             $now = Jalalian::forge('now', new DateTimeZone('Asia/Tehran'));
