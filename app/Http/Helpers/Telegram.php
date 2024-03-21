@@ -495,8 +495,22 @@ class Telegram
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "دریافت کننده: " . "$data->receiver_fullname ( $data->receiver_phone )" . PHP_EOL;
                     $msg .= " 📅 " . "تحویل: " . ($data->delivery_date ? Jalalian::forge($data->delivery_date)->format('Y/m/d') . " ($data->delivery_timestamp) " : ' در محل ') . PHP_EOL;
-                    $msg .= " *️⃣ " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
-                    $msg .= " #️⃣ " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
+                    $msg .= " 🚛 " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
+                    $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
+                    break;
+                case 'agency_created':
+                    $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🚩 " . "نام: " . $data->name;
+                    $msg .= " ⭐ " . "سطح: " . $data->level;
+                    $msg .= " ⭐ " . "دسترسی: " . join(',', $data->access ?? []);
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
+                    $msg .= " 🪧 " . $data->address . PHP_EOL;
+                    $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
                     break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
