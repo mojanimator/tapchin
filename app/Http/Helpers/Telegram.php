@@ -119,7 +119,7 @@ class Telegram
 
         $res = Http::asForm()->post($url, $datas);
         if ($res->status() != 200)
-            self::sendMessage(Variable::LOGS[0], $res->body() . PHP_EOL . print_r($datas, true));
+            self::sendMessage(self::LOGS[0], $res->body() . PHP_EOL . print_r($datas, true));
         return json_decode($res->body());
 
 
