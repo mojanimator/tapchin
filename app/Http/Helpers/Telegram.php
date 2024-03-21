@@ -477,21 +477,28 @@ class Telegram
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
             switch ($type) {
                 case 'order_created':
+                    Telegram::sendMessage(self::LOGS[0], "1");
                     $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    Telegram::sendMessage(self::LOGS[0], "2");
                     $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
+                    Telegram::sendMessage(self::LOGS[0], "3");
                     $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
                     foreach ($data->items as $item) {
                         $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                         $msg .= " 🛒 " . $item->title . PHP_EOL;
                     }
+                    Telegram::sendMessage(self::LOGS[0], "4");
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province-$data->county-$data->district" . PHP_EOL;
+                    Telegram::sendMessage(self::LOGS[0], "5");
                     $msg .= " 🪧 " . $data->address . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 📅 " . "تحویل " . ($data->delivery_date ? Jalalian::forge($data->delivery_date)->format('Y/m/d') . " ($data->delivery_timestamp) " : ' در محل ') . PHP_EOL;
+                    Telegram::sendMessage(self::LOGS[0], "6");
                     $msg .= " *️⃣ " . "کرایه " . number_format($data->total_shipping_price) . PHP_EOL;
+                    Telegram::sendMessage(self::LOGS[0], "7");
                     $msg .= " #️⃣ " . "اقلام " . number_format($data->total_items_price) . PHP_EOL;
                     break;
                 case 'site_created':
