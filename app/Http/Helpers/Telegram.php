@@ -484,7 +484,7 @@ class Telegram
                     $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
                     $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
                     foreach ($data->items as $item) {
-                        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+//                        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                         $msg .= " 🛒 " . $item->title . PHP_EOL;
                     }
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
@@ -1027,6 +1027,7 @@ class Telegram
                 default :
                     $msg = print_r($data, true);
             }
+            $msg .= PHP_EOL . "🅳🅰🅱🅴🅻🅲🅷🅸🅽";
             if ($to) {
 //                self::sendMessage($to, $msg, null);
                 Bale::sendMessage($to, $msg, null);
