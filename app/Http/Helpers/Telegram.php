@@ -1062,10 +1062,11 @@ class Telegram
                     $msg = ' 📛 ' . ' خطای سیستم ' . PHP_EOL . $data;
                     break;
                 default :
+                    $msg .= $type . PHP_EOL;
                     if (method_exists($data, 'getAttributes'))
-                        $msg = print_r($data->getAttributes(), true);
+                        $msg .= print_r($data->getAttributes(), true);
                     else
-                        $msg = print_r($data, true);
+                        $msg .= print_r($data, true);
             }
             $msg .= PHP_EOL . "🅳🅰🅱🅴🅻🅲🅷🅸🅽";
             if ($to) {
