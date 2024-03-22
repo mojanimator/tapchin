@@ -51,6 +51,8 @@ class RepositoryRequest extends FormRequest
             $typeId = $this->type_id ?? -1;
             $provinceId = $this->province_id ?? -1;
             $user = $this->user();
+            if (!$this->agency_id && $this->myAgency->level == '3')
+                $this->merge(['agency_id' => $this->myAgency->id]);
             $availableAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
             $childCities = City::where('has_child', false)->pluck('id')->toArray();
             $tmp = array_merge($tmp, [
