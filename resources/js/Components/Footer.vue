@@ -55,7 +55,7 @@
         </div>
 
         <!-- Useful links section -->
-        <div class="flex flex-col items-start text-start font-light">
+        <div v-if="false" class="flex flex-col items-start text-start font-light">
           <h6
               class="mb-4 flex justify-center font-semibold uppercase md:justify-start">
             {{ __('fast_access') }}
@@ -131,7 +131,14 @@
             + 01 234 567 89
           </p>
         </div>
-
+        <div class=" ">
+          <a referrerpolicy='origin' target='_blank'
+             href='https://trustseal.enamad.ir/?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'>
+            <img
+                referrerpolicy='origin'
+                src='https://trustseal.enamad.ir/logo.aspx?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H' alt=''
+                style='cursor:pointer' Code='nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'></a>
+        </div>
 
       </div>
     </div>
