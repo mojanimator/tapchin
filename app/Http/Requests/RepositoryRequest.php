@@ -132,17 +132,6 @@ class RepositoryRequest extends FormRequest
             'allow_visit.boolean' => sprintf(__("validator.invalid"), __('allow_visit')),
 
         ];
-        foreach ($this->timestamps as $idx => $time) {
-            $tmp = array_merge($tmp, [
-                "timestamps.$idx.from.required" => sprintf(__("validator.required"), __('time')),
-                "timestamps.$idx.from.gte" => sprintf(__("validator.gt"), __('time'), 1),
-                "timestamps.$idx.to.required" => sprintf(__("validator.required"), __('time')),
-                "timestamps.$idx.to.gt" => sprintf(__("validator.gt"), __('time'), $time['from'] ?? 0),
-                "timestamps.$idx.active.required" => sprintf(__("validator.required"), __('time')),
-                "timestamps.$idx.active.boolean" => sprintf(__("validator.required"), __('time')),
-
-            ]);
-        }
 
         return $tmp;
     }
