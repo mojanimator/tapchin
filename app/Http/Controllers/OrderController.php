@@ -14,6 +14,7 @@ use App\Models\CartItem;
 use App\Models\City;
 use App\Models\Order;
 use App\Models\Pack;
+use App\Models\Product;
 use App\Models\RepositoryOrder;
 use App\Models\Setting;
 use App\Models\Shipping;
@@ -170,6 +171,14 @@ class OrderController extends Controller
 
                         Transaction::splitProfits($data, $shipping);
 
+                        //add to products sells
+                        foreach ($data->items()->get() as $item) {
+                            $product = Product::find(Variation::find($item->variation_id)->product_id ?? 0);
+                            if ($product) {
+                                $product->order_count += 1;
+                                $product->save();
+                            }
+                        }
                     }
 
                     $data->status = $status;
@@ -195,9 +204,7 @@ class OrderController extends Controller
                             }
                         }
 
-                        //TODO: Save transaction
 
-                        //return price to user wallet
                     }
                     $data->save();
 

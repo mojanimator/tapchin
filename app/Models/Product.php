@@ -13,6 +13,10 @@ class Product extends Model
         'name',
         'category_id',
         'tags',
+        'order_count',
+        'in_shop',
+        'charged_at',
+        'rate',
     ];
     protected $casts = [
         'tags' => 'array',

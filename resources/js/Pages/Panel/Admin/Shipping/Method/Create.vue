@@ -331,7 +331,7 @@ export default {
       this.form.per_weight_price = this.f2e(this.form.per_weight_price);
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
 
-      this.form.post(route('admin.panel.shipping.method.create'), {
+      this.form.post(route('admin.panel.shipping-method.create'), {
         preserveScroll: false,
 
         onSuccess: (data) => {

@@ -21,7 +21,10 @@ return new class extends Migration {
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
             $table->json('tags')->nullable();
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
-
+            $table->unsignedBigInteger('order_count')->default(0);
+            $table->unsignedDecimal('in_shop', 15, 3)->default(0); //weight|count
+            $table->timestamp('charged_at')->nullable();
+            $table->unsignedInteger('rate')->nullable();
             $table->timestamps();
         });
     }

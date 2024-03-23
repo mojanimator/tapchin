@@ -180,6 +180,9 @@ class VariationController extends Controller
             if ($request->img)
                 Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
 
+            $data->repo = $repo;
+            $data->agency = $agency;
+
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
             Telegram::log(null, 'variation_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];

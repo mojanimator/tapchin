@@ -101,8 +101,9 @@ class Variable
 
     ];
     const CATEGORIES = [
-        ['name' => 'fruit', 'color' => 'teal'],
+        ['name' => 'fruit_vegetable', 'color' => 'teal'],
         ['name' => 'protein', 'color' => 'rose'],
+        ['name' => 'beans', 'color' => 'indigo'],
 
 
     ];
@@ -192,7 +193,7 @@ class Variable
     {
         return [
 
-            ['id' => 1, 'fullname' => 'مدیر', 'phone' => '09018945844', 'status' => 'active', 'role' => 'owner', 'agency_id' => 7, 'agency_level' => '0',
+            ['id' => 1, 'fullname' => 'مدیر مرکزی', 'phone' => '09351414815', 'status' => 'active', 'role' => 'owner', 'agency_id' => 1, 'agency_level' => '0',
                 'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
         ];

@@ -118,6 +118,7 @@ Route::get('/', function (Request $request) {
         session(['ref' => $r]);
     }
 //    Telegram::log(null, 'order_created', \App\Models\Order::with('items')->with('agency')->orderBy('id', 'DESC')->first());
+
     return Inertia::render('Main', [
         'heroText' => \App\Models\Setting::getValue('hero_main_page'),
         'slides' => \App\Models\Slider::where('is_active', true)->get(),

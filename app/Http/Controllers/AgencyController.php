@@ -7,6 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\AgencyRequest;
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\City;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -111,7 +112,10 @@ class AgencyController extends Controller
             }
 
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
-
+            $cities = City::whereIn('id', [$data->province_id, $data->county_id, $data->district_id])->get();
+            $data->province = $cities->where('id', $data->province_id)->first()->name ?? '';
+            $data->county = $cities->where('id', $data->county_id)->first()->name ?? '';
+            $data->district = $cities->where('id', $data->district_id)->first()->name ?? '';
 //            SMSHelper::deleteCode($phone);
             Telegram::log(null, 'agency_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];

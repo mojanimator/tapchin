@@ -48,7 +48,8 @@ class DatabaseSeeder extends Seeder
         if (DB::connection()->getDriverName() == 'mysql')
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-
+        $this->productionData();
+        return;
         $this->createCities();
         $this->createUsers(20);
         $this->createAgencies(20);
@@ -56,27 +57,113 @@ class DatabaseSeeder extends Seeder
         $this->createPacks(20);
         $this->createRepositories(20);
         $this->createShippingMethods(20);
-        $this->createProducts(20);
+        $this->createProducts();
 
 
-        return;
-
-        $this->createSites(50);
-        $this->createBusinesses(50);
-        $this->createPodcasts(50);
-        $this->createVideos(50);
-        $this->createBanners(50);
-        $this->createArticles(50);
-        $this->createNotifications(50);
-        $this->createPayments(50);
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 
+    private function productionData()
+    {
+        $this->createCities();
+
+        DB::table('users')->truncate();
+        DB::table('users')->insert(Variable::getUsers());
+
+        DB::table('admins')->truncate();
+        DB::table('admins')->insert(Variable::getAdmins());
+
+        $levels = array_column(Variable::AGENCY_TYPES, 'level');
+        DB::table('agencies')->truncate();
+        DB::table('agencies')->insert([
+            [
+                'id' => 1,
+                'name' => 'دفتر مرکزی',
+                'access' => null,
+                'parent_id' => null,
+//                'has_shop' => true,
+                'level' => strval($levels[0]),
+//                'owner_id' => 2,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تهران',
+                'status' => 'active',
+            ], [
+                'id' => 2,
+                'name' => 'مرکز ایران (تهران)',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['تهران'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تهران',
+                'status' => 'active',
+            ], [
+                'id' => 3,
+                'name' => 'مرکز ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['اصفهان', 'فارس', 'یزد', 'چهارمحال و بختیاری', 'قم', 'مرکزی'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تهران',
+                'status' => 'active',
+            ], [
+                'id' => 4,
+                'name' => 'شمال ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['گلستان', 'مازندران', 'گیلان', 'قزوین', 'البرز'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => null,
+                'county_id' => null,
+                'address' => '-',
+                'status' => 'active',
+            ], [
+                'id' => 5,
+                'name' => 'جنوب/جنوب‌شرق ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['هرمزگان', 'کرمان', 'سیستان و بلوچستان'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => null,
+                'county_id' => null,
+                'address' => '-',
+                'status' => 'active',
+            ], [
+                'id' => 6,
+                'name' => 'شمال‌شرق ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['خراسان شمالی', 'خراسان رضوی', 'خراسان جنوبی', 'سمنان'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => null,
+                'county_id' => null,
+                'address' => '-',
+                'status' => 'active',
+            ], [
+                'id' => 7,
+                'name' => 'جنوب‌غرب ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['خوزستان', 'بوشهر', 'کهگیلویه و بویراحمد', 'لرستان', 'ایلام'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => null,
+                'county_id' => null,
+                'address' => '-',
+                'status' => 'active',
+            ], [
+                'id' => 8,
+                'name' => 'غرب/شمال‌غرب ایران',
+                'parent_id' => 1,
+                'access' => json_encode(City::where('level', 1)->whereIn('name', ['اردبیل', 'آذربایجان شرقی', 'آذربایجان غربی', 'زنجان', 'کردستان', 'کرمانشاه', 'همدان'])->pluck('id')),
+                'level' => strval($levels[1]),
+                'province_id' => null,
+                'county_id' => null,
+                'address' => '-',
+                'status' => 'active',
+            ],
+        ]);
+
+        $this->createPacks();
+        $this->createProducts();
+        $this->createVariations();
+    }
 
     private function createCities()
     {
@@ -90,6 +177,11 @@ class DatabaseSeeder extends Seeder
             ['name' => 'تهران', 'count' => 22],
             ['name' => 'رشت', 'count' => 5],
             ['name' => 'اصفهان', 'count' => 15],
+            ['name' => 'اهواز', 'count' => 7],
+            ['name' => 'اردبیل', 'count' => 5],
+            ['name' => 'تبریز', 'count' => 10],
+            ['name' => 'اراک', 'count' => 6],
+            ['name' => 'یزد', 'count' => 10],
         ];
         foreach ($areas as $area) {
             $cityId = City::where('level', 2)->where('name', $area['name'])->first()->id;
@@ -116,8 +208,7 @@ class DatabaseSeeder extends Seeder
     {
 
         DB::table('users')->truncate();
-        \Illuminate\Support\Facades\DB::table('users')->insert(\App\Http\Helpers\Variable::getUsers());
-
+        DB::table('users')->insert(Variable::getUsers());
 
     }
 
@@ -544,42 +635,83 @@ class DatabaseSeeder extends Seeder
     }
 
     private
-    function createProducts($count = 30)
+    function createProducts()
     {
         DB::table('products')->truncate();
-        DB::table('variations')->truncate();
-        File::deleteDirectory("storage/app/public/variations");
-        File::makeDirectory("storage/app/public/variations");
+        File::deleteDirectory("storage/app/public/products");
+        File::makeDirectory("storage/app/public/products");
 
-        $repoIds = [1, 2, 3, 4, 5, 6];
+
         $prods = [
 
             'سیب زمینی',
             'پیاز',
-            'تمشک',
+            'گوجه',
+            'خیار',
             'پرتقال',
-            'آناناس',
-            'گلابی',
-            'بلوبری',
-            'انجیر',
-            'توت فرنگی',
-            'طالبی',
-            'سیب',
-            'زردآلو',
+            'سبزی',
+            'بادمجان',
+            'کدو',
+            'هویج',
+            'فلفل',
+            'فلفل دلمه',
+            'کاهو',
             'لیمو ترش',
-            'گیلاس',
-            'کیوی',
-
+            'لیمو شیرین',
+            'لوبیا سبز',
+            'موز',
+            'انار',
             'انگور',
-            'لیمو',
+            'نارنگی',
+            'نارنج',
+            'غوره',
+            'هلو',
+            'آلو',
+            'زرد آلو',
+            'آلبالو',
+            'گیلاس',
+            'به',
+            'انبه',
+            'گوجه سبز',
+            'چاقاله',
+            'نارگیل',
+            'آناناس',
+            'توت',
+            'شاه توت',
+            'توت فرنگی',
+            'انجیر',
+            'گلابی',
+            'ملون',
+            'خربزه',
+            'طالبی',
+            'هندوانه',
+            'کیوی',
+            'ازگیل',
+            'شلیل',
+
+
         ];
         foreach ($prods as $prod) {
-            $packs = Pack::where('id', '!=', 1)->inRandomOrder()->take(2)->pluck('id');
             $pp = Product::create([
                 'name' => $prod,
                 'status' => 'active',
                 'category_id' => 1,
             ]);
+            $this->makeFile("products", $pp->id, '.jpg', false);
+
+        }
+
+    }
+
+    public function createVariations()
+    {
+        DB::table('variations')->truncate();
+        File::deleteDirectory("storage/app/public/variations");
+        File::makeDirectory("storage/app/public/variations");
+        $repoIds = [1, 2, 3, 4, 5, 6];
+        foreach (Product::get() as $pp) {
+            $packs = Pack::where('id', '!=', 1)->inRandomOrder()->take(2)->pluck('id');
+
             foreach (Repository::whereIn('id', $repoIds)->get() as $repo) {
                 $isPrivate = in_array($repo->id, [5, 6]);
                 $weight = $this->faker->numberBetween(0, 50);
@@ -601,6 +733,7 @@ class DatabaseSeeder extends Seeder
                     'weight' => $isPrivate ? 1 : $this->faker->randomElement([5.5, 10, 15, 20]),
                     'description' => $this->faker->realText($this->faker->numberBetween(256, 512)),
                 ]);
+
                 $this->makeGallery("variations", "products", $pp->id, $p->id);
 
                 $p = Variation::create([
@@ -624,7 +757,6 @@ class DatabaseSeeder extends Seeder
                 $this->makeGallery("variations", "products", $pp->id, $p->id);
             }
         }
-
     }
 
     private
@@ -933,11 +1065,16 @@ class DatabaseSeeder extends Seeder
     }
 
     private
-    function makeFile($type, $id, $extension = '.jpg')
+    function makeFile($type, $id, $extension = '.jpg', $random = true)
     {
-        $allFiles = array_filter(Storage::allFiles("public/faker/$type"), fn($e) => !$extension || str_contains($e, $extension));
+        if ($random) {
+            $allFiles = array_filter(Storage::allFiles("public/faker/$type"), fn($e) => !$extension || str_contains($e, $extension));
 
-        $path = storage_path('app/' . $allFiles[array_rand($allFiles)]);
+            $path = storage_path('app/' . $random ? $allFiles[array_rand($allFiles)] : $allFiles[$id - 1]);
+        } else {
+            $path = Storage::path("public/faker/$type/$id$extension");
+
+        }
         $extension = $extension ?? "." . File::extension($path);
         //profile picture
         $file = new UploadedFile(
@@ -993,4 +1130,6 @@ class DatabaseSeeder extends Seeder
             copy($file->path(), (storage_path("app/public/$type/$id/$name.jpg")   /*. $file->extension()*/));
         }
     }
+
+
 }
