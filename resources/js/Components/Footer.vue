@@ -132,7 +132,7 @@
           </p>
         </div>
         <div class=" ">
-          <a referrerpolicy='origin' target='_blank'
+          <a referrerpolicy='origin' target='_blank' class="block"
              href='https://trustseal.enamad.ir/?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'>
             <img
                 referrerpolicy='origin'
