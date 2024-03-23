@@ -55,7 +55,7 @@
         </div>
 
         <!-- Useful links section -->
-        <div class="  flex   flex-col items-start text-start font-light">
+        <div class="hidden  md:flex   flex-col items-start text-start font-light">
           <h6
               class="mb-4 flex justify-center font-semibold uppercase md:justify-start">
             {{ __('fast_access') }}

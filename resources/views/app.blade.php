@@ -19,14 +19,6 @@
 </head>
 <body class="font-sans antialiased">
 @inertia
-<div class=" ">
-    <a referrerpolicy='origin' target='_blank'
-       href='https://trustseal.enamad.ir/?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'>
-        <img referrerpolicy='origin'
-             src='https://trustseal.enamad.ir/logo.aspx?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'
-             alt=''
-             style='cursor:pointer'
-             Code='nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'></a>
-</div>
+
 </body>
 </html>
