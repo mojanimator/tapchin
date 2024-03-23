@@ -87,6 +87,7 @@ class HandleInertiaRequests extends Middleware
             'cart' => Cart::getData(),
             'cities' => Variable::$CITIES,
             'is_auction' => Setting::getValue('is_auction'),
+            'units' => Variable::PRODUCT_UNITS,
             'packs' => Pack::get(),
             'grades' => Variable::GRADES,
             'products' => Product::select('id', 'name')->whereStatus('active')->get(),

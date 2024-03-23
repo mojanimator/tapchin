@@ -123,6 +123,7 @@
           <th class="border">{{ __('product_id') }}</th>
           <th class="border">{{ __('description') }}</th>
           <th class="border">{{ `${__('qty')}/${__('weight')}` }}</th>
+          <th class="border">{{ `${__('unit_price')}` }}</th>
           <th class="border">{{ `${__('price')}(${__('currency')})` }}</th>
         </tr>
         </thead>
@@ -132,16 +133,23 @@
             {{ idx + 1 }}
           </td>
           <td class="border text-center p-2  ">
-            {{ item.variation ? item.variation.id : '' }}
+            {{ item.variation_id }}
           </td>
           <td class="border text-center p-2  ">
+
             {{
-              `${item.name} ( ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`
+              `${item.name} ( ${(parseFloat(item.qty) || 0)} ${getPack(item.variation.pack_id)}  ${' ' || parseFloat(item.variation.weight)} ${' ' || __('kg')})`
             }}
           </td>
           <td class="border text-center p-2  ">
             {{
-              `${parseFloat(item.qty) || ''}`
+              `${(parseFloat(item.qty) || 0) * (parseFloat(item.variation.weight) || 0)}`
+            }}
+          </td>
+
+          <td class="border text-center p-2  ">
+            {{
+              `${asPrice(Math.round((item.total_price || 0) / ((item.variation.weight || 1) * (item.qty || 1))))}`
             }}
           </td>
           <td class="border text-center p-2  ">
@@ -151,24 +159,27 @@
           </td>
         </tr>
         <tr>
-          <td colspan="4" class="border text-center p-2">{{ __('total_items_price') }}</td>
+          <td colspan="5" class="border text-center p-2">{{ __('total_items_price') }}</td>
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.total_items_price) }}</td>
         </tr>
         <tr>
-          <td colspan="4" class="border text-center p-2">{{ __('shipping_price') }}</td>
+          <td colspan="5" class="border text-center p-2">{{ __('shipping_price') }}</td>
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.total_shipping_price) }}</td>
         </tr>
 
 
         <tr>
           <td colspan="3" class="border text-center p-2">{{
-              `${__('pay_id')}${data.transaction.pay_gate ? `(${data.transaction.pay_gate})` : ''}`
+              `${__('pay_id')}${data.transaction && data.transaction.pay_gate ? `(${data.transaction.pay_gate})` : ''}`
             }}
           </td>
-          <td colspan="2" class="border text-sm text-center p-2">{{ data.transaction.pay_id || '_' }}</td>
+          <td colspan="3" class="border text-sm text-center p-2">{{
+              data.transaction && data.transaction.pay_id ? data.transaction.pay_id : '_'
+            }}
+          </td>
         </tr>
         <tr class="bg-gray-100">
-          <td colspan="4" class="border text-center p-2">{{ __('final_price') }}
+          <td colspan="5" class="border text-center p-2">{{ __('final_price') }}
           </td>
           <td colspan="1" class="border text-sm text-center p-2">{{ asPrice(data.total_price) }}</td>
         </tr>

@@ -48,8 +48,8 @@ class DatabaseSeeder extends Seeder
         if (DB::connection()->getDriverName() == 'mysql')
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $this->productionData();
-        return;
+//        $this->productionData();
+//        return;
         $this->createCities();
         $this->createUsers(20);
         $this->createAgencies(20);
@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
         $this->createRepositories(20);
         $this->createShippingMethods(20);
         $this->createProducts();
+        $this->createVariations();
 
 
     }
@@ -162,6 +163,7 @@ class DatabaseSeeder extends Seeder
 
         $this->createPacks();
         $this->createProducts();
+        $this->createRepositories();
         $this->createVariations();
     }
 

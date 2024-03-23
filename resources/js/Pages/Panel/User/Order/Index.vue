@@ -286,9 +286,10 @@
                     </td>
                     <td class="px-2 py-4    ">
                       <div v-for="(item ,ix) in d.items" class="text-xs " :class="{'border-b':ix+1<d.items.length}">
-                        {{
-                          `${item.name} ( ${parseFloat(item.qty)} ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`
-                        }}
+                        {{ item.title }}
+                        <!--                        {{-->
+                        <!--                          `${item.name} ( ${parseFloat(item.qty)} ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`-->
+                        <!--                        }}-->
                       </div>
                     </td>
                     <td class="px-2 py-4   text-xs ">
@@ -336,7 +337,7 @@
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
                       <div
-                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out   hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
                         <Link
                             type="button" :href="route('user.panel.order.edit',d.id)"
@@ -344,6 +345,14 @@
                             data-te-ripple-init
                             data-te-ripple-color="light">
                           {{ __('details') }}
+                        </Link>
+                        <Link
+                            type="button" :href="route('user.panel.order.factor',d.id)"
+                            class="flex mx-1 rounded  bg-indigo-500 text-white px-6  py-2 text-xs font-medium   leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
+                            data-te-ripple-init
+                            data-te-ripple-color="light">
+                          <PrinterIcon class="h-4 w-4"/>
+                          <span class="mx-1">{{ __('factor') }}</span>
                         </Link>
 
                         <!--                  <button -->
@@ -385,6 +394,7 @@ import {
   ArrowsUpDownIcon,
   Squares2X2Icon,
   CurrencyDollarIcon,
+  PrinterIcon,
 
 } from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue"
@@ -435,6 +445,7 @@ export default {
     Squares2X2Icon,
     Selector,
     CurrencyDollarIcon,
+    PrinterIcon,
   },
   mounted() {
 

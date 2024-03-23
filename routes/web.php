@@ -240,7 +240,7 @@ Route::middleware(['auth:sanctum',
     Route::post('order/create', [OrderController::class, 'create'])->name('order.create');
     Route::get('order/{order}', [OrderController::class, 'edit'])->name('order.edit');
 
-    Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('panel.order.factor');
+    Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('user.panel.order.factor');
 
 
 });

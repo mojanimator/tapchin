@@ -224,7 +224,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::patch('order/user/update', [OrderController::class, 'update'])->name('admin.panel.order.user.update');
         Route::get('order/user/{order}', [OrderController::class, 'edit'])->name('admin.panel.order.user.edit');
 
-        Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('panel.order.factor');
+        Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('admin.panel.order.factor');
 
         PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');

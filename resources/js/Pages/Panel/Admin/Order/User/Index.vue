@@ -286,6 +286,7 @@
                     </td>
                     <td class="px-2 py-4    ">
                       <div v-for="(item ,ix) in d.items" class="text-xs " :class="{'border-b':ix+1<d.items.length}">
+
                         {{
                           `${item.name} ( ${parseFloat(item.qty)} ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`
                         }}
@@ -359,7 +360,7 @@
                           {{ __('details') }}
                         </Link>
                         <Link
-                            type="button" :href="route('panel.order.factor',d.id)"
+                            type="button" :href="route('admin.panel.order.factor',d.id)"
                             class="flex mx-1 rounded  bg-indigo-500 text-white px-6  py-2 text-xs font-medium   leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
                             data-te-ripple-init
                             data-te-ripple-color="light">

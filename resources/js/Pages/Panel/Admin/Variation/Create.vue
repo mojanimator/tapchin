@@ -93,7 +93,7 @@
                 <TextInput
                     :id="`weight`"
                     type="number"
-                    :placeholder="__('weight')"
+                    :placeholder="__('pack_weight')"
                     :disabled="form.pack_id==1? true:false"
                     classes=" p-2   min-w-[5rem]"
                     v-model="form.weight"
@@ -107,7 +107,7 @@
                 <TextInput
                     :id="`price`"
                     type="number"
-                    :placeholder="__('price')"
+                    :placeholder="form.pack_id==1?__('kg_price'):__('pack_price')"
                     classes=" p-2   min-w-[5rem]"
                     v-model="form.price"
                     autocomplete="price"
@@ -120,7 +120,7 @@
                 <TextInput
                     :id="`in_repo`"
                     type="number"
-                    :placeholder="__('repository_count')"
+                    :placeholder="`${__('repository_count')} (${form.pack_id==1?__('kg'):__('pack_count')})`"
                     classes="    "
                     v-model="form.in_repo"
                     autocomplete="in_repo"
@@ -133,7 +133,7 @@
                 <TextInput
                     :id="`in_shop`"
                     type="number"
-                    :placeholder="__('shop_count')"
+                    :placeholder="`${__('shop_count')} (${form.pack_id==1?__('kg'):__('pack_count')})`"
                     classes=" "
                     v-model="form.in_shop"
                     autocomplete="in_shop"

@@ -412,7 +412,8 @@ class OrderController extends Controller
         if ($userAdmin instanceof User)
             $query->where('user_id', $userAdmin->id)->with('agency:id,name,phone');
 
-        $query->with('items.variation:id,name,weight,pack_id');
+//        $query->with('items.variation:id,name,weight,pack_id');
+        $query->with('items');
 
         $timeout = Setting::getValue('order_reserve_minutes') ?? 0;
         $now = Carbon::now();
