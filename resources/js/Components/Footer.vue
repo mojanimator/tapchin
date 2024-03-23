@@ -9,7 +9,7 @@
     </div>
 
     <div class="mx-6 py-10 text-start text-primary-700">
-      <div class="grid-1 grid gap-8 md:grid-cols-2 lg:grid-cols-4   ">
+      <div class="grid-cols-1 grid gap-2 md:grid-cols-2 lg:grid-cols-4 items-center  ">
 
         <!-- About Us section -->
         <div class="  col-span-3 lg:col-span-1 text-start">
@@ -131,7 +131,7 @@
             + 01 234 567 89
           </p>
         </div>
-        <div class=" ">
+        <div class="h-full ">
           <a referrerpolicy='origin' target='_blank' class="block"
              href='https://trustseal.enamad.ir/?id=476882&Code=nUwdZBbfdvIy7sEf5ss1RusrrQT32c8H'>
             <img
