@@ -568,6 +568,7 @@ class OrderController extends Controller
         $query1->with('items.variation:id,name,weight,pack_id');
         $query2->with('items.variation:id,name,weight,pack_id');
 
+        
         $res = $query1->union($query2)->orderBy($orderBy, $dir);
 
         if ($request->for_edit)
