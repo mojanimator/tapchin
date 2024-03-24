@@ -18,6 +18,41 @@
 
 
       <div class="px-2  md:px-4">
+        <div v-if="data && data.id" class="flex flex-col mt-4">
+          <div class="flex text-sm">
+            <div class="text-gray-500">{{ __('created_at') }}:</div>
+            <div class="text-primary-700 mx-2">{{ toShamsi(data.created_at) }}</div>
+          </div>
+          <div class="flex text-sm">
+            <div class="text-gray-500">{{ __('status') }}:</div>
+            <div class="mx-2" :class="`text-${getStatus('user_statuses',data.status).color}-500`">{{
+                __(data.status)
+              }}
+            </div>
+          </div>
+          <div>
+            <div class="flex text-sm items-center">
+              <div class="text-gray-500">{{ __('parent_debit') }}:</div>
+              <div class="mx-2" :class="`text-gray-700`">{{
+                  data.financial ? data.financial.parent_debit : 0
+                }}
+
+              </div>
+              <TomanIcon class=" "/>
+            </div>
+            <div class="flex text-sm items-center">
+              <div class="text-gray-500">{{ __('payment_balance') }}:</div>
+              <div class="mx-2" :class="`text-gray-700`">{{
+                  data.financial ? data.financial.payment_balance : 0
+                }}
+
+              </div>
+              <TomanIcon class=" "/>
+            </div>
+          </div>
+
+
+        </div>
 
         <div
             class="    mx-auto md:max-w-2xl   mt-6 px-2 md:px-4 py-4 bg-white shadow-md overflow-hidden  rounded-lg  ">
@@ -222,6 +257,7 @@ import Article from "@/Components/Article.vue";
 import TextEditor from "@/Components/TextEditor.vue";
 import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
+import TomanIcon from "@/Components/TomanIcon.vue";
 
 
 export default {
@@ -253,6 +289,7 @@ export default {
     }
   },
   components: {
+    TomanIcon,
     TextEditor,
     ImageUploader,
     LoadingIcon,

@@ -875,5 +875,7 @@
   "payment_success": "پرداخت موفق",
   "payment_fail": "پرداخت ناموفق",
   "factor_payed_before": "این فاکتور قبلا پرداخت شده است",
+  "payment_balance": "اعتبار مالی",
+  "parent_debit": "بدهی امانی",
   "": ""
 }

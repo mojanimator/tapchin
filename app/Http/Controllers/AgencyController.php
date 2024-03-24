@@ -8,6 +8,7 @@ use App\Http\Requests\AgencyRequest;
 use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\City;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,7 +19,7 @@ class AgencyController extends Controller
     public function edit(Request $request, $id)
     {
 
-        $data = Agency::with('owner:id,fullname,phone,agency_id')->find($id);
+        $data = Agency::with('owner:id,fullname,phone,agency_id')->with('financial')->find($id);
         $this->authorize('edit', [Admin::class, $data]);
 
         $data->type_id = $data->level;
@@ -115,7 +116,7 @@ class AgencyController extends Controller
             'status' => 'active',
             'level' => strval($request->type_id),
             'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : [],
-
+            'created_at' => Carbon::now(),
         ]);
 
         $data = Agency::create($request->all());
