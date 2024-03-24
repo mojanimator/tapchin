@@ -67,8 +67,11 @@ class AgencyRequest extends FormRequest
                     $availableParents = Agency::where('level', '2')->whereIn('province_id', $agency->access)->where('province_id', $this->province_id)->pluck('id');
 
             } elseif ($agency->level == 2) {
+
                 if ($this->type_id == 3)
                     $availableParents = Agency::where('id', $agency->id)->where('province_id', $this->province_id)->pluck('id');
+            } elseif ($agency->level == 3) {
+                $availableParents = Agency::where('level', '2')->where('province_id', $this->province_id)->pluck('id');
             }
 
             $tmp = array_merge($tmp, [
