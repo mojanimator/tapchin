@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->json('cities')->nullable();
             $table->unsignedInteger('min_order_weight')->default(0);
             $table->unsignedInteger('per_weight_price')->default(0);
+            $table->unsignedInteger('per_distance_price')->default(0);
             $table->unsignedInteger('base_price')->default(0);
             $table->unsignedInteger('free_from_price')->nullable();
             $table->string('name', 200);

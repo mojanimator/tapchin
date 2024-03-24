@@ -65,6 +65,7 @@ class ShippingMethodRequest extends FormRequest
                 'repo_id' => ['required', Rule::in($allowedRepositories)],
                 'base_price' => ['required', 'integer', 'min:0'],
                 'per_weight_price' => ['required', 'integer', 'min:0'],
+                'per_distance_price' => ['required', 'integer', 'min:0'],
                 'min_order_weight' => ['required', 'integer', 'min:0'],
                 'cities' => ['nullable', $repoId ? function ($attribute, $value, $fail) use ($allowedCities) {
 
@@ -128,6 +129,9 @@ class ShippingMethodRequest extends FormRequest
 
             'per_weight_price.required' => sprintf(__("validator.required"), __('per_weight_price')),
             'per_weight_price.min' => sprintf(__("validator.min"), __('per_weight_price'), 0),
+
+            'per_distance_price.required' => sprintf(__("validator.required"), __('per_distance_price')),
+            'per_distance_price.min' => sprintf(__("validator.min"), __('per_distance_price'), 0),
 
             'min_order_weight.required' => sprintf(__("validator.required"), __('min_order_weight')),
             'min_order_weight.min' => sprintf(__("validator.min"), __('min_order_weight'), 0),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
 use App\Models\Admin;
@@ -226,6 +227,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $cityProductRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -249,6 +251,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $productRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -270,6 +273,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $cityRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -292,6 +296,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $noRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -338,6 +343,7 @@ class CartController extends Controller
                     'shipping' => clone $default,
                     'repo_name' => $repo->name,
                     'repo_id' => $repo->id,
+                    'repo_location' => $repo->location,
                     'agency_id' => $repo->agency_id,
                     'error_message' => $errorMessage,
                     'has_available_shipping' => boolval($shipments[$idx]['has_available_shipping'] ?? false),
@@ -446,11 +452,14 @@ class CartController extends Controller
             $errorMessage = null;
             $deliveryDate = null;
             $deliveryTimestamp = null;
+            $distance = null;
             foreach ($items as $idx => $item) {
                 $cartItem = $item['cart_item'];
+                $repoLocation = $item['repo_location'];
+                $distance = Util::distance($cart->address['lat'] ?? null, $cart->address['lon'] ?? null, explode(',', $repoLocation)[0] ?? null, explode(',', $repoLocation)[1] ?? null, 'k');
                 $product = $cartItem->getRelation('product');
                 $totalWeight += $product->weight * $cartItem->qty;
-                $totalShippingPrice += $product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0);
+                $totalShippingPrice += ($product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0)) + ($distance * ($item['shipping']['per_distance_price'] ?? 0));
                 $basePrice = $basePrice > 0 ? $basePrice : ($item['shipping']['base_price'] ?? 0);
                 $cart->total_items += $cartItem->qty ?? 0;
                 $totalItems += $cartItem->qty ?? 0;
@@ -482,6 +491,7 @@ class CartController extends Controller
                 'visit_checked' => $visitChecked,
                 'agency_id' => $agencyId,
                 'items' => $items,
+                'distance' => $distance,
                 'method_id' => $i,
                 'method' => $shipping,
                 'error_message' => $errorMessage,
@@ -520,12 +530,14 @@ class CartController extends Controller
             $tmpCart->total_shipping_price = 0;
             $tmpCart->total_items = 0;
             $tmpCart->total_price = 0;
+            $tmpCart->distance = null;
             $tmpShipments = collect();
             foreach ($shipments as $shipment) {
                 $tmpCart->delivery_timestamp = $shipment['delivery_timestamp'];
                 $tmpCart->delivery_date = $shipment['delivery_date'];
                 $tmpCart->repo_id = $shipment['repo_id'];
                 $tmpCart->agency_id = $shipment['agency_id'];
+                $tmpCart->distance = $shipment['distance'];
                 $tmpShipments->add($shipment);
                 $tmpCart->total_items_discount += $shipment['total_items_discount'];
                 $tmpCart->total_discount += $shipment['total_items_discount'];

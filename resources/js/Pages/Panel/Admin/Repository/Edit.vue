@@ -37,7 +37,8 @@
             <form @submit.prevent="submit">
 
               <div class="my-2" v-if=" $page.props.agency && $page.props.agency.level<3">
-                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                <UserSelector :colsData="['name','phone','level','id']"
+                              :labelsData="['name','phone','type','id']"
                               :callback="{'level':getAgency}" :error="form.errors.agency_id"
                               :link="route('admin.panel.agency.search')" :label="__('agency')"
                               :id="'agency'" v-model:selected="form.agency_id" :preload=" this.$page.props.data.agency">
@@ -59,7 +60,8 @@
               </div>
 
               <div class="my-2">
-                <UserSelector :colsData="['fullname','phone','agency_id']" :labelsData="['name','phone','agency_id']"
+                <UserSelector :colsData="['fullname','phone','agency']" :labelsData="['name','phone','agency_id']"
+                              :callback="{'agency':e=>`${e.name||''} (${e.id||''})` }"
                               :link="route('admin.panel.admin.search')+(form.agency_id?`?agency_id=${form.agency_id }`:'')"
                               :label="__('repo_owner/admin')" :error="form.errors.admin_id"
                               :id="'admin'" v-model:selected="form.admin_id" :preload=" this.$page.props.data.admin">

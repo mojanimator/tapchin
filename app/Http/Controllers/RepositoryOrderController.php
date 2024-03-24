@@ -158,6 +158,7 @@ class RepositoryOrderController extends Controller
                 'shipping_id' => null,
                 'delivery_date' => $cart->delivery_date,
                 'delivery_timestamp' => $cart->delivery_timestamp,
+                'distance' => $cart->distance,
 
             ]);
             if ($order) {

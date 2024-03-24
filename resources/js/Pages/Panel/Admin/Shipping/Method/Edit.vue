@@ -102,6 +102,25 @@
               </div>
               <div class="my-2">
                 <TextInput
+                    id="per_distance_price"
+                    type="number"
+                    :placeholder="`${__('per_distance_price')} (${__('currency')})`"
+                    classes="  "
+                    v-model="form.per_distance_price"
+                    autocomplete="per_distance_price"
+                    :error="form.errors.per_distance_price"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CurrencyDollarIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+
+              </div>
+              <div class="my-2">
+                <TextInput
                     id="min_order_weight"
                     type="number"
                     :placeholder="`${__('min_order_weight')} (${__('kg')})`"
@@ -263,6 +282,7 @@ export default {
         description: null,
         base_price: null,
         per_weight_price: null,
+        per_distance_price: null,
         min_order_weight: null,
         repo: null,
         repo_id: null,
@@ -333,6 +353,7 @@ export default {
     this.form.repository = this.data.repository;
     this.form.base_price = this.data.base_price;
     this.form.per_weight_price = this.data.per_weight_price;
+    this.form.per_distance_price = this.data.per_distance_price;
     this.form.min_order_weight = this.data.min_order_weight;
     this.form.products = this.data.products;
     this.form.cities = this.data.cities;

@@ -18,6 +18,7 @@ class ShippingMethod extends Model
         'products',
         'cities',
         'per_weight_price',
+        'per_distance_price',
         'min_order_weight',
         'base_price',
         'name',

@@ -137,7 +137,8 @@ class AdminController extends Controller
 
         $search = $request->search;
         $page = $request->page ?: 1;
-        $orderBy = $request->order_by ?: 'id';
+        $orderBy = $request->order_by && $request->order_by != 'agency' ? $request->order_by : 'agency_id';
+
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;

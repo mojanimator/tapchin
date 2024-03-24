@@ -288,6 +288,7 @@ class OrderController extends Controller
                 'shipping_id' => null,
                 'delivery_date' => $cart->delivery_date,
                 'delivery_timestamp' => $cart->delivery_timestamp,
+                'distance' => $cart->distance,
 
             ]);
             if ($order) {
@@ -317,6 +318,8 @@ class OrderController extends Controller
                             'order_id' => $order->id,
                             'variation_id' => $cartItem->variation_id,
                             'qty' => $cartItem->qty,
+                            'pack_id' => $product->pack_id,
+                            'weight' => $product->weight,
                             'repo_id' => $cartItem->repo_id,
                             'total_price' => $cartItem->total_price ?? 0,
                             'discount_price' => $cartItem->discount_price ?? 0,
@@ -568,7 +571,7 @@ class OrderController extends Controller
         $query1->with('items.variation:id,name,weight,pack_id');
         $query2->with('items.variation:id,name,weight,pack_id');
 
-        
+
         $res = $query1->union($query2)->orderBy($orderBy, $dir);
 
         if ($request->for_edit)

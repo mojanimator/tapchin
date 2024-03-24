@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\RepositoryOrderRequest;
@@ -182,6 +183,7 @@ class RepositoryCartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => $cityProductRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -190,8 +192,8 @@ class RepositoryCartController extends Controller
                     ];
                     $needAddress = true;
 
-                    if (!$cartItem->visit_checked)
-                        continue;
+//                    if (!$cartItem->visit_checked)
+//                        continue;
                 }
 
                 $productRestrict = $supportCity ? $shippingMethods
@@ -206,6 +208,7 @@ class RepositoryCartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => $productRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -215,8 +218,8 @@ class RepositoryCartController extends Controller
 
                     $needAddress = true;
 
-                    if (!$cartItem->visit_checked)
-                        continue;
+//                    if (!$cartItem->visit_checked)
+//                        continue;
                 }
                 $cityRestrict = $supportCity ? $shippingMethods
                     ->filter(function ($e) use ($cartItem, $cityId) {
@@ -229,6 +232,7 @@ class RepositoryCartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => $cityRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -236,8 +240,8 @@ class RepositoryCartController extends Controller
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
-                    if (!$cartItem->visit_checked)
-                        continue;
+//                    if (!$cartItem->visit_checked)
+//                        continue;
                 }
                 $noRestrict = $supportCity ? $shippingMethods
                     ->filter(function ($e) use ($cartItem, $cityId, $repo) {
@@ -252,6 +256,7 @@ class RepositoryCartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => $noRestrict,
                         'repo_id' => $repo->id,
+                        'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
                         'allow_visit' => optional($repo)->allow_visit ?? false,
@@ -259,8 +264,8 @@ class RepositoryCartController extends Controller
                         'has_available_shipping' => true,
                     ];
                     $needAddress = true;
-                    if (!$cartItem->visit_checked)
-                        continue;
+//                    if (!$cartItem->visit_checked)
+//                        continue;
                 }
             }
             //use default shipping (go to repo)
@@ -283,29 +288,33 @@ class RepositoryCartController extends Controller
             } else {
                 $methodId = 'repo-' . $repo->id;
                 $errorMessage = null;
-                $needSelfReceive = true;
+                $needSelfReceive = !$shipments[$idx] || $cartItem->visit_checked;
             }
             $default['id'] = $methodId;
             if ($errorMessage) {
                 $errors[] = ['key' => $methodId, 'type' => 'shipping', 'message' => $errorMessage];
                 $default['error_message'] = $errorMessage;
             }
+            if (!$shipments[$idx] || $cartItem->visit_checked) {
+                $shipments[$idx] = [
+                    'method_id' => $methodId,
+                    'cart_item' => $cartItem,
+                    'shipping' => $default,
+                    'repo_name' => $repo->name,
+                    'repo_id' => $repo->id,
+                    'repo_location' => $repo->location,
+                    'agency_id' => $repo->agency_id,
+                    'error_message' => $errorMessage,
+                    'has_available_shipping' => $shipments[$idx]['has_available_shipping'] ?? false,
+                    'allow_visit' => optional($repo)->allow_visit ?? false,
+                    'visit_checked' => $cartItem->visit_checked ?? false,
+                ];
 
-            $shipments[$idx] = [
-                'method_id' => $methodId,
-                'cart_item' => $cartItem,
-                'shipping' => $default,
-                'repo_name' => $repo->name,
-                'repo_id' => $repo->id,
-                'agency_id' => $repo->agency_id,
-                'error_message' => $errorMessage,
-                'has_available_shipping' => $shipments[$idx]['has_available_shipping'] ?? false,
-                'allow_visit' => optional($repo)->allow_visit ?? false,
-                'visit_checked' => $cartItem->visit_checked ?? false,
-            ];
+                $needAddress = false;
 
+            }
         }
-        $needAddress = true;
+        $needAddress = $needAddress && in_array($request->current, ['checkout.payment', 'checkout.shipping']);
 
         if ($needAddress && $address == null) {
             $errors[] = ['key' => 'address', 'type' => 'address', 'message' => sprintf(__('validator.required'), __('address'))];
@@ -316,7 +325,7 @@ class RepositoryCartController extends Controller
         $cart->total_shipping_price = 0;
         $cart->total_items = 0;
         $shipments = [];
-        foreach ($cart->shipments as $items) {
+        foreach ($cart->shipments as $i => $items) {
             $totalWeight = 0;
             $totalShippingPrice = 0;
             $totalItemsPrice = 0;
@@ -330,12 +339,16 @@ class RepositoryCartController extends Controller
             $hasAvailableShipping = false;
             $deliveryDate = null;
             $deliveryTimestamp = null;
+            $distance = null;
             foreach ($items as $idx => $item) {
 
                 $cartItem = $item['cart_item'];
+                $repoLocation = $item['repo_location'];
+                $distance = Util::distance($cart->to_address['lat'] ?? null, $cart->to_address['lon'] ?? null, explode(',', $repoLocation)[0] ?? null, explode(',', $repoLocation)[1] ?? null, 'k');
+
                 $product = $cartItem->getRelation('product');
                 $totalWeight += $product->weight * $cartItem->qty;
-                $totalShippingPrice += $product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0);
+                $totalShippingPrice += ($product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0)) + ($distance * ($item['shipping']['per_distance_price'] ?? 0));
                 $basePrice = $basePrice > 0 ? $basePrice : ($item['shipping']['base_price'] ?? 0);
                 $cart->total_items += $cartItem->qty ?? 0;
                 $totalItems += $cartItem->qty ?? 0;
@@ -365,6 +378,8 @@ class RepositoryCartController extends Controller
                 'visit_checked' => $visitChecked,
                 'agency_id' => $agencyId,
                 'items' => $items,
+                'distance' => $distance,
+                'method_id' => $i,
                 'method' => $shipping,
                 'total_items' => $totalItems,
                 'total_items_price' => $totalItemsPrice,
@@ -400,12 +415,14 @@ class RepositoryCartController extends Controller
             $tmpCart->total_items = 0;
             $tmpCart->total_price = 0;
             $tmpCart->total_discount = 0;
+            $tmpCart->distance = null;
             $tmpShipments = collect();
             foreach ($shipments as $shipment) {
                 $tmpCart->delivery_timestamp = $shipment['delivery_timestamp'];
                 $tmpCart->delivery_date = $shipment['delivery_date'];
                 $tmpCart->repo_id = $shipment['repo_id'];
                 $tmpCart->agency_id = $shipment['agency_id'];
+                $tmpCart->distance = $shipment['distance'];
                 $tmpShipments->add($shipment);
                 $tmpCart->total_items_price += $shipment['total_items_price'];
                 $tmpCart->total_items_discount += $shipment['total_items_discount'];

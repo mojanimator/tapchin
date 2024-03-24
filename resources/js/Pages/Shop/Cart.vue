@@ -102,13 +102,14 @@
 
                   </div>
                   <div class="flex  items-center text-sm">
-<!--                    <div class="text-neutral-600 mx-1">{{ __('weight_unit') }}:</div>-->
-<!--                    <div class="text-neutral-600 mx-1">{{ parseFloat(item.cart_item.product.weight) }}</div>-->
-<!--                   -->
-                      <div class="text-neutral-600 mx-1">{{ __('weight') }}:</div>
+                    <!--                    <div class="text-neutral-600 mx-1">{{ __('weight_unit') }}:</div>-->
+                    <!--                    <div class="text-neutral-600 mx-1">{{ parseFloat(item.cart_item.product.weight) }}</div>-->
+                    <!--                   -->
+                    <div class="text-neutral-600 mx-1">{{ __('weight') }}:</div>
                     <div class="text-neutral-600 mx-1">{{
                         parseFloat(item.cart_item.product.weight * item.cart_item.qty)
-                      }}</div>
+                      }}
+                    </div>
                     <div class="text-neutral-400 mx-1">{{ __('kg') }}</div>
 
                   </div>
@@ -155,11 +156,16 @@
                     shipment.method.address
                   }}
                 </div>
+                <div class="flex items-center text-sm">
+                  <div class="text-neutral-500">{{ __('distance') }} :</div>
+                  <div class="mx-2">{{ `${shipment.distance || '?'} ${__('km')}` }}</div>
+                </div>
                 <div class="flex items-center">
                   <div class="text-neutral-500">{{ __('shipping_price') }} :</div>
                   <div class="mx-2">{{ asPrice(shipment.total_shipping_price) }}</div>
                   <TomanIcon class=""/>
                 </div>
+
                 <div class="my-2">
 
                   <Timestamp v-if="shipment.has_available_shipping && !shipment.visit_checked  " mode="view"

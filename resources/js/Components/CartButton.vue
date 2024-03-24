@@ -49,7 +49,7 @@ export default {
 
   },
   mounted() {
-    // this.update();
+    this.update();
 
     this.emitter.on('updateCart', (cart) => {
 
