@@ -196,6 +196,9 @@ class Variable
             ['id' => 1, 'fullname' => 'مدیر مرکزی', 'phone' => '09351414815', 'status' => 'active', 'role' => 'owner', 'agency_id' => 1, 'agency_level' => '0',
                 'access' => json_encode(['all']), 'email' => 'moj2raj2@gmail.com', 'password' => Hash::make('gX4ntH4RtIg$'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
             ],
+            ['id' => 2, 'fullname' => 'سهیل لطیفی', 'phone' => '09121391009', 'status' => 'active', 'role' => 'owner', 'agency_id' => 10, 'agency_level' => '3',
+                'access' => json_encode(['all']), 'email' => null, 'password' => Hash::make('09121391009'), 'email_verified_at' => Carbon::now(), 'created_at' => Carbon::now(), 'phone_verified' => true,
+            ],
         ];
     }
 
