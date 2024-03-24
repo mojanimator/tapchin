@@ -46,6 +46,11 @@ class AgencyRequest extends FormRequest
             $agency = Agency::find($user->agency_id) ?? (object)['level' => count(Variable::AGENCY_TYPES), 'province_id' => -1, 'id' => 0];
             $availableTypes = collect(Variable::AGENCY_TYPES)->where('level', '>', $agency->level)->pluck('id');
 
+            if ($request->type_id == 1) {
+                $this->merge([
+                    'parent_id' => 1,
+                ]);
+            }
 
             if ($agency->level == 0) {
                 if ($this->type_id == 1)
