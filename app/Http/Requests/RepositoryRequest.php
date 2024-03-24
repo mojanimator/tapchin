@@ -59,7 +59,7 @@ class RepositoryRequest extends FormRequest
                 'agency_id' => ['required', Rule::in($availableAgencies)],
                 'admin_id' => ['required', Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],
                 'name' => ['required', 'max:200'],
-                'phone' => ['required', "unique:agencies,phone,$this->id", 'max:20'],
+                'phone' => ['required', "unique:repositories,phone,$this->id", 'max:20'],
                 'address' => ['required', 'max:2048'],
                 'cities' => ['required', 'array',
                     function ($attribute, $value, $fail) use ($childCities) {
