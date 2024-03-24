@@ -48,8 +48,8 @@ class DatabaseSeeder extends Seeder
         if (DB::connection()->getDriverName() == 'mysql')
             DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-//        $this->productionData();
-//        return;
+        $this->productionData();
+        return;
         $this->createCities();
         $this->createUsers(20);
         $this->createAgencies(20);
@@ -158,13 +158,38 @@ class DatabaseSeeder extends Seeder
                 'county_id' => null,
                 'address' => '-',
                 'status' => 'active',
+            ], [
+                'id' => 9,
+                'name' => 'انحصاری استان تهران',
+                'parent_id' => 2,
+                'access' => json_encode([]),
+                'level' => strval($levels[2]),
+                'province_id' => json_encode(City::where('level', 1)->where('name', 'تهران')->first()->id ?? null),
+                'county_id' => json_encode(City::where('level', 2)->where('name', 'تهران')->first()->id ?? null),
+                'address' => 'تهران، منطقه 16، محله نازی آباد، میدان بهمن، خیابان دشت آزادگان، جنب شهرداری منطقه 16',
+                'postal_code' => '1811813453',
+                'status' => 'active',
             ],
         ]);
-
+        DB::table('repositories')->truncate();
+        DB::table('repositories')->insert([
+            [
+                'id' => 1,
+                'name' => 'انبار انحصاری استان تهران',
+                'agency_id' => 9,
+                'is_shop' => false,
+                'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
+                'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
+                'address' => 'تهران، منطقه 16، محله نازی آباد، میدان بهمن، خیابان دشت آزادگان، جنب شهرداری منطقه 16',
+                'location' => '35.642897,51.3986079',
+                'status' => 'active',
+                'cities' => json_encode([]),
+            ],
+        ]);
         $this->createPacks();
         $this->createProducts();
-        $this->createRepositories();
-        $this->createVariations();
+//        $this->createRepositories();
+//        $this->createVariations();
     }
 
     private function createCities()
