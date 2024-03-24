@@ -168,6 +168,14 @@
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='per_distance_price';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">    {{ __('distance_price') }} </span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
                   @click="params.order_by='min_order_weight';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
                   <span class="px-2">    {{ __('min_weight') }} </span>
@@ -287,6 +295,10 @@
               <td class="px-2 py-4">
 
                 {{ asPrice(d.per_weight_price) }}
+              </td>
+              <td class="px-2 py-4">
+
+                {{ asPrice(d.per_distance_price) }}
               </td>
 
               <td class="px-2 py-4">
