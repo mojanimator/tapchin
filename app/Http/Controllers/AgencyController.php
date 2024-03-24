@@ -65,7 +65,30 @@ class AgencyController extends Controller
                 'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : [],
 
             ]);
-
+            //change parent if changed
+            if ($data->level == '3' && $data->parent_id != $request->parent_id) {
+                //add branch to parent access
+                $oldParentAgency = Agency::find($data->parent_id);
+                $newParentAgency = Agency::find($request->parent_id);
+                if ($newParentAgency && $newParentAgency->level == '2') {
+                    $access = $newParentAgency->access ?? [];
+                    if (!in_array($data->id, $access)) {
+                        $access[] = $data->id;
+                        $newParentAgency->access = $access;
+                        $newParentAgency->save();
+                    }
+                }
+                if ($oldParentAgency && $oldParentAgency->level == '2') {
+                    $access = $oldParentAgency->access ?? [];
+                    if (in_array($data->id, $access)) {
+                        $pos = array_search($data->id, $access);
+                        if ($pos !== false)
+                            unset($access[$pos]);
+                        $oldParentAgency->access = $access;
+                        $oldParentAgency->save();
+                    }
+                }
+            }
 
 //            $data->name = $request->tags;
 //            $data->tags = $request->tags;

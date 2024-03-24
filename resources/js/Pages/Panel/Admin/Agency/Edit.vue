@@ -2,7 +2,7 @@
 
   <Panel>
     <template v-slot:header>
-      <title>{{__('new_agency')}}</title>
+      <title>{{__('edit_agency')}}</title>
     </template>
 
 
@@ -12,7 +12,7 @@
           class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <FolderPlusIcon class="h-7 w-7 mx-3"/>
 
-        <h1 class="text-2xl font-semibold">{{ __('new_agency') }}</h1>
+        <h1 class="text-2xl font-semibold">{{ __('edit_agency') }}</h1>
 
       </div>
 
@@ -69,7 +69,7 @@
               <div class="my-2" v-if="form.type_id">
 
                 <Selector
-                    v-show="$page.props.agency_types.filter((e)=>$page.props.agency && e.level>$page.props.agency.level).length>0"
+                    v-show="form.type_id>1"
                     ref="parentSelector"
                     :data="filteredAgencies"
                     :label="__('parent_agency')"
@@ -341,7 +341,7 @@ export default {
       this.filteredAgencies = [];
       let myLevel = this.$page.props.agency.level;
 
-      for (let idx in this.$page.props.parent_agencies.filter((e) => e.level > myLevel)) {
+      for (let idx in this.$page.props.parent_agencies) {
         //find  level-1 parents
         if (this.$page.props.parent_agencies[idx].level == this.form.type_id - 1) {
           let type = this.$page.props.agency_types.filter((e) => e.level == this.form.type_id - 1)[0].name
