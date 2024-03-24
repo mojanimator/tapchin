@@ -88,6 +88,7 @@ class DatabaseSeeder extends Seeder
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'تهران',
                 'status' => 'active',
+                'postal_code' => null,
             ], [
                 'id' => 2,
                 'name' => 'مرکز ایران (تهران)',
@@ -97,6 +98,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'تهران',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 3,
@@ -107,6 +109,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'تهران',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 4,
@@ -117,6 +120,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => null,
                 'county_id' => null,
                 'address' => '-',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 5,
@@ -127,6 +131,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => null,
                 'county_id' => null,
                 'address' => '-',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 6,
@@ -137,6 +142,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => null,
                 'county_id' => null,
                 'address' => '-',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 7,
@@ -147,6 +153,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => null,
                 'county_id' => null,
                 'address' => '-',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 8,
@@ -157,6 +164,7 @@ class DatabaseSeeder extends Seeder
                 'province_id' => null,
                 'county_id' => null,
                 'address' => '-',
+                'postal_code' => null,
                 'status' => 'active',
             ], [
                 'id' => 9,
@@ -182,6 +190,7 @@ class DatabaseSeeder extends Seeder
                 'county_id' => City::where('level', 2)->where('name', 'تهران')->first()->id,
                 'address' => 'تهران، منطقه 16، محله نازی آباد، میدان بهمن، خیابان دشت آزادگان، جنب شهرداری منطقه 16',
                 'location' => '35.642897,51.3986079',
+                'postal_code' => '1811813453',
                 'status' => 'active',
                 'cities' => json_encode([]),
             ],
