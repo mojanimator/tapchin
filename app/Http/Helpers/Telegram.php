@@ -686,24 +686,6 @@ class Telegram
 
                     break;
 
-                case 'agency_edited':
-                    $msg .= " 🟧 " . " $attribute " . "یک نمایندگی ویرایش شد" . PHP_EOL;
-                    $msg .= " 📅 " . "تاریخ : " . PHP_EOL . Jalalian::fromDateTime($data->updated_at)->format('%Y/%m/%d ⏰ H:i') . PHP_EOL;
-                    $msg .= " 👤 " . "سازنده" . PHP_EOL;
-                    $msg .= ($us->name ? "$us->name $us->family" : "$us->username") . PHP_EOL;
-                    $msg .= " 👤 " . "مالک" . PHP_EOL;
-                    $owner = \App\Models\User::findOrNew($data->owner_id);
-                    $msg .= ($owner->name ? "$owner->name $owner->family" : "$owner->username") . PHP_EOL;
-                    $msg .= " 📌 " . "نام نمایندگی" . PHP_EOL;
-                    $msg .= $data->name . PHP_EOL;
-                    $msg .= " 🚩 " . "استان: " . Province::firstOrNew(['id' => $data->province_id])->name . PHP_EOL;
-                    $msg .= " 🚩 " . "شهر: " . County::firstOrNew(['id' => $data->county_id])->name . PHP_EOL;
-                    $msg .= " 🚩 " . "آدرس: " . $data->address . PHP_EOL;
-                    $msg .= " 📧 " . "ایمیل: " . PHP_EOL;
-                    $msg .= $data->email . PHP_EOL;
-                    $msg .= " 📱 " . "توضیحات: " . $data->description . PHP_EOL;
-
-                    break;
 
                 case 'table_created':
                     $msg .= " 🟢 " . "یک جدول ساخته شد" . PHP_EOL;
