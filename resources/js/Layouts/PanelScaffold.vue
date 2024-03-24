@@ -82,9 +82,9 @@
                 </button>
 
                 <!--cart button-->
-                <CartButton
-                    :link="route('admin.panel.repository.cart.update')"
-                    :cart-link="route('admin.panel.repository.shop.cart')"
+                <CartButton v-if="isAdmin()"
+                            :link="route('admin.panel.repository.cart.update')"
+                            :cart-link="route('admin.panel.repository.shop.cart')"
                 />
                 <!-- Notification button -->
                 <NotificaionButton/>

@@ -31,6 +31,7 @@ class RepositoryCartController extends Controller
         $qty = $request->qty;
         $cmnd = $request->cmnd;
         $repoId = $request->repo_id;
+        $needAddress = false;
         $needSelfReceive = false;
         $myAgency = Agency::find($admin->agency_id);
         if (!$myAgency || !$admin->hasAccess('create_order'))
