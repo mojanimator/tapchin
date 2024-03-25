@@ -80,10 +80,7 @@ Route::get('/cache', function () {
     echo Artisan::output();
 });
 Route::get('test', function () {
-    foreach (\App\Models\Admin::get() as $item) {
-        $item->ref_id = Admin::makeRefCode($item->phone);
-        $item->save();
-    }
+
     return;
     if (!File::exists("storage/app/public/variations/198")) {
 //            Storage::makeDirectory("public/$type", 766);
