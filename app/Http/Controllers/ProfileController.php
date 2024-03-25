@@ -50,7 +50,7 @@ class ProfileController extends Controller
                 if (!$request->img) //  add extra image
                     return response()->json(['errors' => [__('file_not_exists')], 422]);
 
-                Util::createImage($request->img, Variable::IMAGE_FOLDERS[User::class], $user->id);
+                Util::createImage($request->img, Variable::IMAGE_FOLDERS[get_class($user)], $user->id);
 //                $user->is_active = false;
 //                $user->save();
                 Telegram::log(null, 'user_edited', $user);

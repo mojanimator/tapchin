@@ -453,7 +453,7 @@ export default {
       this.cropper = new Cropper(this.image, {
 //                    autoCrop: false,
         autoCropArea: 1,
-        viewMode: 2, responsive: false,
+        viewMode: 0, responsive: false,
 //                    autoCrop: true,
 //         style: {height: '200px', width: '100px' /*,'overflow-x': 'auto'*/},
         aspectRatio: this.cropRatio,

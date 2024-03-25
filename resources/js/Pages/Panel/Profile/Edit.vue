@@ -34,7 +34,7 @@
           <div class="flex text-sm items-center">
             <div class="text-gray-500">{{ __('wallet') }}:</div>
             <div class="mx-2" :class="`text-gray-700`">{{
-                data.wallet || 0
+                data.financial ? data.financial.wallet : 0
               }}
 
             </div>
@@ -53,7 +53,7 @@
             <div class="flex-col   m-2 items-center rounded-lg max-w-[8rem]  w-full mx-auto lg:mx-2   ">
               <div class="my-2">
                 <ImageUploader :replace="true"
-                               :preload="route('storage.users')+`/${data.id}.jpg`"
+                               :preload="route(`storage.${isAdmin()?'admins':'users'}`)+`/${data.id}.jpg`"
                                mode="edit" :for-id="data.id"
                                :link="route(`${ isAdmin() ? 'admin' : 'user'}.panel.profile.update`)"
                                ref="imageCropper" :label="__('image_cover_jpg')" cropRatio="1" id="img"
