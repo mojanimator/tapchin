@@ -112,6 +112,7 @@
   "category": "دسته\u200Cبندی",
   "description": "توضیحات",
   "no_results": "نتیجه\u200Cای یافت نشد",
+  "user_not_found": "کاربر یافت نشد",
   "owner_not_found": "مالک یافت نشد",
   "item_not_found": "آیتم یافت نشد",
   "item_not_found_or_inactive": "آیتم یافت نشد یا غیر فعال است",

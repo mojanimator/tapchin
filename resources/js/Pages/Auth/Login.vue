@@ -97,7 +97,7 @@ const submit = () => {
         </label>
         <Link
             v-if="canResetPassword"
-            :href="route('password.request')"
+            :href="route().current('admin.login-form') ?route('admin.password.request'):route('password.request')"
             class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {{ __('forgot_my_password') }}

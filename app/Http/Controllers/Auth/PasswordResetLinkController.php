@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\SMSHelper;
 use App\Http\Requests\ProfileRequest;
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,17 +38,21 @@ class PasswordResetLinkController extends Controller
     public function store(ProfileRequest $request): RedirectResponse
     {
 
-        $user = User::where('phone', $request->phone)->first();
+//        dd($request->is_admin);
+        if ($request->is_admin)
+            $user = Admin::where('phone', $request->phone)->first();
+        else
+            $user = User::where('phone', $request->phone)->first();
 
         if (!$user)
-            back()->withErrors(['message' => __('user_not_found')]);
+            return back()->withErrors(['message' => __('user_not_found')]);
 
         $password = $request->new_password;
         $user->password = Hash::make($password);
         SMSHelper::deleteCode($user->phone);
         $user->save();
         $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
-        return to_route('login')->with($res);
+        return to_route($request->is_admin ? 'admin.login' : 'login')->with($res);
 
 
         $request->validate([

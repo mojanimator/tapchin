@@ -39,7 +39,7 @@
                   v-model:phone-verify="form.phone_verify"
                   :phone-error="form.errors.phone"
                   type="forget"
-                  for="users"
+                  :for="form.is_admin?'admins':'users'"
                   :verified="null"
                   :activeButtonText="__('send_code')"
                   :disable="null"
@@ -100,7 +100,7 @@
             </div>
             <div class="    mt-4">
 
-              <PrimaryButton class="w-full  "
+              <PrimaryButton class="w-full flex items-center justify-center "
                              :class="{ 'opacity-25': form.processing }"
                              :disabled="form.processing">
                 <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -142,7 +142,7 @@ export default {
         new_password_confirmation: null,
         phone: null,
         phone_verify: null,
-
+        is_admin: route().current('admin.password.request')
       }),
     }
   },
@@ -177,7 +177,7 @@ export default {
       //   let tmp = this.$refs.imageCropper[i].getCroppedData();
       //   if (tmp) this.images.push(tmp);
       // }
-      this.form.post(route('password.update'), {
+      this.form.post(route(`${this.form.is_admin ? 'admin.' : ''}password.update`), {
         preserveScroll: false,
 
         onSuccess: (data) => {
