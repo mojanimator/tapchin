@@ -37,6 +37,7 @@ use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
+use App\Models\Admin;
 use App\Models\Agency;
 use App\Models\Article;
 use App\Models\Banner;
@@ -79,7 +80,10 @@ Route::get('/cache', function () {
     echo Artisan::output();
 });
 Route::get('test', function () {
-
+    foreach (\App\Models\Admin::get() as $item) {
+        $item->ref_id = Admin::makeRefCode($item->phone);
+        $item->save();
+    }
     return;
     if (!File::exists("storage/app/public/variations/198")) {
 //            Storage::makeDirectory("public/$type", 766);
