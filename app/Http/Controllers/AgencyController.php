@@ -140,7 +140,7 @@ class AgencyController extends Controller
             $data->province = $cities->where('id', $data->province_id)->first()->name ?? '';
             $data->county = $cities->where('id', $data->county_id)->first()->name ?? '';
             $data->district = $cities->where('id', $data->district_id)->first()->name ?? '';
-//            SMSHelper::deleteCode($phone);
+//            SmsHelper::deleteCode($phone);
             Telegram::log(null, 'agency_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
         return to_route('admin.panel.agency.index')->with($res);

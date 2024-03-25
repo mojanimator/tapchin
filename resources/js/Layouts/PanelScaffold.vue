@@ -82,7 +82,7 @@
                 </button>
 
                 <!--cart button-->
-                <CartButton v-if="isAdmin()"
+                <CartButton v-if="isAdmin() && hasAccess('create_order')"
                             :link="route('admin.panel.repository.cart.update')"
                             :cart-link="route('admin.panel.repository.shop.cart')"
                 />

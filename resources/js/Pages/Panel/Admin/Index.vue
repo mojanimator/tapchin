@@ -46,7 +46,7 @@
             </div>
 
           </section>  <!-- setting card -->
-          <Link v-if="hasAccess('view_settings')" :href="route('admin.panel.setting.index')" :class="cardShadow"
+          <Link v-if="hasAccess('edit_settings')" :href="route('admin.panel.setting.index')" :class="cardShadow"
                 class="flex   hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-between p-4 bg-white  rounded-lg ">
             <div>
               <h6 class="text-xl font-bold   py-2 tracking-wider text-gray-500 uppercase">

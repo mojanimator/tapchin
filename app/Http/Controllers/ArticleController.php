@@ -185,7 +185,7 @@ class ArticleController extends Controller
 
             Util::createImage($request->img, Variable::IMAGE_FOLDERS[Article::class], $article->id);
 
-//            SMSHelper::deleteCode($phone);
+//            SmsHelper::deleteCode($phone);
             Telegram::log(null, 'article_created', $article);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
         return to_route('panel.admin.article.index')->with($res);

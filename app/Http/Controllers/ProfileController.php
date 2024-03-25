@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\SMSHelper;
+use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
@@ -59,7 +59,7 @@ class ProfileController extends Controller
             case 'password-reset':
                 $password = $request->new_password;
                 $user->password = Hash::make($password);
-                SMSHelper::deleteCode($user->phone);
+                SmsHelper::deleteCode($user->phone);
                 $user->save();
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                 return back()->with($res);

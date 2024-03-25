@@ -31,10 +31,10 @@
               <span class="w-full text-primary-600 text-center"> {{ __('admin_dashboard') }}</span>
             </Link>
 
-            <hr class="border-gray-200 py-2 mx-4">
+            <!--            <hr class="border-gray-200 py-2 mx-4">-->
 
-            <div
-                class="flex text-primary mx-2 justify-center items-center text-sm text-gray-500">
+            <div v-if="false"
+                 class="flex text-primary mx-2 justify-center items-center text-sm text-gray-500">
 
               <Tooltip v-if="!hasWallet()" class="p-2 " :content="__('help_activate_wallet')">
                 <QuestionMarkCircleIcon class="text-gray-500 hover:bg-gray-50 w-4 h-4"/>
@@ -57,6 +57,17 @@
                 </Link>
               </div>
 
+            </div>
+            <div class="bg-gray-100 rounded-lg   m-1 py-2">
+              <div v-if="$page.props.auth.user"
+                   class=" flex items-center justify-center text-center text-sm text-gray-500">
+                <UserIcon class="w-4  "/>
+                <span class="mx-2"> {{ $page.props.auth.user.fullname }}</span>
+              </div>
+              <div v-if="$page.props.agency" class="flex items-center justify-center text-center text-sm">
+                <UGP class="w-4 "/>
+                <span class="mx-2">{{ $page.props.agency.name }}</span>
+              </div>
             </div>
             <hr class="border-gray-200 my-2 mx-4">
 
@@ -766,7 +777,9 @@ import {
   UserCircleIcon,
 } from "@heroicons/vue/24/outline";
 import {
-  QuestionMarkCircleIcon
+  QuestionMarkCircleIcon,
+  UserIcon,
+  UserGroupIcon as UGP,
 } from "@heroicons/vue/24/solid";
 import Image from '@/Components/Image.vue';
 import Toast from '@/Components/Toast.vue';
@@ -862,6 +875,8 @@ export default {
     ShoppingBagIcon,
     CogIcon,
     UserCircleIcon,
+    UserIcon,
+    UGP,
   },
   methods: {
     delay(time) {

@@ -149,7 +149,7 @@ class SliderController extends Controller
 
             Util::createImage($request->img, Variable::IMAGE_FOLDERS[Slider::class], "$slider->id");
 
-//            SMSHelper::deleteCode($phone);
+//            SmsHelper::deleteCode($phone);
             Telegram::log(null, 'slider_created', $slider);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
         return to_route('panel.admin.slider.index')->with($res);

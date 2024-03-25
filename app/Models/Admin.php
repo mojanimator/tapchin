@@ -166,8 +166,10 @@ class Admin extends Authenticatable
 
     public function hasAccess($item)
     {
+        if (in_array($this->role, ['god']))
+            return true;
 
-        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order'])) {
+        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order', 'edit_setting'])) {
             return $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
         if (in_array($item, ['create_repository_order'])) {
@@ -176,7 +178,7 @@ class Admin extends Authenticatable
         if (in_array($item, ['create_variation'])) {
             return $this->agency_level <= '3' && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
-        return in_array($this->role, ['owner']) || in_array($item, $this->access);
+        return in_array($this->role, ['owner']) || in_array($item, $this->access ?? []);
     }
 
     public function accesses()
@@ -197,6 +199,7 @@ class Admin extends Authenticatable
             $this->agency_level < 3 ? 'view_agency_order' : '',
             'view_user_order',
             'create_shipping',
+            'create_order',
         ];
         return $this->access;
 

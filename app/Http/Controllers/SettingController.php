@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\SettingRequest;
+use App\Models\Admin;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 
@@ -42,6 +43,8 @@ class SettingController extends Controller
             $data = Setting::find($id);
         if ($id && !$data)
             return response()->json(['message' => sprintf(__('validator.invalid'), __('id')),], Variable::ERROR_STATUS);
+        if ($data)
+            $this->authorize('edit', [Admin::class, $data]);
 
         if (!$id) {
             $data = Setting::create(['key' => $key, 'value' => $value]);
@@ -64,9 +67,12 @@ class SettingController extends Controller
 
     public function delete(Request $request, $id)
     {
+
         $data = Setting::find($id);
         if (!$data)
             return response()->json(['message' => sprintf(__('validator.invalid'), __('id')),], Variable::ERROR_STATUS);
+        $this->authorize('edit', [Admin::class, $data]);
+
         if ($data->delete()) {
             Telegram::log(null, 'setting_deleted', $data);
             return response()->json(['message' => __('done_successfully'),], Variable::SUCCESS_STATUS);

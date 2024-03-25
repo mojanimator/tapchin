@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helpers\SMSHelper;
+use App\Http\Helpers\SmsHelper;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Admin;
 use App\Models\User;
@@ -49,7 +49,7 @@ class PasswordResetLinkController extends Controller
 
         $password = $request->new_password;
         $user->password = Hash::make($password);
-        SMSHelper::deleteCode($user->phone);
+        SmsHelper::deleteCode($user->phone);
         $user->save();
         $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
         return to_route($request->is_admin ? 'admin.login' : 'login')->with($res);

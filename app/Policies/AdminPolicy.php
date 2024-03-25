@@ -12,6 +12,7 @@ use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
 use App\Models\RepositoryOrder;
+use App\Models\Setting;
 use App\Models\Shipping;
 use App\Models\ShippingMethod;
 use App\Models\Ticket;
@@ -218,6 +219,9 @@ class AdminPolicy
                     break;
                 case   $item instanceof Admin :
                     $res = $admin->hasAccess('edit_admin');
+                    break;
+                case   $item instanceof Setting :
+                    $res = $admin->hasAccess('edit_setting');
                     break;
             }
 
