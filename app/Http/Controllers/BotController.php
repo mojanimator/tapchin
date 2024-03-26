@@ -760,6 +760,7 @@ class BotController extends Controller
                             Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$from_id)  ", "Markdown", null, null, false);
                         }
                     } else { //referral
+                        return;
                         $ref = $code;
                         $u = User::where('ref_id', $ref)->first();
                         if ($ref != $user->ref_id && $u) {
