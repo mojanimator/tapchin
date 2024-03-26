@@ -288,6 +288,8 @@ class VariationController extends Controller
 //                        $data->status = 'review';
 //                        $data->save();
 //                    }
+                    $data->img = url("storage/variations/$id/$name.jpg");
+                    Telegram::log(null, 'image_updloaded', $data);
                     return response()->json(['message' => __('updated_successfully')], $successStatus);
 
 
