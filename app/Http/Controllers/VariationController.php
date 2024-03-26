@@ -77,9 +77,10 @@ class VariationController extends Controller
                     elseif ($provinceId)
                         $query->where('repositories.province_id', $provinceId);
                 })->where(function ($query) use ($countyId, $districtId) {
+
                     if ($countyId === null)
                         $query->where('repositories.id', 0);
-                    elseif ($countyId && $districtId === 0)
+                    elseif ($countyId && intval($districtId) === 0)
                         $query->whereJsonContains('repositories.cities', intval($countyId));
                 })->where(function ($query) use ($districtId) {
                     if ($districtId === null)
