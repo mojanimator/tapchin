@@ -761,10 +761,23 @@ class BotController extends Controller
                         else
                             $user = User::where('remember_token', str_replace_first('admin', '', $code))->first();
                         if ($user) {
+                            $this->user = $user;
                             $user->remember_token = null;
                             $user->telegram_id = $from_id;
                             $user->save();
-                            Telegram::sendMessage($from_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, null, false);
+                            $button = json_encode(['keyboard' => [
+                                in_array($from_id, Telegram::LOGS) ? [['text' => 'پنل مدیران🚧']] : [],
+
+                                [['text' => "📱 دریافت اپلیکیشن 📱"]],
+                                [['text' => "🎴 ساخت دکمه شیشه ای 🎴"]],
+                                [['text' => "📌 دریافت بنر تبلیغاتی 📌"]],
+                                [['text' => 'امتیاز من💰']],
+
+
+                                [['text' => $this->user ? "ویرایش اطلاعات✏" : "ثبت نام✅"]],
+                                [['text' => 'درباره ربات🤖']],
+                            ], 'resize_keyboard' => true]);
+                            Telegram::sendMessage($from_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, $button, false);
                             Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$from_id)  ", "Markdown", null, null, false);
                         } else {
                             Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
