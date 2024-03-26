@@ -727,7 +727,6 @@ class BotController extends Controller
             }
 //referral & connect
             if ((strpos($text, "/start ") !== false)) {
-                Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
 
                 // agar ebarate /start ersal shod
                 $this->user = Admin::where('telegram_id', $from_id)->first();
