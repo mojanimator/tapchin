@@ -878,5 +878,8 @@
   "factor_payed_before": "این فاکتور قبلا پرداخت شده است",
   "payment_balance": "اعتبار مالی",
   "parent_debit": "بدهی امانی",
+  "connect": "اتصال",
+  "connect_telegram": "اتصال به تلگرام",
+  "open_link_in_telegram_and_start": "لینک را در تلگرام باز کرده و دکمه شروع را بزنید",
   "": ""
 }

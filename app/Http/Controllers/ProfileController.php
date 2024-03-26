@@ -9,9 +9,12 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Admin;
+use App\Models\AdminFinancial;
+use App\Models\Car;
 use App\Models\Podcast;
 use App\Models\User;
 use App\Models\UserFinancial;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,8 +47,18 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
         $user = $request->user();
+        $isAdmin = $user instanceof Admin;
+        $userClass = $isAdmin ? Admin::class : User::class;
+        $financialClass = $isAdmin ? AdminFinancial::class : UserFinancial::class;
+
 
         switch ($request->cmnd) {
+            case 'connect-telegram':
+                $user->remember_token = Hash::make(Carbon::now());
+                $user->save();
+                $url = "t.me/" . Variable::TELEGRAM_BOT . "?start=" . ($isAdmin ? "admin" : "user") . "$user->remember_token";
+                return response()->json(['message' => __('open_link_in_telegram_and_start'), 'url' => $url], 200);
+
             case   'upload-img':
                 if (!$request->img) //  add extra image
                     return response()->json(['errors' => [__('file_not_exists')], 422]);
@@ -89,12 +102,12 @@ class ProfileController extends Controller
                     return response()->json(['message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
                 return back()->with($res);
         }
-        User::whereId($user->id)->update([
+        $userClass::whereId($user->id)->update([
             'fullname' => $request->fullname,
             'phone' => $request->phone,
         ]);
 
-        UserFinancial::updateOrCreate(['user_id' => $user->id,],
+        $financialClass::updateOrCreate([($isAdmin ? 'admin_id' : 'user_id') => $user->id,],
             [
                 'card' => $request->card,
                 'sheba' => $request->sheba,

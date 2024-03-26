@@ -137,13 +137,26 @@
                 </TextInput>
               </div>
 
-              <div class="my-4 text-gray-700">
+              <div v-if="false" class="my-4 text-gray-700">
                 <p class="text-sm my-1">{{ __('ref_link') }}</p>
                 <div @click="copyToClipboard(route('/') + `?ref=${data.ref_id}`)"
                      class="text-left cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary p-2"
                 >{{
                     route('/') + `?ref=${data.ref_id}`
                   }}
+                </div>
+
+              </div>
+              <div class="my-4 text-gray-700">
+                <p class="text-sm my-1">{{ __('connect_telegram') }}</p>
+                <div @click="telegramLink?copyToClipboard(telegramLink): edit({cmnd:'connect-telegram'})"
+                     class="flex justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"
+                >
+                  <div @click="" class="text-left" v-if="telegramLink">{{
+                      telegramLink
+                    }}
+                  </div>
+                  <div v-else class=" ">{{ __('connect') }}</div>
                 </div>
               </div>
 
@@ -223,6 +236,7 @@ export default {
   data() {
     return {
       data: this.data || {},
+      telegramLink: null,
       form: useForm({
         id: null,
         fullname: null,
@@ -321,7 +335,43 @@ export default {
             this.showAlert(this.$page.props.flash.status, this.$page.props.flash.message);
         },
       });
-    }
+    },
+    edit(params) {
+      this.isLoading(true);
+      window.axios.patch(route(`${this.isAdmin() ? 'admin' : 'user'}.panel.profile.update`), params,
+          {})
+          .then((response) => {
+            if (response.data && response.data.message) {
+              this.showToast('success', response.data.message);
+
+            }
+            if (response.data.url) {
+              this.telegramLink = response.data.url;
+            }
+
+
+          })
+
+          .catch((error) => {
+            this.error = this.getErrors(error);
+            if (error.response && error.response.data) {
+              if (error.response.data.charge) {
+                this.data[params.idx].charge = error.response.data.charge;
+              }
+              if (error.response.data.view_fee) {
+                this.data[params.idx].view_fee = error.response.data.view_fee;
+              }
+              if (error.response.data.meta) {
+                this.data[params.idx].meta = error.response.data.meta;
+              }
+            }
+            this.showToast('danger', this.error);
+          })
+          .finally(() => {
+            // always executed
+            this.isLoading(false);
+          });
+    },
   },
 
 }

@@ -37,6 +37,7 @@ class BotController extends Controller
 
     public function getupdates(Request $request)
     {
+
         $update = json_decode(file_get_contents('php://input'));
         try {
 
@@ -749,9 +750,11 @@ class BotController extends Controller
 
                 if (!empty($code)) {
 
-                    if (str_starts_with($code, 'admin')) { //connect to telegram
-
-                        $user = Admin::where('remember_token', str_replace_first('admin', '', $code))->first();
+                    if (str_starts_with($code, 'admin') || str_starts_with($code, 'user')) { //connect to telegram
+                        if (str_starts_with($code, 'admin'))
+                            $user = Admin::where('remember_token', str_replace_first('admin', '', $code))->first();
+                        else
+                            $user = User::where('remember_token', str_replace_first('admin', '', $code))->first();
                         if ($user) {
                             $user->remember_token = null;
                             $user->telegram_id = $from_id;
