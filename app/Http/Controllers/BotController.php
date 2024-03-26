@@ -131,9 +131,9 @@ class BotController extends Controller
                 return;
             }
 
-            Telegram::sendMessage($from_id, "در حال بروزرسانی هستیم...");
-
-            return;
+//            Telegram::sendMessage($from_id, "در حال بروزرسانی هستیم...");
+//
+//            return;
 //            return (string)($USER_REGISTER . "\xE2\x9C\x85" == $text);
 //            return (string)(0 == null);
 //            return $this->user_in_channel("@lamassaba", $from_id);// == 'administrator' or 'creator'
