@@ -118,7 +118,7 @@ class BotController extends Controller
 //------------------------------------------------------------------------------
 //        $rank = $this->user_in_chat($this->channel, $from_id, $tc);// $get['result']['status'];
 
-//        $this->bot_id = $this->creator('GetMe', [])->result->id;
+//        $this->bot_id = Telegram::creator('GetMe', [])->result->id;
 //        $INSTALL_ICON = '🥒';
 //        $ABOUT_ICON = '🤖';
 //        $USER_EDIT_ICON = "✏";
@@ -872,7 +872,7 @@ class BotController extends Controller
         Storage::put("log.txt", $text);
 
         if ($text)
-            $this->creator('SendMessage', [
+            Telegram::creator('SendMessage', [
                 'chat_id' => $chat_id,
                 'text' => $text /*. "\n $this->bot"*/,
                 'parse_mode' => 'Markdown',
@@ -880,7 +880,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($photo)
-            $this->creator('sendPhoto', [
+            Telegram::creator('sendPhoto', [
                 'chat_id' => $chat_id,
                 'photo' => $photo[count($photo) - 1]->file_id,
                 'caption' => $caption,
@@ -889,7 +889,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($audio)
-            $this->creator('sendAudio', [
+            Telegram::creator('sendAudio', [
                 'chat_id' => $chat_id,
                 'audio' => $audio->file_id,
                 'caption' => $caption,
@@ -902,7 +902,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($document)
-            $this->creator('sendDocument', [
+            Telegram::creator('sendDocument', [
                 'chat_id' => $chat_id,
                 'document' => $document->file_id,
                 'caption' => $caption,
@@ -912,7 +912,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($video)
-            $this->creator('sendVideo', [
+            Telegram::creator('sendVideo', [
                 'chat_id' => $chat_id,
                 'video' => $video->file_id,
                 'duration' => $video->duration,
@@ -925,7 +925,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($animation)
-            $this->creator('sendAnimation', [
+            Telegram::creator('sendAnimation', [
                 'chat_id' => $chat_id,
                 'animation' => $animation->file_id,
                 'duration' => $animation->duration,
@@ -938,7 +938,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($voice)
-            $this->creator('sendVoice', [
+            Telegram::creator('sendVoice', [
                 'chat_id' => $chat_id,
                 'voice' => $voice->file_id,
                 'duration' => $voice->duration,
@@ -948,7 +948,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($video_note)
-            $this->creator('sendVideoNote', [
+            Telegram::creator('sendVideoNote', [
                 'chat_id' => $chat_id,
                 'video_note' => $video_note->file_id,
                 'duration' => $video_note->duration,
@@ -960,7 +960,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($sticker)
-            $this->creator('sendSticker', [
+            Telegram::creator('sendSticker', [
                 'chat_id' => $chat_id,
                 'sticker' => $sticker->file_id,
                 "set_name" => "DaisyRomashka",
@@ -968,7 +968,7 @@ class BotController extends Controller
                 'reply_markup' => $keyboard
             ]);
         else if ($poll)
-            $this->creator('sendPoll', [
+            Telegram::creator('sendPoll', [
                 'chat_id' => $chat_id,
                 'question' => "",
                 'options' => json_encode(["1", "2", "3"]),
@@ -989,7 +989,7 @@ class BotController extends Controller
     {
         if (!isset($photo) || !isset($photo->big_file_id)) return;
         $client = new \GuzzleHttp\Client();
-        $res = $this->creator('getFile', [
+        $res = Telegram::creator('getFile', [
             'file_id' => $photo->big_file_id,
 
         ])->result->file_path;
@@ -1016,13 +1016,13 @@ class BotController extends Controller
     {
 
         $client = new \GuzzleHttp\Client();
-        $res = $this->creator('getUserProfilePhotos', [
+        $res = Telegram::creator('getUserProfilePhotos', [
             'user_id' => $user_id,
 
         ])->result->photos;
         // return json_encode($res);
         if (!isset($res) || count($res) == 0) return;
-        $res = $this->creator('getFile', [
+        $res = Telegram::creator('getFile', [
             'file_id' => $res[0][count($res[0]) - 1]->file_id,
 
         ])->result->file_path;
