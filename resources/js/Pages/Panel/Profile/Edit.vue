@@ -150,7 +150,7 @@
               <div class="my-4 text-gray-700">
                 <p class="text-sm my-1">{{ __('connect_telegram') }}</p>
                 <div @click="telegramLink?copyToClipboard(telegramLink): edit({cmnd:'connect-telegram'})"
-                     class="flex justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"
+                     class="flex px-1 justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"
                 >
                   <div @click="" class="text-left" v-if="telegramLink">{{
                       telegramLink

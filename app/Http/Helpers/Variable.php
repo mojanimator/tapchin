@@ -178,6 +178,7 @@ class Variable
     const RATIOS = ['slider' => 1.8];
     const PACKAGE = 'com.dabel.dabelchin';
     const TELEGRAM_BOT = 'tapchin_bot';
+    const LINKS = ['bazaar' => '', 'myket' => '', 'playstore' => ''];
 
     static $CITIES = [];
     public static $BANK = 'zarinpal';

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Helpers\Telegram;
+use App\Http\Helpers\Variable;
 use App\Models\Admin;
 use App\Models\User;
 
@@ -38,8 +39,8 @@ class BotController extends Controller
     public function getupdates(Request $request)
     {
 
-        $update = json_decode(file_get_contents('php://input'));
         try {
+            $update = json_decode(file_get_contents('php://input'));
 
             if (isset($update->message)) {
                 $message = $update->message;
@@ -91,7 +92,7 @@ class BotController extends Controller
                 $chat_title = $update->channel_post->chat->title;
                 $message_id = $update->channel_post->message_id;
 //            $from_id = json_encode($update);
-//            $from_id = $this->Dev;
+//            $from_id = Telegram::LOGS;
                 $caption = $update->channel_post->caption;
                 $photo = $update->channel_post->photo; # file_id,file_unique_id,file_size,width,height] array of different photo sizes
                 $document = $update->channel_post->document; #file_name,mime_type,thumb[file_id,file_unique_id,file_size,width,height]
@@ -147,9 +148,9 @@ class BotController extends Controller
 
 //            return json_encode($this->inviteToChat($this->channel));
                 $market_button = json_encode(['inline_keyboard' => [
-                    [['text' => "📪 کافه بازار 📪", 'url' => Helper::$market_link['bazaar']]],
-                    [['text' => "📪 مایکت 📪", 'url' => Helper::$market_link['myket']]],
-                    [['text' => "📪 پلی استور 📪", 'url' => Helper::$market_link['playstore']]],
+                    [['text' => "📪 کافه بازار 📪", 'url' => Variable::LINKS['bazaar']]],
+                    [['text' => "📪 مایکت 📪", 'url' => Variable::LINKS['myket']]],
+                    [['text' => "📪 پلی استور 📪", 'url' => Variable::LINKS['playstore']]],
 
                 ], 'resize_keyboard' => true]);
 
@@ -164,7 +165,7 @@ class BotController extends Controller
                     [['text' => 'منوی اصلی⬅']],
                 ], 'resize_keyboard' => true]);
                 $button = json_encode(['keyboard' => [
-                    in_array($from_id, $this->Dev) ? [['text' => 'پنل مدیران🚧']] : [],
+                    in_array($from_id, Telegram::LOGS) ? [['text' => 'پنل مدیران🚧']] : [],
 
                     [['text' => $this->user ? "ویرایش اطلاعات✏" : "ثبت نام✅"]],
                     [['text' => "📱 دریافت اپلیکیشن 📱"]],
@@ -311,7 +312,7 @@ class BotController extends Controller
                 } elseif ($Data == "see_users") {
                     $txt = "";
                     $txt .= "\n-------- لیست کاربران-----\n";
-                    if (in_array($from_id, $this->Dev))
+                    if (in_array($from_id, Telegram::LOGS))
 
 
                         foreach (User::get(['id', 'fullname', 'telegram_username', 'telegram_id', 'score']) as $idx => $user) {
@@ -335,7 +336,7 @@ class BotController extends Controller
                     $this->user->step = null;
                     $this->user->save();
 
-                    if (in_array($from_id, $this->Dev))
+                    if (in_array($from_id, Telegram::LOGS))
                         foreach (User::pluck('telegram_id')->toArray() as $id) {
 
                             Telegram::sendFile($id, Storage::get('message.txt'), null);
@@ -348,9 +349,9 @@ class BotController extends Controller
                     $this->user->step = null;
                     $this->user->save();
 
-                    if (in_array($from_id, $this->Dev))
+                    if (in_array($from_id, Telegram::LOGS))
 
-                        foreach (Helper::$admins as $id => $data) {
+                        foreach (Telegram::LOGS as $id => $data) {
 
                             $channel = $data['channel'];
                             Telegram::sendFile($channel, Storage::get('message.txt'), null);
@@ -397,7 +398,7 @@ class BotController extends Controller
 
                     $id = explode(":", $text)[0];
                     $score = explode(":", $text)[2];
-                    if (in_array($from_id, $this->Dev)) {
+                    if (in_array($from_id, Telegram::LOGS)) {
                         $u = User::where('id', $id)->first();
                         $u->score += $score;
                         $u->save();
@@ -406,7 +407,7 @@ class BotController extends Controller
                     }
 
                 } elseif ((strpos($text, "banner:") !== false)) {
-                    if (!in_array($from_id, $this->Dev)) return;
+                    if (!in_array($from_id, Telegram::LOGS)) return;
                     $txt = " سلام   \n *هم سیگنال* هستم . با من میتونی برای گروه یا کانال خودت *فالور جذب کنی*. \n *من یه ربات شبیه دیوارم که گروه/کانال تو رو تبلیغ میکنم و بقیه از فالو کردن اون امتیاز میگیرند و میتونن کانال/گروه خودشونو تبلیغ کنن*  \n آموزش ربات\n  $this->tut_link  $this->bot ";
                     $buttons = [[['text' => '👈 دانلود اپلیکیشن 👉', 'url' => $this->app_link]]];
                     $tmp = explode(":", $text);
@@ -417,7 +418,7 @@ class BotController extends Controller
 
 
                 } elseif ((strpos($text, "inline:") !== false)) {
-                    if (!in_array($from_id, $this->Dev)) return;
+                    if (!in_array($from_id, Telegram::LOGS)) return;
                     $buttons = [];
                     $inlines = explode("\n", $text);
                     $txt = explode(":", array_shift($inlines))[1]; //remove first (inline)
@@ -533,7 +534,7 @@ class BotController extends Controller
                             break;
                         //send to users
                         case  9:
-//                        if (!in_array($from_id, $this->Dev))
+//                        if (!in_array($from_id, Telegram::LOGS))
 //                    return;
                             $send_or_cancel = json_encode(['inline_keyboard' => [
                                 [['text' => "ارسال شود✨", 'callback_data' => "send_to_users_ok"]],
@@ -547,7 +548,7 @@ class BotController extends Controller
                             break;
                         //send to groups
                         case  91:
-//                        if (!in_array($from_id, $this->Dev))
+//                        if (!in_array($from_id, Telegram::LOGS))
 //                    return;
                             $send_or_cancel = json_encode(['inline_keyboard' => [
                                 [['text' => "ارسال شود✨", 'callback_data' => "send_to_chats_ok"]],
@@ -623,7 +624,7 @@ class BotController extends Controller
                     $text .= "📉 🅱🅾🅾🆁🆂🅰🅼🅰🅽 📈" . PHP_EOL;
 
                     Telegram::editMessageText($chat_id, $message_id, $text);
-                    Telegram::sendMessage(Helper::$logs[0], json_encode($update), null);
+                    Telegram::sendMessage(Telegram::LOGS[0], json_encode($update), null);
 
 
                 } elseif (($caption && strpos($caption, "@boorsaman" == false)) || $photo || $document || $document || $video || $audio || $voice || $video_note) {
@@ -724,8 +725,11 @@ class BotController extends Controller
             }
 //referral & connect
             if ((strpos($text, "/start ") !== false)) {
+                Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
+
                 // agar ebarate /start ersal shod
                 $this->user = Admin::where('telegram_id', $from_id)->first();
+                $this->user = $this->user ?? User::where('telegram_id', $from_id)->first();
                 $button = json_encode(['keyboard' => [
                     in_array($from_id, Telegram::LOGS) ? [['text' => 'پنل مدیران🚧']] : [],
 
@@ -749,6 +753,7 @@ class BotController extends Controller
 //            Telegram::sendMessage($chat_id, $code);
 
                 if (!empty($code)) {
+                    Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
 
                     if (str_starts_with($code, 'admin') || str_starts_with($code, 'user')) { //connect to telegram
                         if (str_starts_with($code, 'admin'))
@@ -761,6 +766,9 @@ class BotController extends Controller
                             $user->save();
                             Telegram::sendMessage($from_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, null, false);
                             Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$from_id)  ", "Markdown", null, null, false);
+                        } else {
+                            Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
+
                         }
                     } else { //referral
                         return;
@@ -778,7 +786,7 @@ class BotController extends Controller
 
 //------------------------------------------------------------------------------
 //        unlink("error_log");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Telegram::sendMessage(Telegram::LOGS[0], print_r([$e->getMessage(), $e->getLine()], true));
         }
     }
