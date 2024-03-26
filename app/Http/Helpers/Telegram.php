@@ -523,13 +523,13 @@ class Telegram
                     $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
-                    $msg .= " 🔷 " . "نام: " . $data->name;
-                    $msg .= " 🔶 " . "بسته بندی: " . Pack::find($data->pack_id)->name ?? '';
-                    $msg .= " 🔷 " . "درجه: " . $data->grade;
-                    $msg .= " 🔶 " . "وزن: " . floatval($data->weight);
-                    $msg .= " 🟫 " . "در فروشگاه: " . floatval($data->in_shop);
-                    $msg .= " 🟪 " . "در انبار: " . floatval($data->in_repo);
-                    $msg .= " 🪙 " . "قیمت: " . number_format($data->price);
+                    $msg .= " 🔷 " . "نام: " . $data->name . PHP_EOL;
+                    $msg .= " 🔶 " . "بسته بندی: " . (Pack::find($data->pack_id)->name ?? '') . PHP_EOL;
+                    $msg .= " 🔷 " . "درجه: " . $data->grade . PHP_EOL;
+                    $msg .= " 🔶 " . "وزن: " . floatval($data->weight) . PHP_EOL;
+                    $msg .= " 🟫 " . "در فروشگاه: " . floatval($data->in_shop) . PHP_EOL;
+                    $msg .= " 🟪 " . "در انبار: " . floatval($data->in_repo) . PHP_EOL;
+                    $msg .= " 🪙 " . "قیمت: " . number_format($data->price) . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     break;
                 case 'site_created':
