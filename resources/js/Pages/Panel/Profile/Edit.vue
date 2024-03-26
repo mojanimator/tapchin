@@ -149,13 +149,15 @@
               </div>
               <div class="my-4 text-gray-700">
                 <p class="text-sm my-1">{{ __('connect_telegram') }}</p>
-                <div @click="telegramLink?copyToClipboard(telegramLink): edit({cmnd:'connect-telegram'})"
-                     class="flex px-1 justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"
+                <div
+                    @click="data.telegram_id?showDialog('danger',__('disconnect_connection?'),__('accept'),edit,{cmnd:'disconnect-telegram'}) :telegramLink?copyToClipboard(telegramLink): edit({cmnd:'connect-telegram'})"
+                    class="flex px-1 justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"
                 >
                   <div @click="" class="text-left" v-if="telegramLink">{{
                       telegramLink
                     }}
                   </div>
+                  <div v-else-if="data.telegram_id" class=" ">{{ __('connected') }}</div>
                   <div v-else class=" ">{{ __('connect') }}</div>
                 </div>
               </div>
@@ -346,7 +348,8 @@ export default {
 
             }
             if (response.data.url) {
-              this.telegramLink = response.data.url;
+              this.telegramLink = response.data.url == 'disconnect' ? null : response.data.url;
+              this.data.telegram_id = response.data.telegram_id;
             }
 
 

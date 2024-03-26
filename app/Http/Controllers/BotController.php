@@ -22,7 +22,7 @@ use PhpParser\Node\Stmt\Else_;
 
 class BotController extends Controller
 {
-    protected $logs, $user;
+    protected $logs, $user, $bot, $app_link;
 
     public function __construct()
     {
@@ -41,7 +41,9 @@ class BotController extends Controller
 
         try {
             $update = json_decode(file_get_contents('php://input'));
-
+            $this->bot = '@' . Variable::TELEGRAM_BOT;
+            $this->app_link = url('');
+            $this->tut_link = url('');
             if (isset($update->message)) {
                 $message = $update->message;
                 $chat_id = $message->chat->id;
@@ -204,7 +206,7 @@ class BotController extends Controller
                     else Telegram::sendMessage($chat_id, "■ سلام $first_name خوش آمدید✋\n\n■ چه کاری براتون انجام بدم؟ ", null, $message_id, $button);
 //                $first_name = $this->MarkDown($first_name);
                     Telegram::sendMessage($chat_id, " \n آموزش ربات\n" . $this->tut_link, null, $message_id, null);
-                    Telegram::logAdmins("■  کاربر [$first_name](tg://user?id=$from_id) ربات هم سیگنال را استارت زد.", 'MarkDown');
+                    Telegram::logAdmins("■  کاربر [$first_name](tg://user?id=$from_id) ربات دبل چین را استارت زد.", 'MarkDown');
 
                 }
 //            elseif ($rank != 'creator' && $rank != 'administrator' && $rank != 'member') {
@@ -232,7 +234,7 @@ class BotController extends Controller
                     Telegram::sendMessage($chat_id, "با موفقیت لغو شد!", null, $message_id, $button);
 
                 } elseif ($text == 'درباره ربات🤖') {
-                    Telegram::sendMessage($chat_id, "✅توسط این ربات می توانید در *اپلیکیشن هم سیگنال* ثبت نام کرده و از *سیگنال* ها و *اخبار* و *آموزش* های این اپلیکیشن برای سرمایه گذاری در بورس استفاده کنید✅", 'MarkDown', $message_id);
+                    Telegram::sendMessage($chat_id, "✅دبل چین: بازار میوه تره بار آنلاین ایران✅", 'MarkDown', $message_id);
                     Telegram::sendMessage($chat_id, " \n لینک دریافت اپلیکیشن:\n  $this->app_link \n", 'MarkDown', $message_id);
                     Telegram::sendMessage($chat_id, "$this->info\n" . " \n آموزش ربات\n  $this->tut_link \n", 'Markdown', $message_id, $button);
                 } elseif ($text == "لغو ثبت نام❌") {
@@ -408,7 +410,7 @@ class BotController extends Controller
 
                 } elseif ((strpos($text, "banner:") !== false)) {
                     if (!in_array($from_id, Telegram::LOGS)) return;
-                    $txt = " سلام   \n *هم سیگنال* هستم . با من میتونی برای گروه یا کانال خودت *فالور جذب کنی*. \n *من یه ربات شبیه دیوارم که گروه/کانال تو رو تبلیغ میکنم و بقیه از فالو کردن اون امتیاز میگیرند و میتونن کانال/گروه خودشونو تبلیغ کنن*  \n آموزش ربات\n  $this->tut_link  $this->bot ";
+                    $txt = " سلام   \n *دبل چین* هستم . با من میتونی برای گروه یا کانال خودت *فالور جذب کنی*. \n *من یه ربات شبیه دیوارم که گروه/کانال تو رو تبلیغ میکنم و بقیه از فالو کردن اون امتیاز میگیرند و میتونن کانال/گروه خودشونو تبلیغ کنن*  \n آموزش ربات\n  $this->tut_link  $this->bot ";
                     $buttons = [[['text' => '👈 دانلود اپلیکیشن 👉', 'url' => $this->app_link]]];
                     $tmp = explode(":", $text);
                     if (count($tmp) >= 2 && $tmp[1] != '')
@@ -685,7 +687,7 @@ class BotController extends Controller
                     $txt = "سلام $first_name\n";
                     $link = "https://t.me/" . str_replace("@", "", $this->bot);
                     $buttons = [[['text' => '👈 دانلود اپلیکیشن 👉', 'url' => $this->app_link]], [['text' => '👈 ورود به ربات 👉', 'url' => $link]]];
-                    $txt .= " 🔔 " . "  📌ربات بورسی هم سیگنال \n💫 منتخب بهترین سیگنال های بورس  \n هم سیگنال 👑 همیار بورسی شما " . " \n👇👇👇 لینک ربات و اپلیکیشن 👇👇👇  \n" . "  \n$link \n\n";
+                    $txt .= " 🔔 " . "  📌ربات بورسی دبل چین \n💫 منتخب بهترین سیگنال های بورس  \n دبل چین 👑 همیار بورسی شما " . " \n👇👇👇 لینک ربات و اپلیکیشن 👇👇👇  \n" . "  \n$link \n\n";
 
 
                     Telegram::deleteMessage($chat_id, $message_id);
@@ -705,7 +707,7 @@ class BotController extends Controller
             if ($text == "/start$this->bot") {
                 Telegram::deleteMessage($chat_id, $message_id);
                 $buttons = [[['text' => '👈 ورود به ربات 👉', 'url' => "https://t.me/" . str_replace("@", "", $this->bot)]]];
-                Telegram::sendMessage($chat_id, " $first_name " . "  \n برای دریافت آخرین سیگنال های بورسی و دریافت اپلیکیشن، وارد ربات شوید.", "Markdown", null, json_encode(['inline_keyboard' => $buttons, 'resize_keyboard' => true]), true);
+//                Telegram::sendMessage($chat_id, " $first_name " . "  \n برای دریافت آخرین سیگنال های بورسی و دریافت اپلیکیشن، وارد ربات شوید.", "Markdown", null, json_encode(['inline_keyboard' => $buttons, 'resize_keyboard' => true]), true);
 
             }
             if ($text == 'بنر' || $Data == 'بنر' || $text == "📌 دریافت بنر تبلیغاتی 📌") {
@@ -720,7 +722,7 @@ class BotController extends Controller
                 }
                 $ref_link = "https://t.me/" . str_replace("@", "", $this->bot) . "?start=" . base64_encode("$from_id");
                 $buttons = [[['text' => '👈 دانلود اپلیکیشن 👉', 'url' => $this->app_link]], [['text' => '👈 ورود به ربات 👉', 'url' => $ref_link]]];
-                Telegram::sendMessage($chat_id, " 🔔 " . "  📌*ربات بورسی هم سیگنال* \n💫 *منتخب بهترین سیگنال های بورس  \n هم سیگنال 👑 همیار بورسی شما " . " \n👇👇👇 لینک ربات و اپلیکیشن 👇👇👇  \n" . "  \n$ref_link \n\n" . "$this->bot", null, null, json_encode(['inline_keyboard' => $buttons, 'resize_keyboard' => true]), false);
+                Telegram::sendMessage($chat_id, " 🔔 " . "  📌*ربات دبل چین* \n💫 *ما در دبل چین تلاش می کنیم بازار میوه و تره بار اینترنتی را با قیمت مناسب و بدون واسطه برای تمام مردم ایران فراهم کنیم  \n دبل چین 👑 بازار میوه تره بار آنلاین ایرانیان " . " \n👇👇👇 لینک ربات و اپلیکیشن 👇👇👇  \n" . "  \n$ref_link \n\n" . "$this->bot", null, null, json_encode(['inline_keyboard' => $buttons, 'resize_keyboard' => true]), false);
 
             }
 //referral & connect
@@ -753,7 +755,6 @@ class BotController extends Controller
 //            Telegram::sendMessage($chat_id, $code);
 
                 if (!empty($code)) {
-                    Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
 
                     if (str_starts_with($code, 'admin') || str_starts_with($code, 'user')) { //connect to telegram
                         if (str_starts_with($code, 'admin'))

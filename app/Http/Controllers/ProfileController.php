@@ -53,6 +53,10 @@ class ProfileController extends Controller
 
 
         switch ($request->cmnd) {
+            case 'disconnect-telegram':
+                $user->telegram_id = null;
+                $user->save();
+                return response()->json(['message' => __('updated_successfully'), 'url' => 'disconnect', 'telegram_id' => null], 200);
             case 'connect-telegram':
                 $user->remember_token = Carbon::now()->getTimestampMs();
                 $user->save();
