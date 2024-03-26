@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Helpers\Telegram;
+use App\Models\Admin;
 use App\Models\User;
 
 
@@ -124,16 +125,16 @@ class BotController extends Controller
 //        $CANCEL_REGISTER = "لغو ثبت نام";
 
         if ($tc == 'private') {
-            $this->user = User::where('telegram_id', $from_id)->first();
+            $this->user = Admin::where('telegram_id', $from_id)->first();
 
             if ($text == 'hi') {
                 Telegram::sendMessage($from_id, print_r($update, true));
                 return;
             }
 
-//            Telegram::sendMessage($from_id, "در حال بروزرسانی هستیم...");
+            Telegram::sendMessage($from_id, "در حال بروزرسانی هستیم...");
 //
-//            return;
+            return;
 //            return (string)($USER_REGISTER . "\xE2\x9C\x85" == $text);
 //            return (string)(0 == null);
 //            return $this->user_in_channel("@lamassaba", $from_id);// == 'administrator' or 'creator'

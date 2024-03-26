@@ -13,6 +13,7 @@ use App\Models\Product;
 use App\Models\Repository;
 use App\Models\Variation;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -153,6 +154,7 @@ class VariationController extends Controller
             'grade' => $request->grade,
             'pack_id' => $request->pack_id,
             'weight' => $request->weight,
+            'name' => $request->name,
 
         ])->first();
         if (!$data) {
@@ -178,9 +180,19 @@ class VariationController extends Controller
             $data->save();
         }
         if ($data) {
-            if ($request->img)
+            if ($request->img) {
                 Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
+            } else {
+                $path = Storage::path("public/products/$data->product_id.jpg");
 
+                if (!Storage::exists("public/variations")) {
+                    File::makeDirectory(Storage::path("public/variations"), $mode = 0755,);
+                }
+                if (!Storage::exists("public/variations/$data->id")) {
+                    File::makeDirectory(Storage::path("public/variations/$data->id"), $mode = 0755,);
+                }
+                File::copy($path, Storage::path("public/variations/$data->id/thumb.jpg"));
+            }
             $data->repo = $repo;
             $data->agency = $agency;
 
@@ -264,14 +276,14 @@ class VariationController extends Controller
                     $limit = Variable::VARIATION_IMAGE_LIMIT;
                     $type = Variable::IMAGE_FOLDERS[Variation::class];
                     $allFiles = Storage::allFiles("public/$type/$id");
-                    if (!$request->path && count($allFiles) >= $limit) //  add extra image
+                    if (!$request->path && count($allFiles) >= $limit + 1) //  add extra image
                         return response()->json(['errors' => [sprintf(__('validator.max_images'), $limit)], 422]);
                     if (!$request->img) //  add extra image
                         return response()->json(['errors' => [__('file_not_exists')], 422]);
-
-                    $path = Storage::path("public/$type/$id/" . basename($request->path));
+                    $name = str_contains($request->name, '-') ? explode('-', $request->name)[1] : $request->name;
+                    $path = Storage::path("public/$type/$id/$name.jpg");
                     if (File::exists($path)) File::delete($path);
-                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], $request->name == 'img-thumb' ? 'thumb' : null, $id);
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], $name, $id);
 //                    if ($data) {
 //                        $data->status = 'review';
 //                        $data->save();

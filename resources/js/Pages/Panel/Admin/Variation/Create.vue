@@ -63,11 +63,23 @@
               <Selector ref="productSelector" v-model="form.product_id"
                         :data="$page.props.products"
                         :error="form.errors.product_id"
+                        @change="el=>form.name=$page.props.products.filter((e)=>e.id==form.product_id)[0].name "
                         :label="__('product')" classes=""
                         :id="`product_id`">
 
               </Selector>
+              <div class="my-2">
+                <TextInput
+                    :id="`name`"
+                    type="name"
+                    :placeholder="`${__('name')}`"
+                    classes=" p-2   min-w-[5rem]"
+                    v-model="form.name"
+                    autocomplete="name"
+                    :error="form.errors.name">
 
+                </TextInput>
+              </div>
 
               <div class="my-2">
                 <Selector ref="gradeSelector" v-model="form.grade"
@@ -222,6 +234,7 @@ export default {
     return {
       form: useForm({
 
+        name: null,
         product_id: null,
         repo_id: null,
         weight: null,
