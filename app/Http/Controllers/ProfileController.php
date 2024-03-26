@@ -54,7 +54,7 @@ class ProfileController extends Controller
 
         switch ($request->cmnd) {
             case 'connect-telegram':
-                $user->remember_token = Hash::make(Carbon::now());
+                $user->remember_token = Carbon::now()->microsecond;
                 $user->save();
                 $url = "t.me/" . Variable::TELEGRAM_BOT . "?start=" . ($isAdmin ? "admin" : "user") . "$user->remember_token";
                 return response()->json(['message' => __('open_link_in_telegram_and_start'), 'url' => $url], 200);
