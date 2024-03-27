@@ -27,6 +27,7 @@
 // import L from "leaflet";
 // import L from '../neshan1.9.4'
 import 'leaflet.fullscreen';
+// import 'leaflet-bing-layer/leaflet-bing-layer.min';
 import {
   MapPinIcon,
 } from "@heroicons/vue/24/outline";
@@ -34,7 +35,6 @@ import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import SearchInput from "@/Components/SearchInput.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
 import {Head, Link} from '@inertiajs/vue3';
-import 'leaflet-bing-layer/leaflet-bing-layer.min';
 
 let self;
 export default {
@@ -112,17 +112,17 @@ export default {
 
     // L.control.scale().addTo(map);
 
-    // L.tileLayer(this.mapLayers.google, {
-    //   // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    //   // maxZoom: 18,
-    //   id: 'mapbox/streets-v11',
-    //   // tileSize: 512,
-    //   attribution: null,
-    //   maxNativeZoom: 19, // OSM max available zoom is at 19.
-    //   maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
-    //   // zoomOffset: -1,
-    //   accessToken: this.mapKey,
-    // }).addTo(this.map);
+    L.tileLayer(this.mapLayers.google, {
+      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      // maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      // tileSize: 512,
+      attribution: null,
+      maxNativeZoom: 19, // OSM max available zoom is at 19.
+      maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
+      // zoomOffset: -1,
+      accessToken: this.mapKey,
+    }).addTo(this.map);
     // L.tileLayer.bing({
     //   bingMapsKey: this.bingMapsKey,
     //   imagerySet: 'RoadOnDemand',
