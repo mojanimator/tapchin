@@ -16,6 +16,9 @@
       </ul>
     </div>
     <div class=" " id="map"></div>
+    <!--    <NeshanMap-->
+    <!--        :mapKey="mapKey"-->
+    <!--    />-->
   </div>
 </template>
 
@@ -43,9 +46,12 @@ export default {
     MapPinIcon,
     LoadingIcon,
     Head,
+    NeshanMap,
   },
   data() {
     return {
+      mapKey: import.meta.env.VITE_MAP_API,
+      mapServiceKey: import.meta.env.VITE_MAP_SERVICE_API,
       mapAddress: null,
       loading: false,
       search: null,
@@ -98,19 +104,19 @@ export default {
 
       }
     }).setView(this.location, this.location ? 16 : 8);
-    /*
-        // L.control.scale().addTo(map);
-        L.tileLayer(this.mapLayers.google, {
-          // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-          // maxZoom: 18,
-          id: 'mapbox/streets-v11',
-          // tileSize: 512,
-          maxNativeZoom: 19, // OSM max available zoom is at 19.
-          maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
-          // zoomOffset: -1,
-          accessToken: import.meta.env.VITE_MAP_API
-        }).addTo(this.map);
-    */
+
+    // L.control.scale().addTo(map);
+    L.tileLayer(this.mapLayers.google, {
+      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      // maxZoom: 18,
+      id: 'mapbox/streets-v11',
+      // tileSize: 512,
+      maxNativeZoom: 19, // OSM max available zoom is at 19.
+      maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
+      // zoomOffset: -1,
+      accessToken: import.meta.env.VITE_MAP_API
+    }).addTo(this.map);
+
     //geosearch
     this.mapSearchProvider = new OpenStreetMapProvider();
     // const searchControl = new GeoSearchControl({
@@ -220,6 +226,7 @@ export default {
       this.mapAddress = null;
       this.$emit('change', this.mapAddress);
       this.loading = true;
+      this.searchNeshan({search: this.search});
       this.mapSearchProvider.search({query: this.search}).then(function (result) {
         // console.log(result);
         self.searchMapResults = result;
@@ -228,56 +235,30 @@ export default {
       });
       this.loading = false;
     },
-    searchNeshan() {
-      // restarting the markers
-      for (var j = 0; j < searchMarkers.length; j++) {
-        if (searchMarkers[j] != null) {
-          myMap.removeLayer(searchMarkers[j]);
-          searchMarkers[j] = null;
-        }
-      }
-      marker.setLatLng([centerLat.value, centerLng.value]);
+    searchNeshan(param) {
+
       //getting term value from input tag
-      var term = document.getElementById("term").value;
+      var term = param.search || '';
+      var lat = param.lat || '';
+      var lon = param.lon || '';
+
       //making url
-      var url = `https://api.neshan.org/v1/search?term=${term}&lat=${centerLat.value}&lng=${centerLng.value}`;
+      var url = `https://api.neshan.org/v1/search?term=${term}&lat=${lat}&lng=${lon}`;
       //add your api key
       var params = {
         headers: {
-          'Api-Key': import.meta.env.VITE_MAP_API
+          'Api-Key': import.meta.env.VITE_MAP_SERVICE_API
         },
 
       };
       //sending get request
-      axios.get(url, params)
+      window.axios.get(url, params)
           .then(data => {
-            document.getElementById("resualt").innerHTML = "";
-            if (data.data.count != 0) {
-              document.getElementById("panel").style = "height: 60%;"
-            } else {
-              document.getElementById("panel").style = "height: fit-content;"
-            }
-            document.getElementById("resultCount").textContent = `تعداد نتایج : ${data.data.count}`
             //set center of map to marker location
             console.log(data.data);
-            myMap.flyTo([centerLat.value, centerLng.value], 12);
-
-            //for every search resualt add marker
-            var i;
-            for (i = 0; i < data.data.count; i++) {
-              var info = data.data.items[i];
-              searchMarkers[i] = L.marker([info.location.y, info.location.x], {
-                icon: greenIcon,
-                title: info.title
-              }).addTo(myMap);
-              makeDiveResualt(data.data.items[i], i);
-            }
 
 
           }).catch(error => {
-        document.getElementById("resualt").innerHTML = "";
-        document.getElementById("panel").style = "height: fit-content;"
-        document.getElementById("resultCount").textContent = `تعداد نتایج : 0`
         console.log(error.response);
       });
     },
@@ -361,5 +342,5 @@ export default {
 </script>
 
 <style scoped>
-
+@import url("@neshan-maps-platform/vue3-openlayers/dist/style.css");
 </style>
