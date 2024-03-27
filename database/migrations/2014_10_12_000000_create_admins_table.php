@@ -40,7 +40,7 @@ return new class extends Migration {
             $table->string('telegram_id', 50)->nullable()->index();
             $table->string('bale_id', 50)->nullable()->index();
             $table->string('ref_id', 10)->nullable();
-
+            $table->tinyInteger('step')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

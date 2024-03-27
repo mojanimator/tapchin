@@ -46,6 +46,7 @@ return new class extends Migration {
             $table->string('access', 20)->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
+            $table->tinyInteger('step')->nullable();
         });
 
 //        \Illuminate\Support\Facades\DB::table('users')->insert(\App\Http\Helpers\Variable::getUsers());

@@ -1,4 +1,6 @@
 <template>
+
+
   <div class=" ">
     <div>
       <SearchInput class="w-full  " v-model="search" @input="searchMap" @search="searchMap"/>
@@ -19,7 +21,8 @@
 
 <script>
 
-import L from "leaflet";
+// import L from "leaflet";
+// import L from '../neshan1.9.4'
 import 'leaflet.fullscreen';
 import {
   MapPinIcon,
@@ -28,6 +31,7 @@ import {
 import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import SearchInput from "@/Components/SearchInput.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
+import {Head, Link} from '@inertiajs/vue3';
 
 let self;
 export default {
@@ -38,6 +42,7 @@ export default {
     SearchInput,
     MapPinIcon,
     LoadingIcon,
+    Head,
   },
   data() {
     return {
@@ -81,6 +86,11 @@ export default {
 
     this.map = new L.map('map', {
       fullscreenControl: true,
+      key: import.meta.env.VITE_MAP_API,
+      maptype: "neshan",
+      center: [35.699756, 51.338076],
+      poi: false,
+      traffic: false,
       fullscreenControlOptions: {
         position: 'bottomleft',
         pseudoFullscreen: true,
@@ -88,8 +98,9 @@ export default {
 
       }
     }).setView(this.location, this.location ? 16 : 8);
+
     // L.control.scale().addTo(map);
-    L.tileLayer(this.mapLayers.google, {
+    L.tileLayer(this.mapLayers.osm, {
       // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
       // maxZoom: 18,
       id: 'mapbox/streets-v11',
@@ -97,9 +108,8 @@ export default {
       maxNativeZoom: 19, // OSM max available zoom is at 19.
       maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
       // zoomOffset: -1,
-      accessToken: 'your.mapbox.access.token'
+      accessToken: import.meta.env.VITE_MAP_API
     }).addTo(this.map);
-
     //geosearch
     this.mapSearchProvider = new OpenStreetMapProvider();
     // const searchControl = new GeoSearchControl({
@@ -216,6 +226,59 @@ export default {
         //   self.setLocation(self.searchMapResults[0]);
       });
       this.loading = false;
+    },
+    searchNeshan() {
+      // restarting the markers
+      for (var j = 0; j < searchMarkers.length; j++) {
+        if (searchMarkers[j] != null) {
+          myMap.removeLayer(searchMarkers[j]);
+          searchMarkers[j] = null;
+        }
+      }
+      marker.setLatLng([centerLat.value, centerLng.value]);
+      //getting term value from input tag
+      var term = document.getElementById("term").value;
+      //making url
+      var url = `https://api.neshan.org/v1/search?term=${term}&lat=${centerLat.value}&lng=${centerLng.value}`;
+      //add your api key
+      var params = {
+        headers: {
+          'Api-Key': import.meta.env.VITE_MAP_API
+        },
+
+      };
+      //sending get request
+      axios.get(url, params)
+          .then(data => {
+            document.getElementById("resualt").innerHTML = "";
+            if (data.data.count != 0) {
+              document.getElementById("panel").style = "height: 60%;"
+            } else {
+              document.getElementById("panel").style = "height: fit-content;"
+            }
+            document.getElementById("resultCount").textContent = `تعداد نتایج : ${data.data.count}`
+            //set center of map to marker location
+            console.log(data.data);
+            myMap.flyTo([centerLat.value, centerLng.value], 12);
+
+            //for every search resualt add marker
+            var i;
+            for (i = 0; i < data.data.count; i++) {
+              var info = data.data.items[i];
+              searchMarkers[i] = L.marker([info.location.y, info.location.x], {
+                icon: greenIcon,
+                title: info.title
+              }).addTo(myMap);
+              makeDiveResualt(data.data.items[i], i);
+            }
+
+
+          }).catch(error => {
+        document.getElementById("resualt").innerHTML = "";
+        document.getElementById("panel").style = "height: fit-content;"
+        document.getElementById("resultCount").textContent = `تعداد نتایج : 0`
+        console.log(error.response);
+      });
     },
     removeMarker() {
       this.map.eachLayer((layer) => {
