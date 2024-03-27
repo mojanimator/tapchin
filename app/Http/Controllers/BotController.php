@@ -779,7 +779,7 @@ class BotController extends Controller
                                 [['text' => $this->user ? "ویرایش اطلاعات✏" : "ثبت نام✅"]],
                                 [['text' => 'درباره ربات🤖']],
                             ], 'resize_keyboard' => true]);
-                            Telegram::sendMessage($chat_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, $button, false);
+                            Telegram::sendMessage($chat_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, $tc == "private" ? $button : null, false);
                             if ($tc == 'private')
                                 Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$chat_id)  ", "Markdown", null, null, false);
                             else
