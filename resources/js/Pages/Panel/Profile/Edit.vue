@@ -149,6 +149,22 @@
               </div>
               <div class="my-4 text-gray-700">
                 <p class="text-sm my-1">{{ __('connect_telegram') }}</p>
+                <div class="flex  flex-col bg-gray-100 rounded m-1 p-1 sm:p-2 text-sm">
+                  <div v-for="(row,idx) in __('help.connect_telegram')">
+                    <div v-for="(col,ix) in row">
+                      <a class=" text-primary cursor-pointer text-left  block" v-if="col.indexOf('http')!==-1"
+                         target="new"
+                         :href="col">
+                        <span>{{ col }}</span>
+                      </a>
+                      <div v-else :class="{'font-bold my-1 pt-2 pb-1 border-b ':ix==0}" class="text-gray-500">{{
+                          col
+                        }}
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
                 <div
                     @click="data.telegram_id?showDialog('danger',__('disconnect_connection?'),__('accept'),edit,{cmnd:'disconnect-telegram'}) :telegramLink?copyToClipboard(telegramLink): edit({cmnd:'connect-telegram'})"
                     class="flex px-1 justify-center cursor-pointer block w-full rounded bg-primary-100 hover:bg-primary-200 text-primary-600 p-2"

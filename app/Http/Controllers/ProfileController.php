@@ -58,6 +58,8 @@ class ProfileController extends Controller
                 $user->save();
                 return response()->json(['message' => __('updated_successfully'), 'url' => 'disconnect', 'telegram_id' => null], 200);
             case 'connect-telegram':
+                if ($isAdmin && $user->role != 'owner')
+                    return response()->json(['message' => __('only_owner_can_connect_telegram')], Variable::ERROR_STATUS);
                 $user->remember_token = Carbon::now()->getTimestampMs();
                 $user->save();
                 $url = "t.me/" . Variable::TELEGRAM_BOT . "?start=" . ($isAdmin ? "admin" : "user") . "$user->remember_token";

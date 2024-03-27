@@ -726,8 +726,7 @@ class BotController extends Controller
 
             }
 //referral & connect
-            if ((strpos($text, "/start ") !== false)) {
-
+            if ((strpos($text, "/start ") !== false) || ($tc != 'private' && strpos($text, "?start=admin") !== false)) {
                 // agar ebarate /start ersal shod
                 $this->user = Admin::where('telegram_id', $from_id)->first();
                 $this->user = $this->user ?? User::where('telegram_id', $from_id)->first();
@@ -750,8 +749,11 @@ class BotController extends Controller
 
 
                 Telegram::logAdmins("■  کاربر [$first_name](tg://user?id=$from_id) ربات دبل چین را استارت کرد.", 'MarkDown');
-                $code = substr($text, 7); // joda kardan id kasi ke rooye linke davatesh click shode
+                if ($tc == 'private')
+                    $code = substr($text, 7); // joda kardan id kasi ke rooye linke davatesh click shode
 //            Telegram::sendMessage($chat_id, $code);
+                else
+                    $code = explode('?start=', $text)[1];
 
                 if (!empty($code)) {
 
@@ -777,8 +779,11 @@ class BotController extends Controller
                                 [['text' => $this->user ? "ویرایش اطلاعات✏" : "ثبت نام✅"]],
                                 [['text' => 'درباره ربات🤖']],
                             ], 'resize_keyboard' => true]);
-                            Telegram::sendMessage($from_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, $button, false);
-                            Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$from_id)  ", "Markdown", null, null, false);
+                            Telegram::sendMessage($chat_id, "\n🔔\nتبریک!" . " [$first_name](tg://user?id=$from_id)  " . " عزیز، با موفقیت به تلگرام متصل شدید", "Markdown", null, $button, false);
+                            if ($tc == 'private')
+                                Telegram::logAdmins("\n🔔\nیک اکانت به تلگرام متصل شد " . " [$first_name](tg://user?id=$chat_id)  ", "Markdown", null, null, false);
+                            else
+                                Telegram::logAdmins("\n🔔\nیک گروه به تلگرام متصل شد " . " [$first_name](tg://user?id=$chat_id)  ", "Markdown", null, null, false);
                         } else {
                             Telegram::sendMessage($from_id, __('user_not_found'), null, null, null, false);
 

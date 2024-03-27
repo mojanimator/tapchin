@@ -177,7 +177,7 @@ class Variable
     const CITY_ID = null; //61 تجریش
     const RATIOS = ['slider' => 1.8];
     const PACKAGE = 'com.dabel.dabelchin';
-    const TELEGRAM_BOT = 'tapchin_bot';
+    const TELEGRAM_BOT = 'dabelchinbot';
     const LINKS = ['bazaar' => '', 'myket' => '', 'playstore' => ''];
 
     static $CITIES = [];
