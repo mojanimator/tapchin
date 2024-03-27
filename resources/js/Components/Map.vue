@@ -9,9 +9,9 @@
       <ul class=" border boredr-t-0 shadow-lg rounded mb-1">
         <!--        <li v-if="searchMapResults.length==0">{{ __('no_result') }}</li>-->
         <li class="py-3 px-1 text-neutral-600 cursor-pointer hover:bg-neutral-100 rounded"
-            @click="setLocation(res); getAddressFromLocation({lat: res.y, lng: res.x});"
+            @click="setLocation({y: res.location.y, x: res.location.x}); getAddressFromLocation({lat: res.location.y, lng: res.location.x});"
             v-for="res in searchMapResults">
-          {{ res.label }}
+          {{ res.address }}
         </li>
       </ul>
     </div>
@@ -200,6 +200,7 @@ export default {
         lat: data.lat,
         lon: data.lon,
       };
+
       this.$emit('change', this.mapAddress);
 
     },
@@ -227,23 +228,29 @@ export default {
       this.$emit('change', this.mapAddress);
       this.loading = true;
       this.searchNeshan({search: this.search});
-      this.mapSearchProvider.search({query: this.search}).then(function (result) {
-        // console.log(result);
-        self.searchMapResults = result;
-        // if (self.searchMapResults.length == 1)
-        //   self.setLocation(self.searchMapResults[0]);
-      });
+      // this.mapSearchProvider.search({query: this.search}).then(function (result) {
+      //   // console.log(result);
+      //   self.searchMapResults = result;
+      //   // if (self.searchMapResults.length == 1)
+      //   //   self.setLocation(self.searchMapResults[0]);
+      // });
       this.loading = false;
     },
-    searchNeshan(param) {
+    searchNeshan(param, type = 'geo') {
+      if (type == 'geo' && (!param.search || param.search.length < 3)) return;
 
-      //getting term value from input tag
+      this.loading = true;
+
+      var mapLoc = this.map.getCenter();
       var term = param.search || '';
-      var lat = param.lat || '';
-      var lon = param.lon || '';
+      var lat = param.lat || mapLoc.lat || this.iranLoc[0];
+      var lon = param.lng || mapLoc.lng || this.iranLoc[1];
 
       //making url
-      var url = `https://api.neshan.org/v1/search?term=${term}&lat=${lat}&lng=${lon}`;
+      if (type == 'rgeo')
+        var url = `	https://api.neshan.org/v5/reverse?lat=${lat}&lng=${lon}`;
+      else
+        var url = `https://api.neshan.org/v1/search?term=${term}&lat=${lat}&lng=${lon}`;
       //add your api key
       var params = {
         headers: {
@@ -253,14 +260,32 @@ export default {
       };
       //sending get request
       window.axios.get(url, params)
-          .then(data => {
+          .then(response => {
             //set center of map to marker location
-            console.log(data.data);
-
+            // console.log(response.data);
+            if (type == 'rgeo' && response.data.status == 'OK') {
+              response.data.address = response.data;
+              response.data.display_name = response.data.formatted_address;
+              response.data.lat = lat;
+              response.data.lon = lon;
+              this.search = response.data.formatted_address;
+              this.setCurrentAddress(response.data);
+              this.map.eachLayer((layer) => {
+                if (layer instanceof L.Marker)
+                  layer.bindPopup(`<small>${response.data.formatted_address}</small>`);
+                // layer.openPopup();
+              });
+            } else
+              this.searchMapResults = response.data.items;
 
           }).catch(error => {
         console.log(error.response);
+      }).finally(() => {
+        // always executed
+        this.loading = false;
+
       });
+      ;
     },
     removeMarker() {
       this.map.eachLayer((layer) => {
@@ -309,6 +334,10 @@ export default {
       if (!latLon) return null;
 
       if (!latLon.lat) return null;
+
+      this.searchNeshan(latLon, 'rgeo');
+      return;
+
       this.loading = true;
       window.axios.get("https://nominatim.openstreetmap.org/reverse", {
         params: {
