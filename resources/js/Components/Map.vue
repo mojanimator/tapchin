@@ -132,7 +132,17 @@ export default {
     //   maxNativeZoom: 19,
     //   attribution: null,
     // }).addTo(this.map);
-
+    // L.tileLayer('https://static.neshan.org/sdk/openlayers/5.3.0/ol.js?callback=initMyMap&v=5', {
+    //   // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    //   // maxZoom: 18,
+    //   // tileSize: 512,
+    //   attribution: null,
+    //   maxNativeZoom: 19, // OSM max available zoom is at 19.
+    //   maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
+    //   // zoomOffset: -1,
+    //   key: this.mapKey,
+    //
+    // }).addTo(this.map);
     //geosearch
     this.mapSearchProvider = new OpenStreetMapProvider();
     // const searchControl = new GeoSearchControl({
