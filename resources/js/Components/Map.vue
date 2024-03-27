@@ -30,11 +30,11 @@ import 'leaflet.fullscreen';
 import {
   MapPinIcon,
 } from "@heroicons/vue/24/outline";
-import NeshanMap from "@neshan-maps-platform/vue3-openlayers";
 import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import SearchInput from "@/Components/SearchInput.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
 import {Head, Link} from '@inertiajs/vue3';
+import 'leaflet-bing-layer/leaflet-bing-layer.min';
 
 let self;
 export default {
@@ -46,12 +46,12 @@ export default {
     MapPinIcon,
     LoadingIcon,
     Head,
-    NeshanMap,
   },
   data() {
     return {
       mapKey: import.meta.env.VITE_MAP_API,
       mapServiceKey: import.meta.env.VITE_MAP_SERVICE_API,
+      bingMapsKey: 'AnG2T50AOKMBYM0Qe3UEoyYYGlEpRswFDz7IGeH9-w4-hekJeRCOPaWwgF88AOwX',
       mapAddress: null,
       loading: false,
       search: null,
@@ -66,6 +66,11 @@ export default {
           {
             google: "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&s=IR&hl=fa",
             osm: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
+            parsimap: "https://vt.parsimap.com/comapi.svc/tile/parsimap/%7Bx%7D/%7By%7D/%7Bz%7D.jpg?token=ee9e06b3-dcaa-4a45-a60c-21ae72dca0bb",
+            air: "https://api.ellipsis-drive.com/v3/ogc/wcs/93e1c322-f21e-4395-9566-51abf473d2b9?request=getCapabilities",
+            bing: "https://www.bing.com/api/maps/mapcontrol?key=AnG2T50AOKMBYM0Qe3UEoyYYGlEpRswFDz7IGeH9-w4-hekJeRCOPaWwgF88AOwX&callback=loadMapScenario",
+            METADATA_URL: `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/{'imagerySet'}?key={bingMapsKey}&include=ImageryProviders&uriScheme=https&c={'culture'}`,
+            POINT_METADATA_URL: `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/{'imagerySet'}/{lat},{lng}?zl={z}&key={bingMapsKey}&uriScheme=https&c={'culture'}`
 
           },
       searchLayer: null,
@@ -90,13 +95,13 @@ export default {
     });
     // loc = iranLoc;
 
-    this.map = new L.map('map', {
+    this.map = new L.Map('map', {
       fullscreenControl: true,
-      key: import.meta.env.VITE_MAP_API,
+      key: this.mapKey,
       maptype: "neshan",
       center: [35.699756, 51.338076],
-      poi: true,
-      traffic: true,
+      poi: false,
+      traffic: false,
       fullscreenControlOptions: {
         position: 'bottomleft',
         pseudoFullscreen: true,
@@ -106,16 +111,27 @@ export default {
     }).setView(this.location, this.location ? 16 : 8);
 
     // L.control.scale().addTo(map);
-    L.tileLayer(this.mapLayers.google, {
-      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      // maxZoom: 18,
-      id: 'mapbox/streets-v11',
-      // tileSize: 512,
-      maxNativeZoom: 19, // OSM max available zoom is at 19.
-      maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
-      // zoomOffset: -1,
-      accessToken: import.meta.env.VITE_MAP_API
-    }).addTo(this.map);
+
+    // L.tileLayer(this.mapLayers.google, {
+    //   // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    //   // maxZoom: 18,
+    //   id: 'mapbox/streets-v11',
+    //   // tileSize: 512,
+    //   attribution: null,
+    //   maxNativeZoom: 19, // OSM max available zoom is at 19.
+    //   maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
+    //   // zoomOffset: -1,
+    //   accessToken: this.mapKey,
+    // }).addTo(this.map);
+    // L.tileLayer.bing({
+    //   bingMapsKey: this.bingMapsKey,
+    //   imagerySet: 'RoadOnDemand',
+    //   culture: 'fa-IR',
+    //   minZoom: 1,
+    //   minNativeZoom: 1,
+    //   maxNativeZoom: 19,
+    //   attribution: null,
+    // }).addTo(this.map);
 
     //geosearch
     this.mapSearchProvider = new OpenStreetMapProvider();
@@ -371,5 +387,5 @@ export default {
 </script>
 
 <style scoped>
-@import url("@neshan-maps-platform/vue3-openlayers/dist/style.css");
+/*@import url("@neshan-maps-platform/vue3-openlayers/dist/style.css");*/
 </style>

@@ -10,8 +10,11 @@ import {createRequire} from 'node:module';
 const require = createRequire(import.meta.url);
 
 export default defineConfig({
-
+    optimizeDeps: {
+        exclude: ['leaflet-bing-layer']
+    },
     plugins: [
+
         // manifestSRI(),
         VitePWA({
             registerType: 'autoUpdate',
