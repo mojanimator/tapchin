@@ -27,7 +27,7 @@ import 'leaflet.fullscreen';
 import {
   MapPinIcon,
 } from "@heroicons/vue/24/outline";
-
+import NeshanMap from "@neshan-maps-platform/vue3-openlayers";
 import {GeoSearchControl, OpenStreetMapProvider} from 'leaflet-geosearch';
 import SearchInput from "@/Components/SearchInput.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
@@ -89,8 +89,8 @@ export default {
       key: import.meta.env.VITE_MAP_API,
       maptype: "neshan",
       center: [35.699756, 51.338076],
-      poi: false,
-      traffic: false,
+      poi: true,
+      traffic: true,
       fullscreenControlOptions: {
         position: 'bottomleft',
         pseudoFullscreen: true,
@@ -98,18 +98,19 @@ export default {
 
       }
     }).setView(this.location, this.location ? 16 : 8);
-
-    // L.control.scale().addTo(map);
-    L.tileLayer(this.mapLayers.osm, {
-      // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      // maxZoom: 18,
-      id: 'mapbox/streets-v11',
-      // tileSize: 512,
-      maxNativeZoom: 19, // OSM max available zoom is at 19.
-      maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
-      // zoomOffset: -1,
-      accessToken: import.meta.env.VITE_MAP_API
-    }).addTo(this.map);
+    /*
+        // L.control.scale().addTo(map);
+        L.tileLayer(this.mapLayers.google, {
+          // attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+          // maxZoom: 18,
+          id: 'mapbox/streets-v11',
+          // tileSize: 512,
+          maxNativeZoom: 19, // OSM max available zoom is at 19.
+          maxZoom: 22, // Match the map maxZoom, or leave map.options.maxZoom undefined.
+          // zoomOffset: -1,
+          accessToken: import.meta.env.VITE_MAP_API
+        }).addTo(this.map);
+    */
     //geosearch
     this.mapSearchProvider = new OpenStreetMapProvider();
     // const searchControl = new GeoSearchControl({
