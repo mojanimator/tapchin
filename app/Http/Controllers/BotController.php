@@ -765,7 +765,7 @@ class BotController extends Controller
                         if ($user) {
                             $this->user = $user;
                             $user->remember_token = null;
-                            $user->telegram_id = $from_id;
+                            $user->telegram_id = $chat_id;
                             $user->save();
                             $button = json_encode(['keyboard' => [
                                 in_array($from_id, Telegram::LOGS) ? [['text' => 'پنل مدیران🚧']] : [],

@@ -63,7 +63,7 @@ class ProfileController extends Controller
                 $user->remember_token = Carbon::now()->getTimestampMs();
                 $user->save();
                 $url = "t.me/" . Variable::TELEGRAM_BOT . "?start=" . ($isAdmin ? "admin" : "user") . "$user->remember_token";
-                return response()->json(['message' => __('open_link_in_telegram_and_start'), 'url' => $url], 200);
+                return response()->json(['message' => __('onetime_link_created_successfully'), 'url' => $url], 200);
 
             case   'upload-img':
                 if (!$request->img) //  add extra image
