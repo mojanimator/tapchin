@@ -760,6 +760,10 @@ class DatabaseSeeder extends Seeder
 
         }
 
+        $variations=[
+            ['product_id'=>]
+        ];
+
     }
 
     public function createVariations()

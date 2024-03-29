@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
+use App\Http\Requests\PackRequest;
 use App\Http\Requests\ProductRequest;
 use App\Models\Admin;
 use App\Models\Pack;
@@ -67,7 +68,7 @@ class PackController extends Controller
         return response()->json($response, $errorStatus);
     }
 
-    protected function create(ProductRequest $request)
+    protected function create(PackRequest $request)
     {
 //        $user = $request->user();
 

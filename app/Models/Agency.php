@@ -27,6 +27,7 @@ class Agency extends Model
         'address',
         'location',
         'status',
+        'order_profit_percent',
     ];
     protected $casts = [
         'access' => 'array'
