@@ -57,9 +57,8 @@ class AdminController extends Controller
             }
         } elseif ($data) {
 
-            $request->merge([
-            ]);
-            if ($request->password && $request->password_confirmation && $request->password == $request->password_confirmation) {
+
+            if ($request->password) {
                 $request->merge([
                     'password' => Hash::make($request->password),
                 ]);
