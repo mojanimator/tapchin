@@ -59,7 +59,11 @@ class AdminController extends Controller
 
             $request->merge([
             ]);
-
+            if ($request->password && $request->password_confirmation && $request->password == $request->password_confirmation) {
+                $request->merge([
+                    'password' => Hash::make($request->password),
+                ]);
+            }
             if ($data->update($request->all())) {
 
                 AdminFinancial::updateOrCreate(['admin_id' => $data->id,],
