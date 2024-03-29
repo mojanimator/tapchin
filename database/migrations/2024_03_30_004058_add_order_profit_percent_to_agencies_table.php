@@ -12,9 +12,8 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('cars', function (Blueprint $table) {
-            $table->unsignedBigInteger('driver_id')->nullable();
-            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('no action');
+        Schema::table('agencies', function (Blueprint $table) {
+            $table->unsignedDecimal('order_profit_percent', 4, 2)->after('wallet')->nullable(); //weight|count
 
         });
     }
@@ -26,7 +25,7 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('cars', function (Blueprint $table) {
+        Schema::table('agencies', function (Blueprint $table) {
             //
         });
     }
