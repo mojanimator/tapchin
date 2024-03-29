@@ -29,12 +29,33 @@
 
             <form @submit.prevent="submit">
 
+              <div class="my-2" v-if="$page.props.agency && $page.props.agency.level<3">
+                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('agency')"
+                              :id="'agency'" v-model:selected="form.agency_id" :preload="null">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+
+              </div>
               <div class="my-2">
-                <UserSelector :colsData="['fullname','phone','agency' ]"
+                <UserSelector v-if="form.agency_id" :colsData="['fullname','phone','agency' ]"
                               :labelsData="['name','phone','agency' ]"
                               :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id||''})`}"
                               :error="form.errors.driver_id"
-                              :link="route('admin.panel.shipping.driver.search') "
+                              :link="`${route('admin.panel.shipping.driver.search')}?agency_id=${form.agency_id}`"
                               :label="__('driver')"
                               :id="'driver'" v-model:selected="form.driver_id" :preload="null">
                   <template v-slot:selector="props">
@@ -54,11 +75,11 @@
                 </UserSelector>
               </div>
               <div class="my-2">
-                <UserSelector :colsData="['name', 'agency' ]"
+                <UserSelector v-if="form.driver_id" :colsData="['name', 'agency' ]"
                               :labelsData="['name', 'agency' ]"
                               :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id ||''})`}"
                               :error="form.errors.car_id"
-                              :link="route('admin.panel.shipping.car.search') "
+                              :link="`${route('admin.panel.shipping.car.search')}?driver_id=${form.driver_id}`"
                               :label="__('car')"
                               :id="'car'" v-model:selected="form.car_id" :preload="null">
                   <template v-slot:selector="props">
@@ -174,7 +195,7 @@ export default {
       orderFrom: [this.__('internal'), this.__('external')],
       form: useForm({
 
-        agency_id: this.$page.props.agency.id,
+        agency_id: this.$page.props.agency.level == 3 ? this.$page.props.agency.id : null,
         driver_id: null,
         car_id: null,
         ordersData: [],

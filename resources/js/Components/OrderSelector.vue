@@ -180,13 +180,13 @@
               <div
                   class=" inline-flex rounded-md  transition duration-150 ease-in-out    focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                   role="group">
-                <Link
-                    type="button" target="_blank" :href="route(`admin.panel.order.${d.type}.edit`,d.id)"
+                <a
+                    target="_blank" :href="route(`admin.panel.order.factor`,d.id)"
                     class="inline-block shadow-sm rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
                     data-te-ripple-init
                     data-te-ripple-color="light">
                   {{ __('details') }}
-                </Link>
+                </a>
                 <div type="button"
                      @click="removeItem(d,idx)  "
                      class="rounded shadow-sm cursor-pointer text-white bg-red-500 hover:bg-red-400 text-sm px-6  py-2 mx-1">

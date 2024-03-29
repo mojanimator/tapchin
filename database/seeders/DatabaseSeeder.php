@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 'active',
             ], [
                 'id' => 10,
-                'name' => 'شعبه لطیفی شهر قدس تهران',
+                'name' => 'شعبه لطفی شهر قدس تهران',
                 'parent_id' => 9,
                 'access' => json_encode([]),
                 'level' => strval($levels[3]),
@@ -206,7 +206,7 @@ class DatabaseSeeder extends Seeder
                 'cities' => json_encode([]),
             ], [
                 'id' => 2,
-                'name' => 'انبار شهر قدس لطیفی',
+                'name' => 'انبار شهر قدس لطفی',
                 'agency_id' => 10,
                 'is_shop' => true,
                 'province_id' => City::where('level', 1)->where('name', 'تهران')->first()->id,

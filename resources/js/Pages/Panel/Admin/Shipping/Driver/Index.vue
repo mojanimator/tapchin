@@ -228,13 +228,13 @@
                   {{ d.id }}
                 </td>
                 <td
-                    class="flex  items-center px-2 py-4 text-gray-900 whitespace-nowrap">
+                    class="flex  items-center px-2 py-4 text-gray-900  ">
                   <Image class="w-10 h-10 cursor-pointer rounded-full"
                          :src="`${route('storage.drivers')}/${d.id}.jpg`"
                          :data-lity="`${route('storage.drivers')}/${d.id}.jpg`"
                          :alt="cropText(d.fullname,30)"/>
                   <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.shipping.driver.edit',d.id)">
-                    <div class="text-sm font-semibold">{{ cropText(d.fullname, 50) }}</div>
+                    <div class="text-xs font-semibold">{{ cropText(d.fullname, 50) }}</div>
                     <div class="font-normal text-gray-500">{{ }}</div>
                   </Link>
                 </td>

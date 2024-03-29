@@ -23,6 +23,11 @@ class ShippingRequest extends FormRequest
      */
     public function authorize()
     {
+        $this->myAgency = Agency::find($this->user()->agency_id);
+        if (!$this->myAgency)
+            abort(403, __("access_denied"));
+        if ($this->myAgency->status != 'active')
+            abort(403, __("your_agency_inactive"));
         return true;
     }
 
@@ -41,13 +46,14 @@ class ShippingRequest extends FormRequest
 
         if (!$this->cmnd) {
 
-            $allowedAgencies = [$user->agency_id];
-            $this->merge(['agency_id' => $user->agency_id,]);
-
+            $allowedAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
+            $this->merge([
+                'agency_id' => $this->myAgency->level == '3' ? $user->agency_id : $this->agency_id
+            ]);
             $tmp = array_merge($tmp, [
                 'agency_id' => ['required', Rule::in($allowedAgencies),],
-                'driver_id' => ['required', Rule::in(Driver::where('agency_id', $user->agency_id)->pluck('id'))],
-                'car_id' => ['required', Rule::in(Car::where('agency_id', $user->agency_id)->pluck('id'))],
+                'driver_id' => ['required', Rule::in(Driver::where('agency_id', $this->agency_id)->pluck('id'))],
+                'car_id' => ['required', Rule::in(Car::where('driver_id', $this->driver_id)->pluck('id'))],
                 'orders' => ['required', 'array', 'min:1'],
             ]);
 

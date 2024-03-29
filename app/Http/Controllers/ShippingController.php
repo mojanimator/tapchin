@@ -45,7 +45,7 @@ class ShippingController extends Controller
                     if (in_array($order->status, ['delivered', 'canceled', 'refunded', 'rejected']))
                         return response()->json(['message' => __('order_cant_be_remove'), 'status' => $data->status,], $errorStatus);
 
-                    if ($order->status == 'shipping') {
+                    if ($order->status == 'sending') {
                         $order->status = 'ready';
                     }
                     $data->order_qty = $data->order_qty - 1;
@@ -53,8 +53,8 @@ class ShippingController extends Controller
                     $order->save();
 
                     //change status to done if no shipping order
-                    if (Order::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0
-                        && RepositoryOrder::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0) {
+                    if (Order::where('shipping_id', $data->id)->where('status', 'sending')->count() == 0
+                        && RepositoryOrder::where('shipping_id', $data->id)->where('status', 'sending')->count() == 0) {
                         $data->status = 'done';
                     }
 
@@ -123,20 +123,31 @@ class ShippingController extends Controller
             $request->merge([
                 'order_qty' => count($request->orders),
             ]);
+            $orders = Order::whereIn('id', $request->user_orders)->select('id', 'status', 'shipping_id')->get();
+            $agencyOrders = Order::whereIn('id', $request->agency_orders)->select('id', 'status', 'shipping_id')->get();
 
-            Order::whereIn('id', $request->user_orders)->update([/*'status' => 'sending', */ 'shipping_id' => $data->id]);
-            RepositoryOrder::whereIn('id', $request->agency_orders)->update([/*'status' => 'sending',*/ 'shipping_id' => $data->id]);
-
+            $done = true;
             //change status to done if no shipping order
-            if (Order::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0
-                && RepositoryOrder::where('shipping_id', $data->id)->where('status', 'shipping')->count() == 0) {
+            foreach ($orders->merge($agencyOrders) as $order) {
+                $order->shipping_id = $data->id;
+                if ($data->status != 'processing' && $order->status == 'ready') {
+                    $request->merge([
+                        'status' => 'sending',
+                    ]);
+                    $order->status = 'sending';
+                }
+                if (in_array($order->status, ['ready', 'sending']))
+                    $done = false;
+
+                $order->save();
+            }
+            if ($done)
                 $request->merge([
                     'status' => 'done',
                 ]);
-            }
+
 
             if ($data->update($request->all())) {
-
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
                 Telegram::log(null, 'shipping_edited', $data);
@@ -155,6 +166,7 @@ class ShippingController extends Controller
         $request->merge(['for_edit' => true, 'agency_id' => $data->agency_id, 'shipping_id' => $data->id]);
         $orders = (new OrderController())->searchMerged($request);
         $data->orders = $orders;
+        $data->agency = Agency::find($data->agency_id);
         $data->driver = Driver::find($data->driver_id);
         $data->car = Car::find($data->car_id);
         return Inertia::render('Panel/Admin/Shipping/Edit', [

@@ -57,6 +57,30 @@
                 </UserSelector>
 
               </div>
+              <div class="my-2" v-if="form.agency_id">
+                <UserSelector :colsData="['fullname','phone','agency' ]"
+                              :labelsData="['name','phone','agency' ]"
+                              :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id||''})`}"
+                              :error="form.errors.driver_id"
+                              :link="`${route('admin.panel.shipping.driver.search')}?agency_id=${form.agency_id}`"
+                              :label="__('driver')"
+                              :id="'driver'" v-model:selected="form.driver_id" :preload="null">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+              </div>
               <div class="my-2">
                 <TextInput
                     id="name"
@@ -172,7 +196,8 @@ export default {
     return {
       form: useForm({
 
-        agency_id: null,
+        driver_id: null,
+        agency_id: this.$page.props.agency.level == 3 ? this.$page.props.agency.id : null,
         name: null,
         plate_number: null,
         uploading: false,

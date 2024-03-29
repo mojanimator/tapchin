@@ -61,6 +61,8 @@ class DriverController extends Controller
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
+        $agencyId = $request->agency_id;
+
         $query = Driver::query()->select('*');
 
         $myAgency = Agency::find($admin->agency_id);
@@ -72,7 +74,8 @@ class DriverController extends Controller
                 $query->orWhere('fullname', 'like', "%$search%")
                     ->orWhere('phone', 'like', "%$search%");
             });
-
+        if ($agencyId)
+            $query->where('agency_id', $agencyId);
 
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
             return $paginated->getCollection()->transform(

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Agency;
 use App\Models\City;
+use App\Models\Driver;
 use Illuminate\Validation\Rules\File;
 use App\Http\Helpers\Variable;
 use App\Models\Business;
@@ -50,7 +51,7 @@ class CarRequest extends FormRequest
             $availableAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
             $tmp = array_merge($tmp, [
                 'agency_id' => ['required', Rule::in($availableAgencies)],
-
+                'driver_id' => ['required', Rule::in(Driver::where('agency_id', $this->agency_id)->pluck('id'))],
                 'name' => ['required', 'string', 'max:100'],
                 'plate_number' => ['required', 'string', 'max:30', Rule::unique('cars')->where(function ($query) {
                     $query->where('agency_id', $this->agency_id)
@@ -80,6 +81,10 @@ class CarRequest extends FormRequest
             'name.unique' => sprintf(__("validator.unique"), __('name')),
             'name.max' => sprintf(__("validator.max_len"), __('name'), 100, mb_strlen($this->name)),
             'name.string' => sprintf(__("validator.string"), __('name')),
+
+            'driver_id.required' => sprintf(__("validator.required"), __('driver')),
+            'driver_id.in' => sprintf(__("validator.invalid"), __('driver')),
+
 
             'plate_number.required' => sprintf(__("validator.required"), __('plate_number')),
             'plate_number.unique' => sprintf(__("validator.unique"), __('plate_number')),

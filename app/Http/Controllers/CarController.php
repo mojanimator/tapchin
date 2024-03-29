@@ -17,9 +17,8 @@ class CarController extends Controller
     public function edit(Request $request, $id)
     {
 
-        $data = Car::with('agency')->find($id);
+        $data = Car::with('agency')->with('driver')->find($id);
         $this->authorize('edit', [Admin::class, $data]);
-
         return Inertia::render('Panel/Admin/Shipping/Car/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
@@ -61,7 +60,7 @@ class CarController extends Controller
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
         $query = Car::query()->select('*');
-
+        $driverId = $request->driver_id;
         $myAgency = Agency::find($admin->agency_id);
 
         $agencies = $admin->allowedAgencies($myAgency)->select('id', 'name')->get();
@@ -72,6 +71,8 @@ class CarController extends Controller
                     ->orWhere('phone', 'like', "%$search%");
             });
 
+        if ($driverId)
+            $query->where('driver_id', $driverId);
 
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
             return $paginated->getCollection()->transform(

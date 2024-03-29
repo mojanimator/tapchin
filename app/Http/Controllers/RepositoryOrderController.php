@@ -462,8 +462,8 @@ class RepositoryOrderController extends Controller
                     //change status to done if no shipping order
 
                     if ($shipping) {
-                        if (Order::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0
-                            && RepositoryOrder::where('shipping_id', $shipping->id)->where('status', 'shipping')->count() == 0) {
+                        if (Order::where('shipping_id', $shipping->id)->where('status', 'sending')->count() == 0
+                            && RepositoryOrder::where('shipping_id', $shipping->id)->where('status', 'sending')->count() == 0) {
                             $shipping->status = 'done';
                         }
                         $shipping->save();

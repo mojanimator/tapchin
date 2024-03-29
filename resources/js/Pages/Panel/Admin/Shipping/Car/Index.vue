@@ -233,7 +233,7 @@
                          :data-lity="`${route('storage.cars')}/${d.id}.jpg`"
                          :alt="cropText(d.name,30)"/>
                   <Link class="px-2 hover:text-gray-500" :href="route('admin.panel.shipping.car.edit',d.id)">
-                    <div class="text-sm font-semibold">{{ cropText(d.name, 50) }}</div>
+                    <div class="text-xs font-semibold">{{ cropText(d.name, 50) }}</div>
                     <div class="font-normal text-gray-500">{{ }}</div>
                   </Link>
                 </td>

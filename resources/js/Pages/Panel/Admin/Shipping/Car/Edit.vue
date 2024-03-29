@@ -62,6 +62,30 @@
 
               </div>
               <div class="my-2">
+                <UserSelector :colsData="['fullname','phone','agency' ]"
+                              :labelsData="['name','phone','agency' ]"
+                              :callback="{'level':getAgency,'agency':(e)=>`${e.name||''} (${e.id||''})`}"
+                              :error="form.errors.driver_id"
+                              :link="`${route('admin.panel.shipping.driver.search')}?agency_id=${form.agency_id}`"
+                              :label="__('driver')"
+                              :id="'driver'" v-model:selected="form.driver_id" :preload="$page.props.data.driver">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+              </div>
+              <div class="my-2">
                 <TextInput
                     id="name"
                     type="text"
@@ -172,6 +196,8 @@ export default {
       form: useForm({
         id: null,
         agency_id: null,
+        car_id: null,
+        driver_id: null,
         name: null,
         plate_number: null,
         uploading: false,
@@ -222,6 +248,7 @@ export default {
 
     this.form.id = this.data.id;
     this.form.agency_id = this.data.agency_id;
+    this.form.driver_id = this.data.driver_id;
     this.form.name = this.data.name;
     this.form.plate_number = this.data.plate_number;
 
