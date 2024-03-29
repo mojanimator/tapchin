@@ -63,6 +63,8 @@ class AdminController extends Controller
                 $request->merge([
                     'password' => Hash::make($request->password),
                 ]);
+            } else {
+                unset($request->password);
             }
             if ($data->update($request->all())) {
 
