@@ -64,7 +64,7 @@ class AdminController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
             } else {
-                $request->remove('password');
+                $request->except(['password']);
             }
             if ($data->update($request->all())) {
 
