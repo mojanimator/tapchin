@@ -17,6 +17,7 @@ class Product extends Model
         'in_shop',
         'charged_at',
         'rate',
+        'status',
     ];
     protected $casts = [
         'tags' => 'array',
