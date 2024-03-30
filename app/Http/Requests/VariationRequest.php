@@ -48,6 +48,7 @@ class VariationRequest extends FormRequest
         if (!$this->cmnd) {
 
             $tmp = array_merge($tmp, [
+                'name' => ['required', 'max:200'],
                 'repo_id' => ['required', Rule::in($allowedRepositories)],
                 "product_id" => ['required', Rule::in($products->pluck('id'))],
                 "in_repo" => ['required', 'numeric', 'gte:0',],
@@ -71,6 +72,7 @@ class VariationRequest extends FormRequest
 //            $admin = $this->user();
 
             $tmp = array_merge($tmp, [
+
             ]);
         }
         return $tmp;
@@ -80,6 +82,9 @@ class VariationRequest extends FormRequest
     {
 
         return [
+            'name.required' => sprintf(__("validator.required"), __('name')),
+            'name.unique' => sprintf(__("validator.unique"), __('name')),
+            'name.max' => sprintf(__("validator.max_len"), __('name'), 200, mb_strlen($this->name)),
 
             'repo_id.required' => sprintf(__("validator.required"), __('repository')),
             'repo_id.in' => sprintf(__("validator.invalid"), __('repository')),

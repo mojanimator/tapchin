@@ -261,6 +261,24 @@ class VariationController extends Controller
 
 
             switch ($cmnd) {
+                case 'change-name'   :
+                    $request->validate(
+                        [
+                            'name' => ['required', 'max:200'],
+                        ],
+                        [
+                            'name.required' => sprintf(__("validator.required"), __('name')),
+                            'name.unique' => sprintf(__("validator.unique"), __('name')),
+                            'name.max' => sprintf(__("validator.max_len"), __('name'), 200, mb_strlen($request->name)),
+
+                        ],
+                    );
+                    $data->name = $request->name;
+                    $data->save();
+                    if ($request->wantsJson())
+                        return response()->json(['message' => __('updated_successfully')], $successStatus);
+                    return back()->with(['flash_status' => 'success', 'flash_message' => __('updated_successfully')]);
+                    break;
                 case 'delete-img'   :
                     $type = Variable::IMAGE_FOLDERS[Variation::class];
                     $path = Storage::path("public/$type/$id/" . basename($request->path));

@@ -160,8 +160,7 @@ export default {
         id: null,
         name: null,
         uploading: false,
-        category_id: false,
-        tags: false,
+        cmnd: null,
 
       }),
       img: null,
@@ -216,7 +215,7 @@ export default {
 
     this.form.id = this.data.id;
     this.form.name = this.data.name;
-
+    this.form.cmnd = 'change-name';
   },
   methods: {
 

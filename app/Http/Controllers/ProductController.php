@@ -89,7 +89,7 @@ class ProductController extends Controller
         }
         $request->merge([
             'status' => 'active',
-            'tags' => explode(',', $request->tags ?? [])
+            'tags' => explode(',', $request->tags ?? "")
         ]);
         $data = Product::create($request->all());
 
@@ -164,7 +164,7 @@ class ProductController extends Controller
 
             $request->merge([
 //                'cities' => json_encode($request->cities ?? [])
-                'tags' => explode(',', $request->tags ?? [])
+                'tags' => explode(',', $request->tags ?? "")
             ]);
 
 
