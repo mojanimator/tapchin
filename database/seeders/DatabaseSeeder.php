@@ -747,6 +747,7 @@ class DatabaseSeeder extends Seeder
             'کیوی',
             'ازگیل',
             'شلیل',
+            'کلم',
 
 
         ];
@@ -760,9 +761,6 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        $variations=[
-            ['product_id'=>]
-        ];
 
     }
 
