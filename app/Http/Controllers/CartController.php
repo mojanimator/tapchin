@@ -85,7 +85,7 @@ class CartController extends Controller
         $cart = $cart ?? Cart::create([
             'user_id' => optional($user)->id,
             'ip' => $ip,
-            'last_activity' => Carbon::now()->subDays(2),
+            'last_activity' => Carbon::now()->addDay(),
             'order_id' => null,
         ]);
         //set cart address
