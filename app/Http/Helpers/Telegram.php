@@ -527,9 +527,9 @@ class Telegram
                     $msg .= " 🔶 " . "بسته بندی: " . (Pack::find($data->pack_id)->name ?? '') . PHP_EOL;
                     $msg .= " 🔷 " . "درجه: " . $data->grade . PHP_EOL;
                     $msg .= " 🔶 " . "وزن: " . floatval($data->weight) . PHP_EOL;
-                    $msg .= " 🟫 " . "در فروشگاه: " . floatval($data->in_shop) . PHP_EOL;
-                    $msg .= " 🟪 " . "در انبار: " . floatval($data->in_repo) . PHP_EOL;
-                    $msg .= " 🪙 " . "قیمت: " . number_format($data->price) . PHP_EOL;
+                    $msg .= " 🔷 " . "در فروشگاه: " . floatval($data->in_shop) . PHP_EOL;
+                    $msg .= " 🔶 " . "در انبار: " . floatval($data->in_repo) . PHP_EOL;
+                    $msg .= " 🔷 " . "قیمت: " . number_format($data->price) . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     break;
                 case 'site_created':
