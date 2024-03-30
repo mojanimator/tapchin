@@ -155,7 +155,25 @@
                 </TextInput>
 
               </div>
+              <div class="my-4" v-if="hasAccess('edit_setting')">
+                <TextInput
+                    id="order_profit_percent"
+                    step=".01"
+                    type="number"
+                    :placeholder="__('order_profit_percent')"
+                    classes="  "
+                    v-model="form.order_profit_percent"
+                    autocomplete="order_profit_percent"
+                    :error="form.errors.order_profit_percent"
+                >
+                  <template v-slot:prepend>
+                    <div class=" px-3">
+                      <ChartPieIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
 
+                </TextInput>
+              </div>
               <div v-if="false" class="my-2">
                 <UserSelector :link="route('admin.panel.admin.search')" :label="__('owner')"
                               :id="'admin'" v-model:selected="form.owner_id" :preload="null">
@@ -235,6 +253,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
   PencilIcon,
   XMarkIcon,
+  ChartPieIcon,
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
 import Checkbox from '@/Components/Checkbox.vue';
@@ -283,6 +302,7 @@ export default {
         postal_code: null,
         phone: null,
         supported_provinces: null,
+        order_profit_percent: null,
 
       }),
       img: null,
@@ -326,6 +346,7 @@ export default {
     UserSelector,
     XMarkIcon,
     AddressSelector,
+    ChartPieIcon,
   },
   created() {
 
@@ -341,7 +362,7 @@ export default {
     this.form.parent_id = this.data.parent_id;
     this.form.phone = this.data.phone;
     this.form.status = this.data.status;
-
+    this.form.order_profit_percent = this.data.order_profit_percent;
 
     this.form.owner = this.data.owner;
     this.form.owner_id = this.data.owner_id;

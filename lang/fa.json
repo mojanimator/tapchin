@@ -147,6 +147,7 @@
   "validator.sum": "مجموع %s %s باشد",
   "validator.must_not_equal": "%s و %s نباید یکسان باشند",
   "validator.must_be": "%s باید %s باشد",
+  "validator.decimal_max": "حداکثر واحد اعشار %s %s  باشد",
   "created_successfully": "با موفقیت ساخته شد",
   "done_successfully": "با موفقیت انجام شد",
   "response_error": "مشکلی در انجام عملیات پیش آمد",
@@ -906,5 +907,6 @@
       "در صورت انجام موفقیت عملیات پیام با موفقیت متصل شدید را دریافت خواهید کرد"
     ]
   ],
+  "order_profit_percent": "درصد سود سفارش",
   "": ""
 }

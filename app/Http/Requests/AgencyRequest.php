@@ -34,6 +34,7 @@ class AgencyRequest extends FormRequest
      */
     public function rules()
     {
+
         $regexLocation = "/^[-+]?[0-9]{1,7}(\\.[0-9]+)?,[-+]?[0-9]{1,7}(\\.[0-9]+)?$/";
         $editMode = (bool)$this->id;
         $request = $this;
@@ -85,6 +86,7 @@ class AgencyRequest extends FormRequest
                 'supported_provinces' => ['required_if:type_id,1'],
                 'location' => ['required', "regex:$regexLocation",],
                 'parent_id' => ['required', Rule::in($availableParents)],
+                'order_profit_percent' => ['nullable', 'numeric', 'min:0', 'max:100', 'decimal:0,2'],
             ]);
         }
         if ($this->uploading)
@@ -131,6 +133,10 @@ class AgencyRequest extends FormRequest
             'location.required' => sprintf(__("validator.required"), __('location')),
             'location.regex' => sprintf(__("validator.invalid"), __('location')),
 
+            'order_profit_percent.required' => sprintf(__("validator.required"), __('order_profit_percent')),
+            'order_profit_percent.min' => sprintf(__("validator.min"), __('order_profit_percent'), 0),
+            'order_profit_percent.max' => sprintf(__("validator.max"), __('order_profit_percent'), 100),
+            'order_profit_percent.decimal' => sprintf(__("validator.decimal_max"), __('order_profit_percent'), 2),
 
         ];
     }

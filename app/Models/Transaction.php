@@ -61,7 +61,9 @@ class Transaction extends Model
 
         $agency = Agency::find($order->agency_id);
         if (!$agency) return;
-        $percent = ($percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0);
+        $percent = $agency->order_profit_percent !== null ? floatval($agency->order_profit_percent) : null;
+        $percent = $percent !== null ? $percent : ($percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0);
+
         if ($percent > 0) {
             $t = Transaction::create([
                 'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, $agency->id),
@@ -89,7 +91,8 @@ class Transaction extends Model
             //not pay to central
 
             if (!$agencyItem || $agencyItem->level == '0') break;
-            $percent = $percents->where('key', "order_percent_level_$agencyItem->level")->first()->value ?? 0;
+            $percent = $agency->order_profit_percent !== null ? floatval($agency->order_profit_percent) : null;
+            $percent = $percent !== null ? $percent : $percents->where('key', "order_percent_level_$agencyItem->level")->first()->value ?? 0;
             if ($percent <= 0) continue;
             $t = Transaction::create([
                 'title' => sprintf(__('profit_order_agency_*_*_*'), $percent, $order->id, $agencyItem->id),

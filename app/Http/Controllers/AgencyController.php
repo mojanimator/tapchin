@@ -40,6 +40,7 @@ class AgencyController extends Controller
         $successStatus = Variable::SUCCESS_STATUS;
         $id = $request->id;
         $cmnd = $request->cmnd;
+        $admin = $request->user();
         $data = Agency::find($id);
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
@@ -66,6 +67,13 @@ class AgencyController extends Controller
                 'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : [],
 
             ]);
+            if ($request->level != $data->level) {
+                Admin::where('agency_id', $data->id)->update(['agency_level' => strval($request->level)]);
+            }
+            if (!$admin->hasAccess('edit_setting'))
+                $request->merge([
+                    'order_profit_percent' => $data->order_profit_percent,
+                ]);
             //change parent if changed
             if ($data->level == '3' && $data->parent_id != $request->parent_id) {
                 //add branch to parent access
@@ -108,11 +116,11 @@ class AgencyController extends Controller
 
     protected function create(AgencyRequest $request)
     {
-//        $user = $request->user();
+        $admin = $request->user();
 
 
         $request->merge([
-
+            'order_profit_percent' => !$admin->hasAccess('edit_setting') ? null : $request->order_profit_percent,
             'status' => 'active',
             'level' => strval($request->type_id),
             'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : [],

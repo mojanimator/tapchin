@@ -221,6 +221,7 @@ class AdminPolicy
                     $res = $admin->hasAccess('edit_admin');
                     break;
                 case   $item instanceof Setting :
+                    dd('hi');
                     $res = $admin->hasAccess('edit_setting');
                     break;
             }
