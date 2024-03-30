@@ -86,8 +86,7 @@ class Util
         }
 
 //        imagetruecolortopalette($source, false, 16);
-        $imageSave = imagejpeg($source, "$name.jpg", 80);
-        $imageSave = imagejpeg($source, storage_path("$name.jpg"), 80);
+        $imageSave = imagejpeg($source, storage_path("app/public/$name.jpg"), 80);
         imagedestroy($source);
         return $imageSave;
         return "/storage/$type/$name.jpg";
