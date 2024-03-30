@@ -85,7 +85,7 @@ class CartController extends Controller
         $cart = $cart ?? Cart::create([
             'user_id' => optional($user)->id,
             'ip' => $ip,
-            'last_activity' => Carbon::now(),
+            'last_activity' => Carbon::now()->getTimestamp(),
             'order_id' => null,
         ]);
         //set cart address
@@ -166,7 +166,7 @@ class CartController extends Controller
 
 //            dd($cartItems);
             $product = $cartItem->getRelation('product');
-            if (($cartItem->qty??0) > ($product->in_shop ?? 0)) {
+            if (($cartItem->qty ?? 0) > ($product->in_shop ?? 0)) {
 //                $cartItem->qty = $product->in_shop;
 //                $cartItem->save();
                 $cartItem->error_message = $product->in_shop > 0 ? sprintf(__('validator.max_items'), __('product'), floatval($product->in_shop), $cartItem->qty) : __('this_item_finished');
