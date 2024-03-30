@@ -80,7 +80,7 @@
               <div class="flex items-center justify-end">
                 <div class="flex items-center "
                      :class="{'line-through text-neutral-500':$page.props.is_auction && p.in_auction}">
-                  {{ asPrice(p.price) }}
+                  {{ asPrice(Math.round(p.price / p.weight)) }}
 
                   <svg v-if="$page.props.is_auction && p.in_auction" xmlns="http://www.w3.org/2000/svg"
                        viewBox="0 0 14 14"
