@@ -821,31 +821,6 @@ class Telegram
 
                     break;
 
-                case 'product_created':
-                    $shop = \App\Models\Shop::firstOrNew(['id' => $data->shop_id]);
-                    $msg .= " ⚫️ " . "یک محصول ساخته شد" . PHP_EOL;
-                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-                    $docs = $data->docs;
-                    foreach ($docs as $doc) {
-                        $msg .= url('') . '/storage/' . $doc->type_id . '/' . $doc['id'] . '.' . ($doc['type_id'] == Helper::$docsMap['video'] ? 'mp4' : 'jpg') . '?r=' . random_int(10, 1000) . PHP_EOL;
-                    }
-                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
-                    $msg .= " 👤 " . "نام: " . PHP_EOL;
-                    $msg .= $data->name . PHP_EOL;
-                    $msg .= " 📈 " . "قیمت اصلی: " . PHP_EOL;
-                    $msg .= $data->price . PHP_EOL;
-                    $msg .= " 📉 " . "قیمت با تخفیف: " . PHP_EOL;
-                    $msg .= $data->discount_price . PHP_EOL;
-                    $msg .= " 📊 " . "تعداد: " . PHP_EOL;
-                    $msg .= $data->count . PHP_EOL;
-                    $msg .= " 🚩 " . "دسته بندی: " . Sport::firstOrNew(['id' => $data->group_id])->name . PHP_EOL;
-                    $msg .= " 🛒 " . "فروشگاه: " . PHP_EOL;
-                    $msg .= $shop->name . PHP_EOL;
-                    $msg .= " 📱 " . "شماره تماس: " . PHP_EOL;
-                    $msg .= $shop->phone . PHP_EOL;
-                    $msg .= " 📃 " . "توضیحات: " . $data->description . PHP_EOL;
-
-                    break;
 
                 case 'blog_created':
                     $user = \App\Models\User::firstOrNew(['id' => $data->user_id]);
