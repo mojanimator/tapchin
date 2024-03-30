@@ -70,7 +70,6 @@ class Util
             File::makeDirectory(Storage::path("public/$type"), $mode = 0755,);
         }
         $source = imagecreatefromstring($image_base64);
-        dd($source);
         if ($folder) { //is gallery
             if (!Storage::exists("public/$type/$folder"))
                 File::makeDirectory(Storage::path("public/$type/$folder"), $mode = 0755,);
