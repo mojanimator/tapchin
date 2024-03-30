@@ -74,7 +74,7 @@ class ProductController extends Controller
         $data = Product::find($id);
 
         $this->authorize('edit', [Admin::class, $data]);
-
+        $data->tags = join(',', $data->tags ?? []);
         return Inertia::render('Panel/Admin/Product/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
@@ -89,6 +89,7 @@ class ProductController extends Controller
         }
         $request->merge([
             'status' => 'active',
+            'tags' => explode(',', $request->tags ?? [])
         ]);
         $data = Product::create($request->all());
 
@@ -163,6 +164,7 @@ class ProductController extends Controller
 
             $request->merge([
 //                'cities' => json_encode($request->cities ?? [])
+                'tags' => explode(',', $request->tags ?? [])
             ]);
 
 
@@ -170,7 +172,7 @@ class ProductController extends Controller
 
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
-                Telegram::log(null, 'repository_edited', $data);
+                Telegram::log(null, 'product_edited', $data);
             } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
             return back()->with($res);
         }

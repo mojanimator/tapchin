@@ -161,7 +161,7 @@ export default {
         name: null,
         uploading: false,
         category_id: false,
-        tags: false,
+        tags: [],
 
       }),
       img: null,
