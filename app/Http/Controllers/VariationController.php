@@ -169,7 +169,7 @@ class VariationController extends Controller
                 'weight' => $request->weight,
                 'price' => $request->price,
                 'description' => null,
-                'name' => $product->name,
+                'name' => $request->name ?? $product->name,
                 'category_id' => $product->category_id,
                 'agency_level' => $agency->level,
                 'in_auction' => false,
