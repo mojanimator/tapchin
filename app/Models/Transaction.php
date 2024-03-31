@@ -60,7 +60,7 @@ class Transaction extends Model
             ]);
 
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
-            $agencyF->payment_balance += $order->total_shipping_price;
+            $agencyF->wallet += $order->total_shipping_price;
             $agencyF->save();
 
             $t->user = $user;
@@ -91,7 +91,7 @@ class Transaction extends Model
             ]);
 
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
-            $agencyF->payment_balance += $t->amount;
+            $agencyF->wallet += $t->amount;
             $agencyF->save();
 
             $t->user = $user;
@@ -123,7 +123,7 @@ class Transaction extends Model
                 'pay_id' => null,
             ]);
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agencyItem->id]);
-            $agencyF->payment_balance += $t->amount;
+            $agencyF->wallet += $t->amount;
             $agencyF->save();
 
             $t->user = $user;

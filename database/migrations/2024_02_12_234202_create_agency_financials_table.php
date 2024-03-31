@@ -19,7 +19,7 @@ return new class extends Migration {
 
             $table->bigInteger('wallet')->default(0);
             $table->bigInteger('parent_debit')->default(0);
-            $table->bigInteger('payment_balance')->default(0);
+//            $table->bigInteger('payment_balance')->default(0);
             $table->string('card', 20)->nullable();
             $table->string('sheba', 30)->nullable();
             $table->timestamps();

@@ -567,7 +567,7 @@
           </li>
 
           <!-- Financial links -->
-          <li v-if="hasAccess('view_finantial')" class="relative  ">
+          <li v-if="hasAccess('view_financial') || hasAccess('view_transaction')" class="relative  ">
             <a :class="{'bg-primary-50 text-primary-500':menuIsActive ( 'admin.panel.financial.*' )}"
                class="flex   cursor-pointer items-center truncate rounded-[5px] px-3 py-4 text-[0.875rem] text-gray-600 outline-none transition duration-300 ease-linear hover:bg-primary-100 hover:text-inherit hover:outline-none focus:bg-slate-50 focus:text-inherit focus:outline-none active:bg-slate-50 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none"
                data-te-sidenav-link-ref>
@@ -585,7 +585,14 @@
                 data-te-collapse-item data-te-sidenav-collapse-ref>
               <li class="relative ps-7">
 
-                <Link :href="route('admin.panel.financial.transaction.index')" role="menuitem"
+                <Link v-if="hasAccess('view_financial')" :href="route('admin.panel.financial.index')" role="menuitem"
+                      :class="subMenuIsActive( 'admin.panel.financial.index' )"
+                      class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                  <Bars2Icon class="w-5 h-5 mx-1"/>
+                  {{ __('list') }}
+                </Link>
+                <Link v-if="hasAccess('view_transaction')" :href="route('admin.panel.financial.transaction.index')"
+                      role="menuitem"
                       :class="subMenuIsActive( 'admin.panel.financial.transaction.index' )"
                       class="flex   border-s-2 hover:border-primary-500  items-center p-2   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
                   <Bars2Icon class="w-5 h-5 mx-1"/>

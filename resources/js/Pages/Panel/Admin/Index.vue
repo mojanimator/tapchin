@@ -31,7 +31,7 @@
               <div class="flex flex-wrap text-gray-700 my-2">
                 <div class="flex text-sm mx-2">
                   <div class="font-bold">{{ `${__('balance')}: ` }}</div>
-                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.payment_balance) : 0 }}</div>
+                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.wallet) : 0 }}</div>
                   <TomanIcon class="h-[1rem] "/>
                 </div>
                 <div class="flex text-sm mx-2">

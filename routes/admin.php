@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PackController;
 use App\Http\Controllers\PartnershipController;
@@ -160,6 +161,11 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             []
         );
         Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('admin.panel.financial.transaction.search');
+
+        PanelController::makeInertiaRoute('get', 'financial/index', 'admin.panel.financial.index', 'Panel/Financial/Index',
+            []
+        );
+        Route::get('financial/search', [FinancialController::class, 'searchMerged'])->name('admin.panel.financial.search');
 
 
         PanelController::makeInertiaRoute('get', 'agency/index', 'admin.panel.agency.index', 'Panel/Admin/Agency/Index',

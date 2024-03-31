@@ -43,7 +43,7 @@
             <div class="flex text-sm items-center">
               <div class="text-gray-500">{{ __('payment_balance') }}:</div>
               <div class="mx-2" :class="`text-gray-700`">{{
-                  data.financial ? data.financial.payment_balance : 0
+                  data.financial ? data.financial.wallet : 0
                 }}
 
               </div>
