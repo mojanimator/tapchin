@@ -95,6 +95,7 @@ class ProductController extends Controller
         if ($data) {
             Util::createImage($request->img, Variable::IMAGE_FOLDERS[Product::class], $data->id);
 
+            $data->img = url("storage/products/$data->id.jpg");
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
             Telegram::log(null, 'product_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
