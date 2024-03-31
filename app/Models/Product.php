@@ -20,7 +20,7 @@ class Product extends Model
         'status',
     ];
     protected $casts = [
-        'tags' => 'array',
+
     ];
 
 }
