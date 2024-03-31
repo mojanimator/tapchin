@@ -20,7 +20,7 @@ class ShippingMethodController extends Controller
     public function edit(Request $request, $id)
     {
 
-        $data = ShippingMethod::with('repository:id,name')->find($id);
+        $data = ShippingMethod::with('repository:id,name')->with('shippingAgency:id,name')->find($id);
 
         $this->authorize('edit', [Admin::class, $data]);
 
@@ -34,10 +34,11 @@ class ShippingMethodController extends Controller
 
     public function create(ShippingMethodRequest $request)
     {
+        $admin = $request->user();
         $request->merge([
 
             'status' => 'active',
-
+            'shipping_agency_id' => $admin->hasAccess('edit_setting') ? $request->shipping_agency_id : null,
         ]);
         $data = ShippingMethod::create($request->all());
 
@@ -97,6 +98,7 @@ class ShippingMethodController extends Controller
         $id = $request->id;
         $cmnd = $request->cmnd;
         $data = $request->data;
+        $admin = $request->user();
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
 
@@ -119,6 +121,8 @@ class ShippingMethodController extends Controller
 
             $request->merge([
 //                'cities' => json_encode($request->cities ?? [])
+                'shipping_agency_id' => $admin->hasAccess('edit_setting') ? $request->shipping_agency_id : $data->shipping_agency_id,
+
             ]);
 
 

@@ -28,7 +28,7 @@
           >
             <div class="flex-col   m-2 items-center rounded-lg max-w-xs  w-full mx-auto    ">
               <div class="my-2">
-                <ImageUploader ref="imageCropper" :label="__('product_image_jpg')" cropRatio="1.25" id="img"
+                <ImageUploader ref="imageCropper" :label="__('product_image_jpg')" id="img"
                                height="10" class="grow " :crop-ratio="1"/>
                 <InputError class="mt-1 " :message="form.errors.img"/>
               </div>

@@ -44,7 +44,8 @@ class ShippingMethodRequest extends FormRequest
         $tmp = [];
         $admin = $this->user();
         $myAgency = Agency::find($admin->agency_id);
-        $allowedRepositories = Repository::whereIntegerInRaw('agency_id', $admin->allowedAgencies($myAgency)->pluck('id'))->pluck('id')->toArray();
+        $allowedAgencies = $admin->allowedAgencies($myAgency)->pluck('id');
+        $allowedRepositories = Repository::whereIntegerInRaw('agency_id', $allowedAgencies)->pluck('id')->toArray();
         if ($editMode) {
             $data = ShippingMethod::find($this->id);
             $data = in_array(optional($data)->repo_id, $allowedRepositories) ? $data : null;
@@ -61,6 +62,7 @@ class ShippingMethodRequest extends FormRequest
             $this->merge(["agency_id" => optional($repo)->agency_id]);
 
             $tmp = array_merge($tmp, [
+                'shipping_agency_id' => ['nullable', Rule::in($allowedAgencies)],
                 'data' => [Rule::requiredIf($editMode),],
                 'repo_id' => ['required', Rule::in($allowedRepositories)],
                 'base_price' => ['required', 'integer', 'min:0'],

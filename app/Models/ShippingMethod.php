@@ -25,6 +25,7 @@ class ShippingMethod extends Model
         'description',
         'free_from_price',
         'timestamps',
+        'shipping_agency_id',
     ];
 
     protected $casts = [
@@ -36,5 +37,10 @@ class ShippingMethod extends Model
     public function repository()
     {
         return $this->belongsTo(Repository::class, 'repo_id');
+    }
+
+    public function shippingAgency()
+    {
+        return $this->belongsTo(Agency::class, 'shipping_agency_id');
     }
 }

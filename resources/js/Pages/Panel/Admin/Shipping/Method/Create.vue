@@ -37,6 +37,27 @@
 
             <form @submit.prevent="submit">
 
+              <div class="my-2" v-if="hasAccess('edit_setting')">
+                <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
+                              :callback="{'level':getAgency}" :error="form.errors.shipping_agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('shipping_owner')"
+                              :id="'shipping_agency_id'" v-model:selected="form.shipping_agency_id" :preload="null">
+                  <template v-slot:selector="props">
+                    <div :class="props.selectedText?'py-2':'py-2'"
+                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                      <div class="grow">
+                        {{ props.selectedText ?? __('select') }}
+                      </div>
+                      <div v-if="props.selectedText"
+                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                           @click.stop="props.clear()">
+                        <XMarkIcon class="w-5 h-5"/>
+                      </div>
+                    </div>
+                  </template>
+                </UserSelector>
+
+              </div>
               <div class="my-2">
                 <UserSelector :colsData="['name','phone','agency_id']" :labelsData="['name','phone','agency_id']"
                               :callback="{'level':getAgency}" :error="form.errors.repo_id"
@@ -283,7 +304,7 @@ export default {
         products: null,
         timestamps: null,
 
-
+        shipping_agency_id: null,
       }),
       img: null,
 
