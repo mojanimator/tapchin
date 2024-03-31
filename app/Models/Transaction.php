@@ -98,7 +98,7 @@ class Transaction extends Model
             //not pay to central
 
             if (!$agencyItem || $agencyItem->level == '0') break;
-            $percent = $agency->order_profit_percent !== null ? floatval($agency->order_profit_percent) : null;
+            $percent = $agencyItem->order_profit_percent !== null ? floatval($agencyItem->order_profit_percent) : null;
             $percent = $percent !== null ? $percent : $percents->where('key', "order_percent_level_$agencyItem->level")->first()->value ?? 0;
             if ($percent <= 0) continue;
             $t = Transaction::create([
