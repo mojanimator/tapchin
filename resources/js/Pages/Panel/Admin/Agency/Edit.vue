@@ -402,8 +402,10 @@ export default {
     this.form.phone = this.data.phone;
     this.form.status = this.data.status;
     this.form.order_profit_percent = this.data.order_profit_percent;
-    this.form.card = this.data.card;
-    this.form.sheba = this.data.sheba;
+    if (this.data.financial) {
+      this.form.card = this.data.financial.card;
+      this.form.sheba = this.data.financial.sheba;
+    }
 
     this.form.owner = this.data.owner;
     this.form.owner_id = this.data.owner_id;
