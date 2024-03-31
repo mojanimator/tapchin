@@ -38,8 +38,10 @@ class Transaction extends Model
         $percents = Setting::where('key', 'like', "order_percent_level_%")->get();
         $user = request()->user();
         //split shipping
-        if ($order->total_shipping_price && $shipping && $shipping->agency_id != 1) {
+        if ($order->total_shipping_price && $shipping) {
             $shipping = (object)['agency_id' => ShippingMethod::find($order->shipping_method_id)->shipping_agency_id ?? $shipping->agency_id];
+            //not pay to our agency
+            if ($shipping->agency_id == 1) return;
             $t = Transaction::create([
                 'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
                 'type' => "shipping",
