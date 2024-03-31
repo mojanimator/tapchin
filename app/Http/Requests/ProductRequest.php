@@ -37,10 +37,10 @@ class ProductRequest extends FormRequest
         $editMode = (bool)$this->id;
         $tmp = [];
         if (!$this->cmnd) {
-
+           
             $tmp = array_merge($tmp, [
                 'name' => ['required', 'max:200', Rule::unique('products', 'name')->ignore($this->id)],
-                'tags' => ['nullable', 'max:1024'],
+                'tags' => ['nullable', 'string', 'max:1024'],
                 'category_id' => ['required', Rule::in(Category::pluck('id'))],
 
             ]);
