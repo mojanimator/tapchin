@@ -174,6 +174,42 @@
 
                 </TextInput>
               </div>
+              <div class="my-4">
+                <TextInput
+                    id="card"
+                    type="number"
+                    :placeholder="__('card')"
+                    classes="  "
+                    v-model="form.card"
+                    autocomplete="card"
+                    :error="form.errors.card"
+                >
+                  <template v-slot:append>
+                    <div class="p- px-0">
+                      <CreditCardIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    :error="form.errors.sheba"
+                >
+                  <template v-slot:append>
+                    <div class="p-1">
+                      <strong>IR</strong>
+                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                    </div>
+                  </template>
+                </TextInput>
+              </div>
               <div v-if="false" class="my-2">
                 <UserSelector :link="route('admin.panel.admin.search')" :label="__('owner')"
                               :id="'admin'" v-model:selected="form.owner_id" :preload="null">
@@ -254,6 +290,7 @@ import {
   PencilIcon,
   XMarkIcon,
   ChartPieIcon,
+  CreditCardIcon,
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
 import Checkbox from '@/Components/Checkbox.vue';
@@ -303,7 +340,8 @@ export default {
         phone: null,
         supported_provinces: null,
         order_profit_percent: null,
-
+        card: null,
+        sheba: null,
       }),
       img: null,
     }
@@ -347,6 +385,7 @@ export default {
     XMarkIcon,
     AddressSelector,
     ChartPieIcon,
+    CreditCardIcon,
   },
   created() {
 
@@ -363,6 +402,8 @@ export default {
     this.form.phone = this.data.phone;
     this.form.status = this.data.status;
     this.form.order_profit_percent = this.data.order_profit_percent;
+    this.form.card = this.data.card;
+    this.form.sheba = this.data.sheba;
 
     this.form.owner = this.data.owner;
     this.form.owner_id = this.data.owner_id;

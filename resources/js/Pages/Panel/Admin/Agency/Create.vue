@@ -137,6 +137,42 @@
 
                 </TextInput>
               </div>
+              <div class="my-4">
+                <TextInput
+                    id="card"
+                    type="number"
+                    :placeholder="__('card')"
+                    classes="  "
+                    v-model="form.card"
+                    autocomplete="card"
+                    :error="form.errors.card"
+                >
+                  <template v-slot:append>
+                    <div class="p- px-0">
+                      <CreditCardIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    :error="form.errors.sheba"
+                >
+                  <template v-slot:append>
+                    <div class="p-1">
+                      <strong>IR</strong>
+                      <!--                      <CreditCardIcon class="h-5 w-5"/>-->
+                    </div>
+                  </template>
+                </TextInput>
+              </div>
               <div v-if="false" class="my-2">
                 <UserSelector :link="route('admin.panel.admin.search')" :label="__('owner')"
                               :id="'admin'" v-model:selected="form.owner_id" :preload="null">
@@ -214,6 +250,7 @@ import {
   PencilIcon,
   XMarkIcon,
   ChartPieIcon,
+  CreditCardIcon,
 
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
@@ -260,6 +297,8 @@ export default {
         phone: null,
         supported_provinces: null,
         order_profit_percent: null,
+        card: null,
+        sheba: null,
 
       }),
       img: null,
@@ -301,6 +340,7 @@ export default {
     PencilIcon,
     XMarkIcon,
     ChartPieIcon,
+    CreditCardIcon,
 
   },
   mounted() {

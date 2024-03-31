@@ -31,6 +31,7 @@ class AdminController extends Controller
         $data = $request->data;
         $status = $request->status;
         $role = $request->role;
+        $admin = $request->user();
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
 
@@ -69,7 +70,6 @@ class AdminController extends Controller
                     [
                         'card' => $request->card,
                         'sheba' => $request->sheba,
-                        'wallet' => $request->wallet,
                     ]);
 
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];

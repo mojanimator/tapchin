@@ -87,6 +87,9 @@ class AgencyRequest extends FormRequest
                 'location' => ['required', "regex:$regexLocation",],
                 'parent_id' => ['required', Rule::in($availableParents)],
                 'order_profit_percent' => ['nullable', 'numeric', 'min:0', 'max:100', 'decimal:0,2'],
+                'card' => ['nullable', 'numeric', 'digits:16'],
+                'sheba' => ['nullable', 'numeric', 'digits:24'],
+
             ]);
         }
         if ($this->uploading)
@@ -137,6 +140,16 @@ class AgencyRequest extends FormRequest
             'order_profit_percent.min' => sprintf(__("validator.min"), __('order_profit_percent'), 0),
             'order_profit_percent.max' => sprintf(__("validator.max"), __('order_profit_percent'), 100),
             'order_profit_percent.decimal' => sprintf(__("validator.decimal_max"), __('order_profit_percent'), 2),
+
+            'card.required' => sprintf(__("validator.required"), __('card')),
+            'card.digits' => sprintf(__("validator.digits"), __('card'), 16),
+            'card.unique' => sprintf(__("validator.unique"), __('card')),
+            'card.numeric' => sprintf(__("validator.numeric"), __('card')),
+
+            'sheba.required' => sprintf(__("validator.required"), __('sheba')),
+            'sheba.digits' => sprintf(__("validator.digits"), __('sheba'), 24),
+            'sheba.unique' => sprintf(__("validator.unique"), __('sheba')),
+            'sheba.numeric' => sprintf(__("validator.numeric"), __('sheba')),
 
         ];
     }

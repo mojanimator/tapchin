@@ -10,6 +10,10 @@ class AgencyFinancial extends Model
     use HasFactory;
 
     protected $fillable = [
-        'agency_id'
+        'agency_id',
+        'wallet',
+        'card',
+        'sheba',
+        'parent_debit',
     ];
 }

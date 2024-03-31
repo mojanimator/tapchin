@@ -7,6 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\AgencyRequest;
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\AgencyFinancial;
 use App\Models\City;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -104,6 +105,12 @@ class AgencyController extends Controller
 //            dd($request->tags);
             if ($data->update($request->all())) {
 
+                AgencyFinancial::updateOrCreate(['agency_id' => $data->id,],
+                    [
+                        'card' => $request->card,
+                        'sheba' => $request->sheba,
+                    ]);
+
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
                 Telegram::log(null, 'agency_edited', $data);
@@ -130,6 +137,14 @@ class AgencyController extends Controller
         $data = Agency::create($request->all());
 
         if ($data) {
+
+            AgencyFinancial::create([
+                'agency_id' => $data->id,
+                'card' => $request->card,
+                'sheba' => $request->sheba,
+                'wallet' => 0,
+            ]);
+
             if ($data->level == '3') {
                 //add branch to parent access
                 $parentAgency = Agency::find($data->parent_id);
