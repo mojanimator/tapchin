@@ -39,9 +39,10 @@
 
               <div class="my-2" v-if="hasAccess('edit_setting')">
                 <UserSelector :colsData="['name','phone','level']" :labelsData="['name','phone','type']"
-                              :callback="{'level':getAgency}" :error="form.errors.agency_id"
-                              :link="route('admin.panel.agency.search')" :label="__('agency')"
-                              :id="'agency'" v-model:selected="form.agency_id" :preload="$page.props.data.agency">
+                              :callback="{'level':getAgency}" :error="form.errors.shipping_agency_id"
+                              :link="route('admin.panel.agency.search')" :label="__('shipping_owner')"
+                              :id="'shipping_agency'" v-model:selected="form.shipping_agency_id"
+                              :preload="$page.props.data.shipping_agency">
                   <template v-slot:selector="props">
                     <div :class="props.selectedText?'py-2':'py-2'"
                          class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
@@ -312,6 +313,7 @@ export default {
         cities: [],
         products: [],
         timestamps: null,
+        shipping_agency_id: null,
 
 
       }),
@@ -370,8 +372,10 @@ export default {
 
 
     this.form.id = this.data.id;
+    this.form.shipping_agency_id = this.data.shipping_agency_id;
     this.form.name = this.data.name;
     this.form.description = this.data.description;
+    this.form.shipping_agency = this.data.shipping_agency;
     this.form.repository = this.data.repository;
     this.form.base_price = this.data.base_price;
     this.form.per_weight_price = this.data.per_weight_price;

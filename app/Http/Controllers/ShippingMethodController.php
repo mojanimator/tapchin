@@ -25,6 +25,7 @@ class ShippingMethodController extends Controller
         $this->authorize('edit', [Admin::class, $data]);
 
         $data->products = Variation::whereIntegerInRaw('id', $data->products ?? [])->select('id', 'name', 'pack_id', 'grade', 'weight')->get();
+
         return Inertia::render('Panel/Admin/Shipping/Method/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,

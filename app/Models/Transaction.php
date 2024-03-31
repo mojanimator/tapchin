@@ -37,6 +37,7 @@ class Transaction extends Model
 
         //split shipping
         if ($order->total_shipping_price && $shipping) {
+            $shipping = (object)['agency_id' => ShippingMethod::find($order->shipping_method_id)->shipping_agency_id ?? $shipping->agency_id];
             $t = Transaction::create([
                 'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
                 'type' => "shipping",

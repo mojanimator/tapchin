@@ -93,6 +93,11 @@ class CartController extends Controller
         //clear address
         if ($request->exists('address_idx') && $request->address_idx == null) {
             $cart->address_idx = null;
+            foreach ($cartItems as $cartItem) {
+                $cartItem->delivery_date = null;
+                $cartItem->delivery_timestamp = null;
+                $cartItem->save();
+            }
             $cart->save();
         }
         $addressIdx = $addressIdx ?? $cart->address_idx;
