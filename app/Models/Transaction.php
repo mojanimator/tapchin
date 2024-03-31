@@ -88,6 +88,9 @@ class Transaction extends Model
                 'pay_id' => null,
             ]);
 
+            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
+            $agencyF->payment_balance += $t->amount;
+            $agencyF->save();
 
             $t->user = $user;
             Telegram::log(null, 'transaction_created', $t);
