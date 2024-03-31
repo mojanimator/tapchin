@@ -36,7 +36,7 @@ class Transaction extends Model
     public static function splitProfits($order, $shipping)
     {
         $percents = Setting::where('key', 'like', "order_percent_level_%")->get();
-
+        $user = request()->user();
         //split shipping
         if ($order->total_shipping_price && $shipping) {
             $shipping = (object)['agency_id' => ShippingMethod::find($order->shipping_method_id)->shipping_agency_id ?? $shipping->agency_id];
@@ -60,6 +60,9 @@ class Transaction extends Model
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
             $agencyF->payment_balance += $order->total_shipping_price;
             $agencyF->save();
+
+            $t->user = $user;
+            Telegram::log(null, 'transaction_created', $t);
         }
 
         $agency = Agency::find($order->agency_id);
@@ -85,7 +88,7 @@ class Transaction extends Model
                 'pay_id' => null,
             ]);
 
-            $user = Agency::select('id', 'fullname', 'phone')->find($t->from_id);
+
             $t->user = $user;
             Telegram::log(null, 'transaction_created', $t);
         }
@@ -117,7 +120,7 @@ class Transaction extends Model
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agencyItem->id]);
             $agencyF->payment_balance += $t->amount;
             $agencyF->save();
-            $user = Agency::select('id', 'fullname', 'phone')->find($t->from_id);
+
             $t->user = $user;
             Telegram::log(null, 'transaction_created', $t);
             $agencyItem = Agency::find($agencyItem->parent_id);
