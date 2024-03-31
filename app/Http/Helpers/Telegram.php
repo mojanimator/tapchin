@@ -617,7 +617,7 @@ class Telegram
                     $msg .= " ⭐ " . "نوع" . PHP_EOL;
                     $msg .= $data->title . PHP_EOL;
                     $msg .= " 📊 " . "مقدار" . PHP_EOL;
-                    $msg .= $data->amount . PHP_EOL;
+                    $msg .= number_format($data->amount) . PHP_EOL;
 
                     break;
                 case 'setting_created':
