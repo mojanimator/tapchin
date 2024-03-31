@@ -94,10 +94,12 @@
                 </div>
                 <div v-if=" p.in_auction==true" class="flex items-center ">
                   <ArrowTrendingUpIcon class="  rotate-180 text-neutral-500 mx-2"/>
-                  <span> {{ asPrice(p.auction_price) }}</span>
+                  <span>  {{ asPrice(Math.round(p.auction_price / p.weight)) }}</span>
 
                 </div>
                 <TomanIcon class="w-4 h-4 mx-2"/>
+                <span class="text-xs mx-2 text-gray-500"> {{ `(${__('per_kg')})` }}</span>
+
               </div>
               <div class="flex sm:hidden  min-w-[100%] xs:min-w-[70%]   me-auto">
                 <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
