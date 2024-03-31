@@ -532,6 +532,18 @@ class Telegram
                     $msg .= " 🔷 " . "قیمت: " . number_format($data->price) . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     break;
+                case 'product_created':
+                    $msg .= " 🟩 " . "یک محصول والد ساخته شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( 🆔$us->id  🚩$us->agency_id)" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🔷 " . "نام: " . $data->name . PHP_EOL;
+                    $msg .= " 🔖 " . "تگ ها: " . $data->tags . PHP_EOL;
+                    $msg .= " 🖼 " . "تصویر:" . PHP_EOL . $data->img . PHP_EOL;
+
+                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
