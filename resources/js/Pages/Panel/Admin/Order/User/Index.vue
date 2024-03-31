@@ -16,7 +16,7 @@
             <h5 class="  font-semibold">{{ __('orders_list') }}</h5>
           </div>
           <div>
-            <Link v-if="hasAccess('create_order')" :href="route('admin.panel.user.order.create')"
+            <Link v-if="hasAccess('create_order')" :href="route('admin.panel.order.user.create')"
                   class="inline-flex items-center  justify-center px-4 py-2 bg-green-500 border border-transparent rounded-md font-semibold  transition-all duration-500 text-white     hover:bg-green-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
             >
               {{ __('new_order') }}
@@ -286,10 +286,8 @@
                     </td>
                     <td class="px-2 py-4    ">
                       <div v-for="(item ,ix) in d.items" class="text-xs " :class="{'border-b':ix+1<d.items.length}">
+                        {{ item.title }}
 
-                        {{
-                          `${item.name} ( ${parseFloat(item.qty)} ${getPack(item.variation.pack_id)}  ${parseFloat(item.variation.weight)} ${__('kg')})`
-                        }}
                       </div>
                     </td>
                     <td class="px-2 py-4   text-xs ">

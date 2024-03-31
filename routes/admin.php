@@ -220,6 +220,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
 
         PanelController::makeInertiaRoute('get', 'order/user/index', 'admin.panel.order.user.index', 'Panel/Admin/Order/User/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
+        PanelController::makeInertiaRoute('get', 'order/user/create', 'admin.panel.order.user.create', 'Panel/Admin/Order/User/Create', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/user/search', [OrderController::class, 'searchPanel'])->name('admin.panel.order.user.search');
         Route::patch('order/user/update', [OrderController::class, 'update'])->name('admin.panel.order.user.update');
         Route::get('order/user/{order}', [OrderController::class, 'edit'])->name('admin.panel.order.user.edit');
@@ -227,6 +228,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
         Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('admin.panel.order.factor');
 
         PanelController::makeInertiaRoute('get', 'order/agency/index', 'admin.panel.order.agency.index', 'Panel/Admin/Order/Agency/Index', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
+        PanelController::makeInertiaRoute('get', 'order/agency/create', 'admin.panel.order.agency.create', 'Panel/Admin/Order/Agency/Create', ['order_statuses' => collect(Variable::ORDER_STATUSES)->filter(fn($e) => $e['name'] != 'request'),]);
         Route::get('order/agency/search', [RepositoryOrderController::class, 'searchPanel'])->name('admin.panel.order.agency.search');
         Route::patch('order/agency/update', [RepositoryOrderController::class, 'update'])->name('admin.panel.order.agency.update');
         Route::get('order/agency/{order}', [RepositoryOrderController::class, 'edit'])->name('admin.panel.order.agency.edit');

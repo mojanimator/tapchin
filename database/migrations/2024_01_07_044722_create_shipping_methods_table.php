@@ -32,6 +32,9 @@ return new class extends Migration {
             $table->enum('status', array_column(Variable::STATUSES, 'name'))->default('inactive');
             $table->timestamps();
             $table->json('timestamps')->nullable();
+            $table->unsignedBigInteger('shipping_agency_id')->nullable();
+            $table->foreign('shipping_agency_id')->references('id')->on('agencies')->onDelete('no action');
+
         });
 
         DB::table('shipping_methods')->insert(\App\Http\Helpers\Variable::getDefaultShippingMethods());
