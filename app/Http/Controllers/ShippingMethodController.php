@@ -131,7 +131,7 @@ class ShippingMethodController extends Controller
 
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
-                Telegram::log(null, 'repository_edited', $data);
+                Telegram::log(null, 'shipping-method_edited', $data);
             } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
             return back()->with($res);
         }
