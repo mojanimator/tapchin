@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Helpers\Telegram;
+use App\Http\Helpers\Variable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -82,9 +84,10 @@ class Transaction extends Model
                 'amount' => floor($percent / 100 * $order->total_items_price),
                 'pay_id' => null,
             ]);
-            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
-            $agencyF->payment_balance += $t->amount;
-            $agencyF->save();
+
+            $user = Agency::select('id', 'fullname', 'phone')->find($t->from_id);
+            $t->user = $user;
+            Telegram::log(null, 'transaction_created', $t);
         }
         //  split percents
         $agencyItem = Agency::find($agency->parent_id);
@@ -114,7 +117,9 @@ class Transaction extends Model
             $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agencyItem->id]);
             $agencyF->payment_balance += $t->amount;
             $agencyF->save();
-
+            $user = Agency::select('id', 'fullname', 'phone')->find($t->from_id);
+            $t->user = $user;
+            Telegram::log(null, 'transaction_created', $t);
             $agencyItem = Agency::find($agencyItem->parent_id);
         }
     }
