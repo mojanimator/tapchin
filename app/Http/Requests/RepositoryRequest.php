@@ -77,7 +77,7 @@ class RepositoryRequest extends FormRequest
             ]);
 
             //add county parents for level3
-            $withParentLevel3 = City::whereIn('id', $this->cities ?? [])->where('level', 3)->distinct('parent_id')->pluck('parent_id')->merge($this->cities ?? []);
+            $withParentLevel3 = City::whereIn('id', $this->cities ?? [])->where('level', 3)->distinct('parent_id')->pluck('parent_id')->merge($this->cities ?? [])->toArray();
             $this->merge([
                 'cities' => $withParentLevel3
             ]);
