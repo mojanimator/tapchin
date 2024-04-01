@@ -34,7 +34,7 @@ return new class extends Migration {
 
             $table->unsignedInteger('min_allowed')->default(0);
             $table->unsignedInteger('price')->default(0);
-            $table->unsignedDecimal('weight', 7, 3)->default(0); //kg
+            $table->unsignedDecimal('weight', 8, 3)->default(0); //kg
             $table->unsignedInteger('auction_price')->default(0);
             $table->boolean('in_auction')->default(false);
 //            $table->boolean('is_private')->default(false); //just sell to agencies

@@ -8,6 +8,8 @@ use App\Models\Agency;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Pack;
+use App\Models\Product;
+use App\Models\Repository;
 use App\Models\Site;
 use App\Models\User;
 use DateTimeZone;
@@ -21,7 +23,8 @@ class Telegram
     const TOPIC_BUGS = 323;
     const TOPIC_CHATS = 330;
     const TOPIC_DESKTOP = 326;
-    const TOPIC_TRANSACTION = 326;
+    const TOPIC_TRANSACTION = 350;
+    const TOPIC_ORDER = 357;
 
 
     static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $topic = null)
@@ -491,6 +494,7 @@ class Telegram
             $topic = self::TOPIC_LOGS;
             switch ($type) {
                 case 'order_created':
+                    $topic = self::TOPIC_ORDER;
 
                     $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
@@ -578,7 +582,7 @@ class Telegram
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
-                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
+                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;
                     $msg .= " ⭐ " . "فروشگاه: " . ($data->is_shop ? '✅' : '⛔️') . PHP_EOL;;
                     $msg .= " ⭐ " . "دریافت حضوری: " . ($data->allow_visit ? '✅' : '⛔️') . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
@@ -587,6 +591,40 @@ class Telegram
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . ($cities->where('id', $data->province_id)->first()->name ?? '') . '-' . ($cities->where('id', $data->county_id)->first()->name ?? '') . '-' . ($cities->where('id', $data->district_id)->first()->name ?? '') . PHP_EOL;
                     $msg .= " 🪧 " . $data->address . PHP_EOL;
                     $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
+                    break;
+                case 'shipping-method_created' :
+                case 'shipping-method_edited':
+                    $data->agency = Agency::select('id', 'name')->findOrNew($data->agency_id);
+                    $data->repo = Repository::select('id', 'name')->findOrNew($data->repo_id);
+                    $data->shippingAgency = $data->shipping_agency_id == $data->agency_id ? $data->agency : Agency::select('id', 'name')->findOrNew($data->shipping_agency_id ?? 1);
+                    $cities = City::whereIn('id', $data->cities ?? [])->select('id', 'name')->get();
+                    if ($isCreate)
+                        $msg .= " 🟪 " . "یک روش ارسال ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🟧 " . "یک روش ارسال ویرایش شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
+                    $msg .= " 🚩 " . "انبار: " . "({$data->repo->id})" . ' ' . $data->repo->name . PHP_EOL;
+                    $msg .= " 🚩 " . "مالک باربری: " . "({$data->shippingAgency->id})" . ' ' . $data->shippingAgency->name . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
+                    $msg .= " ⭐ " . "وضعیت: " . __($data->status) . PHP_EOL;
+                    $msg .= " 🔷 " . "حداقل وزن: " . number_format($data->min_order_weight) . PHP_EOL;
+                    $msg .= " 🔶 " . "ضریب وزن: " . number_format($data->per_weight_price) . PHP_EOL;
+                    $msg .= " 🔶 " . "ضریب مسافت: " . number_format($data->per_distance_price) . PHP_EOL;
+                    $msg .= " 📜 " . "توضیحات: " . $data->description . PHP_EOL;
+
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚚 " . "محصولات: " . Product::whereIn('id', $data->products ?? [])->pluck('name')->join(',') . PHP_EOL;
+                    $msg .= " 🚚 " . "شهرها: " . $cities->whereIn('id', $data->cities ?? [])->pluck('name')->join(',') . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 📅 " . "ساعات ارسال: " . PHP_EOL;
+                    $msg .= collect($data->timestamps ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
+
                     break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
@@ -660,6 +698,7 @@ class Telegram
                     $msg .= $data->email . PHP_EOL;
                     break;
                 case 'transaction_created':
+                    $topic = self::TOPIC_TRANSACTION;
 
                     if ($data->amount > 0)
                         $msg .= " 🟢🟢🟢🛒 " . "یک تراکنش انجام شد" . PHP_EOL;
@@ -1083,9 +1122,9 @@ class Telegram
             }
             $msg .= PHP_EOL . "🅳🅰🅱🅴🅻🅲🅷🅸🅽";
             if ($to) {
-//                self::sendMessage($to, $msg, null);
-                Bale::sendMessage($to, $msg, null);
-                Eitaa::logAdmins($msg, $type,);
+                self::sendMessage($to, $msg, null);
+//                Bale::sendMessage($to, $msg, null);
+//                Eitaa::logAdmins($msg, $type,);
             } else {
                 self::logAdmins($msg, null, $topic);
 //                self::logAdmins($msg, null);
