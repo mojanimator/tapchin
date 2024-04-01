@@ -87,7 +87,7 @@
           <td class="border p-2 w-[50vw]">
             <div v-if="data.to" class="flex gap-2 flex-wrap w-full font-normal text-sm">
               <div class="flex items-center">
-                <div class="font-bold">{{ __('seller') }}:</div>
+                <div class="font-bold">{{ __('receiver') }}:</div>
                 <div class=" ms-1">{{ data.to.name }}</div>
               </div>
               <div class="flex items-center">
