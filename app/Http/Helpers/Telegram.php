@@ -506,9 +506,9 @@ class Telegram
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
-                    $msg .= " 🚩 " . "نام: " . $data->name;
-                    $msg .= " ⭐ " . "سطح: " . $data->level;
-                    $msg .= " ⭐ " . "دسترسی: " . join(',', $data->access ?? []);
+                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
+                    $msg .= " ⭐ " . "سطح: " . $data->level . PHP_EOL;;
+                    $msg .= " ⭐ " . "دسترسی: " . join(',', $data->access ?? []) . PHP_EOL;;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
                     $msg .= " 🪧 " . $data->address . PHP_EOL;
