@@ -501,7 +501,8 @@ class Telegram
                     $msg .= " 🚛 " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
                     $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
                     break;
-                case 'agency_created' || 'agency_edited':
+                case 'agency_created'  :
+                case 'agency_edited':
                     $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
@@ -548,7 +549,7 @@ class Telegram
                     $msg .= " 🖼 " . "تصویر:" . PHP_EOL . $data->img . PHP_EOL;
 
                     break;
-//                case 'repository_created' || 'repository_edited':
+//                case 'repository_created' :case 'repository_edited':
 //                    $msg .= " 🟣 " . "یک انبار $actionText" . PHP_EOL;
 //                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 //                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
