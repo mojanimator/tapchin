@@ -244,7 +244,7 @@ class VariationController extends Controller
         $request->validate(
             [
                 'agency_id' => ['required', Rule::in($admin->allowedAgencies(Agency::find($admin->agency_id))->pluck('id')),],
-                'new_in_repo' => in_array($cmnd, ['change-repo', 'change-grade-pack-weight']) ? [Rule::requiredIf(in_array($cmnd, ['change-repo', 'change-grade-pack-weight'])), 'numeric', "max:$data->in_repo", 'min:1'] : [],
+                'new_in_repo' => in_array($cmnd, ['change-repo', 'change-grade-pack-weight']) ? [Rule::requiredIf(in_array($cmnd, ['change-repo', 'change-grade-pack-weight'])), 'numeric', "max:$data->in_repo", 'min:0'] : [],
 
             ],
             [
@@ -252,7 +252,7 @@ class VariationController extends Controller
                 'agency_id.in' => __('access_denied'),
 
                 'new_in_repo.required' => sprintf(__('validator.required'), __('get_from_repo')),
-                'new_in_repo.min' => sprintf(__('validator.min_items'), __('get_from_repo'), floatval($data->in_repo), $request->new_in_repo),
+                'new_in_repo.min' => sprintf(__('validator.min_items'), __('get_from_repo'), 0, $request->new_in_repo),
                 'new_in_repo.max' => sprintf(__('validator.max_items'), __('get_from_repo'), floatval($data->in_repo), $request->new_in_repo),
 
             ],
@@ -311,10 +311,12 @@ class VariationController extends Controller
                     return response()->json(['message' => __('updated_successfully')], $successStatus);
 
 
-                case 'change-repo':
+                case 'change-repo'  :
+
+
                     $request->validate(
                         [
-                            'new_repo_id' => ['required', 'numeric', "not_in:$data->repo_id", Rule::in(Repository::where('agency_id', $data->agency_id)->pluck('id'))],
+                            'new_repo_id' => ['required', 'numeric', "not_in:$data->repo_id", $admin->hasAccess('edit_product') ? null : Rule::in(Repository::where('agency_id', $data->agency_id)->pluck('id'))],
                         ],
                         [
                             'new_repo_id.required' => sprintf(__('validator.required'), __('repository')),
@@ -323,25 +325,28 @@ class VariationController extends Controller
 
                         ],
                     );
+                    $newRepo = Repository::find($request->new_repo_id ?? 0);
+                    $newAgency = Agency::find($newRepo->agency_id ?? 0);
 
                     $newVariation = Variation::where([
-                        'repo_id' => $request->new_repo_id,
+                        'repo_id' => $newRepo->id,
+                        'name' => $data->name,
                         'product_id' => $data->product_id,
                         'grade' => $data->grade,
                         'pack_id' => $data->pack_id,
-                        'agency_id' => $data->agency_id,
+                        'agency_id' => $newRepo->agency_id,
                         'category_id' => $data->category_id,
                         'weight' => $data->weight,
 
                     ])->first();
                     if (!$newVariation) {
                         $newVariation = Variation::create([
-                            'repo_id' => $request->new_repo_id,
+                            'repo_id' => $newRepo->id,
                             'in_repo' => $request->new_in_repo,
                             'product_id' => $data->product_id,
                             'grade' => $data->grade,
                             'pack_id' => $data->pack_id,
-                            'agency_id' => $data->agency_id,
+                            'agency_id' => $newAgency->id ?? $data->agency_id,
                             'category_id' => $data->category_id,
                             'weight' => $data->weight,
                             'min_allowed' => $data->min_allowed,
@@ -350,13 +355,17 @@ class VariationController extends Controller
                             'description' => $data->description,
                             'name' => $data->name,
                             'in_shop' => 0,
-                            'agency_level' => $data->agency_level,
+                            'agency_level' => $newAgency->level ?? $data->agency_level,
                             'in_auction' => false,
                         ]);
-                        if (!File::exists("storage/app/public/variations/$newVariation->id")) {
+                        if (!File::exists(Storage::path("public/variations/$newVariation->id"))) {
                             File::makeDirectory(Storage::path("public/variations/$newVariation->id"), $mode = 0755,);
                         }
-                        File::copy(storage_path("app/public/variations/$data->id/thumb.jpg"), storage_path("app/public/variations/$newVariation->id/thumb.jpg"));
+                        File::copyDirectory(storage_path("app/public/variations/$data->id"), storage_path("app/public/variations/$newVariation->id"));
+
+                        $newVariation->repo = $newRepo;
+                        $newVariation->agency = $newAgency;
+                        Telegram::log(null, 'variation_created', $newVariation);
 
                     } else {
                         $newVariation->in_repo += $request->new_in_repo;
@@ -396,7 +405,7 @@ class VariationController extends Controller
                     $newVariation = Variation::where(['name' => $data->name, 'agency_id' => $data->agency_id, 'repo_id' => $data->repo_id, 'product_id' => $data->product_id, 'grade' => $request->new_grade, 'pack_id' => $request->new_pack_id, 'weight' => $request->new_pack_id == 1 ? 1 : $request->new_unit_weight])->first();
                     $reminded = 0;
                     //without pack -> count can be float
-                
+
                     if ($request->new_pack_id == 1)
                         $inRepo = ($data->weight * $request->new_in_repo);
                     //split weight to integer and float
@@ -434,10 +443,14 @@ class VariationController extends Controller
                             'in_auction' => false,
                         ]);
 
-                        if (!File::exists("storage/app/public/variations/$newVariation->id")) {
+                        if (!File::exists(Storage::path("public/variations/$newVariation->id"))) {
                             File::makeDirectory(Storage::path("public/variations/$newVariation->id"), $mode = 0755,);
                         }
-                        File::copy(storage_path("app/public/variations/$data->id/thumb.jpg"), storage_path("app/public/variations/$newVariation->id/thumb.jpg"));
+                        File::copyDirectory(storage_path("app/public/variations/$data->id"), storage_path("app/public/variations/$newVariation->id"));
+
+                        $newVariation->repo = Repository::find($data->repo_id);
+                        $newVariation->agency = Agency::find($data->agency_id);
+                        Telegram::log(null, 'variation_created', $newVariation);
                     } else {
                         $newVariation->in_repo += $inRepo;
                         $newVariation->save();
@@ -447,7 +460,7 @@ class VariationController extends Controller
 
                     //send reminded  to unpack variation
                     if ($reminded > 0) {
-                        $newVariation2 = Variation::where(['agency_id' => $data->agency_id, 'repo_id' => $data->repo_id, 'product_id' => $data->product_id, 'grade' => $request->new_grade, 'pack_id' => 1,])->first();
+                        $newVariation2 = Variation::where(['name' => $data->name, 'agency_id' => $data->agency_id, 'repo_id' => $data->repo_id, 'product_id' => $data->product_id, 'grade' => $request->new_grade, 'pack_id' => 1,])->first();
 
                         if (!$newVariation2) {
                             $newVariation2 = Variation::create([
@@ -469,11 +482,14 @@ class VariationController extends Controller
                                 'agency_level' => $data->agency_level,
                                 'in_auction' => false,
                             ]);
-                            if (!File::exists("storage/app/public/variations/$newVariation2->id")) {
+                            if (!File::exists(Storage::path("public/variations/$newVariation2->id"))) {
                                 File::makeDirectory(Storage::path("public/variations/$newVariation2->id"), $mode = 0755,);
                             }
-                            File::copy(storage_path("app/public/products/$data->product_id.jpg"), storage_path("app/public/variations/$newVariation2->id/thumb.jpg"));
+                            File::copyDirectory(storage_path("app/public/variations/$newVariation->id"), storage_path("app/public/variations/$newVariation2->id"));
 
+                            $newVariation->repo = Repository::find($data->repo_id);
+                            $newVariation->agency = Agency::find($data->agency_id);
+                            Telegram::log(null, 'variation_created', $newVariation);
                         } else {
                             $newVariation2->in_repo += $reminded;
                             $newVariation2->save();
@@ -535,6 +551,9 @@ class VariationController extends Controller
                         ]);
                     $data->update(['in_repo' => $request->new_in_repo, 'in_shop' => $request->new_in_shop]);
                     return response()->json(['message' => __('updated_successfully'),], $successStatus);
+
+                    break;
+                case 'copy-variation':
 
                     break;
             }

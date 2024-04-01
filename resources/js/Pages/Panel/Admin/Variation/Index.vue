@@ -297,7 +297,7 @@
                              :src="`${route('storage.variations')}/${d.id}/thumb.jpg`"
                              :data-lity="`${route('storage.variations')}/${d.id}/thumb.jpg`"
                              :alt="cropText(d.title,5)"/>
-                      <Link class="px-1 whitespace-nowrap hover:text-gray-500"
+                      <Link class="px-1 whitespace-nowra hover:text-gray-500"
                             :href="route('admin.panel.variation.edit',d.id)">
                         <div class=" font-semibold ">{{ cropText(d.name, 30) }}</div>
                         <div class="font-normal text-gray-500">{{ }}</div>
@@ -339,6 +339,8 @@
                             class="   text-sm  ">
                           <span class="text-xs py-2 text-danger-500">{{ __('help_change_repo') }}</span>
                           <div class="flex flex-col  space-y-2 text-start ">
+
+
                             <div class="flex items-stretch">
                               <div @click.stop="d.new_repo_id=null "
                                    class="bg-red-500 cursor-pointer text-white align-middle rounded-s hover:bg-red-400">
@@ -482,15 +484,7 @@
                       <div
                           class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out    focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
-                        <button
-                            @click="d.idx=idx;d.cmnd='copy-variation';d.new_grade=d.grade;d.new_pack_id=d.pack_id;d.new_in_repo=0;selected=d; "
-                            type="button"
-                            class="inline-block flex rounded mx-1  bg-indigo-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
-                            data-te-ripple-init
-                            data-te-ripple-color="light">
-                          <div class="mx-1">{{ __('copy') }}</div>
-                          <DocumentDuplicateIcon class="text-white w-4"/>
-                        </button>
+
                         <Link
                             type="button" :href="route('admin.panel.variation.edit',d.id)"
                             class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
@@ -521,11 +515,11 @@
 
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="fixed inset-0 z-10  w-screen overflow-y-auto">
               <div @click.self="selected=null;errors={}"
-                   class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                   class="flex min-h-full   justify-center p-4 text-center sm:items-center sm:p-0">
                 <div
-                    class="relative transform overflow-hidden rounded-lg bg-white   shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    class="relative transform overflow-auto rounded-lg bg-white   shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                   <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div class=" flex flex-col items-stretch">
                       <div class="flex items-center  gap-2">
@@ -550,19 +544,30 @@
                             <span class="text-xs py-2 text-danger-500">{{ __('help_change_repo') }}</span>
                             <div class="flex flex-col  space-y-2 text-start ">
 
-                              <div class="flex flex-col  ">
+                              <div class="flex  flex-col justify-start  ">
+                                <UserSelector :colsData="['id','name','phone','agency_id']"
+                                              :labelsData="['id','name','phone','agency_id']"
+                                              :callback="{'level':getAgency}" :error="errors.new_repo_id"
+                                              :link="route('admin.panel.repository.search')+(`?status=active` )"
+                                              :label="__('repository')"
+                                              :id="'repository'" v-model:selected="selected.new_repo_id"
+                                              :preload="null">
+                                  <template v-slot:selector="props">
+                                    <div :class="props.selectedText?'py-2':'py-2'"
+                                         class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                                      <div class="grow">
+                                        {{ props.selectedText ?? __('select') }}
+                                      </div>
+                                      <div v-if="props.selectedText"
+                                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                                           @click.stop="props.clear()">
+                                        <XMarkIcon class="w-5 h-5"/>
 
-                                <Selector ref="repoIdSelector" v-model="selected.new_repo_id"
-                                          @change="($e)=>{ selected.new_repo_id=$e.target.value;}"
-                                          :data="filteredRepositories[selected.agency_id] "
-                                          :error="errors.new_repo_id"
-                                          :label="__('repository')" :id=" `selectRepo${selected.id}`">
-                                  <template v-slot:append>
-                                    <div class="  p-3">
-                                      <Squares2X2Icon class="h-5 w-5"/>
+                                      </div>
                                     </div>
                                   </template>
-                                </Selector>
+                                </UserSelector>
+
 
                                 <div class="my-2">
                                   <TextInput
@@ -806,6 +811,7 @@ import Tooltip from "@/Components/Tooltip.vue"
 import Selector from "@/Components/Selector.vue"
 import {Dropdown, Modal, initTE} from "tw-elements";
 import TextInput from "@/Components/TextInput.vue";
+import UserSelector from "@/Components/UserSelector.vue";
 
 
 export default {
@@ -833,6 +839,7 @@ export default {
   directives: {}
   ,
   components: {
+    UserSelector,
     TextInput,
     Head,
     Link,
