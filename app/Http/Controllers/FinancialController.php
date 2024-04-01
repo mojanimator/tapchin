@@ -35,8 +35,9 @@ class  FinancialController extends Controller
             'sheba',
             'created_at',
             'updated_at',
-            'user_id AS user_id',
-
+            'user_id AS owner_id',
+            DB::raw('NULL as parent_debit'),
+            DB::raw('NULL as agency_id'),
 
         );
         $query2 = AdminFinancial::query()->select(
@@ -46,8 +47,9 @@ class  FinancialController extends Controller
             'sheba',
             'created_at',
             'updated_at',
-            'admin_id AS user_id',
-
+            'admin_id AS owner_id',
+            'agency_id',
+            DB::raw('NULL as parent_debit'),
 
         );
         $query3 = AgencyFinancial::query()->select(
@@ -57,16 +59,20 @@ class  FinancialController extends Controller
             'sheba',
             'created_at',
             'updated_at',
-            'agency_id AS user_id',
+
+            'agency_id AS owner_id',
             'parent_debit',
-             
-
+            DB::raw('NULL as agency_id'),
         );
+        if (!$admin->hasAccess('edit_setting')) {
+            $myAgency = Agency::find($admin->agency_id);
+            $agencyIds = $admin->allowedAgencies($myAgency)->pluck('id');
+            //cant see users
+            $query1->whereId(0);
+            $query2->whereInegerInRaw('agency_id', $agencyIds);
+            $query3->whereInegerInRaw('agency_id', $agencyIds);
+        }
 
-
-        $myAgency = Agency::find($admin->agency_id);
-
-        $agencyIds = $admin->allowedAgencies($myAgency)->pluck('id');
 
         if ($search) {
             $query1->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));

@@ -480,8 +480,17 @@
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
                       <div
-                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out    focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
+                        <button
+                            @click="d.idx=idx;d.cmnd='copy-variation';d.new_grade=d.grade;d.new_pack_id=d.pack_id;d.new_in_repo=0;selected=d; "
+                            type="button"
+                            class="inline-block flex rounded mx-1  bg-indigo-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
+                            data-te-ripple-init
+                            data-te-ripple-color="light">
+                          <div class="mx-1">{{ __('copy') }}</div>
+                          <DocumentDuplicateIcon class="text-white w-4"/>
+                        </button>
                         <Link
                             type="button" :href="route('admin.panel.variation.edit',d.id)"
                             class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
@@ -789,6 +798,7 @@ import {
   ArrowsUpDownIcon,
   Squares2X2Icon,
   CurrencyDollarIcon,
+  DocumentDuplicateIcon,
 
 } from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue"
@@ -839,6 +849,7 @@ export default {
     Squares2X2Icon,
     Selector,
     CurrencyDollarIcon,
+    DocumentDuplicateIcon,
   },
   mounted() {
 

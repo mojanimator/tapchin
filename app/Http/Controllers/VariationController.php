@@ -514,7 +514,7 @@ class VariationController extends Controller
                     ]);
                     $request->validate(
                         [
-                            'sum_equal' => [Rule::in([$data->in_repo + $data->in_shop])],
+                            'sum_equal' => $admin->hasAccess('edit_product') ? [] : [Rule::in([$data->in_repo + $data->in_shop])],
                             'changed' => [Rule::in([true])],
                             'new_in_repo' => ['required', 'numeric', 'min:0'],
                             'new_in_shop' => ['required', 'numeric', 'min:0',],

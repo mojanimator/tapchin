@@ -114,10 +114,10 @@ class ProfileController extends Controller
         ]);
 
         $financialClass::updateOrCreate([($isAdmin ? 'admin_id' : 'user_id') => $user->id,],
-            [
+            collect([
                 'card' => $request->card,
                 'sheba' => $request->sheba,
-            ]);
+            ])->merge($isAdmin ? ['agency_id' => $user->agency_id] : [])->toArray());
 
         $res = ['extra' => ['wallet_active' => $user->wallet_active], 'flash_status' => 'success', 'flash_message' => __('updated_successfully')];
         Telegram::log(null, 'user_edited', $user);

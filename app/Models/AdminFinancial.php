@@ -10,6 +10,7 @@ class AdminFinancial extends Model
     use HasFactory;
 
     protected $fillable = [
+        'agency_id',
         'admin_id',
         'wallet',
         'card',
