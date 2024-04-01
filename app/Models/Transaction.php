@@ -39,7 +39,8 @@ class Transaction extends Model
         $user = request()->user();
         //split shipping
         if ($order->total_shipping_price && $shipping) {
-            $shipping = (object)['agency_id' => ShippingMethod::find($order->shipping_method_id)->shipping_agency_id ?? $shipping->agency_id];
+            //default is central agency(null)=> not pay
+            $shipping = (object)['agency_id' => in_array((ShippingMethod::find($order->shipping_method_id))->shipping_agency_id, [1, null]) ? 1 : $shipping->agency_id];
             //not pay to our agency
             if ($shipping->agency_id == 1) return;
             $t = Transaction::create([

@@ -78,7 +78,7 @@ class AgencyRequest extends FormRequest
             $tmp = array_merge($tmp, [
                 'type_id' => ['required', Rule::in($availableTypes)],
                 'name' => ['required', 'max:200'],
-                'phone' => ['required', "unique:agencies,phone,$this->id", 'max:20'],
+                'phone' => ['required', /*"unique:agencies,phone,$this->id",*/ 'max:20'],
                 'address' => ['required', 'max:2048'],
                 'province_id' => ['required', Rule::in(City::where('level', 1)->pluck('id'))],
                 'county_id' => ['required', Rule::in(City::where('level', 2)->pluck('id'))],
