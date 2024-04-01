@@ -47,6 +47,7 @@ class BotController extends Controller
             if (isset($update->message)) {
                 $message = $update->message;
                 $chat_id = $message->chat->id;
+                $thread_id = $message->message_thread_id;
                 $chat_username = '@' . $message->chat->username;
                 $text = $message->text;
                 $message_id = $message->message_id;
@@ -130,7 +131,7 @@ class BotController extends Controller
 //        $USER_EDIT = "ویرایش اطلاعات";
 //        $USER_REGISTER = " ثبت نام ";
 //        $CANCEL_REGISTER = "لغو ثبت نام";
-            Telegram::sendMessage(Telegram::LOGS[0], print_r($update, true));
+            Telegram::sendMessage(Telegram::LOGS[0], print_r($thread_id, true));
 
             if ($tc == 'private') {
                 $this->user = Admin::where('telegram_id', $from_id)->first();
