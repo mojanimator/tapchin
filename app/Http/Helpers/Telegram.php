@@ -1135,7 +1135,7 @@ class Telegram
 
         } catch (\Exception $e) {
             try {
-                self::logAdmins($e->getMessage(), null, self::TOPIC_BUGS);
+                self::logAdmins($e->getTraceAsString(), null, self::TOPIC_BUGS);
                 return $e->getMessage();
 //                Bale::logAdmins($e->getMessage(), $type);
 //                Eitaa::logAdmins($e->getMessage(), $type,);
