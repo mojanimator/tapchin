@@ -7,6 +7,7 @@ use App\Http\Helpers\Variable;
 use App\Http\Requests\RepositoryRequest;
 use App\Models\Admin;
 use App\Models\Agency;
+use App\Models\City;
 use App\Models\Repository;
 use App\Models\ShippingMethod;
 use Illuminate\Http\Request;
@@ -57,9 +58,11 @@ class RepositoryController extends Controller
             }
         } elseif ($data) {
 
+            //add county parents for level3
+            $withParentLevel3 = City::whereIn('id', $request->cities ?? [])->where('level', 3)->distinct('parent_id')->pluck('parent_id')->merge($request->cities ?? [])->toArray();
 
             $request->merge([
-//                'cities' => json_encode($request->cities ?? [])
+                'cities' => $withParentLevel3
             ]);
 
 
@@ -79,12 +82,14 @@ class RepositoryController extends Controller
     {
 //        $user = $request->user();
 
-
+        //add county parents for level3
+        $withParentLevel3 = City::whereIn('id', $request->cities ?? [])->where('level', 3)->distinct('parent_id')->pluck('parent_id')->merge($request->cities ?? [])->toArray();
         $request->merge([
-
+            'cities' => $withParentLevel3,
             'status' => 'active',
 
         ]);
+
 
         $data = Repository::create($request->all());
 
