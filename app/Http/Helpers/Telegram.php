@@ -22,20 +22,8 @@ class Telegram
     const TOPIC_CHATS = 330;
     const TOPIC_DESKTOP = 326;
 
-    static function sendBug($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false)
-    {
-        return self::creator('sendMessage', [
-            'chat_id' => $chat_id,
-            'text' => $text,
-            'parse_mode' => $mode,
-            'reply_to_message_id' => $reply,
-            'reply_markup' => $keyboard,
-            'disable_notification' => $disable_notification,
-            'message_thread_id' => self::TOPIC_BUGS,
-        ]);
-    }
 
-    static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false)
+    static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $topic = self::TOPIC_LOGS)
     {
         return self::creator('sendMessage', [
             'chat_id' => $chat_id,
@@ -44,7 +32,7 @@ class Telegram
             'reply_to_message_id' => $reply,
             'reply_markup' => $keyboard,
             'disable_notification' => $disable_notification,
-            'message_thread_id' => self::TOPIC_LOGS,
+            'message_thread_id' => $topic,
         ]);
     }
 
@@ -105,12 +93,9 @@ class Telegram
     static function logAdmins($msg, $mode = null, $topic = self::TOPIC_LOGS)
     {
         $res = null;
-        if ($topic == self::TOPIC_BUGS)
-            foreach ([self::LOGS[2]] as $log)
-                $res = self::sendBug($log, $msg, $mode);
-        else
-            foreach ([self::LOGS[2]] as $log)
-                $res = self::sendMessage($log, $msg, $mode);
+
+        foreach ([self::LOGS[2]] as $log)
+            $res = self::sendMessage($log, $msg, $mode, null, null, false, $topic);
         return $res;
 
     }
@@ -502,6 +487,7 @@ class Telegram
 
             $isCreate = str_contains($type, 'created');
             $isEdit = str_contains($type, 'edited');
+            $topic = self::TOPIC_LOGS;
             switch ($type) {
                 case 'order_created':
 
@@ -1100,7 +1086,7 @@ class Telegram
                 Bale::sendMessage($to, $msg, null);
                 Eitaa::logAdmins($msg, $type,);
             } else {
-                self::logAdmins($msg, null, self::TOPIC_LOGS);
+                self::logAdmins($msg, null, $topic);
 //                self::logAdmins($msg, null);
                 return $msg;
 //                Bale::logAdmins($msg, null);
