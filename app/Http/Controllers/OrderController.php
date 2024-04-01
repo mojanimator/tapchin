@@ -398,7 +398,6 @@ class OrderController extends Controller
         $isFromAgency = $request->is_from_agency;
         $isToAgency = $request->is_to_agency;
         $query = Order::query()->select('*');
-
         $agencies = [];
         if ($userAdmin instanceof Admin) {
             $myAgency = Agency::find($userAdmin->agency_id);

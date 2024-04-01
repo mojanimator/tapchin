@@ -13,7 +13,8 @@
             class="flex  items-center justify-between px-4 py-2 text-primary-500 border-b md:py-4">
           <div class="flex">
             <Bars2Icon class="h-7 w-7 mx-3"/>
-            <h5 class="  font-semibold">{{ __('orders_list') }}</h5>
+            <h5 class="  font-semibold">{{ `${__('orders_list')} ( ${__(status) || ''} )` }}</h5>
+
           </div>
           <div>
             <Link v-if="hasAccess('create_order')" :href="route('admin.panel.order.user.create')"
@@ -418,12 +419,14 @@ import TextInput from "@/Components/TextInput.vue";
 export default {
   data() {
     return {
+      status: this.route().params.status,
       errors: {},
       filteredRepositories: [],
       repoModal: null,
       selected: null,
       selectedParams: null,
       params: {
+
         page: 1,
         search: null,
         paginate: this.$page.props.pageItems[0],
@@ -499,10 +502,14 @@ export default {
 
       this.loading = true;
       this.data = [];
+      if (this.status)
+        this.params.status = this.status;
+
       window.axios.get(route('admin.panel.order.user.search'), {
         params: this.params
       }, {})
           .then((response) => {
+
             this.data = response.data.data;
             this.data.forEach(el => {
               el.selected = false;

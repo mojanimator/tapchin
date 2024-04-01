@@ -13,7 +13,7 @@
             class="flex  items-center justify-between px-4 py-2 text-primary-500 border-b md:py-4">
           <div class="flex">
             <Bars2Icon class="h-7 w-7 mx-3"/>
-            <h5 class="  font-semibold">{{ __('orders_list') }}</h5>
+            <h5 class="  font-semibold">{{ `${__('orders_list')} ( ${__(status) || ''} )` }}</h5>
           </div>
           <div>
             <Link v-if="hasAccess('create_order')" :href="route('admin.panel.repository.order.create')"
@@ -468,12 +468,14 @@ import TextInput from "@/Components/TextInput.vue";
 export default {
   data() {
     return {
+      status: this.route().params.status,
       errors: {},
       filteredRepositories: [],
       repoModal: null,
       selected: null,
       selectedParams: null,
       params: {
+
         page: 1,
         search: null,
         is_from_agency: true,
@@ -550,6 +552,9 @@ export default {
 
       this.loading = true;
       this.data = [];
+      if (this.status)
+        this.params.status = this.status;
+
       window.axios.get(route('admin.panel.repository.order.search'), {
         params: this.params
       }, {})

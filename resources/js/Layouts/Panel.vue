@@ -169,6 +169,18 @@
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('customers') }}
                 </Link>
+                <template v-if="  hasAccess('view_user_order') ">
+                  <Link v-for="(s,idx) in $page.props.order_statuses"
+                        :href="`${route('admin.panel.order.user.index')}?status=${s.name}`"
+                        role="menuitem"
+                        :class="subMenuIsActive( `admin.panel.order.user.index`, {status:s.name} )"
+                        class="flex   border-s-2 hover:border-primary-500  items-center p-2 px-4   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                    <TagIcon class="w-5 h-5 mx-1" :class="` text-${getStatus('order_statuses', s.name).color}-500 `"/>
+                    <div :class="` text-${getStatus('order_statuses', s.name).color}-500 `">
+                      {{ getStatus('order_statuses', s.name).name }}
+                    </div>
+                  </Link>
+                </template>
 
                 <Link v-if="  hasAccess('view_agency_order') " :href="route('admin.panel.order.agency.index')"
                       role="menuitem"
@@ -177,7 +189,18 @@
                   <Bars2Icon class="w-5 h-5 mx-1"/>
                   {{ __('agencies') }}
                 </Link>
-
+                <template v-if="  hasAccess('view_agency_order') ">
+                  <Link v-for="(s,idx) in $page.props.order_statuses"
+                        :href="`${route('admin.panel.order.agency.index')}?status=${s.name}`"
+                        role="menuitem"
+                        :class="subMenuIsActive( `admin.panel.order.agency.index`, {status:s.name} )"
+                        class="flex   border-s-2 hover:border-primary-500  items-center p-2 px-4   text-sm  transition-all duration-200   hover:text-primary-700 hover:bg-primary-50">
+                    <TagIcon class="w-5 h-5 mx-1" :class="` text-${getStatus('order_statuses', s.name).color}-500 `"/>
+                    <div :class="` text-${getStatus('order_statuses', s.name).color}-500 `">
+                      {{ getStatus('order_statuses', s.name).name }}
+                    </div>
+                  </Link>
+                </template>
               </li>
 
             </ul>
@@ -782,6 +805,7 @@ import {
   ShoppingBagIcon,
   CogIcon,
   UserCircleIcon,
+  TagIcon,
 } from "@heroicons/vue/24/outline";
 import {
   QuestionMarkCircleIcon,
@@ -884,6 +908,7 @@ export default {
     UserCircleIcon,
     UserIcon,
     UGP,
+    TagIcon,
   },
   methods: {
     delay(time) {
@@ -893,8 +918,8 @@ export default {
     menuIsActive(link) {
       return this.route().current(`${link}`);
     },
-    subMenuIsActive(link) {
-      return this.route().current(`${link}`) ? "text-primary-500 border-s border-primary-500  " : "text-gray-500   ";
+    subMenuIsActive(link, params = null) {
+      return this.route().current(`${link}`, params) ? "text-primary-500 bg-primary-50 border-s border-primary-500  " : "text-gray-500   ";
     },
 
   },
