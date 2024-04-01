@@ -76,7 +76,11 @@ class RepositoryRequest extends FormRequest
                 'allow_visit' => [Rule::requiredIf($this->is_shop), 'boolean'],
             ]);
 
-
+            //add county parents for level3
+            $withParentLevel3 = City::whereIn('id', $this->cities ?? [])->where('level', 3)->distinct('parent_id')->pluck('parent_id')->merge($this->cities ?? []);
+            $this->merge([
+                'cities' => $withParentLevel3
+            ]);
         }
         if ($this->uploading)
             $tmp = array_merge($tmp, [
