@@ -4,6 +4,7 @@ namespace App\Http\Helpers;
 
 
 use App\Models\Admin;
+use App\Models\Agency;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Pack;
@@ -575,21 +576,31 @@ class Telegram
                     $msg .= " 🖼 " . "تصویر:" . PHP_EOL . $data->img . PHP_EOL;
 
                     break;
-//                case 'repository_created' :case 'repository_edited':
-//                    $msg .= " 🟣 " . "یک انبار $actionText" . PHP_EOL;
-//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-//                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
-//                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
-//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-//                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
-//                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
-//                    $msg .= " ⭐ " . "سطح: " . $data->level . PHP_EOL;;
-//                    $msg .= " ⭐ " . "دسترسی: " . join(',', $data->access ?? []) . PHP_EOL;;
-//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-//                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
-//                    $msg .= " 🪧 " . $data->address . PHP_EOL;
-//                    $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
-//                    break;
+                case 'repository_created' :
+                case 'repository_edited':
+                    $data->agency = Agency::select('id', 'name')->findOrNew($data->agency_id);
+                    $cities = City::whereIn('id', collect([$data->province_id, $data->county_id, $data->district_id])->merge($data->cities ?? [])->all())->select('id', 'name')->get();
+                    if ($isCreate)
+                        $msg .= " 🟪 " . "یک انبار ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🟧 " . "یک انبار ویرایش شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
+                    $msg .= " ⭐ " . "فروشگاه: " . ($data->is_shop ? '✅' : '⛔️') . PHP_EOL;;
+                    $msg .= " ⭐ " . "دریافت حضوری: " . ($data->allow_visit ? '✅' : '⛔️') . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚚 " . "پشتیبانی: " . $cities->whereIn('id', $data->cities ?? [])->pluck('name')->join(',') . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . ($cities->where('id', $data->province_id)->first()->name ?? '') . '-' . ($cities->where('id', $data->county_id)->first()->name ?? '') . '-' . ($cities->where('id', $data->district_id)->first()->name ?? '') . PHP_EOL;
+                    $msg .= " 🪧 " . $data->address . PHP_EOL;
+                    $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
+                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
@@ -1089,7 +1100,7 @@ class Telegram
                 Bale::sendMessage($to, $msg, null);
                 Eitaa::logAdmins($msg, $type,);
             } else {
-                self::sendMessage(Telegram::LOGS[2], $msg);
+                self::logAdmins($msg, null, self::TOPIC_LOGS);
 //                self::logAdmins($msg, null);
                 return $msg;
 //                Bale::logAdmins($msg, null);
@@ -1098,7 +1109,7 @@ class Telegram
 
         } catch (\Exception $e) {
             try {
-                self::sendMessage(self::LOGS[0], $e->getMessage());
+                self::logAdmins($e->getMessage(), null, self::TOPIC_BUGS);
                 return $e->getMessage();
 //                Bale::logAdmins($e->getMessage(), $type);
 //                Eitaa::logAdmins($e->getMessage(), $type,);
