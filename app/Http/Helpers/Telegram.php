@@ -524,10 +524,12 @@ class Telegram
                     $msg .= " 🚛 " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
                     $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
                     break;
-                case 'agency_edited'  :
-                    $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
-                case 'agency_created':
-                    $msg .= " 🔴 " . "یک نمایندگی ویرایش شد" . PHP_EOL;
+                case 'agency_created'  :
+                case 'agency_edited':
+                    if ($isCreate)
+                        $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🟠 " . "یک نمایندگی ویرایش شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
