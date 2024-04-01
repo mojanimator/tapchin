@@ -476,6 +476,8 @@ class Telegram
             $time = $now->format('%A, %d %B %Y ⏰ H:i');
             $msg = "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL;
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+
+            $actionText = str_contains($type, 'created') ? " ثبت شد " : " ویرایش شد ";
             switch ($type) {
                 case 'order_created':
 
@@ -499,7 +501,7 @@ class Telegram
                     $msg .= " 🚛 " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
                     $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
                     break;
-                case 'agency_created':
+                case 'agency_created' || 'agency_edited':
                     $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
@@ -546,6 +548,21 @@ class Telegram
                     $msg .= " 🖼 " . "تصویر:" . PHP_EOL . $data->img . PHP_EOL;
 
                     break;
+//                case 'repository_created' || 'repository_edited':
+//                    $msg .= " 🟣 " . "یک انبار $actionText" . PHP_EOL;
+//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+//                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+//                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+//                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+//                    $msg .= " 🚩 " . "نام: " . $data->name . PHP_EOL;;
+//                    $msg .= " ⭐ " . "سطح: " . $data->level . PHP_EOL;;
+//                    $msg .= " ⭐ " . "دسترسی: " . join(',', $data->access ?? []) . PHP_EOL;;
+//                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+//                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
+//                    $msg .= " 🪧 " . $data->address . PHP_EOL;
+//                    $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
+//                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;

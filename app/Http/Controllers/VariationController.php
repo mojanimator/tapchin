@@ -342,7 +342,7 @@ class VariationController extends Controller
                     if (!$newVariation) {
                         $newVariation = Variation::create([
                             'repo_id' => $newRepo->id,
-                            'in_repo' => $request->new_in_repo,
+                            'in_repo' => $request->new_in_repo ?: $data->in_repo,//copy
                             'product_id' => $data->product_id,
                             'grade' => $data->grade,
                             'pack_id' => $data->pack_id,
@@ -354,7 +354,7 @@ class VariationController extends Controller
                             'auction_price' => $data->auction_price,
                             'description' => $data->description,
                             'name' => $data->name,
-                            'in_shop' => 0,
+                            'in_shop' => $request->new_in_repo == 0 ? $data->in_shop : 0, //copy
                             'agency_level' => $newAgency->level ?? $data->agency_level,
                             'in_auction' => false,
                         ]);
