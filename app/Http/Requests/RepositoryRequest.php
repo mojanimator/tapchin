@@ -57,7 +57,7 @@ class RepositoryRequest extends FormRequest
             $childCities = City::where('has_child', false)->pluck('id')->toArray();
             $tmp = array_merge($tmp, [
                 'agency_id' => ['required', Rule::in($availableAgencies)],
-                'admin_id' => ['required', Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],
+                'admin_id' => ['required', $user->hasAccess('edit_setting') ? null : Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],
                 'name' => ['required', 'max:200'],
                 'phone' => ['required', "unique:repositories,phone,$this->id", 'max:20'],
                 'address' => ['required', 'max:2048'],
