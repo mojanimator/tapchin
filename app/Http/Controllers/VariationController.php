@@ -396,6 +396,7 @@ class VariationController extends Controller
                     $newVariation = Variation::where(['name' => $data->name, 'agency_id' => $data->agency_id, 'repo_id' => $data->repo_id, 'product_id' => $data->product_id, 'grade' => $request->new_grade, 'pack_id' => $request->new_pack_id, 'weight' => $request->new_pack_id == 1 ? 1 : $request->new_unit_weight])->first();
                     $reminded = 0;
                     //without pack -> count can be float
+                
                     if ($request->new_pack_id == 1)
                         $inRepo = ($data->weight * $request->new_in_repo);
                     //split weight to integer and float
