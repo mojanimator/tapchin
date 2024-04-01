@@ -21,9 +21,10 @@ class Telegram
     const TOPIC_BUGS = 323;
     const TOPIC_CHATS = 330;
     const TOPIC_DESKTOP = 326;
+    const TOPIC_TRANSACTION = 326;
 
 
-    static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $topic = self::TOPIC_LOGS)
+    static function sendMessage($chat_id, $text, $mode = null, $reply = null, $keyboard = null, $disable_notification = false, $topic = null)
     {
         return self::creator('sendMessage', [
             'chat_id' => $chat_id,
