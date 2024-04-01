@@ -91,6 +91,7 @@ class AgencyRequest extends FormRequest
                 'sheba' => ['nullable', 'numeric', 'digits:24'],
 
             ]);
+
         }
         if ($this->uploading)
             $tmp = array_merge($tmp, [
