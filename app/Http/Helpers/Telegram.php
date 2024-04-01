@@ -499,7 +499,8 @@ class Telegram
             $msg = "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL;
             $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
 
-            $actionText = str_contains($type, 'created') ? " ثبت شد " : " ویرایش شد ";
+            $isCreate = str_contains($type, 'created');
+            $isEdit = str_contains($type, 'edited');
             switch ($type) {
                 case 'order_created':
 
@@ -524,8 +525,9 @@ class Telegram
                     $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
                     break;
                 case 'agency_created'  :
-                case 'agency_edited':
                     $msg .= " 🟣 " . "یک نمایندگی ثبت شد" . PHP_EOL;
+                case 'agency_edited':
+                    $msg .= " 🔴 " . "یک نمایندگی ویرایش شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
