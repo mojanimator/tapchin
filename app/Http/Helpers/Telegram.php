@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
+use App\Models\ShippingMethod;
 use App\Models\Site;
 use App\Models\User;
 use DateTimeZone;
@@ -599,7 +600,7 @@ class Telegram
                     $data->shippingAgency = $data->shipping_agency_id == $data->agency_id ? $data->agency : Agency::select('id', 'name')->findOrNew($data->shipping_agency_id ?? 1);
                     $cities = City::whereIn('id', $data->cities ?? [])->select('id', 'name')->get();
                     if ($isCreate)
-                        $msg .= " 🟪 " . "یک روش ارسال ثبت شد" . PHP_EOL;
+                        $msg .= " 🟫 " . "یک روش ارسال ثبت شد" . PHP_EOL;
                     if ($isEdit)
                         $msg .= " 🟧 " . "یک روش ارسال ویرایش شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
@@ -623,7 +624,7 @@ class Telegram
                     $msg .= " 🚚 " . "شهرها: " . $cities->whereIn('id', $data->cities ?? [])->pluck('name')->join(',') . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 📅 " . "ساعات ارسال: " . PHP_EOL;
-                    $msg .= print_r($data->timestamps, true);
+                    $msg .= print_r(ShippingMethod::find($data->id)->timestamps, true);
 //                    $msg .= collect($data->timestamps ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
 
                     break;
