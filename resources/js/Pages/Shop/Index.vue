@@ -49,9 +49,9 @@
              v-for="(p,idx) in products">
           <article :id="p.id" @click.self="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
                    class="overflow-hidden flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
-            <Image
-                classes="object-cover md:mx-auto sm:h-64  h-32    w-32 sm:w-full    rounded-b-lg mx-2"
-                :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
+            <Image :data-lity="route('storage.variations')+`/${p.id}/thumb.jpg`"
+                   classes="object-cover md:mx-auto sm:h-64  h-32    w-32 sm:w-full    rounded-b-lg mx-2"
+                   :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
 
             <div class="hidden sm:flex min-w-[36%] my-1  mx-auto">
               <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
