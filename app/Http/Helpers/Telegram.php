@@ -623,8 +623,7 @@ class Telegram
                     $msg .= " 🚚 " . "شهرها: " . $cities->whereIn('id', $data->cities ?? [])->pluck('name')->join(',') . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 📅 " . "ساعات ارسال: " . PHP_EOL;
-                    $msg .= print_r($data->getAttribute('timestamps'), true);
-//                    $msg .= collect($data->timestamps ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
+                    $msg .= collect($data->getAttribute('timestamps') ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
 
                     break;
                 case 'site_created':
