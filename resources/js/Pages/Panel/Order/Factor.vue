@@ -137,19 +137,17 @@
           </td>
           <td class="border text-center p-2  ">
 
-            {{
-              `${item.name} ( ${(parseFloat(item.qty) || 0)} ${getPack(item.variation.pack_id)}  ${' ' || parseFloat(item.variation.weight)} ${' ' || __('kg')})`
-            }}
+          {{ item.title}}
           </td>
           <td class="border text-center p-2  ">
             {{
-              `${(parseFloat(item.qty) || 0) * (parseFloat(item.variation.weight) || 0)}`
+              `${(parseFloat(item.qty) || 0) * (parseFloat(item.weight) || 0)}`
             }}
           </td>
 
           <td class="border text-center p-2  ">
             {{
-              `${asPrice(Math.round((item.total_price || 0) / ((item.variation.weight || 1) * (item.qty || 1))))}`
+              `${asPrice(Math.round((item.total_price || 0) / ((item.weight || 1) * (item.qty || 1))))}`
             }}
           </td>
           <td class="border text-center p-2  ">
