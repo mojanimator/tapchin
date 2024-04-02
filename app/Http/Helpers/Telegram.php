@@ -10,7 +10,6 @@ use App\Models\City;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
-use App\Models\ShippingMethod;
 use App\Models\Site;
 use App\Models\User;
 use DateTimeZone;
@@ -624,7 +623,7 @@ class Telegram
                     $msg .= " 🚚 " . "شهرها: " . $cities->whereIn('id', $data->cities ?? [])->pluck('name')->join(',') . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 📅 " . "ساعات ارسال: " . PHP_EOL;
-                    $msg .= print_r(ShippingMethod::find($data->id)->timestamps, true);
+                    $msg .= print_r($data->getAttribute('timestamps'), true);
 //                    $msg .= collect($data->timestamps ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
 
                     break;
