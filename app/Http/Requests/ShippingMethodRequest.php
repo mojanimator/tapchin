@@ -89,7 +89,7 @@ class ShippingMethodRequest extends FormRequest
             ]);
 
             $hours = range(1, 24);
-            foreach ($this->timestamps as $idx => $time) {
+            foreach ($this->timestamps ?? [] as $idx => $time) {
                 $tmp = array_merge($tmp, [
                     "timestamps.$idx.from" => ['required', "gte:0", Rule::in($hours)],
                 ]);
@@ -143,7 +143,7 @@ class ShippingMethodRequest extends FormRequest
 
 
         ];
-        foreach ($this->timestamps as $idx => $time) {
+        foreach ($this->timestamps ?? [] as $idx => $time) {
             $tmp = array_merge($tmp, [
                 "timestamps.$idx.from.required" => sprintf(__("validator.required"), __('time')),
                 "timestamps.$idx.from.gte" => sprintf(__("validator.gt"), __('time'), 1),
