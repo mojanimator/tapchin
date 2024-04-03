@@ -49,7 +49,8 @@ class VariationRequest extends FormRequest
 
             $tmp = array_merge($tmp, [
                 'name' => ['required', 'max:200'],
-                'repo_id' => ['required', Rule::in($allowedRepositories)],
+                'repo_ids' => ['required', 'array', 'min:1'],
+                'repo_ids.*' => [Rule::in($allowedRepositories)],
                 "product_id" => ['required', Rule::in($products->pluck('id'))],
                 "in_repo" => ['required', 'numeric', 'gte:0', 'lt:99999'],
                 "in_shop" => ['required', 'numeric', 'gte:0', 'lt:99999'],
@@ -86,8 +87,8 @@ class VariationRequest extends FormRequest
             'name.unique' => sprintf(__("validator.unique"), __('name')),
             'name.max' => sprintf(__("validator.max_len"), __('name'), 200, mb_strlen($this->name)),
 
-            'repo_id.required' => sprintf(__("validator.required"), __('repository')),
-            'repo_id.in' => sprintf(__("validator.invalid"), __('repository')),
+            'repo_ids.required' => sprintf(__("validator.required"), __('repository')),
+            'repo_ids.*.in' => sprintf(__("validator.invalid"), __('repository')),
 
             "product_id.required" => sprintf(__("validator.required"), __('product')),
             "product_id.in" => sprintf(__("validator.invalid"), __('product')),

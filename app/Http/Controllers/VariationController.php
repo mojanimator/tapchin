@@ -144,61 +144,72 @@ class VariationController extends Controller
         $request->merge([
             'status' => 'active',
         ]);
-        $repo = Repository::find($request->repo_id);
-        $product = Product::find($request->product_id);
-        $agency = Agency::find($repo->agency_id);
+        $logs = [];
+        foreach ($request->repo_ids as $repo_id) {
 
-        $data = Variation::where([
-            'repo_id' => $request->repo_id,
-            'product_id' => $request->product_id,
-            'grade' => $request->grade,
-            'pack_id' => $request->pack_id,
-            'weight' => $request->weight,
-            'name' => $request->name,
 
-        ])->first();
-        if (!$data) {
-            $data = Variation::create([
-                'repo_id' => $request->repo_id,
-                'in_repo' => $request->in_repo,
-                'in_shop' => $request->in_shop,
+            $repo = Repository::find($repo_id);
+            $product = Product::find($request->product_id);
+            $agency = Agency::find($repo->agency_id);
+
+            $data = Variation::where([
+                'repo_id' => $repo_id,
                 'product_id' => $request->product_id,
                 'grade' => $request->grade,
                 'pack_id' => $request->pack_id,
-                'agency_id' => $repo->agency_id,
                 'weight' => $request->weight,
-                'price' => $request->price,
-                'description' => null,
-                'name' => $request->name ?? $product->name,
-                'category_id' => $product->category_id,
-                'agency_level' => $agency->level,
-                'in_auction' => false,
-            ]);
-        } else {
-            $data->in_shop += $request->in_shop;
-            $data->in_repo += $request->in_repo;
-            $data->save();
-        }
-        if ($data) {
-            if ($request->img) {
-                Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
+                'name' => $request->name,
+
+            ])->first();
+            if (!$data) {
+                $data = Variation::create([
+                    'repo_id' => $repo_id,
+                    'in_repo' => $request->in_repo,
+                    'in_shop' => $request->in_shop,
+                    'product_id' => $request->product_id,
+                    'grade' => $request->grade,
+                    'pack_id' => $request->pack_id,
+                    'agency_id' => $repo->agency_id,
+                    'weight' => $request->weight,
+                    'price' => $request->price,
+                    'description' => null,
+                    'name' => $request->name ?? $product->name,
+                    'category_id' => $product->category_id,
+                    'agency_level' => $agency->level,
+                    'in_auction' => false,
+                ]);
             } else {
-                $path = Storage::path("public/products/$data->product_id.jpg");
-
-                if (!Storage::exists("public/variations")) {
-                    File::makeDirectory(Storage::path("public/variations"), $mode = 0755,);
-                }
-                if (!Storage::exists("public/variations/$data->id")) {
-                    File::makeDirectory(Storage::path("public/variations/$data->id"), $mode = 0755,);
-                }
-                File::copy($path, Storage::path("public/variations/$data->id/thumb.jpg"));
+                $data->in_shop += $request->in_shop;
+                $data->in_repo += $request->in_repo;
+                $data->save();
             }
-            $data->repo = $repo;
-            $data->agency = $agency;
+            if ($data) {
+                if ($request->img) {
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
+                } else {
+                    $path = Storage::path("public/products/$data->product_id.jpg");
 
-            $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
-            Telegram::log(null, 'variation_created', $data);
-        } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
+                    if (!Storage::exists("public/variations")) {
+                        File::makeDirectory(Storage::path("public/variations"), $mode = 0755,);
+                    }
+                    if (!Storage::exists("public/variations/$data->id")) {
+                        File::makeDirectory(Storage::path("public/variations/$data->id"), $mode = 0755,);
+                    }
+                    File::copy($path, Storage::path("public/variations/$data->id/thumb.jpg"));
+                }
+                $data->repo = $repo;
+                $data->agency = $agency;
+                Telegram::log(null, 'variation_created', $data);
+
+                $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
+//                $logs[] = $data;
+            } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
+
+//            foreach ($logs as $data) {
+//                usleep(500000);
+//            }
+
+        }
         return to_route('admin.panel.variation.index')->with($res);
 
     }

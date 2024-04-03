@@ -29,7 +29,7 @@
             <div class="flex-col   m-2 items-center rounded-lg max-w-xs  w-full mx-auto    ">
               <div class="my-2">
                 <ImageUploader ref="imageCropper" :label="__('product_image_jpg')" id="img"
-                               height="10" class="grow " :crop-ratio="1"/>
+                               height="10" class="grow " :crop-ratio="null"/>
                 <InputError class="mt-1 " :message="form.errors.img"/>
               </div>
 
@@ -38,25 +38,35 @@
 
               <div class="my-2">
 
-                <UserSelector :colsData="['id','name','phone','agency_id']"
+                <UserSelector :multi="true" :colsData="['id','name','phone','agency_id']"
                               :labelsData="['id','name','phone','agency_id']"
-                              :callback="{'level':getAgency}" :error="form.errors.repo_id"
+                              :callback="{'level':getAgency}" :error="null"
                               :link="route('admin.panel.repository.search')+(`?status=active` )"
-                              :label="__('repository')"
-                              :id="'repository'" v-model:selected="form.repo_id" :preload="null">
+                              :label="__('repositories')"
+                              :id="'repository'" v-model:selected="form.repo_ids" :preload="null">
                   <template v-slot:selector="props">
-                    <div :class="props.selectedText?'py-2':'py-2'"
+                    <div v-if="(props.selectedText || []).length==0" :class=" 'py-2'"
                          class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
                       <div class="grow">
-                        {{ props.selectedText ?? __('select') }}
-                      </div>
-                      <div v-if="props.selectedText"
-                           class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
-                           @click.stop="props.clear()">
-                        <XMarkIcon class="w-5 h-5"/>
-
+                        {{ __('select') }}
                       </div>
                     </div>
+                    <template v-for="(text,idx) in props.selectedText">
+                      <div :class=" 'py-2 my-1'"
+                           class=" px-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer flex items-center ">
+                        <div class="grow">
+                          {{ text }}
+                        </div>
+                        <div
+                            class="bg-danger rounded p-2   cursor-pointer text-white hover:bg-danger-400"
+                            @click.stop="props.clear(props.selectedItem[idx]  )">
+                          <XMarkIcon class="w-5 h-5"/>
+
+                        </div>
+                      </div>
+                      <InputError
+                          :message="form.errors && form.errors[`repo_ids.${idx}`]?form.errors[`repo_ids.${idx}`]:null"/>
+                    </template>
                   </template>
                 </UserSelector>
               </div>
@@ -236,7 +246,7 @@ export default {
 
         name: null,
         product_id: null,
-        repo_id: null,
+        repo_ids: null,
         weight: null,
         grade: null,
         price: null,
