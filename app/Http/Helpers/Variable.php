@@ -53,7 +53,7 @@ class Variable
     const PRODUCT_UNITS = ['qty', 'kg'/*, 'gr'*/];
 
     const ADMIN_ACCESS = ['all'];
-    const GRADES = [1, 2];
+    const GRADES = [1, 2, 3];
     const PARTNERSHIP_TYPES = [
         ['name' => 'agency', 'color' => 'gray'],
         ['name' => 'farmer', 'color' => 'teal'],
@@ -134,7 +134,7 @@ class Variable
 
     const TICKET_ATTACHMENT_ALLOWED_MIMES = ['jpeg', 'jpg', 'png', 'txt', 'pdf'];
     const BANNER_ALLOWED_MIMES = ['jpeg', 'jpg', 'png'];
-    const PRODUCT_IMAGE_LIMIT_MB = 10;
+    const PRODUCT_IMAGE_LIMIT_MB = 50;
     const DRIVER_IMAGE_LIMIT_MB = 10;
     const VARIATION_IMAGE_LIMIT = 5;
 
