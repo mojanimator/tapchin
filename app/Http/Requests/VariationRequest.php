@@ -116,6 +116,10 @@ class VariationRequest extends FormRequest
             "price.numeric" => sprintf(__("validator.numeric"), __('price')),
             "price.gte" => sprintf(__("validator.gt"), __('price'), 0),
 
+            'img.required' => sprintf(__("validator.required"), __('image')),
+            'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::PRODUCT_IMAGE_LIMIT_MB),
+            'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::PRODUCT_ALLOWED_MIMES)),
+
         ];
     }
 }
