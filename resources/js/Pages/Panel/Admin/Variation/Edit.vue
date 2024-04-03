@@ -33,7 +33,7 @@
                                :link="route('admin.panel.variation.update')"
                                :preload="$page.props.data.thumb_img" ref="imageCropperThumb"
                                :label="__('product_image_jpg')" :for-id="$page.props.data.id"
-                               :cropRatio="1" :id="'img-'+'thumb'"
+                               :cropRatio="null" :id="'img-'+'thumb'"
                                class="   "/>
                 <InputError class="mt-1 text-xs" :message="form.errors.image_thumb ? form.errors.image_thumb :null "/>
 
