@@ -536,7 +536,11 @@ class Telegram
                     $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
                     break;
                 case 'variation_created':
-                    $msg .= " 🟩 " . "یک محصول ساخته شد" . PHP_EOL;
+                case 'variation_edited':
+                    if ($isCreate)
+                        $msg .= " 🟩 " . "یک محصول ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🟨 " . "یک محصول ویرایش شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "کاربر: " . PHP_EOL;
                     $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;

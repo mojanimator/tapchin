@@ -532,6 +532,11 @@ class VariationController extends Controller
                             'changed' => __('not_any_change'),
                         ]);
                     $data->update(['price' => $request->new_price, 'auction_price' => $request->new_auction_price]);
+
+                    $data->repo = Repository::find($data->repo_id);
+                    $data->agency = Agency::find($data->agency_id);
+                    Telegram::log(null, 'variation_edited', $data);
+
                     return response()->json(['message' => __('updated_successfully'),], $successStatus);
 
                     break;
@@ -561,6 +566,11 @@ class VariationController extends Controller
                             'changed' => __('not_any_change'),
                         ]);
                     $data->update(['in_repo' => $request->new_in_repo, 'in_shop' => $request->new_in_shop]);
+
+                    $data->repo = Repository::find($data->repo_id);
+                    $data->agency = Agency::find($data->agency_id);
+                    Telegram::log(null, 'variation_edited', $data);
+
                     return response()->json(['message' => __('updated_successfully'),], $successStatus);
 
                     break;
