@@ -15,12 +15,13 @@
       <LocationSelector
           @change="  params.province_id=$event.province_id;params.county_id=$event.county_id;params.district_id=$event.district_id; getData(0);"/>
 
-      <SearchInput class="grow max-w-xs" v-model="params.search" @search="getData(0)"/>
+      <SearchInput class="shrink max-w-xs " v-model="params.search" @search="getData(0)"/>
 
       <Selector ref="gradeSelector" v-model="params.grade"
                 :data="$page.props.grades.map(e=>{return{id:e,name:`${__('grade')} ${e}`}})"
-                @change="getData(0);log('hi')"
-                classes=""
+                @change="getData(0); "
+                :placeholder="__('grade')"
+                class="shrink "
                 :id="`grade`">
 
       </Selector>

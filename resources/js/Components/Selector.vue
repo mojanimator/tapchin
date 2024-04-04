@@ -24,6 +24,8 @@
                     data-te-class-select-wrapper=""
                     data-te-class-no-result="text-center px-4"
                     :data-te-select-no-result-text="__('no_results')"
+                    :data-te-select-placeholder="placeholder"
+                    data-te-class-select-input-placeholder="__('no_results')"
                     data-te-class-select-form-outline="rounded-lg"
                     data-te-class-select-input-notch="pointer-events-none box-border bg-transparent transition-all duration-200 ease-linear motion-reduce:transition-none left-0 top-0 h-full w-2 border-0 rounded-l-[0.25rem] group-data-[te-input-focused]:border-r-0 group-data-[te-input-state-active]:border-r-0 border-neutral-300 dark:border-neutral-600 group-data-[te-input-focused]:shadow-[-1px_0_0_#3b71ca,_0_1px_0_0_#3b71ca,_0_-1px_0_0_#3b71ca] group-data-[te-input-focused]:border-none"
                     data-te-class-select-input-group="flex items-center whitespace-nowrap p-3 text-center text-base font-normal leading-[1.6] text-gray-700 dark:bg-zinc-800 dark:text-gray-200 dark:placeholder:text-gray-200"
@@ -70,7 +72,7 @@ export default {
       closeButton: null,
     }
   },
-  props: ['id', 'label', 'data', 'modelValue', 'error', 'multiple'],
+  props: ['id', 'label', 'data', 'modelValue', 'error', 'multiple', 'placeholder'],
   emits: ['update:modelValue'],
   components: {InputLabel, InputError, XMarkIcon},
   watch: {
