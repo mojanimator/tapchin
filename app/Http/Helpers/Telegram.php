@@ -645,7 +645,7 @@ class Telegram
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . $data->fullname . PHP_EOL;
-                    $msg .= " 📱 " . "شماره تماس" . $user->mobile . PHP_EOL;
+                    $msg .= " 📱 " . "شماره تماس" . $user->phone . PHP_EOL;
                     $msg .= " 🪪 " . "کدملی: " . $data->national_code . PHP_EOL;
                     $msg .= " ⭐ " . "وضعیت: " . __($data->status) . PHP_EOL;
                     $msg .= " 💎 " . "نقش: " . __($data->role) . PHP_EOL;
