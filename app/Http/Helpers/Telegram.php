@@ -630,6 +630,29 @@ class Telegram
                     $msg .= collect($data->getAttribute('timestamps') ?? [])->map(fn($e) => $e['from'] . '-' . $e['to'] . ($e['active'] ? "✅" : "⛔️"))->join("➖");
 
                     break;
+                case 'admin_created' :
+                case 'admin_edited':
+                    $data->agency = Agency::select('id', 'name')->findOrNew($data->agency_id);
+                    if ($isCreate)
+                        $msg .= " 💚 " . "یک ادمین ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🧡 " . "یک ادمین ویرایش شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 👤 " . "نام: " . $data->fullname . PHP_EOL;
+                    $msg .= " 📱 " . "شماره تماس" . $user->mobile . PHP_EOL;
+                    $msg .= " 🪪 " . "کدملی: " . $data->national_code . PHP_EOL;
+                    $msg .= " ⭐ " . "وضعیت: " . __($data->status) . PHP_EOL;
+                    $msg .= " 💎 " . "نقش: " . __($data->role) . PHP_EOL;
+                    $msg .= " 💵 " . "کیف پول: " . $data->wallet . PHP_EOL;
+                    $msg .= " 🔑 " . "دسترسی: " . join(', ', $data->access ?? []) . PHP_EOL;
+
+                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
