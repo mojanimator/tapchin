@@ -49,8 +49,8 @@
 </span>
       <div
           @click.stop="selecteds=( multiple ? []:null);input.value=null; set ( null);$emit('change',null)"
-          class="bg-red-500   cursor-pointer text-white align-middle rounded-e hover:bg-red-400">
-        <XMarkIcon class="w-8 h-12    p-1 "/>
+          class="bg-transparent border border-gray-300 border-s-0 rounded-lg-e  cursor-pointer text-gray-400 align-middle rounded-e hover:bg-gray-200">
+        <XMarkIcon class="w-8 h-11    p-1 "/>
       </div>
     </div>
     <InputError class="mt-1" :message="error"/>
