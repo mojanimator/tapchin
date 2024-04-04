@@ -62,7 +62,7 @@
             <Selector v-if="loaded" ref="provinceSelector"
                       :data="cities.filter(e=>e.level==1 || e.id==0)"
                       :label="`${__('province')} *`"
-                      @change="$e=>select('province_id',$e.target.value)"
+                      @change="$e=>select('province_id',$e )"
                       id="province_id" v-model=" selected.province_id">
               <template v-slot:append>
                 <div class="  p-3">
@@ -71,10 +71,10 @@
               </template>
             </Selector>
 
-            <Selector v-if="loaded" ref="countySelector"
+            <Selector v-if="loaded && selected.province_id!=0" ref="countySelector"
                       :data="cities.filter(e=>e.parent_id==selected.province_id || e.id==0) "
                       :label="`${__('county')} *`"
-                      @change="$e=>select('county_id',$e.target.value)"
+                      @change="$e=>select('county_id',$e ) "
                       id="county_id" v-model=" selected.county_id">
               <template v-slot:append>
                 <div class="  p-3">
@@ -83,10 +83,10 @@
               </template>
             </Selector>
             <Selector
-                v-if="loaded && cities.filter(e=>e.parent_id==selected.county_id && e.parent_id!=0&& e.id!=0).length>0"
+                v-if="loaded &&  selected.county_id   && cities.filter(e=>e.parent_id==selected.county_id && e.parent_id!=0&& e.id!=0).length>0"
                 ref="districtSelector"
                 :data="cities.filter(e=>(e.level==3 && e.parent_id==selected.county_id) || e.id==0)"
-                @change="$e=>select('district_id',$e.target.value)"
+                @change="$e=>select('district_id',$e )"
                 :label="`${__('district/city')} *`"
                 id="district_id" v-model=" selected.district_id">
               <template v-slot:append>
@@ -188,6 +188,7 @@ export default {
       this.selected.province_id = preload.length > 0 ? preload[0]['id'] : 0;
       this.selected.county_id = preload.length > 1 ? preload[1]['id'] : 0;
       this.selected.district_id = preload.length > 2 ? preload[2]['id'] : 0;
+
       if (this.selected.district_id && this.selected.county_id && this.selected.province_id)
         this.selectedName = `${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.district_id)[0]['name']}`;
       else if (this.selected.county_id && this.selected.province_id)
@@ -200,10 +201,14 @@ export default {
         this.modal.show();
       else
         this.$emit('change', this.selected);
+      this.$emit('update:modelValue', this.selected);
       this.loaded = true;
     },
 
     select(_type, id) {
+      if (id.target && id.target.value)
+        id = id.target.value;
+      id = id || 0;
       if (_type == 'province_id') {
         this.selected = {
           province_id: id,
@@ -212,8 +217,8 @@ export default {
         };
         this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}`;
 
-        if (id != 0)
-          this.updateLocation(id);
+
+        this.updateLocation(id == 0 ? null : id);
 
       } else if (_type == 'county_id') {
         this.selected = {
@@ -222,8 +227,8 @@ export default {
           district_id: 0,
         };
         this.selectedName = `${this.cities.filter(e => e.id == this.selected.province_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}`;
-        if (id != 0)
-          this.updateLocation(this.selected.county_id);
+
+        this.updateLocation(id == 0 ? (this.selected.province_id == 0 ? null : this.selected.province_id) : id);
       } else if (_type == 'district_id') {
         this.selected = {
           province_id: this.selected.province_id,
@@ -231,8 +236,9 @@ export default {
           district_id: id,
         };
         this.selectedName = `${this.cities.filter(e => e.id == this.selected.county_id)[0]['name']}-${this.cities.filter(e => e.id == this.selected.district_id)[0]['name']}`;
-        if (id != 0)
-          this.updateLocation(this.selected.district_id);
+
+        this.updateLocation(id == 0 ? (this.selected.county_id == 0 ? null : this.selected.county_id) : id);
+
       }
 
       this.$emit('change', this.selected);
