@@ -15,7 +15,15 @@
       <LocationSelector
           @change="  params.province_id=$event.province_id;params.county_id=$event.county_id;params.district_id=$event.district_id; getData(0);"/>
 
-      <SearchInput v-model="params.search" @search="getData(0)"/>
+      <SearchInput class="grow max-w-xs" v-model="params.search" @search="getData(0)"/>
+
+      <Selector ref="gradeSelector" v-model="params.grade"
+                :data="$page.props.grades.map(e=>{return{id:e,name:`${__('grade')} ${e}`}})"
+                @change="getData(0);log('hi')"
+                classes=""
+                :id="`grade`">
+
+      </Selector>
       <swiper
           :modules="[modules[0], modules[2],modules[3],]"
           slides-per-view="auto"
@@ -145,6 +153,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import CartItemButton from "@/Components/CartItemButton.vue";
+import Selector from "@/Components/Selector.vue";
 import {Dropdown, initTE, Modal} from "tw-elements";
 
 export default {
@@ -158,6 +167,7 @@ export default {
       params: {
         page: 0,
         search: null,
+        grade: null,
         products: [],
         order_by: null,
         dir: null,
@@ -187,6 +197,7 @@ export default {
     MapPinIcon,
     ArrowTrendingUpIcon,
     TomanIcon,
+    Selector,
   },
   // mixins: [Mixin],
   setup(props) {

@@ -61,6 +61,8 @@ class VariationController extends Controller
         $orderBy = $request->order_by ?? 'id';
         $dir = $request->dir ?? 'DESC';
         $paginate = $request->paginate ?: 24;
+        $grade = $request->grade;
+
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
@@ -112,7 +114,8 @@ class VariationController extends Controller
 
         if ($search)
             $query->where('variations.name', 'like', "%$search%");
-
+        if ($grade)
+            $query = $query->where('variations.grade', $grade);
         $res = $query->paginate($paginate, ['*'], 'page', $page)//            ->getCollection()->groupBy('parent_id')
         ;
         return $res;
@@ -225,6 +228,7 @@ class VariationController extends Controller
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
+        $grade = $request->grade;
 
         $query = Variation::query()->select();
         $query->whereIntegerInRaw('agency_id', $admin->allowedAgencies(Agency::find($admin->agency_id))->pluck('id'));
@@ -232,6 +236,8 @@ class VariationController extends Controller
             $query = $query->where('name', 'like', "%$search%");
         if ($status)
             $query = $query->where('status', $status);
+        if ($grade)
+            $query = $query->where('grade', $grade);
 
         return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
 

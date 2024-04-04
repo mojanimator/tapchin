@@ -45,8 +45,9 @@
 
         <!--            <label data-te-select-label-ref> {{ label }}</label>-->
 </span>
-      <div @click.stop="selecteds=( multiple ? []:null);input.value=null; set ( null);"
-           class="bg-red-500   cursor-pointer text-white align-middle rounded-e hover:bg-red-400">
+      <div
+          @click.stop="selecteds=( multiple ? []:null);input.value=null; set ( null);$emit('change',null)"
+          class="bg-red-500   cursor-pointer text-white align-middle rounded-e hover:bg-red-400">
         <XMarkIcon class="w-8 h-12    p-1 "/>
       </div>
     </div>
@@ -106,7 +107,6 @@ export default {
 
   }, methods: {
     set(val) {
-
       if (!this.multiple)
         this.$emit('update:modelValue', val);
       else {
