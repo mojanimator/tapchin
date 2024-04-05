@@ -38,9 +38,9 @@ class Transaction extends Model
         $percents = Setting::where('key', 'like', "order_percent_level_%")->get();
         $user = request()->user();
         //split shipping
-        if ($order->total_shipping_price && $shipping) {
+        if ($order->total_shipping_price /*&& $shipping*/) {
             //default is central agency(null)=> not pay
-            $shipping = (object)['agency_id' => in_array((ShippingMethod::find($order->shipping_method_id))->shipping_agency_id, [1, null]) ? 1 : $shipping->agency_id];
+            $shipping = (object)['agency_id' => in_array((ShippingMethod::find($order->shipping_method_id))->shipping_agency_id, [1, null]) ? 1 : (optional($shipping)->agency_id ?? 1)];
             //not pay to our agency
             if ($shipping->agency_id == 1) return;
             $t = Transaction::create([
