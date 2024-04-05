@@ -42,30 +42,31 @@ class Transaction extends Model
             //default is central agency(null)=> not pay
             $shipping = (object)['agency_id' => in_array((ShippingMethod::find($order->shipping_method_id))->shipping_agency_id, [1, null]) ? 1 : (optional($shipping)->agency_id ?? 1)];
             //not pay to our agency
-            if ($shipping->agency_id == 1) return;
-            $t = Transaction::create([
-                'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
-                'type' => "shipping",
-                'for_type' => 'order',
-                'for_id' => $order->id,
-                'from_type' => 'agency',
-                'from_id' => 1,
-                'to_type' => 'agency',
-                'to_id' => optional($shipping)->agency_id,
-                'is_success' => true,
-                'info' => null,
-                'coupon' => null,
-                'payed_at' => Carbon::now(),
-                'amount' => $order->total_shipping_price,
-                'pay_id' => null,
-            ]);
+            if ($shipping->agency_id && $shipping->agency_id != 1) {
+                $t = Transaction::create([
+                    'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
+                    'type' => "shipping",
+                    'for_type' => 'order',
+                    'for_id' => $order->id,
+                    'from_type' => 'agency',
+                    'from_id' => 1,
+                    'to_type' => 'agency',
+                    'to_id' => optional($shipping)->agency_id,
+                    'is_success' => true,
+                    'info' => null,
+                    'coupon' => null,
+                    'payed_at' => Carbon::now(),
+                    'amount' => $order->total_shipping_price,
+                    'pay_id' => null,
+                ]);
 
-            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
-            $agencyF->wallet += $order->total_shipping_price;
-            $agencyF->save();
+                $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $shipping->agency_id]);
+                $agencyF->wallet += $order->total_shipping_price;
+                $agencyF->save();
 
-            $t->user = $user;
-            Telegram::log(null, 'transaction_created', $t);
+                $t->user = $user;
+                Telegram::log(null, 'transaction_created', $t);
+            }
         }
 
         $agency = Agency::find($order->agency_id);
