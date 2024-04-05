@@ -48,7 +48,7 @@
         <!--            <label data-te-select-label-ref> {{ label }}</label>-->
 </span>
       <div
-          @click.stop="selecteds=( multiple ? []:null);input.value=null; set ( null);$emit('change',null)"
+          @click.stop="selecteds=( multiple ? []:null);input.value=null; set ( null); "
           class="bg-transparent border border-gray-300 border-s-0 rounded-lg-e  cursor-pointer text-gray-400 align-middle rounded-e hover:bg-gray-200">
         <XMarkIcon class="w-8 h-11    p-1 "/>
       </div>

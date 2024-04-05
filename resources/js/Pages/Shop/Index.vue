@@ -19,9 +19,9 @@
 
       <Selector ref="gradeSelector" v-model="params.grade"
                 :data="$page.props.grades.map(e=>{return{id:e,name:`${__('grade')} ${e}`}})"
-                @change="getData(0); "
+                @update:model-value="getData(0); "
                 :placeholder="__('grade')"
-                class="shrink "
+                class="shrink  "
                 :id="`grade`">
 
       </Selector>

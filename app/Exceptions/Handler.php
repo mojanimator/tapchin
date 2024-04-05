@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            self::logAdmins(print_r([$e->getMessage(), $e->getLine()], true), null, Telegram::TOPIC_BUGS);
+            self::logAdmins(print_r([$e->getMessage(), $e->getLine(),$e->getFile()], true), null, Telegram::TOPIC_BUGS);
 
         });
     }

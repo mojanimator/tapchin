@@ -1162,7 +1162,7 @@ class Telegram
 
         } catch (\Exception $e) {
             try {
-                self::logAdmins(print_r([$e->getMessage(), $e->getLine()], true), null, self::TOPIC_BUGS);
+                self::logAdmins(print_r([$e->getMessage(), $e->getLine(), $e->getFile()], true), null, self::TOPIC_BUGS);
                 return $e->getMessage();
 //                Bale::logAdmins($e->getMessage(), $type);
 //                Eitaa::logAdmins($e->getMessage(), $type,);
