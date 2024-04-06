@@ -68,7 +68,7 @@
               <div class="flex items-center">
                 <div class="font-bold">{{ __('county') }}:</div>
                 <div class=" ms-1">{{ getCityName(data.from.county_id) }}</div>
-                <div class=" ms-1">{{ data.from.district_id ? ',' + getCityName(data.agency.district_id) : '' }}</div>
+                <div class=" ms-1">{{ data.from.district_id ? ',' + getCityName(data.from.district_id) : '' }}</div>
               </div>
               <div v-if="data.from.postal_code" class="flex items-center">
                 <div class="font-bold">{{ __('postal_code') }}:</div>
