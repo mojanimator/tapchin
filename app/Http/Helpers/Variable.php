@@ -3,7 +3,9 @@
 namespace App\Http\Helpers;
 
 use App\Models\Admin;
+use App\Models\AdminFinancial;
 use App\Models\Agency;
+use App\Models\AgencyFinancial;
 use App\Models\Article;
 use App\Models\ArticleTransaction;
 use App\Models\Banner;
@@ -25,6 +27,7 @@ use App\Models\Slider;
 use App\Models\Text;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\UserFinancial;
 use App\Models\Variation;
 use App\Models\Video;
 use App\Models\VideoTransaction;
@@ -121,7 +124,8 @@ class Variable
     const SUCCESS_STATUS = 200;
     const ERROR_STATUS = 422;
 
-    const  TRANSACTION_TYPES = ['pay', 'profit', 'settlement', 'shipping'];
+    const  TRANSACTION_TYPES = ['pay', 'profit', 'settlement', 'charge', 'shipping'];
+    const  FINANCIALS = ['admin' => AdminFinancial::class, 'user' => UserFinancial::class, 'agency' => AgencyFinancial::class];
     const  TRANSACTION_MODELS = ['order' => Order::class, 'repo-order' => RepositoryOrder::class, 'admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
     const  PAYER_TYPES = ['admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
     const REF_TYPES = ['register',];

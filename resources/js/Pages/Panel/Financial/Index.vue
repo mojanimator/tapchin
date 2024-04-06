@@ -119,71 +119,56 @@
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='title';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">  {{ __('title') }}</span>
+                  <span class="px-2">  {{ __('id') }}</span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='type';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">  {{ __('type') }}</span>
+                  <ArrowsUpDownIcon class="w-4 h-4 "/>
+                </div>
+              </th>
+              <th scope="col"
+                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
+                  @click="params.order_by='name';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                <div class="flex items-center justify-center">
+                  <span class="px-2">  {{ __('name') }}</span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
 
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='for_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='card';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('subject') }} </span>
+                  <span class="px-2">    {{ __('card') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='from_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='sheba';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('from') }} </span>
-                  <ArrowsUpDownIcon class="w-4 h-4 "/>
-                </div>
-              </th>
-
-              <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='to_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('to') }} </span>
+                  <span class="px-2">    {{ __('sheba') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
               <th scope="col"
                   class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='amount';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                  @click="params.order_by='wallet';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                 <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('amount') }}  </span>
+                  <span class="px-2">    {{ __('wallet') }} </span>
                   <ArrowsUpDownIcon class="w-4 h-4 "/>
                 </div>
               </th>
-              <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='pay_id';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('pay_id') }}  </span>
-                  <ArrowsUpDownIcon class="w-4 h-4 "/>
-                </div>
+              <th>
+                {{ __('actions') }}
               </th>
-              <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='payed_at';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('payed_at') }}  </span>
-                  <ArrowsUpDownIcon class="w-4 h-4 "/>
-                </div>
-              </th>
-              <th scope="col"
-                  class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[105%]"
-                  @click="params.order_by='pay_gate';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
-                <div class="flex items-center justify-center">
-                  <span class="px-2">    {{ __('pay_gate') }}  </span>
-                  <ArrowsUpDownIcon class="w-4 h-4 "/>
-                </div>
-              </th>
-
             </tr>
             </thead>
             <tbody class=" ">
@@ -247,34 +232,50 @@
                 </div>
               </td>
               <td
-                  class="flex  items-center    text-gray-900  ">
-
-                <div class="px-3 text-xs hover:text-gray-500" :title="d.title">
-                  <div class="  font-semibold">{{ cropText(d.title, 50) }}</div>
+                  class="   items-center    text-gray-900  ">
+                <div>{{ d.id }}</div>
+              </td>
+              <td
+                  class="   items-center    text-gray-900  ">
+                {{ __(d.type) }}
+              </td>
+              <td
+                  class="   items-center    text-gray-900  ">
+                <div class="px-3 text-xs hover:text-gray-500" :title="d.name">
+                  <div class="  font-semibold">{{ cropText(d.name, 50) }}</div>
                 </div>
               </td>
 
-              <td class="px-2 py-4    ">
-                <div> {{ `${__(d.for_type) || ''}(${d.for_id})` }}</div>
+
+              <td class="px-2 py-4    " :title="d.card">
+                <div> {{ d.card }}</div>
+              </td>
+              <td class="px-2 py-4    " :title="d.sheba">
+                <div> {{ d.sheba }}</div>
               </td>
 
               <td class="px-2 py-4    ">
-                <div> {{ `${__(d.from_type) || ''}(${d.from_id})` }}</div>
+                <div> {{ asPrice(d.wallet) }}</div>
               </td>
-              <td class="px-2 py-4    ">
-                <div> {{ `${__(d.to_type) || ''}(${d.to_id})` }}</div>
-              </td>
-              <td class="px-2 py-4    ">
-                <div> {{ asPrice(d.amount) }}</div>
-              </td>
-              <td class="px-2 py-4    " :title="d.pay_id">
-                <div> {{ cropText(d.pay_id, 5) }}</div>
-              </td>
-              <td class="px-2 py-4    ">
-                <div> {{ toShamsi(d.payed_at, true) || '_' }}</div>
-              </td>
-              <td class="px-2 py-4    ">
-                <div> {{ d.pay_gate || '_' }}</div>
+              <td class="px-2 py-4 flex  ">
+                <!-- Actions Group -->
+                <button @click=" d.idx=idx;d.amount=d.wallet; d.cmnd='settlement';  selected=d; "
+                        :disabled="d.wallet && d.wallet>0 ?null:true"
+                        type="button"
+                        :class="`${d.wallet && d.wallet>0?'bg-green-500 hover:bg-green-400 cursor-pointer':'bg-gray-400'}` "
+                        class="inline-block rounded  mx-1   text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out    focus:outline-none focus:ring-0  "
+                        data-te-ripple-init
+                        data-te-ripple-color="light">
+                  {{ __('settlement') }}
+                </button>
+                <button
+                    @click=" d.idx=idx;d.amount=0; d.cmnd='charge';  selected=d; "
+                    type="button"
+                    class="inline-block rounded cursor-pointer bg-sky-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-sky-400   focus:outline-none focus:ring-0  "
+                    data-te-ripple-init
+                    data-te-ripple-color="light">
+                  {{ __('charge') }}
+                </button>
               </td>
 
             </tr>
@@ -285,6 +286,86 @@
         </div>
 
       </div>
+      <!--Modals-->
+
+      <div v-if="selected" class="relative z-[1050]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+        <div class="fixed inset-0 z-10  w-screen overflow-y-auto">
+          <div @click.self="selected=null;errors={}"
+               class="flex min-h-full   justify-center p-4 text-center sm:items-center sm:p-0">
+            <div
+                class="relative transform overflow-auto rounded-lg bg-white   shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                <div class=" flex flex-col items-stretch">
+                  <div class="flex items-center  gap-2">
+                    <div
+                        class="  flex text-warning  h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-warning-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                           fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
+                      </svg>
+                    </div>
+                    <h3 class="text-base     text-gray-900" id="modal-title">
+                      {{ `${__(selected.cmnd)} ${selected.name}` }}
+                    </h3>
+                  </div>
+                  <div class="m-2  text-start">
+                    <!--                         modal body-->
+                    <div class="mt-2">
+
+                      <div
+                          class="   text-sm text-gray-500 ">
+                        <span class="text-sm py-2 text-danger-500">{{
+                            `${selected.cmnd == 'settlement' ? __('max') : __('current_balance')}: ${asPrice(selected.wallet)} ${__('currency')}`
+                          }}</span>
+                        <div class="flex flex-col  space-y-2 text-start ">
+
+                          <div class="flex flex-col  ">
+
+                            <div class="my-2">
+                              <TextInput
+                                  id="amount"
+                                  type="number"
+                                  :placeholder="`${__('amount')}`"
+                                  classes="  "
+                                  v-model="selected.amount"
+                                  :autocomplete="selected.amount"
+                                  :error="  errors.amount">
+
+                                <template v-slot:prepend>
+                                  <div class="p-3">
+                                    <CurrencyDollarIcon class="h-5 w-5"/>
+                                  </div>
+                                </template>
+                              </TextInput>
+                            </div>
+                            <button
+                                class="bg-success-200 text-success-700 p-2 rounded-lg  hover:bg-success-300 w-full"
+                                @click="edit({'idx':selected.idx ,'id':selected.id,'cmnd':selected.cmnd,'amount':selected.amount, 'type':selected.type,  })">
+                              {{ __(selected.cmnd) }}
+                            </button>
+
+                          </div>
+                        </div>
+                      </div>
+                      <button class="bg-gray-200 my-2 text-gray-700 p-2 rounded-lg  hover:bg-gray-300 w-full"
+                              @click="selected=null;errors={}">
+                        {{ __('cancel') }}
+                      </button>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
     </template>
 
 
@@ -303,15 +384,18 @@ import {
   HomeIcon,
   XMarkIcon,
   ArrowsUpDownIcon,
+  CurrencyDollarIcon,
 
 } from "@heroicons/vue/24/outline";
 import Image from "@/Components/Image.vue"
 import Tooltip from "@/Components/Tooltip.vue"
 import {Dropdown} from "tw-elements";
+import TextInput from "@/Components/TextInput.vue";
 
 export default {
   data() {
     return {
+      selected: null,
       params: {
         page: 1,
         search: null,
@@ -324,9 +408,11 @@ export default {
       toggleSelect: false,
       loading: false,
       error: null,
+      errors: {},
     }
   },
   components: {
+    TextInput,
     Head,
     Link,
     HomeIcon,
@@ -339,6 +425,7 @@ export default {
     Pagination,
     ArrowsUpDownIcon,
     Tooltip,
+    CurrencyDollarIcon,
   },
   mounted() {
     this.tableWrapper = document.querySelector('table').parentElement;
@@ -375,6 +462,7 @@ export default {
             if (error.response) {
               // The request was made and the server responded with a status code
               // that falls out of the range of 2xx
+              console.log(error);
               console.log(error.response.data);
               console.log(error.response.status);
               console.log(error.response.headers);
@@ -414,7 +502,7 @@ export default {
     },
     edit(params) {
       this.isLoading(true);
-      window.axios.patch(route('admin.panel.admin.update'), params,
+      window.axios.patch(route('admin.panel.financial.update'), params,
           {})
           .then((response) => {
             if (response.data && response.data.message) {
@@ -423,33 +511,15 @@ export default {
             }
             if (response.data.wallet) {
               this.data[params.idx].wallet = response.data.wallet;
-              this.user.wallet = response.data.wallet;
             }
-
-            if (response.data.status) {
-              this.data[params.idx].status = response.data.status;
-            }
-            if (response.data.role) {
-              this.data[params.idx].role = response.data.role;
-            }
-            if (response.data.access) {
-              this.data[params.idx].access = response.data.access;
-            }
+            this.selected = null;
 
           })
 
           .catch((error) => {
             this.error = this.getErrors(error);
             if (error.response && error.response.data) {
-              if (error.response.data.charge) {
-                this.data[params.idx].charge = error.response.data.charge;
-              }
-              if (error.response.data.view_fee) {
-                this.data[params.idx].view_fee = error.response.data.view_fee;
-              }
-              if (error.response.data.meta) {
-                this.data[params.idx].meta = error.response.data.meta;
-              }
+
             }
             this.showToast('danger', this.error);
           })

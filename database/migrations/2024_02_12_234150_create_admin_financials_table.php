@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->string('card', 20)->nullable();
             $table->string('sheba', 30)->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('agency_id')->nullable();
-            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
+//            $table->unsignedBigInteger('agency_id')->nullable();
+//            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('no action');
 
         });
     }

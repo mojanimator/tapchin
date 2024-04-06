@@ -166,6 +166,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
             []
         );
         Route::get('financial/search', [FinancialController::class, 'searchMerged'])->name('admin.panel.financial.search');
+        Route::patch('financial/update', [FinancialController::class, 'update'])->name('admin.panel.financial.update');
 
 
         PanelController::makeInertiaRoute('get', 'agency/index', 'admin.panel.agency.index', 'Panel/Admin/Agency/Index',

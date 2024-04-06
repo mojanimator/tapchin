@@ -68,7 +68,7 @@ class AdminController extends Controller
 
                 AdminFinancial::updateOrCreate(['admin_id' => $data->id,],
                     [
-                        'agency_id' => $data->agency_id,
+//                        'agency_id' => $data->agency_id,
                         'card' => $request->card,
                         'sheba' => $request->sheba,
                     ]);
@@ -97,7 +97,7 @@ class AdminController extends Controller
         if ($admin) {
             AdminFinancial::create([
                 'admin_id' => $admin->id,
-                'agency_id' => $admin->agency_id,
+//                'agency_id' => $admin->agency_id,
                 'card' => $request->card,
                 'sheba' => $request->sheba,
                 'wallet' => 0,

@@ -3,7 +3,9 @@
 namespace App\Policies;
 
 use App\Models\Admin;
+use App\Models\AdminFinancial;
 use App\Models\Agency;
+use App\Models\AgencyFinancial;
 use App\Models\Car;
 use App\Models\City;
 use App\Models\Driver;
@@ -17,6 +19,7 @@ use App\Models\Shipping;
 use App\Models\ShippingMethod;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\UserFinancial;
 use App\Models\Variation;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -222,6 +225,11 @@ class AdminPolicy
                     break;
                 case   $item instanceof Setting :
                     $res = $admin->hasAccess('edit_setting');
+                    break;
+                case   $item instanceof UserFinancial :
+                case   $item instanceof AdminFinancial :
+                case   $item instanceof AgencyFinancial :
+                    $res = $admin->hasAccess('edit_financial');
                     break;
             }
 
