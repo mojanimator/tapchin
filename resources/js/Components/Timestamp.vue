@@ -1,7 +1,7 @@
 <template>
   <div v-if="mode!='view'" class="border rounded p-2">
     <InputLabel :for="id" :value="label"/>
-    <div class="     w-full overflow-x-auto   md:rounded-lg">
+    <div class="       overflow-x-auto   md:rounded-lg">
       <table ref="tableRef "
              class=" table-auto   text-sm   text-gray-500  ">
         <thead
@@ -10,7 +10,7 @@
         <tr class="text-sm text-center ">
 
           <th scope="col"
-              class="px-4 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
+              class="px-4 py-3 min-w-[8.5rem]  cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
             <div class="  items-center justify-center">
               <span class="px-2">  {{ __('from_hour') }}</span>
             </div>
@@ -18,7 +18,7 @@
 
 
           <th scope="col"
-              class=" py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
+              class=" py-3 min-w-[8.5rem]  cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
             <div class="  items-center justify-center">
               <span class=" ">    {{ __('to_hour') }} </span>
             </div>
@@ -38,11 +38,12 @@
             class="text-center border-b hover:bg-gray-50 " :class="idx%2==1?'bg-gray-50':'bg-white'">
 
           <td
-              class="   text-xs items-center px-1  text-gray-900  ">
+              class="     text-xs items-center px-1  text-gray-900  ">
             <Selector @change="changed" ref="fromSelector" v-model="d.from"
                       :data="$page.props.hours"
                       :error="errors [`timestamps.${idx}.from`]"
-                      :label="__('')" classes="w-full"
+                      class=" "
+                      :label="__('')" classes="w-full  "
                       :id="`from${idx}`">
 
             </Selector>
@@ -52,7 +53,7 @@
             <Selector @change="changed" ref="toSelector" v-model="d.to"
                       :data="$page.props.hours"
                       :error="errors[`timestamps.${idx}.to`] "
-                      :label="__('')" classes="w-full"
+                      :label="__('')" classes="w-full "
                       :id="`to${idx}`">
 
             </Selector>
