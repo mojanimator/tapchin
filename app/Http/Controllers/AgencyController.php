@@ -65,7 +65,7 @@ class AgencyController extends Controller
 
             $request->merge([
                 'level' => strval($request->type_id),
-                'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : [],
+                'access' => $request->type_id == 1 && $request->supported_provinces ? $request->supported_provinces : ($data->access ?? []),
 
             ]);
             if ($request->level != $data->level) {
