@@ -56,7 +56,7 @@ class Variable
     const PRODUCT_UNITS = ['qty', 'kg'/*, 'gr'*/];
 
     const ADMIN_ACCESS = ['all'];
-    const GRADES = [1, 2, 3];
+    const GRADES = ['ممتاز','1', '2' ];
     const PARTNERSHIP_TYPES = [
         ['name' => 'agency', 'color' => 'gray'],
         ['name' => 'farmer', 'color' => 'teal'],
