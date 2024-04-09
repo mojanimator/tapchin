@@ -188,7 +188,7 @@ class VariationController extends Controller
             }
             if ($data) {
                 if ($request->img) {
-                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id);
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id, 500);
                 } else {
                     $path = Storage::path("public/products/$data->product_id.jpg");
 
@@ -318,7 +318,7 @@ class VariationController extends Controller
                     $name = str_contains($request->name, '-') ? explode('-', $request->name)[1] : $request->name;
                     $path = Storage::path("public/$type/$id/$name.jpg");
                     if (File::exists($path)) File::delete($path);
-                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], $name, $id);
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], $name, $id, 500);
 //                    if ($data) {
 //                        $data->status = 'review';
 //                        $data->save();
