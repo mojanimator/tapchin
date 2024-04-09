@@ -58,7 +58,7 @@ class Util
         $file->move(storage_path("app/public/$type"), "$name." . $file->extension());
     }
 
-    static function createImage($img, $type, $name = null, $folder = null,)
+    static function createImage($img, $type, $name = null, $folder = null, $maxSize = null)
     {
 
         $image_parts = explode(";base64,", $img);
@@ -89,6 +89,19 @@ class Util
 
         $imageSave = imagejpeg($source, storage_path("app/public/$type/$name.jpg"), 80);
 
+        if ($maxSize) {
+            $maxSize = $maxSize * 1024;
+            $path = storage_path("app/public/$type/$name.jpg");
+            $img = Image::make($path);
+            while ($img->filesize() >= $maxSize) {
+                $width = $img->width();
+                $img->resize($width - round($width / 4), null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($path);
+                clearstatcache();
+
+            }
+        }
         imagedestroy($source);
         return $imageSave;
         return "/storage/$type/$name.jpg";
