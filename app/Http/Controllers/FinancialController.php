@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\FinancialRequest;
 use App\Models\Admin;
@@ -104,6 +105,7 @@ class  FinancialController extends Controller
         $cmnd = $request->cmnd;
         $amount = $request->amount;
         $type = $request->type;
+        $user = $request->user();
         $data = Variable::FINANCIALS [$type]::where("{$type}_id", $id)->first();
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
@@ -133,6 +135,8 @@ class  FinancialController extends Controller
                     if ($t) {
                         $data->wallet -= $amount;
                         $data->save();
+                        $t->user = $user;
+                        Telegram::log(null, 'transaction_created', $t);
                     }
                 case  'charge' :
 
@@ -155,6 +159,8 @@ class  FinancialController extends Controller
                     if ($t) {
                         $data->wallet += $amount;
                         $data->save();
+                        $t->user = $user;
+                        Telegram::log(null, 'transaction_created', $t);
                     }
                     return response()->json(['message' => __('updated_successfully'), 'wallet' => $data->wallet], $successStatus);
 
