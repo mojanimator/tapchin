@@ -652,6 +652,25 @@ class Telegram
                     $msg .= " 🔑 " . "دسترسی: " . join(', ', $data->access ?? []) . PHP_EOL;
 
                     break;
+                case 'partnership_created':
+                    $cities = City::whereIn('id', [$data->province_id, $data->county_id])->select('id', 'name')->get();
+
+                    if ($isCreate)
+                        $msg .= " 👋🏻 " . "یک درخواست ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 👋🏻 " . "یک درخواست ویرایش شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . __($data->type) . PHP_EOL;
+                    $msg .= "$data->fullname ( $data->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " ⭐ " . "متراژ: " . $data->meterage . PHP_EOL;
+                    $msg .= " 🚚 " . "محصولات: " . collect($data->products ?? [])->map(fn($e) => "$e->name $e->weight kg")->join(PHP_EOL) . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 📜 " . "توضیحات:" . PHP_EOL . $data->description . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🔖 " . "آدرس: " . PHP_EOL . ($cities->where('id', $data->province_id)->first()->name ?? '') . '-' . ($cities->where('id', $data->county_id)->first()->name ?? '') . PHP_EOL;
+                    $msg .= " 🪧 " . $data->address . PHP_EOL;
+                    break;
                 case 'site_created':
                     $msg .= " 🟢 " . "یک سایت ساخته شد" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
