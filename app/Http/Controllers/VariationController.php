@@ -58,7 +58,7 @@ class VariationController extends Controller
         $countyId = $request->county_id;
         $provinceId = $request->province_id;
         $page = $request->page ?: 1;
-        $orderBy = $request->order_by ?? 'id';
+        $orderBy = $request->order_by ?? 'updated_at';
         $dir = $request->dir ?? 'DESC';
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
