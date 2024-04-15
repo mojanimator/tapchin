@@ -35,6 +35,7 @@ return new class extends Migration {
             $table->string('postal_code', 20)->nullable();
             $table->string('address', 2048)->nullable();
             $table->string('location', 50)->nullable();
+            $table->string('coupon', 10)->nullable();
             $table->unsignedBigInteger('total_discount')->default(0);
             $table->unsignedInteger('total_items')->default(0);
             $table->unsignedBigInteger('total_price')->default(0);

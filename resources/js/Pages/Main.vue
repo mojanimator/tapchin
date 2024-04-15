@@ -299,6 +299,7 @@ export default {
     this.updateCart();
   },
   methods: {
+
     updateSearchResults() {
       this.log('search')
       if (!this.search) return;

@@ -37,6 +37,7 @@ class Order extends Model
         'shipping_method_id',
         'done_at',
         'distance',
+        'coupon',
 
     ];
 

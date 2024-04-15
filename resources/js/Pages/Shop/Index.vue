@@ -50,17 +50,17 @@
     </section>
 
 
-    <section v-if="products.length>0" class="container-lg  mx-auto  ">
+    <section v-if="products.length>0" class="container-lg p-2  mx-auto  ">
 
       <div
           class="  mt-6   gap-y-3 gap-x-2 grid   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
         <div class="bg-white  shadow-md rounded-lg  "
              v-for="(p,idx) in products">
           <article :id="p.id" @click.self="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
-                   class="overflow-hidden flex flex-row sm:flex-col hover:bg-gray-100 hover:cursor-pointer hover:scale-[101%] duration-300">
-            <div class="md:mx-auto sm:h-64 sm:w-full  h-24    w-32   ">
+                   class="overflow-hidden flex flex-row sm:flex-col   hover:cursor-pointer hover:scale-[101%] duration-300">
+            <div class="md:mx-auto sm:h-64 sm:w-full  h-24    w-32 shadow-md  ">
               <Image :data-lity="route('storage.variations')+`/${p.id}/thumb.jpg`"
-                     classes="object-cover  h-full w-full  rounded-bl-lg "
+                     classes="object-cover  h-full w-full  rounded-t-lg rounded-b   "
                      :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
             </div>
             <div class="hidden sm:flex min-w-[36%] my-1  mx-auto">
