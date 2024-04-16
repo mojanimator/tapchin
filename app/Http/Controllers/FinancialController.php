@@ -138,6 +138,8 @@ class  FinancialController extends Controller
                         $t->user = $user;
                         Telegram::log(null, 'transaction_created', $t);
                     }
+                    return response()->json(['message' => __('updated_successfully'), 'wallet' => $data->wallet], $successStatus);
+
                 case  'charge' :
 
                     $t = Transaction::create([
