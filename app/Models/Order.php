@@ -38,6 +38,7 @@ class Order extends Model
         'done_at',
         'distance',
         'coupon',
+        'change_price',
 
     ];
 
@@ -54,6 +55,11 @@ class Order extends Model
     public function agency()
     {
         return $this->belongsTo(Agency::class, 'agency_id');
+    }
+
+    public function repository()
+    {
+        return $this->belongsTo(Repository::class, 'repo_id');
     }
 
     public function getAvailableStatuses()

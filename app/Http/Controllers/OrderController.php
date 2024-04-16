@@ -15,6 +15,7 @@ use App\Models\City;
 use App\Models\Order;
 use App\Models\Pack;
 use App\Models\Product;
+use App\Models\Repository;
 use App\Models\RepositoryOrder;
 use App\Models\Setting;
 use App\Models\Shipping;
@@ -76,11 +77,16 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $data = Order::with('items.variation:id,name,weight,pack_id')->find($id);
+        $data = Order::with('items')->find($id);
         $this->authorize('edit', [get_class($user), $data]);
+        $data->repository = Repository::with('shippingMethods')->find($data->repo_id);
+        if ($data->repository && $data->repository->allow_visit) {
+            $methods = $data->repository->getRelation('shippingMethods');
+            $methods->add(ShippingMethod::find(1));
+            $data->repository->setRelation('shippingMethods', $methods);
+        }
 
-
-        return Inertia::render('Panel/Order/Edit', [
+        return Inertia::render('Panel/' . ($user instanceof Admin ? 'Admin/Order/User' : 'Order') . '/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
 
@@ -320,6 +326,7 @@ class OrderController extends Controller
                             'qty' => $cartItem->qty,
                             'pack_id' => $product->pack_id,
                             'weight' => $product->weight,
+                            'grade' => $product->grade,
                             'repo_id' => $cartItem->repo_id,
                             'total_price' => $cartItem->total_price ?? 0,
                             'discount_price' => $cartItem->discount_price ?? 0,

@@ -221,6 +221,7 @@ export default {
   methods: {
 
     createName(d) {
+      this.log(d)
       if (!d) return '';
       return `${d.name} | ${this.getPack(d.pack_id)} | ${this.__('grade')} ${d.grade} | ${parseFloat(d.weight)} ${this.__('kg')} `
     },

@@ -41,6 +41,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('total_price')->default(0);
             $table->unsignedBigInteger('total_items_price')->default(0);
             $table->unsignedBigInteger('total_shipping_price')->default(0);
+            $table->bigInteger('change_price')->default(0);
             $table->timestamps();
             $table->timestamp('done_at')->nullable();//deliver|cancel
             $table->unsignedBigInteger('shipping_id')->nullable();

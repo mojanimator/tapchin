@@ -1,6 +1,6 @@
 <template>
 
-  <div class="" @click="getData();  Modal.show();">
+  <div class="" @click="()=>{if(editable ==null ||  editable){   getData();  Modal.show();} }">
     <div v-if="label" class="text-sm text-gray-700">{{ label }}</div>
 
     <slot name="selector" :selectedText="selectedText" :selectedItem="selectedItem" :clear="clear">
@@ -208,7 +208,7 @@ import {Modal} from "tw-elements";
 let call;
 export default {
   name: "UserSelector",
-  props: ['id', 'mode', 'text', 'preload', 'paginate', 'selected', 'placeholder', 'error', 'link', 'label', 'colsData', 'labelsData', 'callback', 'multi'],
+  props: ['id', 'mode', 'text', 'preload', 'paginate', 'selected', 'placeholder', 'error', 'link', 'label', 'colsData', 'labelsData', 'callback', 'multi', 'editable'],
   components: {
     ChevronDownIcon,
     MagnifyingGlassIcon,
