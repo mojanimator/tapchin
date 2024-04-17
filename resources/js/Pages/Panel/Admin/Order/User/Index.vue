@@ -286,7 +286,9 @@
                       {{ d.repo_id }}
                     </td>
                     <td class="px-2 py-4    ">
-                      <div v-for="(item ,ix) in d.items" class="text-xs " :class="{'border-b':ix+1<d.items.length}">
+                      <div>{{ d.items.length }}</div>
+                      <div v-if="false" v-for="(item ,ix) in d.items" class="text-xs "
+                           :class="{'border-b':ix+1<d.items.length}">
                         {{ item.title }}
 
                       </div>
