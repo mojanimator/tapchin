@@ -105,6 +105,7 @@ class VariationController extends Controller
             'variations.in_auction as in_auction',
             'variations.in_shop as in_shop',
             'variations.product_id as parent_id',
+            'variations.updated_at as updated_at',
             'repositories.province_id as province_id',
 
         )

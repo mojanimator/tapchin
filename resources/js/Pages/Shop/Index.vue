@@ -58,15 +58,22 @@
              v-for="(p,idx) in products">
           <article :id="p.id" @click.self="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
                    class="overflow-hidden flex flex-row sm:flex-col   hover:cursor-pointer hover:scale-[101%] duration-300">
-            <div class="md:mx-auto sm:h-64 sm:w-full  h-24    w-32 shadow-md  ">
-              <Image :data-lity="route('storage.variations')+`/${p.id}/thumb.jpg`"
-                     classes="object-cover  h-full w-full  rounded-t-lg rounded-b   "
-                     :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
+            <div class="flex flex-col">
+              <div class="md:mx-auto sm:h-64 sm:w-full  h-24    w-32 shadow-md  ">
+                <Image :data-lity="route('storage.variations')+`/${p.id}/thumb.jpg`"
+                       classes="object-cover  h-full w-full  rounded-t-lg rounded-b   "
+                       :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
+              </div>
+              <div class="flex my-1 items-center justify-start text-xs text-gray-400">
+                <div class="bg-gray-50 rounded p-1 px-2  "> {{ toRelativeTime(p.updated_at) }}</div>
+              </div>
             </div>
             <div class="hidden sm:flex min-w-[36%] my-1  mx-auto">
               <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
             </div>
+
             <div class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
+
               <div class="flex items-center justify-between">
                 <div class="text-primary-600 ms-1  ">{{ p.name }}</div>
                 <div class="text-sm text-neutral-500 mx-2 ">{{ __('grade') + ' ' + p.grade }}</div>
@@ -111,9 +118,11 @@
                 <span class="text-xs mx-2 text-gray-500"> {{ `(${__('per_kg')})` }}</span>
 
               </div>
+
               <div class="flex sm:hidden  min-w-[100%] xs:min-w-[70%]   me-auto">
                 <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
               </div>
+
             </div>
           </article>
 
