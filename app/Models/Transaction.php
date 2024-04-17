@@ -43,8 +43,9 @@ class Transaction extends Model
             $shipping = (object)['agency_id' => in_array((ShippingMethod::find($order->shipping_method_id))->shipping_agency_id, [1, null]) ? 1 : (optional($shipping)->agency_id ?? 1)];
             //not pay to our agency
             if ($shipping->agency_id && $shipping->agency_id != 1) {
+                $shippingAgency = Agency::find($shipping->agency_id);
                 $t = Transaction::create([
-                    'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, $shipping->agency_id),
+                    'title' => sprintf(__('shipping_order_agency_*_*'), $order->id, "$shippingAgency->name($shippingAgency->id)"),
                     'type' => "shipping",
                     'for_type' => 'order',
                     'for_id' => $order->id,
@@ -76,7 +77,7 @@ class Transaction extends Model
 
         if ($percent > 0) {
             $t = Transaction::create([
-                'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, $agency->id),
+                'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, "$agency->name($agency->id)"),
                 'type' => "profit",
                 'for_type' => 'order',
                 'for_id' => $order->id,
@@ -109,7 +110,7 @@ class Transaction extends Model
             $percent = $percent !== null ? $percent : $percents->where('key', "order_percent_level_$agencyItem->level")->first()->value ?? 0;
             if ($percent <= 0) continue;
             $t = Transaction::create([
-                'title' => sprintf(__('profit_order_agency_*_*_*'), $percent, $order->id, $agencyItem->id),
+                'title' => sprintf(__('profit_order_agency_*_*_*'), $percent, $order->id, "$agencyItem->name($agencyItem->id)"),
                 'type' => "profit",
                 'for_type' => 'order',
                 'for_id' => $order->id,
