@@ -194,11 +194,15 @@ export default {
     const modalEl = document.getElementById('productSelectorModal');
     this.modal = new Modal(modalEl);
     if (this.preload) {
+
       this.selecteds = [];
       for (let idx in this.preload)
-        this.selecteds.push({id: this.preload[idx].id, name: this.createName(this.preload[idx])});
+        this.selecteds.push({
+          id: this.preload[idx].id,
+          name: this.createName(this.preload[idx])
+        });
       this.$emit('update:modelValue', this.myMap(this.selecteds, (e) => e.id));
-      this.$emit('change', this.data.filter((e) => e.parent_id != 0 && this.selecteds.map((el) => el.id).indexOf(e.id) > -1));
+      // this.$emit('change', this.data.filter((e) => e.parent_id != 0 && this.selecteds.map((el) => el.variation_id || el.id).indexOf(e.id) > -1));
 
 
     }
@@ -221,7 +225,6 @@ export default {
   methods: {
 
     createName(d) {
-      this.log(d)
       if (!d) return '';
       return `${d.name} | ${this.getPack(d.pack_id)} | ${this.__('grade')} ${d.grade} | ${parseFloat(d.weight)} ${this.__('kg')} `
     },

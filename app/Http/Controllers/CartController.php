@@ -168,7 +168,6 @@ class CartController extends Controller
 
         $errors = $cart->errors ?? [];
         foreach ($cartItems as $cartItem) {
-
 //            dd($cartItems);
             $product = $cartItem->getRelation('product');
             if (($cartItem->qty ?? 0) > ($product->in_shop ?? 0)) {
@@ -182,9 +181,11 @@ class CartController extends Controller
                 $cartItem->error_message = sprintf(__('validator.min_order_product'), $product->min_allowed);
                 $errors[] = ['key' => $product->name, 'type' => 'product', 'message' => $cartItem->error_message];
             }
-            $itemTotalPrice = $cartItem->qty * ($isAuction ? $product->auction_price : $product->price);
+            $isAuctionItem = $isAuction && $product->auction_price;
+
+            $itemTotalPrice = $cartItem->qty * ($isAuctionItem ? $product->auction_price : $product->price);
 //            $cartItem->save();
-            $cartItem->total_discount = $isAuction ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
+            $cartItem->total_discount = $isAuctionItem ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
             $cartItem->total_price = $itemTotalPrice;
             $cart->total_items_price += $itemTotalPrice;
             $cart->total_items_discount += $cartItem->total_discount;

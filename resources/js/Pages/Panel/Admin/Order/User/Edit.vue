@@ -42,7 +42,7 @@
                                   :link="route('admin.panel.repository.search')+(`?status=active&with=shipping_methods` )"
                                   :label="__('origin_repository')"
                                   :editable="false"
-                                  :id="'origin_repository'" v-model:selected="form.repo_id"
+                                  :id="'origin_repository'" v-model:selected="data.repo_id"
                                   :preload="data.repository">
                       <template v-slot:selector="props">
                         <div :class="props.selectedText?'py-2':'py-2'"
@@ -59,12 +59,35 @@
                       <InputLabel for="shipping_methods" :value="__('shipping_method')"/>
                       <InputError :message="errors.shipping_method"/>
                       <div v-for="(s,idx) in data.repository.shipping_methods">
-                        <div @click="edit({shipping_method_id:s.id})"
+                        <div @click=" data.shipping_method_id=s.id "
                              :class="{'bg-primary-200':data.shipping_method_id==s.id}"
                              class="border-b rounded text-gray-700 p-2 text-sm hover:bg-gray-200 cursor-pointer">
                           <div class="font-semibold">{{ s.name }}</div>
                           <div class="text-gray-400 text-xs">{{ s.description }}</div>
                         </div>
+                      </div>
+                      <div class="my-2 flex flex-col space-y-1">
+
+                        <date-picker :id="`delivery_date`" class="rounded   fromdate  " inputClass=""
+                                     :editable="true"
+                                     inputFormat="YYYY/MM/DD" :placeholder="__('delivery_time')" color="#00acc1"
+                                     v-model="data.delivery_date"></date-picker>
+                        <TextInput
+                            id="delivery_timestamp"
+                            type="text"
+                            :placeholder="null"
+                            classes="p-1  "
+                            v-model="data.delivery_timestamp"
+                            autocomplete="fullname"
+                            :error=" errors.delivery_timestamp"
+                        >
+                          <template v-slot:prepend>
+                            <div class="p-1 px-2">
+                              {{ __('delivery_hours') }}
+                            </div>
+                          </template>
+
+                        </TextInput>
                       </div>
                     </div>
 
@@ -72,7 +95,7 @@
 
                   <AddressSelector ref="addressSelector"
                                    :clearable="false"
-                                   :editable="false" class="my-2 " type="repo"
+                                   :editable="true" class="my-2 " type="repo"
                                    :label="__('address')"
                                    @change="updateAddress($event) "
                                    :error="errors.from_address ||errors.from_postal_code || errors.from_province_id || errors.from_county_id|| errors.from_location "/>
@@ -88,8 +111,8 @@
                     <ProductSelector v-if="data.repo_id" ref="variationSelector"
                                      :link="route('admin.panel.product.tree')+`?repo_id=${data.repo_id}`"
                                      :multi="true" mode="count"
-                                     :preload="data.items"
-                                     @change="($e)=>data.items=$e.map(e=>{ e.qty=(data.items.filter(el=>el.id==e.id)[0] ||{qty:0}).qty; return e;})"
+                                     :preload="data.products "
+                                     @change="($e)=> data.products=$e.map(e=>{e.qty=(data.items.filter(el=>el.variation_id==e.id)[0]||{qty:0}).qty ;return e;})"
                                      :label="__('products')"
                                      :error="``"/>
                     <div class="     w-full overflow-x-auto   md:rounded-lg">
@@ -100,7 +123,7 @@
                         <!--         table header-->
                         <tr class="text-sm text-center ">
 
-                          <th v-if="form.order_type==__('internal')" scope="col"
+                          <th scope="col"
                               class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]">
                             <div class="flex items-center justify-center">
                               <span class="px-0">    {{ __('id') }} </span>
@@ -156,106 +179,59 @@
                         </tr>
                         </thead>
                         <tbody
-                            class="    overflow-y-scroll   text-xs   ">
-                        <tr v-for="(d,idx) in form.products"
+                            class="       text-xs   ">
+                        <tr v-for="(d,idx) in   data.products  "
                             class="text-center border-b hover:bg-gray-50 " :class="idx%2==1?'bg-gray-50':'bg-white'">
 
-                          <td v-if="form.order_type==__('internal')" class="px-2 py-4    ">
+                          <td class="px-2 py-4    ">
                             {{ d.id }}
                           </td>
                           <td
-                              class="flex  text-xs items-center px-1 py-4 text-gray-900  ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
+                              class="flex  text-xs items-center px-1 py-5 text-gray-900  ">
+                            <div class=" font-semibold ">{{
                                 cropText(d.name, 30)
                               }}
                             </div>
-                            <div v-else class=" min-w-[10rem]">
-                              <Selector ref="productSelector" v-model="d.id"
-                                        :data="$page.props.products"
-                                        :error="errors[`products.${idx}.id`]"
-                                        :label="__('')" classes=""
-                                        :id="`id${idx}`">
 
-                              </Selector>
-                            </div>
                           </td>
 
 
                           <td class="px-2 py-4    ">
 
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
+                            <div class=" font-semibold ">{{
                                 d.grade
                               }}
                             </div>
-                            <div v-else class=" min-w-[8rem]">
-                              <Selector ref="gradeSelector" v-model="d.grade"
-                                        :data="$page.props.grades.map(e=>{return{id:e,name:e}})"
-                                        :error="errors[`products.${idx}.grade`]"
-                                        :label="__('')" classes=""
-                                        :id="`grade${idx}`">
 
-                              </Selector>
-                            </div>
                           </td>
 
                           <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
+                            <div class=" font-semibold ">{{
                                 getPack(d.pack_id)
                               }}
                             </div>
-                            <div v-else class=" min-w-[10rem]">
-                              <Selector ref="packSelector" v-model="d.pack_id"
-                                        :data="$page.props.packs"
-                                        @change="($e)=> {if(d.pack_id==1)d.weight=1}"
-                                        :error="errors[`products.${idx}.pack_id`]"
-                                        :label="__('')" classes=""
-                                        :id="`pack${idx}`">
 
-                              </Selector>
-                            </div>
 
                           </td>
                           <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
+                            <div class=" font-semibold ">{{
                                 parseFloat(d.weight)
                               }}
                             </div>
-                            <TextInput v-else
-                                       :id="`weight${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       :disabled="d.pack_id==1? true:false"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.weight"
-                                       autocomplete="weight"
-                                       :error="errors[`products.${idx}.weight`]">
-
-                            </TextInput>
 
 
                           </td>
                           <td class="px-2 py-4    ">
-                            <div v-if="form.order_type==__('internal')" class=" font-semibold ">{{
+                            <div class=" font-semibold ">{{
                                 asPrice(d.price)
                               }}
                             </div>
-                            <TextInput v-else
-                                       :id="`price${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.price"
-                                       autocomplete="price"
-                                       :error="errors[`products.${idx}.price`]">
 
-                            </TextInput>
                           </td>
 
 
                           <td class="px-2 py-4   ">
-                            <div v-if="form.order_type==__('internal')" class="flex items-center font-semibold ">{{
-                                d.in_repo ? parseFloat(d.in_repo) : 0
-                              }}/
+                            <div class="flex items-center font-semibold ">
                               <TextInput
                                   :id="`qty${d.id}`"
                                   type="number"
@@ -267,16 +243,7 @@
 
                               </TextInput>
                             </div>
-                            <TextInput v-else
-                                       :id="`qty${d.id}`"
-                                       type="number"
-                                       :placeholder="``"
-                                       classes=" p-2   min-w-[5rem]"
-                                       v-model="d.qty"
-                                       autocomplete="qty"
-                                       :error="errors[`products.${idx}.qty`]">
 
-                            </TextInput>
                           </td>
 
                           <td class="px-2 py-4">
@@ -285,7 +252,7 @@
                                 class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                                 role="group">
                               <PrimaryButton type="button"
-                                             @click="form.products.splice(idx,1);$refs.variationSelector.selecteds.splice(idx,1) "
+                                             @click="data.products.splice(idx,1);$refs.variationSelector.selecteds.splice(idx,1) "
                                              class="bg-red-500 hover:bg-red-400 text-sm  ms-auto">
                                 <TrashIcon class="w-4 h-4 "/>
                               </PrimaryButton>
@@ -296,11 +263,7 @@
 
                         </tbody>
                       </table>
-                      <PrimaryButton v-if="form.order_type==__('external')" type="button"
-                                     @click="form.products.push({})"
-                                     class="bg-green-500 hover:bg-green-400 text-sm  my-2">
-                        <PlusIcon class="w-4 h-4 mx-4"/>
-                      </PrimaryButton>
+
                     </div>
 
                   </div>
@@ -311,79 +274,71 @@
                   <div class="flex items-center">
                     <div>{{ __('count') }}:</div>
                     <div class="font-semibold mx-1">{{
-                        asPrice(mySum(form.products.map(e => parseFloat(e.qty))))
+                        asPrice(mySum(data.products.map(e => parseFloat(e.qty))))
                       }}
                     </div>
                   </div>
                   <div class="flex items-center">
-                    <div>{{ __('price') }}:</div>
-                    <div class="font-semibold mx-1">{{ asPrice(mySum(form.products.map(e => e.qty * e.price))) }}</div>
+                    <div>{{ __('distance') }}:</div>
+                    <div class="font-semibold mx-1">{{
+                        data.distance ? `${data.distance} ${__('km')}` : '?'
+                      }}
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <div>{{ __('items_price') }}:</div>
+                    <div class="font-semibold mx-1 flex items-center">
+                      <span> {{ asPrice(mySum(data.products.map(e => e.qty * e.price))) }}</span>
+                      <TomanIcon class="mx-1"/>
+                    </div>
                   </div>
                   <div class="flex items-center">
                     <div>{{ __('shipping_price') }}:</div>
-                    <TextInput
-                        id="shipping_price"
-                        type="number"
-                        placeholder=""
-                        classes=" p-1 mx-1   "
-                        v-model="form.total_shipping_price"
-                        autocomplete="total_shipping_price"
-                        :error="errors.total_shipping_price">
-                    </TextInput>
+                    <div class="font-semibold mx-1 flex items-center">
+                      <span> {{ asPrice(data.total_shipping_price) }}</span>
+                      <TomanIcon class="mx-1"/>
+                    </div>
                   </div>
                   <div class="flex items-center">
                     <div>{{ __('discount') }}:</div>
+                    <div class="font-semibold mx-1 flex items-center">
+                      <span> {{ asPrice(data.total_discount) }}</span>
+                      <TomanIcon class="mx-1"/>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center">
+                    <div>{{ __('change_price') }}:</div>
                     <TextInput
-                        id="discount"
+                        id="change_price"
                         type="number"
                         placeholder=""
                         classes=" p-1 mx-1   "
-                        v-model="form.total_discount"
-                        autocomplete="total_discount"
-                        :error="errors.total_discount">
+                        v-model="data.change_price"
+                        autocomplete="change_price"
+                        :error="errors.change_price">
                     </TextInput>
+                    <TomanIcon class="mx-1"/>
                   </div>
+
                   <div class="flex items-center border-t py-2">
                     <div class="font-bold">{{ __('sum') }}:</div>
                     <div class="font-semibold mx-1">{{
-                        asPrice(mySum([mySum(form.products.map(e => e.qty * e.price)), Math.abs(form.total_shipping_price), -Math.abs(form.total_discount)]))
+                        asPrice(mySum([mySum(data.products.map(e => e.qty * e.price)), Math.abs(data.total_shipping_price) || 0, -Math.abs(data.total_discount) || 0, parseInt(data.change_price) || 0]))
                       }}
                     </div>
+                    <TomanIcon class="mx-1"/>
                   </div>
                 </div>
               </div>
 
-
-              <div class="my-2">
-                <Selector ref="statusSelector" v-model="form.status"
-                          :data="$page.props.statuses.map((e)=>{return {id:e,name:e}})"
-                          :error="errors.status"
-                          :label="__('status')"
-                          id="status">
-                  <template v-slot:append>
-                    <div class="  p-3">
-                      <Squares2X2Icon class="h-5 w-5"/>
-                    </div>
-                  </template>
-                </Selector>
-              </div>
-
-
-              <div v-if="form.progress" class="shadow w-full bg-grey-light m-2   bg-gray-200 rounded-full">
-                <div
-                    class=" bg-primary rounded  text-xs leading-none py-[.1rem] text-center text-white duration-300 "
-                    :class="{' animate-pulse': form.progress.percentage <100}"
-                    :style="`width: ${form.progress.percentage }%`">
-                  <span class="animate-bounce">{{ form.progress.percentage }}</span>
-                </div>
-              </div>
 
               <div class="    mt-4">
 
                 <PrimaryButton @click="edit" type="button" class="w-full flex items-center justify-center"
-                               :class="{ 'opacity-25': form.processing }"
-                               :disabled="form.processing">
-                  <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
+                               :class="{ 'opacity-25': loading }"
+                               :disabled="loading">
+                  <LoadingIcon class="w-4 h-4 mx-3 " v-if="  loading"/>
                   <span class=" text-lg  ">  {{ __('register_info') }} </span>
                 </PrimaryButton>
 
@@ -445,7 +400,9 @@ import UserSelector from "@/Components/UserSelector.vue";
 import AddressSelector from "@/Components/AddressSelector.vue";
 import CitySelector from "@/Components/CitySelector.vue";
 import ProductSelector from "@/Components/ProductSelector.vue";
-
+import TomanIcon from "@/Components/TomanIcon.vue";
+import Timestamp from "@/Components/Timestamp.vue";
+import VuePersianDatetimePicker from 'vue3-persian-datetime-picker';
 
 export default {
 
@@ -453,33 +410,13 @@ export default {
     return {
       data: this.$page.props.data,
       errors: {},
-      form: useForm({
-
-        status: 'pending',
-        to_repo_id: null,
-        from_repo_id: null,
-        from_repo: null,
-        order_type: this.__('internal'),
-        pay_timeout: this.$page.props.pay_timeout,
-        products: [],
-        shipping_method_id: null,
-        total_discount: 0,
-        total_shipping_price: 0,
-        from_address: null,
-        from_province_id: null,
-        from_county_id: null,
-        from_district_id: null,
-        from_lat: null,
-        from_lon: null,
-        from_location: null,
-        from_postal_code: null,
-        from_fullname: null,
-        from_phone: null,
-      }),
+      loading: false,
 
     }
   },
   components: {
+    Timestamp,
+    TomanIcon,
     AddressSelector,
     UserSelector,
     ImageUploader,
@@ -519,12 +456,30 @@ export default {
     ProductSelector,
     TrashIcon,
     PlusIcon,
-
+    datePicker: VuePersianDatetimePicker,
   },
   mounted() {
-    // this.log(this.$page.props)
+
+    this.initDatePicker();
+
+    this.preloadAddress = {
+      address: this.data.address,
+      postal_code: this.data.postal_code,
+      province_id: this.data.province_id,
+      county_id: this.data.county_id,
+      district_id: this.data.district_id,
+      receiver_fullname: this.data.receiver_fullname,
+      receiver_phone: this.data.receiver_phone,
+      lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
+      lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
+
+    };
+    this.$nextTick(() => {
+      this.$refs.addressSelector.preload(this.preloadAddress);
+      this.updateAddress(this.preloadAddress);
 
 
+    });
   },
   watch: {
     form(_new, _old) {
@@ -533,10 +488,57 @@ export default {
     }
   },
   methods: {
+    updateAddress(address) {
+      address = address || {};
+      this.data.address = address.address;
+      this.data.province_id = address.province_id;
+      this.data.county_id = address.county_id;
+      this.data.district_id = address.district_id;
+      this.data.lat = address.lat;
+      this.data.lon = address.lon;
+      this.data.location = `${address.lat},${address.lon}`;
+      this.data.postal_code = this.f2e(address.postal_code);
+      this.data.receiver_fullname = address.receiver_fullname;
+      this.data.receiver_phone = address.receiver_phone;
+    },
+    initDatePicker() {
+      this.$nextTick(() => {
+        document.querySelectorAll('.vpd-input-group').forEach((el) => {
+          el.classList.add('flex');
 
+        });
+        document.querySelectorAll('.vpd-input-group input').forEach((el) => {
+          el.classList.add('rounded');
+        });
+        document.querySelectorAll('.vpd-input-group label').forEach((el) => {
+          el.classList.add('rounded-s');
+          el.append(` ${this.__('delivery_time')} `)
+        });
+      });
+    },
     edit(params = {}) {
       params.id = this.data.id;
+      params.agency_id = this.data.agency_id;
       params._method = 'PATCH';
+      params.products = this.data.products.map(e => {
+        return {id: e.id, qty: e.qty}
+      });
+      params.delivery_date = this.data.delivery_date;
+      params.delivery_timestamp = this.data.delivery_timestamp;
+
+      params.receiver_fullname = this.data.receiver_fullname;
+      params.receiver_phone = this.data.receiver_phone;
+
+      params.address = this.data.address;
+      params.province_id = this.data.province_id;
+      params.county_id = this.data.county_id;
+      params.district_id = this.data.district_id;
+      params.location = this.data.location;
+      params.lat = this.data.lat;
+      params.lon = this.data.lon;
+      params.postal_code = this.data.postal_code;
+      params.change_price = this.data.change_price;
+      params.shipping_method_id = this.data.shipping_method_id;
 
       this.isLoading(true);
       this.errors = {};
@@ -548,14 +550,9 @@ export default {
 
             }
 
-            if (response.data.status) {
-              this.data[params.idx].status = response.data.status;
-              if (response.data.statuses)
-                this.data[params.idx].statuses = response.data.statuses;
-            } else {
-              this.data = response.data;
+            if (response.data.order) {
+              this.data = response.data.order;
             }
-            this.selected = null;
 
 
           })

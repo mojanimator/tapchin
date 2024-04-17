@@ -13,6 +13,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\City;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Repository;
@@ -27,7 +28,9 @@ use App\Models\Variation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Morilog\Jalali\Jalalian;
 
 class OrderController extends Controller
 {
@@ -78,14 +81,23 @@ class OrderController extends Controller
         $user = $request->user();
 
         $data = Order::with('items')->find($id);
+
         $this->authorize('edit', [get_class($user), $data]);
+
         $data->repository = Repository::with('shippingMethods')->find($data->repo_id);
         if ($data->repository && $data->repository->allow_visit) {
             $methods = $data->repository->getRelation('shippingMethods');
-            $methods->add(ShippingMethod::find(1));
+            $methods->prepend(ShippingMethod::find(1));
             $data->repository->setRelation('shippingMethods', $methods);
         }
-
+        $data->delivery_date = $data->delivery_date ? Jalalian::fromDateTime($data->delivery_date)->format('Y/m/d') : null;
+        $items = $data->getRelation('items');
+        foreach ($items as $item) {
+            $item->id = $item->variation_id;
+            $item->qty = floatval($item->qty);
+            $item->price = $item->total_price / $item->qty;
+        }
+        $data->setRelation('products', $items);
         return Inertia::render('Panel/' . ($user instanceof Admin ? 'Admin/Order/User' : 'Order') . '/Edit', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
@@ -149,7 +161,9 @@ class OrderController extends Controller
         $cmnd = $request->cmnd;
         $status = $request->status;
         $user = $request->user();
-        $data = Order::find($id);
+
+        $data = $request->data ?? Order::find($id);
+
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
 
@@ -230,18 +244,80 @@ class OrderController extends Controller
         } elseif ($data) {
 
 
+            $request->validate(
+                [
+                    'new_in_repo' => in_array($cmnd, ['change-repo', 'change-grade-pack-weight']) ? [Rule::requiredIf(in_array($cmnd, ['change-repo', 'change-grade-pack-weight'])), 'numeric', "max:$data->in_repo", 'min:0'] : [],
+                ],
+                [
+                    'agency_id.required' => __('access_denied'),
+                    'agency_id.in' => __('access_denied'),
+
+                    'new_in_repo.required' => sprintf(__('validator.required'), __('get_from_repo')),
+                    'new_in_repo.min' => sprintf(__('validator.min_items'), __('get_from_repo'), 0, $request->new_in_repo),
+                    'new_in_repo.max' => sprintf(__('validator.max_items'), __('get_from_repo'), floatval($data->in_repo), $request->new_in_repo),
+
+                ],
+            );
+
             $request->merge([
 //                'cities' => json_encode($request->cities ?? [])
             ]);
+            $beforeItems = $data->getRelation('items');
+            $databaseProducts = $request->database_products;
+
+            //delete removed order items
+            OrderItem::where('order_id', $data->id)->whereNotIn('id', array_column($request->products, 'id'))->delete();
+            foreach ($request->products as $p) {
+                $beforeItem = $beforeItems->where('id', $p['id'])->first();
+                $product = $databaseProducts->find($p['id']);
+                if ($beforeItem) {
+                    $beforeItem->qty = $p['qty'];
+                    $beforeItem->total_price = $p['total_price'];
+                    if ($p['qty'] == 0)
+                        OrderItem::where('id', $p['id'])->delete();
+                    else
+                        $beforeItem->save();
+                } else {
+
+                    DB::table('order_items')->insert([
+                        'title' => "$product->name ( " . floatval($p['qty']) . " " . optional(Pack::find($product->pack_id))->name . " " . __('grade') . " $product->grade " . floatval($product->weight) . " " . __('kg') . " )",
+                        'name' => $product->name,
+                        'order_id' => $data->id,
+                        'variation_id' => $product->id,
+                        'qty' => $p['qty'],
+                        'pack_id' => $product->pack_id,
+                        'weight' => $product->weight,
+                        'grade' => $product->grade,
+                        'repo_id' => $data->repo_id,
+                        'total_price' => $p['total_price'],
+                        'discount_price' => $p['discount_price'],
+                        'created_at' => Carbon::now(),
+                    ]);
+                }
+            }
 
 
-            if ($data->update($request->all())) {
+            $order = $data;
+            $repository = $data->repository;
+            unset($data->repository);
+            if ($data->update($request->except(['repository', 'database_products', 'data', 'agency_id', 'products', 'allowed_agencies']))) {
+                $items = OrderItem::where('order_id', $data->id)->get();
 
-                $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+                $order->setRelation('items', $items);
+                foreach ($items as $item) {
+                    $item->id = $item->variation_id;
+                    $item->qty = floatval($item->qty);
+                    $item->price = $item->qty ? $item->total_price / $item->qty : 0;
+
+                }
+                $order->setRelation('products', $items);
+                $order->setRelation('repository', $repository);
+                $order->delivery_date = $request->delivery_date_shamsi;
 //                dd($request->all());
-                Telegram::log(null, 'order_edited', $data);
-            } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
-            return back()->with($res);
+                Telegram::log(null, 'order_edited', $order);
+                return response()->json(['message' => __('updated_successfully'), 'order' => $order], $successStatus);
+            } else
+                return response()->json($response, $errorStatus);
         }
 
         return response()->json($response, $errorStatus);
@@ -319,7 +395,7 @@ class OrderController extends Controller
                         if (str_starts_with($methodId, 'repo-')) //visit-repo [change id to 1]
                             $methodId = 1;
                         $items[] = [
-                            'title' => "$product->name ( " . floatval($cartItem->qty) . " " . optional(Pack::find($product->pack_id))->name . " " . floatval($product->weight) . " " . __('kg') . " )",
+                            'title' => "$product->name ( " . floatval($cartItem->qty) . " " . optional(Pack::find($product->pack_id))->name . " " . __('grade') . " $product->grade " . floatval($product->weight) . " " . __('kg') . " )",
                             'name' => $cartItem->name,
                             'order_id' => $order->id,
                             'variation_id' => $cartItem->variation_id,

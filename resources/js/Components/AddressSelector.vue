@@ -198,6 +198,7 @@
 
                   <Selector ref="provinceSelector" :data="$page.props.cities.filter(e=>e.parent_id==0)"
                             :label="`${__('province')} *`"
+                            @change="mapAddress.county_id=null;mapAddress.district_id=null"
                             :error=" errors.province_id?errors.province_id[0]:null"
                             id="province_id" v-model=" mapAddress.province_id">
                     <template v-slot:append>
@@ -210,6 +211,7 @@
                   <Selector ref="countySelector"
                             :data="$page.props.cities.filter(e=>e.parent_id==mapAddress.province_id)"
                             :label="`${__('county')} *`"
+                            @change="mapAddress.district_id=null"
                             :error=" errors.county_id?errors.county_id[0]:null"
                             id="county_id" v-model=" mapAddress.county_id">
                     <template v-slot:append>
