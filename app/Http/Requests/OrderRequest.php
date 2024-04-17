@@ -153,8 +153,8 @@ class OrderRequest extends FormRequest
 //            ]);
 //        }
 
-            return $tmp;
         }
+        return $tmp;
 
     }
 
