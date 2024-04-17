@@ -65,7 +65,7 @@
                        :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
               </div>
               <div class="flex my-1 items-center justify-start text-xs text-gray-400">
-                <div class="bg-gray-50 rounded p-1 px-2  "> {{ toRelativeTime(p.updated_at) }}</div>
+                <div class="  rounded p-1 px-2  "> {{ toRelativeTime(p.updated_at) }}</div>
               </div>
             </div>
             <div class="hidden sm:flex min-w-[36%] my-1  mx-auto">
