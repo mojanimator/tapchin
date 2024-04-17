@@ -337,6 +337,7 @@ class OrderController extends Controller
                 $order->setRelation('products', $items);
                 $order->setRelation('repository', $repository);
                 $order->delivery_date = $request->delivery_date_shamsi;
+
 //                dd($request->all());
                 Telegram::log(null, 'order_edited', $order);
                 return response()->json(['message' => __('updated_successfully'), 'order' => $order], $successStatus);
@@ -443,13 +444,9 @@ class OrderController extends Controller
                     Cart::find($cart->id)->delete();
 
                 $orderLog = $order;
-                $cities = City::whereIn('id', [$order->province_id, $order->county_id, $order->district_id])->get();
-                $orderLog->province = $cities->where('id', $order->province_id)->first()->name ?? '';
-                $orderLog->county = $cities->where('id', $order->county_id)->first()->name ?? '';
-                $orderLog->district = $cities->where('id', $order->district_id)->first()->name ?? '';
-                $orderLog->items = collect($items)->map(fn($e) => (object)$e);
-                $orderLog->agency = Agency::find($order->agency_id) ?? new Agency();
-                $orderLog->user = $user;
+
+                $orderLog->setRelation('items', collect($items)->map(fn($e) => (object)$e));
+
                 Telegram::log(null, 'order_created', $orderLog);
             }
 

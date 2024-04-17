@@ -493,15 +493,28 @@ class Telegram
             $topic = self::TOPIC_LOGS;
             switch ($type) {
                 case 'order_created':
-                    $topic = self::TOPIC_ORDER;
+                case 'order_edited':
+                    $cities = City::whereIn('id', [$data->province_id, $data->county_id, $data->district_id])->get();
+                    $data->province = $cities->where('id', $data->province_id)->first()->name ?? '';
+                    $data->county = $cities->where('id', $data->county_id)->first()->name ?? '';
+                    $data->district = $cities->where('id', $data->district_id)->first()->name ?? '';
+                    $data->agency = Agency::find($data->agency_id) ?? new Agency();
 
-                    $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
+                    $topic = self::TOPIC_ORDER;
+                    if ($isCreate)
+                        $msg .= " 🟢 " . "یک سفارش ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 🟠 " . "یک سفارش ویرایش شد" . PHP_EOL;
+
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
                     $msg .= " 🚩 " . "نمایندگی: " . "({$data->agency->id})" . ' ' . $data->agency->name . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-                    foreach ($data->items as $item) {
+                    foreach ($data->getRelation('items') ?? [] as $item) {
 //                        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                         $msg .= " 🛒 " . $item->title . PHP_EOL;
                     }
@@ -513,7 +526,9 @@ class Telegram
                     $msg .= " 👤 " . "دریافت کننده: " . "$data->receiver_fullname ( $data->receiver_phone )" . PHP_EOL;
                     $msg .= " 📅 " . "تحویل: " . ($data->delivery_date ? Jalalian::forge($data->delivery_date)->format('Y/m/d') . " ($data->delivery_timestamp) " : ' در محل ') . PHP_EOL;
                     $msg .= " 🚛 " . "کرایه: " . number_format($data->total_shipping_price) . PHP_EOL;
-                    $msg .= " 🪙 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
+                    $msg .= " 📦 " . "اقلام: " . number_format($data->total_items_price) . PHP_EOL;
+                    $msg .= " 📝 " . "اصلاحیه: " . number_format($data->change_price) . PHP_EOL;
+                    $msg .= " 🛒 " . "نهایی: " . number_format($data->total_price) . PHP_EOL;
                     break;
                 case 'agency_created'  :
                 case 'agency_edited':
