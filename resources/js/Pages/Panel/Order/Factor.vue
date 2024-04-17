@@ -34,6 +34,11 @@
                 <div class="font-bold">{{ __('created_at') }}:</div>
                 <div class="px-2">{{ toShamsi(data.created_at, true) }}</div>
               </div>
+              <div v-if="data.delivery_date" class="flex items-center">
+                <div class="font-bold">{{ __('delivery_time') }}:</div>
+                <div class="px-2">{{ toShamsi(data.delivery_date, true) }}</div>
+                <div class="px-2">{{ data.delivery_timestamp }}</div>
+              </div>
               <div class="text-end w-full ">
                 <vue3-barcode :width="1" :display-value="false" class=" "
                               :value="data.order_id"
@@ -137,7 +142,7 @@
           </td>
           <td class="border text-center p-2  ">
 
-          {{ item.title}}
+            {{ item.title }}
           </td>
           <td class="border text-center p-2  ">
             {{
@@ -163,6 +168,10 @@
         <tr>
           <td colspan="5" class="border text-center p-2">{{ __('shipping_price') }}</td>
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.total_shipping_price) }}</td>
+        </tr>
+        <tr v-if="data.change_price">
+          <td colspan="5" class="border text-center p-2">{{ __('change_price') }}</td>
+          <td colspan="1" class="border text-center p-2">{{ asPrice(data.change_price) }}</td>
         </tr>
 
 
