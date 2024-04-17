@@ -266,19 +266,33 @@ class OrderController extends Controller
             $databaseProducts = $request->database_products;
 
             //delete removed order items
-            OrderItem::where('order_id', $data->id)->whereNotIn('id', array_column($request->products, 'id'))->delete();
+            $returnItemsToShop = OrderItem::where('order_id', $data->id)->whereNotIn('variation_id', array_column($request->products, 'id'))->get();
+            foreach ($returnItemsToShop as $item) {
+                $variation = $databaseProducts->where('id', $item->variation_id)->first();
+                if ($variation) {
+                    $variation->in_shop += $item->qty;
+                    $variation->save();
+                }
+                OrderItem::whereId($item->id)->delete();
+            }
             foreach ($request->products as $p) {
-                $beforeItem = $beforeItems->where('id', $p['id'])->first();
-                $product = $databaseProducts->find($p['id']);
+                if ($p['qty'] == 0) {
+                    OrderItem::where('variation_id', $p['id'])->delete();
+                    continue;
+                }
+                $beforeItem = $beforeItems->where('variation_id', $p['id'])->first();
+                $product = $databaseProducts->where('id', $p['id'])->first();
                 if ($beforeItem) {
+                    $dif = $beforeItem->qty - $p['qty'];
+
+
                     $beforeItem->qty = $p['qty'];
                     $beforeItem->total_price = $p['total_price'];
-                    if ($p['qty'] == 0)
-                        OrderItem::where('id', $p['id'])->delete();
-                    else
-                        $beforeItem->save();
-                } else {
 
+                    $beforeItem->save();
+                    $item = $beforeItem;
+                } else {
+                    $dif = -$p['qty'];
                     DB::table('order_items')->insert([
                         'title' => "$product->name ( " . floatval($p['qty']) . " " . optional(Pack::find($product->pack_id))->name . " " . __('grade') . " $product->grade " . floatval($product->weight) . " " . __('kg') . " )",
                         'name' => $product->name,
@@ -293,6 +307,16 @@ class OrderController extends Controller
                         'discount_price' => $p['discount_price'],
                         'created_at' => Carbon::now(),
                     ]);
+                    $item = (object)['variation_id' => $product->id];
+                }
+                if ($dif != 0) {
+                    $variation = $databaseProducts->where('id', $item->variation_id)->first();
+
+                    if ($variation) {
+                        $variation->in_shop += $dif;
+                        $variation->save();
+                    }
+
                 }
             }
 

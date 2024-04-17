@@ -91,7 +91,7 @@ class OrderRequest extends FormRequest
             $tmpProducts = [];
             foreach ($this->products as $idx => $product) {
                 $p = $products->where('id', $product['id'])->first();
-                $maxQty = floatval(($p->in_shop ?? 0) + ($p ? $product['qty'] : 0));
+                $maxQty = floatval(($p->in_shop ?? 0) + ($p ? ($data->getRelation('items')->where('variation_id', $product['id'])->first()->qty ?? 0) : 0));
 
                 $isAuctionItem = $isAuction && $p->auction_price;
 
@@ -115,7 +115,6 @@ class OrderRequest extends FormRequest
 
             }
             $this->products = $tmpProducts;
-
             $totalShippingPrice = 0;
             $distance = 0;
             $method = $shippingMethods->where('id', $this->shipping_method_id)->first();

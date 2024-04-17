@@ -351,7 +351,7 @@
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
                       <div
-                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out    focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                          class=" flex justify-end rounded-md shadow-sm transition duration-150 ease-in-out    focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
                         <Link v-if="d.status=='pending'"
                               type="button" :href="route('admin.panel.order.user.edit',d.id)"
