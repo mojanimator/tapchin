@@ -89,7 +89,7 @@ class OrderRequest extends FormRequest
             $totalItemsPrice = 0;
             $totalItemsDiscount = 0;
             $tmpProducts = [];
-            foreach ($this->products as $idx => $product) {
+            foreach ($this->products ?? [] as $idx => $product) {
                 $p = $products->where('id', $product['id'])->first();
                 $maxQty = floatval(($p->in_shop ?? 0) + ($p ? ($data->getRelation('items')->where('variation_id', $product['id'])->first()->qty ?? 0) : 0));
 
