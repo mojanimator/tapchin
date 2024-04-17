@@ -192,7 +192,7 @@ class OrderRequest extends FormRequest
             'total_price.min' => sprintf(__("validator.min"), __('total_price'), 0),
 
         ]);
-        foreach ($this->products as $idx => $product)
+        foreach ($this->products ?? [] as $idx => $product)
             $tmp = array_merge($tmp, [
                 "products.$idx.id.required" => sprintf(__("validator.required"), __('product')),
 
