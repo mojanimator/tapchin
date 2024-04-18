@@ -109,7 +109,10 @@ class  FinancialController extends Controller
         $data = Variable::FINANCIALS [$type]::where("{$type}_id", $id)->first();
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [Admin::class, $data]);
-
+        if ($type) {
+            $model = Variable::TRANSACTION_MODELS[$type]::find($id);
+            $modelName = $model->name ?? $model->fullname;
+        }
         if ($cmnd) {
             switch ($cmnd) {
                 case  'settlement' :
@@ -117,7 +120,7 @@ class  FinancialController extends Controller
                         return response()->json(['message' => sprintf(__('validator.max_amount'), __('settlement'), $data->wallet, $amount)], $errorStatus);
 
                     $t = Transaction::create([
-                        'title' => sprintf(__('settlement_*_*_*'), $amount, __($type), $id),
+                        'title' => sprintf(__('settlement_*_*_*'), number_format($amount), __($type), "$modelName ($id)"),
                         'type' => 'settlement',
                         'for_type' => $type,
                         'for_id' => $id,
@@ -143,7 +146,7 @@ class  FinancialController extends Controller
                 case  'charge' :
 
                     $t = Transaction::create([
-                        'title' => sprintf(__('charge_*_*_*'), $amount, __($type), $id),
+                        'title' => sprintf(__('charge_*_*_*'), number_format($amount), __($type), "$modelName ($id)"),
                         'type' => 'charge',
                         'for_type' => $type,
                         'for_id' => $id,
