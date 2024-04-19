@@ -56,7 +56,7 @@
           class="  mt-6   gap-y-3 gap-x-2 grid   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ">
         <div class="bg-white  shadow-md rounded-lg  "
              v-for="(p,idx) in products">
-          <article :id="p.id"
+          <article @click="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )" :id="p.id"
                    class="overflow-hidden flex flex-row sm:flex-col   hover:cursor-pointer hover:scale-[101%] duration-300">
             <div class="flex flex-col">
               <div class="md:mx-auto sm:h-64 sm:w-full  h-24    w-32 shadow-md  ">
@@ -64,7 +64,7 @@
                 <!--                       classes="object-cover  h-full w-full  rounded-t-lg rounded-b   "-->
                 <!--                       :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image> -->
                 <Image classes="object-cover  h-full w-full  rounded-t-lg rounded-b   "
-                       @click="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
+
                        :src="route('storage.variations')+`/${p.id}/thumb.jpg`"></Image>
               </div>
               <div class="flex my-1 items-center justify-start text-xs text-gray-400">
@@ -75,8 +75,8 @@
               <CartItemButton :key="p.id" class="w-full " :product-id="p.id"/>
             </div>
 
-            <div @click="$inertia.visit(  route( 'variation.view',{id:p.id,name:p.name}) )"
-                 class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
+            <div
+                class="p-4   w-full flex flex-col items-stretch justify-start items-start items-between">
 
               <div class="flex items-center justify-between">
                 <div class="text-primary-600 ms-1  ">{{ p.name }}</div>
