@@ -77,6 +77,9 @@ class AdminPolicy
                 case    Variation::class:
                     $res = $admin->hasAccess('view_variation');
                     break;
+                case    User::class:
+                    $res = $admin->hasAccess('view_user');
+                    break;
             }
 
         if ($abort && empty($res))

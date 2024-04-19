@@ -112,7 +112,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
         PanelController::makeInertiaRoute('get', 'user/index', 'admin.panel.user.index', 'Panel/Admin/User/Index',
             [
-            ]);
+            ], "can:view,App\Models\Admin,App\Models\User,'1'");
         PanelController::makeInertiaRoute('get', 'user/create', 'admin.panel.user.create', 'Panel/Admin/User/Create',
             [
             ]);
