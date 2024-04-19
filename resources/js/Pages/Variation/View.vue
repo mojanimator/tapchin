@@ -11,7 +11,7 @@
     </div>
     <section class=" container  max-w-2xl  mx-auto justify-center pt-24  ">
       <div
-          class="w-full   rounded-lg overflow-x-hidden     xs:mx-2 md:mx-4    blur-xs opacity-75 bg-white  backdrop-filter">
+          class="w-full   rounded-lg overflow-x-hidden     xs:mx-2 md:mx-4    blur-xs   bg-white   ">
         <div v-if="!data" class="text-center flex flex-col font-bold p-4 text-danger  text-lg">
           <div class="text-gray-900">{{ __('no_result') }}</div>
           <Link :href="$page.props.back_link" class="my-4">{{ __('return') }}</Link>
@@ -87,7 +87,7 @@
 
           </div>
           <div v-html="data.description"
-               class="   p-2   bg-gray-50 rounded-lg  ">
+               class="   p-2 md:p-4  bg-gray-50 rounded-lg  ">
 
           </div>
 

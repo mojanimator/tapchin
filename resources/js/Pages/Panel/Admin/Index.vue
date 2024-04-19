@@ -86,7 +86,7 @@
             </div>
           </Link>
           <!-- messages card -->
-          <Link :class="cardShadow" :href="route('admin.panel.message.index')"
+          <Link v-if="  hasAccess('view_message')" :class="cardShadow" :href="route('admin.panel.message.index')"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
               <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
@@ -113,7 +113,8 @@
           </Link>
 
           <!-- users card -->
-          <Link v-if="route().check('admin.panel.user.index')" :href="route('admin.panel.user.index')"
+          <Link v-if="route().check('admin.panel.user.index') && hasAccess('view_user')"
+                :href="route('admin.panel.user.index')"
                 :class="cardShadow"
                 class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
             <div class="flex flex-col grow">
