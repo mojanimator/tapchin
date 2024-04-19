@@ -2,7 +2,7 @@
   <Scaffold navbar-theme="dark">
     <template v-slot:header>
       <title v-if="data">{{ data.title }}</title>
-      <meta v-if="data" name="description" :content=" data.description ">
+      <meta v-if="data" name="description" :content=" data.seo ">
 
     </template>
     <div
