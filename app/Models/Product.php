@@ -18,6 +18,7 @@ class Product extends Model
         'charged_at',
         'rate',
         'status',
+        'description',
     ];
     protected $casts = [
 

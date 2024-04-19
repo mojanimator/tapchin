@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->timestamp('charged_at')->nullable();
             $table->unsignedInteger('rate')->nullable();
             $table->timestamps();
+            $table->longText('description')->nullable();
         });
     }
 

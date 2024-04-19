@@ -41,7 +41,7 @@ return new class extends Migration {
             $table->enum('agency_level', array_column(Variable::AGENCY_TYPES, 'level'))->nullable();
             $table->enum('unit', Variable::PRODUCT_UNITS)->default(Variable::PRODUCT_UNITS[0]);
 
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->timestamps();
 
         });

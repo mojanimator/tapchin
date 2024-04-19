@@ -35,8 +35,9 @@ class VariationController extends Controller
     public
     function view(Request $request, $id)
     {
-        $data = Variation::where('id', $id)->with('repository')->first();
-
+        $data = Variation::where('id', $id)->with('repository')->firstOrNew();
+        $product = Product::findOrNew($data->product_id);
+        $data->description = $data->description ?? $product->description;
         return Inertia::render('Variation/View', [
             'back_link' => url()->previous(),
             'data' => $data,

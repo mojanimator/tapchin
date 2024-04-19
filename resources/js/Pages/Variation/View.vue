@@ -9,7 +9,7 @@
         class="  py-8  shadow-md bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-teal-500 to-teal-500">
 
     </div>
-    <section class=" container    mx-auto justify-center pt-24  ">
+    <section class=" container  max-w-2xl  mx-auto justify-center pt-24  ">
       <div
           class="w-full   rounded-lg overflow-x-hidden     xs:mx-2 md:mx-4    blur-xs opacity-75 bg-white  backdrop-filter">
         <div v-if="!data" class="text-center flex flex-col font-bold p-4 text-danger  text-lg">
@@ -18,11 +18,11 @@
         </div>
         <!--      main section-->
 
-        <div v-else class="    ">
+        <div v-else class="flex flex-col     ">
 
-          <div class="flex-col md:flex-row md:flex mx-auto justify-center   ">
+          <div class="flex-col md:flex-row md:flex  ">
 
-            <div class=" max-w-sm  mx-auto   ">
+            <div class=" max-w-sm     mx-auto   ">
               <Image :src="route('storage.variations')+`/${data.id}/thumb.jpg`"
                      :data-lity="route('storage.variations')+`/${data.id}/1.jpg`"
                      classes="object-contain rounded-lg cursor-pointer   "/>
@@ -82,12 +82,12 @@
                     <TomanIcon class="w-4 h-4 mx-2"/>
                   </div>
                 </div>
-                <div v-if="data.description" class="flex items-start p-2">
-                  <ChatBubbleLeftEllipsisIcon class="   w-16  text-neutral-700 mx-2"/>
-                  <div class="text-neutral-500  text-sm">{{ data.description }}</div>
-                </div>
               </div>
             </div>
+
+          </div>
+          <div v-html="data.description"
+               class="   p-2   bg-gray-50 rounded-lg  ">
 
           </div>
 
