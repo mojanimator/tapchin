@@ -473,8 +473,8 @@ class CartController extends Controller
                 $distance = Util::distance($cart->address['lat'] ?? null, $cart->address['lon'] ?? null, explode(',', $repoLocation)[0] ?? null, explode(',', $repoLocation)[1] ?? null, 'k');
                 $product = $cartItem->getRelation('product');
                 $totalWeight += $product->weight * $cartItem->qty;
-                $totalShippingPrice += ($product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0)) + ($distance * ($item['shipping']['per_distance_price'] ?? 0));
-                $basePrice = $basePrice > 0 ? $basePrice : ($item['shipping']['base_price'] ?? 0);
+                $totalShippingPrice += ($product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0));
+                $basePrice = $basePrice > 0 ? $basePrice : ($item['shipping']['base_price'] ?? 0) + ($distance * ($item['shipping']['per_distance_price'] ?? 0));
                 $cart->total_items += $cartItem->qty ?? 0;
                 $totalItems += $cartItem->qty ?? 0;
                 $repoId = $item['repo_id'];
