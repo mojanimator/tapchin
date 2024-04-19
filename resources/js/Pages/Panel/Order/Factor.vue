@@ -166,9 +166,14 @@
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.total_items_price) }}</td>
         </tr>
         <tr>
+          <td colspan="5" class="border text-center p-2">{{ __('tax') }}</td>
+          <td colspan="1" class="border text-center p-2">{{ asPrice(data.tax_price) }}</td>
+        </tr>
+        <tr>
           <td colspan="5" class="border text-center p-2">{{ __('shipping_price') }}</td>
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.total_shipping_price) }}</td>
         </tr>
+
         <tr v-if="data.change_price">
           <td colspan="5" class="border text-center p-2">{{ __('change_price') }}</td>
           <td colspan="1" class="border text-center p-2">{{ asPrice(data.change_price) }}</td>
