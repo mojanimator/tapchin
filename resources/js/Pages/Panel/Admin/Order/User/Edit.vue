@@ -292,13 +292,7 @@
                       <TomanIcon class="mx-1"/>
                     </div>
                   </div>
-                  <div class="flex items-center">
-                    <div>{{ __('shipping_price') }}:</div>
-                    <div class="font-semibold mx-1 flex items-center">
-                      <span> {{ asPrice(data.total_shipping_price) }}</span>
-                      <TomanIcon class="mx-1"/>
-                    </div>
-                  </div>
+
                   <div class="flex items-center">
                     <div>{{ __('discount') }}:</div>
                     <div class="font-semibold mx-1 flex items-center">
@@ -306,7 +300,19 @@
                       <TomanIcon class="mx-1"/>
                     </div>
                   </div>
-
+                  <div class="flex items-center">
+                    <div>{{ __('shipping_price') }}:</div>
+                    <TextInput
+                        id="total_shipping_price"
+                        type="number"
+                        placeholder=""
+                        classes=" p-1 mx-1   "
+                        v-model="data.total_shipping_price"
+                        autocomplete="total_shipping_price"
+                        :error="errors.total_shipping_price">
+                    </TextInput>
+                    <TomanIcon class="mx-1"/>
+                  </div>
                   <div class="flex items-center">
                     <div>{{ __('change_price') }}:</div>
                     <TextInput
@@ -462,24 +468,8 @@ export default {
 
     this.initDatePicker();
 
-    this.preloadAddress = {
-      address: this.data.address,
-      postal_code: this.data.postal_code,
-      province_id: this.data.province_id,
-      county_id: this.data.county_id,
-      district_id: this.data.district_id,
-      receiver_fullname: this.data.receiver_fullname,
-      receiver_phone: this.data.receiver_phone,
-      lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
-      lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
+    this.loadAddress();
 
-    };
-    this.$nextTick(() => {
-      this.$refs.addressSelector.preload(this.preloadAddress);
-      this.updateAddress(this.preloadAddress);
-
-
-    });
   },
   watch: {
     form(_new, _old) {
@@ -488,6 +478,25 @@ export default {
     }
   },
   methods: {
+    loadAddress() {
+      this.preloadAddress = {
+        address: this.data.address,
+        postal_code: this.data.postal_code,
+        province_id: this.data.province_id,
+        county_id: this.data.county_id,
+        district_id: this.data.district_id,
+        receiver_fullname: this.data.receiver_fullname,
+        receiver_phone: this.data.receiver_phone,
+        lat: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[0] : null,
+        lon: this.data.location && this.data.location.indexOf(',') > -1 ? this.data.location.split(',')[1] : null,
+
+      };
+      this.$nextTick(() => {
+        this.$refs.addressSelector.preload(this.preloadAddress);
+        this.updateAddress(this.preloadAddress);
+
+      });
+    },
     updateAddress(address) {
       address = address || {};
       this.data.address = address.address;
@@ -539,6 +548,7 @@ export default {
       params.postal_code = this.data.postal_code;
       params.change_price = this.data.change_price;
       params.shipping_method_id = this.data.shipping_method_id;
+      params.total_shipping_price = this.data.total_shipping_price;
 
       this.isLoading(true);
       this.errors = {};
@@ -551,7 +561,9 @@ export default {
             }
 
             if (response.data.order) {
+              this.data = null;
               this.data = response.data.order;
+              this.loadAddress();
             }
 
 

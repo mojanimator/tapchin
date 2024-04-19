@@ -121,12 +121,12 @@ class OrderRequest extends FormRequest
             if ($method) {
                 $repoLocation = $data->repository ? explode(',', $data->repository->location ?? ",") : [null, null];
                 $distance = Util::distance($this->lat ?? null, $this->lon ?? null, $repoLocation [0] ?? null, $repoLocation [1] ?? null, 'k');
-                $totalShippingPrice += ($method->base_price + ($distance * ($method->per_distance_price ?? 0)) + ($totalWeight * ($method->per_weight_price ?? 0)));
+                $totalShippingPrice += ($method->base_price + ($distance ?? 0 * ($method->per_distance_price ?? 0)) + ($totalWeight * ($method->per_weight_price ?? 0)));
 
             }
 
             $totalItems = collect($this->products)->map(fn($e) => $e['qty'] ?? 0)->sum();
-
+            $totalShippingPrice = $this->total_shipping_price != null && $this->total_shipping_price != $totalShippingPrice ? $this->total_shipping_price : $totalShippingPrice;
             $this->merge([
 
                 'distance' => $distance,
