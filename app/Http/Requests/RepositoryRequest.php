@@ -54,7 +54,7 @@ class RepositoryRequest extends FormRequest
             if (!$this->agency_id && $this->myAgency->level == '3')
                 $this->merge(['agency_id' => $this->myAgency->id]);
             $availableAgencies = $user->allowedAgencies($this->myAgency)->pluck('id');
-            $childCities = City::where('has_child', false)->pluck('id')->toArray();
+            $childCities = City::whereNot('level', 1)->pluck('id')->toArray();
             $tmp = array_merge($tmp, [
                 'agency_id' => ['required', Rule::in($availableAgencies)],
                 'admin_id' => ['required', $user->hasAccess('edit_setting') ? null : Rule::in(Admin::where('agency_id', $this->agency_id)->pluck('id'))],

@@ -41,12 +41,17 @@ class RepositoryOrder extends Model
         'total_discount',
         'shipping_id',
         'shipping_method_id',
+        'change_price',
+        'coupon',
+        'tax_price',
+        'total_weight',
     ];
 
     public function items()
     {
         return $this->hasMany(RepositoryOrderItem::class, 'order_id');
     }
+
     public function getAvailableStatuses()
     {
         $statuses = collect(Variable::ORDER_STATUSES)->map(function ($e) {

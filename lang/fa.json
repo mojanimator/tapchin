@@ -711,6 +711,7 @@
   "your_request_registered_successfully": "درخواست شما با موفقیت ثبت شد",
   "product_name": "نام محصول",
   "product_weight": "وزن محصول",
+  "total_weight": "مجموع وزن",
   "you_received_sms_in_n_minutes": "شما در %s دقیقه اخیر پیامک دریافت کرده اید",
   "weight_price": "قیمت\u200Cوزن",
   "distance_price": "قیمت\u200Cمسافت",
@@ -916,5 +917,6 @@
   "charge_*_*_*": "افزایش اعتبار %s %s %s",
   "edit_order": "ویرایش سفارش",
   "change_price": "اصلاح قیمت",
+  "tax": "مالیات",
   "": ""
 }

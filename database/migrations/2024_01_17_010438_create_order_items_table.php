@@ -33,7 +33,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('discount_price');
             $table->unsignedInteger('pack_id')->nullable();
             $table->foreign('pack_id')->references('id')->on('packs')->onDelete('no action');
-            $table->unsignedDecimal('weight', 8, 3)->default(0); //kg
+            $table->unsignedDecimal('total_weight', 8, 3)->default(0); //kg
             $table->enum('grade', \App\Http\Helpers\Variable::GRADES)->nullable();
 
             $table->timestamps();

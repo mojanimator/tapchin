@@ -32,7 +32,7 @@ class RepositoryOrderController extends Controller
     {
         $admin = $request->user();
 
-        $data = RepositoryOrder::with('items.variation:id,name,weight,pack_id')->find($id);
+        $data = RepositoryOrder::with('items')->find($id);
 
         $this->authorize('edit', [Admin::class, $data]);
 
@@ -327,7 +327,7 @@ class RepositoryOrderController extends Controller
         if ($isToAgency)
             $query->whereIntegerInRaw('to_agency_id', $agencyIds);
 
-        $query->with('items.variation:id,name,weight,pack_id');
+        $query->with('items');
 
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies) {
             return $paginated->getCollection()->transform(

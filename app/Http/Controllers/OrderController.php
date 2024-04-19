@@ -39,7 +39,7 @@ class OrderController extends Controller
     {
         $user = $request->user();
 
-        $data = Order::with('items.variation:id,name,weight,pack_id')->find($id);
+        $data = Order::with('items')->find($id);
 
         $this->authorize('edit', [get_class($user), $data]);
 
@@ -300,7 +300,7 @@ class OrderController extends Controller
                         'variation_id' => $product->id,
                         'qty' => $p['qty'],
                         'pack_id' => $product->pack_id,
-                        'weight' => $product->weight,
+                        'total_weight' => $product->weight * $p['qty'],
                         'grade' => $product->grade,
                         'repo_id' => $data->repo_id,
                         'total_price' => $p['total_price'],
@@ -396,6 +396,8 @@ class OrderController extends Controller
                 'delivery_date' => $cart->delivery_date,
                 'delivery_timestamp' => $cart->delivery_timestamp,
                 'distance' => $cart->distance,
+                'tax_price' => $cart->tax_price,
+                'total_weight' => $cart->total_weight,
 
             ]);
             if ($order) {
@@ -426,7 +428,7 @@ class OrderController extends Controller
                             'variation_id' => $cartItem->variation_id,
                             'qty' => $cartItem->qty,
                             'pack_id' => $product->pack_id,
-                            'weight' => $product->weight,
+                            'total_weight' => $product->weight * $cartItem->qty,
                             'grade' => $product->grade,
                             'repo_id' => $cartItem->repo_id,
                             'total_price' => $cartItem->total_price ?? 0,
@@ -671,8 +673,8 @@ class OrderController extends Controller
             $query1->where('shipping_id', $shippingId);
             $query2->where('shipping_id', $shippingId);
         }
-        $query1->with('items.variation:id,name,weight,pack_id');
-        $query2->with('items.variation:id,name,weight,pack_id');
+        $query1->with('items');
+        $query2->with('items');
 
 
         $res = $query1->union($query2)->orderBy($orderBy, $dir);

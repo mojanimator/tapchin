@@ -77,7 +77,8 @@ return new class extends Migration {
             $table->enum('pay_type', array_column(Variable::getPaymentMethods(), 'key'))->nullable();//deliver|cancel
             $table->timestamp('payed_at')->nullable();
             $table->unsignedInteger('distance')->nullable();
-
+            $table->unsignedInteger('tax_price')->default(0);
+            $table->unsignedDecimal('total_weight', 8, 3)->default(0); //kg
 
         });
     }

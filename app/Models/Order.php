@@ -39,6 +39,8 @@ class Order extends Model
         'distance',
         'coupon',
         'change_price',
+        'tax_price',
+        'total_weight',
 
     ];
 

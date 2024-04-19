@@ -119,6 +119,7 @@ class CartController extends Controller
 
         $beforeQty = 0;
         $isAuction = Setting::getValue('is_auction');
+        $taxPercent = Setting::getValue('tax_percent') ?? 0;
 
         //add/remove/update an item
         if ($productId && is_int($qty)) {
@@ -146,6 +147,7 @@ class CartController extends Controller
 
                 }
                 $cartItem->qty = $qty;
+
                 $cartItem->save();
 //                dd($cartItems);
 
@@ -156,6 +158,7 @@ class CartController extends Controller
                     'cart_id' => $cart->id,
                     'variation_id' => $productId,
                     'qty' => $qty,
+
                 ]);
                 $cartItem->setRelation('product', $product);
                 $cartItems->push($cartItem);
@@ -165,6 +168,7 @@ class CartController extends Controller
         }
         $cart->total_items_price = 0;
         $cart->total_items_discount = 0;
+        $cart->total_weight = 0;
 
         $errors = $cart->errors ?? [];
         foreach ($cartItems as $cartItem) {
@@ -187,8 +191,10 @@ class CartController extends Controller
 //            $cartItem->save();
             $cartItem->total_discount = $isAuctionItem ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
             $cartItem->total_price = $itemTotalPrice;
+            $cartItem->total_weight = $cartItem->qty * $product->weight;
             $cart->total_items_price += $itemTotalPrice;
             $cart->total_items_discount += $cartItem->total_discount;
+            $cart->total_weight += $cartItem->total_weight;
 
         }
         $cart->setRelation('items', $cartItems);
@@ -442,6 +448,8 @@ class CartController extends Controller
         $cart->shipments = collect($shipments)->groupBy('method_id');
         $cart->total_shipping_price = 0;
         $cart->total_items = 0;
+        $cart->total_weight = 0;
+
         $shipments = [];
         foreach ($cart->shipments as $i => $items) {
             $totalWeight = 0;
@@ -501,18 +509,22 @@ class CartController extends Controller
                 'method_id' => $i,
                 'method' => $shipping,
                 'error_message' => $errorMessage,
+                'total_weight' => $totalWeight,
                 'total_items' => $totalItems,
                 'total_items_price' => $totalItemsPrice,
+                'tax_price' => round($totalItemsPrice * $taxPercent / 100),
                 'total_items_discount' => $totalItemsDiscount,
                 'has_available_shipping' => $hasAvailableShipping,
                 'total_shipping_price' => $basePrice + $totalShippingPrice
             ];
             $cart->total_shipping_price += $basePrice + $totalShippingPrice;
+            $cart->total_weight += $totalWeight;
         }
         $cart->errors = $errors ?? [];
         $cart->shipments = $shipments;
+        $cart->tax_price = round($cart->total_items_price * $taxPercent / 100);
         $cart->total_discount = $cart->total_items_discount;
-        $cart->total_price = $cart->total_items_price + $cart->total_shipping_price;
+        $cart->total_price = $cart->total_items_price + $cart->total_shipping_price + $cart->tax_price - $cart->total_discount;
         $cart->need_address = $needAddress;
         $cart->need_self_receive = $needSelfReceive;
         $cart->payment_methods = collect(Variable::getPaymentMethods())->where('active', true)->all();
@@ -531,11 +543,13 @@ class CartController extends Controller
             $tmpCart = clone $cart;
             $tmpCart->shipping_method_id = str_starts_with($methodId, 'repo-') ? 1 : $methodId; //visit-repo [change id to 1]
             $tmpCart->total_items_discount = 0;
+            $tmpCart->tax_price = 0;
             $tmpCart->total_discount = 0;
             $tmpCart->total_items_price = 0;
             $tmpCart->total_shipping_price = 0;
             $tmpCart->total_items = 0;
             $tmpCart->total_price = 0;
+            $tmpCart->total_weight = 0;
             $tmpCart->distance = null;
             $tmpShipments = collect();
             foreach ($shipments as $shipment) {
@@ -549,8 +563,11 @@ class CartController extends Controller
                 $tmpCart->total_discount += $shipment['total_items_discount'];
                 $tmpCart->total_items_price += $shipment['total_items_price'];
                 $tmpCart->total_shipping_price += $shipment['total_shipping_price'];
+                $tmpCart->tax_price += $shipment['tax_price'];
+                $tmpCart->total_weight += $shipment['total_weight'];
+
                 $tmpCart->total_items += $shipment['total_items'];
-                $tmpCart->total_price += ($shipment['total_items_price'] + $shipment['total_shipping_price']);
+                $tmpCart->total_price += ($shipment['total_items_price'] + $shipment['total_shipping_price'] + $shipment['tax_price'] - $shipment['total_items_discount']);
             }
             $tmpCart->shipments = $tmpShipments;
             $orders->add(clone $tmpCart);
