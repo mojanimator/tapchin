@@ -127,7 +127,7 @@
           <th scope="col" class="border">{{ __('row') }}</th>
           <th class="border">{{ __('product_id') }}</th>
           <th class="border">{{ __('description') }}</th>
-          <th class="border">{{ `${__('qty')}/${__('weight')}` }}</th>
+          <th class="border">{{ `${__('qty')}/${__('total_weight')}` }}</th>
           <th class="border">{{ `${__('unit_price')}` }}</th>
           <th class="border">{{ `${__('price')}(${__('currency')})` }}</th>
         </tr>
@@ -146,13 +146,13 @@
           </td>
           <td class="border text-center p-2  ">
             {{
-              `${(parseFloat(item.qty) || 0) * (parseFloat(item.weight) || 0)}`
+              `${(parseFloat(item.total_weight) || 0)}`
             }}
           </td>
 
           <td class="border text-center p-2  ">
             {{
-              `${asPrice(Math.round((item.total_price || 0) / ((item.weight || 1) * (item.qty || 1))))}`
+              `${asPrice(Math.round((item.total_price || 0) / ((item.total_weight || 1))))}`
             }}
           </td>
           <td class="border text-center p-2  ">
