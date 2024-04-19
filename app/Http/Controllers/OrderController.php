@@ -95,7 +95,8 @@ class OrderController extends Controller
         foreach ($items as $item) {
             $item->id = $item->variation_id;
             $item->qty = floatval($item->qty);
-            $item->price = $item->total_price / $item->qty;
+            $item->price = $item->total_price / ($item->qty ?? 1);
+            $item->weight = $item->total_weight / ($item->qty ?? 1);
         }
         $data->setRelation('products', $items);
         return Inertia::render('Panel/' . ($user instanceof Admin ? 'Admin/Order/User' : 'Order') . '/Edit', [
