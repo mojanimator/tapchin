@@ -38,6 +38,7 @@ class VariationController extends Controller
         $data = Variation::where('id', $id)->with('repository')->firstOrNew();
         $product = Product::findOrNew($data->product_id);
         $data->description = $data->description ?? $product->description;
+        $data->seo = strip_tags($data->description);
         return Inertia::render('Variation/View', [
             'back_link' => url()->previous(),
             'data' => $data,
