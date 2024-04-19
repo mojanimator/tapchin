@@ -333,7 +333,7 @@ class OrderController extends Controller
                     $item->id = $item->variation_id;
                     $item->qty = floatval($item->qty);
                     $item->price = $item->qty ? $item->total_price / $item->qty : 0;
-
+                    $item->weight = $item->qty ? $item->total_weight / $item->qty : 0;
                 }
                 $order->setRelation('products', $items);
                 $order->setRelation('repository', $repository);
