@@ -337,10 +337,10 @@ class OrderController extends Controller
                 }
                 $order->setRelation('products', $items);
                 $order->setRelation('repository', $repository);
-                $order->delivery_date = $request->delivery_date_shamsi;
 
-//                dd($request->all());
                 Telegram::log(null, 'order_edited', $order);
+                $order->delivery_date = $request->delivery_date_shamsi;
+//                dd($request->all());
                 return response()->json(['message' => __('updated_successfully'), 'order' => $order], $successStatus);
             } else
                 return response()->json($response, $errorStatus);

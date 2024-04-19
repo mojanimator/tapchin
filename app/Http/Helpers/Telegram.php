@@ -516,7 +516,7 @@ class Telegram
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     foreach ($data->getRelation('items') ?? [] as $item) {
 //                        $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-                        $msg .= " 🛒 " . $item->title . PHP_EOL;
+                        $msg .= " 🛒 ($item->variation_id) " . $item->title . PHP_EOL;
                     }
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 🔖 " . "آدرس: " . PHP_EOL . "$data->province - $data->county - $data->district" . PHP_EOL;
