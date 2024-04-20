@@ -116,6 +116,9 @@ class OrderRequest extends FormRequest
             }
             $this->products = $tmpProducts;
             $totalShippingPrice = 0;
+
+            $totalPrice = 0;
+            $changePrice = 0;
             $distance = 0;
             $method = $shippingMethods->where('id', $this->shipping_method_id)->first();
             if ($method) {
@@ -124,11 +127,16 @@ class OrderRequest extends FormRequest
                 $totalShippingPrice += ($method->base_price + ($distance ?? 0 * ($method->per_distance_price ?? 0)) + ($totalWeight * ($method->per_weight_price ?? 0)));
 
             }
+            $mainTotalItemsPrice = $totalItemsPrice;
+            $mainTotalShippingPrice = $totalShippingPrice;
 
             $totalItems = collect($this->products)->map(fn($e) => $e['qty'] ?? 0)->sum();
             $totalShippingPrice = $this->total_shipping_price != null && $this->total_shipping_price != $totalShippingPrice ? $this->total_shipping_price : $totalShippingPrice;
+            $totalItemsPrice = $this->total_items_price != null && $this->total_items_price != $totalItemsPrice ? $this->total_items_price : $totalItemsPrice;
+            $changePrice = ($totalItemsPrice - $mainTotalItemsPrice) + ($totalShippingPrice - $mainTotalShippingPrice);
             $this->merge([
 
+                'change_price' => $changePrice,
                 'distance' => $distance,
                 'delivery_date_shamsi' => $this->delivery_date,
                 'delivery_date' => $this->delivery_date ? Jalalian::fromFormat('Y/m/d', $this->delivery_date)->toCarbon() : null,
@@ -137,7 +145,7 @@ class OrderRequest extends FormRequest
                 'database_products' => $products->whereIn('id', collect($this->products)->pluck('id')),
                 'total_items' => $totalItems,
                 'total_items_price' => $totalItemsPrice,
-                'total_price' => $totalItemsPrice + $totalShippingPrice - $totalItemsDiscount + ($this->change_price ?? 0)
+                'total_price' => $totalItemsPrice + $totalShippingPrice - $totalItemsDiscount
             ]);
             $tmp = array_merge($tmp, [
                 'total_shipping_price' => ['required', 'numeric', 'min:0'],

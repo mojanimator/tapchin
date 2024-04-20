@@ -286,19 +286,31 @@
                     </div>
                   </div>
                   <div class="flex items-center">
-                    <div>{{ __('items_price') }}:</div>
-                    <div class="font-semibold mx-1 flex items-center">
-                      <span> {{ asPrice(mySum(data.products.map(e => e.qty * e.price))) }}</span>
-                      <TomanIcon class="mx-1"/>
-                    </div>
-                  </div>
-
-                  <div class="flex items-center">
                     <div>{{ __('discount') }}:</div>
                     <div class="font-semibold mx-1 flex items-center">
                       <span> {{ asPrice(data.total_discount) }}</span>
                       <TomanIcon class="mx-1"/>
                     </div>
+                  </div>
+                  <div class="flex items-center">
+                    <div>{{ __('change_price') }}:</div>
+                    <div class="font-semibold mx-1 flex items-center">
+                      <span> {{ asPrice(data.change_price) }}</span>
+                      <TomanIcon class="mx-1"/>
+                    </div>
+                  </div>
+                  <div class="flex items-center">
+                    <div>{{ __('items_price') }}:</div>
+                    <TextInput
+                        id="items_price"
+                        type="number"
+                        placeholder=""
+                        classes=" p-1 mx-1   "
+                        v-model="data.total_items_price"
+                        autocomplete="change_price"
+                        :error="errors.total_items_price">
+                    </TextInput>
+                    <TomanIcon class="mx-1"/>
                   </div>
                   <div class="flex items-center">
                     <div>{{ __('shipping_price') }}:</div>
@@ -313,24 +325,12 @@
                     </TextInput>
                     <TomanIcon class="mx-1"/>
                   </div>
-                  <div class="flex items-center">
-                    <div>{{ __('change_price') }}:</div>
-                    <TextInput
-                        id="change_price"
-                        type="number"
-                        placeholder=""
-                        classes=" p-1 mx-1   "
-                        v-model="data.change_price"
-                        autocomplete="change_price"
-                        :error="errors.change_price">
-                    </TextInput>
-                    <TomanIcon class="mx-1"/>
-                  </div>
+
 
                   <div class="flex items-center border-t py-2">
                     <div class="font-bold">{{ __('sum') }}:</div>
                     <div class="font-semibold mx-1">{{
-                        asPrice(mySum([mySum(data.products.map(e => e.qty * e.price)), Math.abs(data.total_shipping_price) || 0, -Math.abs(data.total_discount) || 0, parseInt(data.change_price) || 0]))
+                        asPrice(mySum([parseInt(data.total_items_price), Math.abs(data.total_shipping_price) || 0, -Math.abs(data.total_discount) || 0,]))
                       }}
                     </div>
                     <TomanIcon class="mx-1"/>
@@ -549,6 +549,7 @@ export default {
       params.change_price = this.data.change_price;
       params.shipping_method_id = this.data.shipping_method_id;
       params.total_shipping_price = this.data.total_shipping_price;
+      params.total_items_price = this.data.total_items_price;
 
       this.isLoading(true);
       this.errors = {};
