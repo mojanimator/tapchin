@@ -21,8 +21,8 @@ class Telegram
     const LOGS = [72534783, 1212754313, -1002000102729];
     const TOPIC_LOGS = 330;
     const TOPIC_BUGS = 323;
-    const TOPIC_CHATS = 330;
-    const TOPIC_DESKTOP = 326;
+    const TOPIC_CHATS = 326;
+//    const TOPIC_DESKTOP = 326;
     const TOPIC_TRANSACTION = 350;
     const TOPIC_ORDER = 357;
 
@@ -496,7 +496,7 @@ class Telegram
                     $topic = self::TOPIC_CHATS;
                     $msg = $data . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
-                    $msg .= "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL . " ";
+                    $msg .= "\xD8\x9C" . PHP_EOL . $time . PHP_EOL . " ";
                     break;
                 case 'order_created':
                 case 'order_edited':
