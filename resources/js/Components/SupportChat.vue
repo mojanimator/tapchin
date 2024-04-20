@@ -2,7 +2,7 @@
   <div class="fixed shadow-md  bottom-1 end-1" style="z-index:10000 !important;">
     <!--:class="maximize?' left-2 top-2 bottom-2 right-2  ':'bottom-1 right-1'"-->
     <div v-show="showChat" class="bg-white overflow-hidden   rounded-lg "
-         :style=" maximize?'height: 90vh;width: 90vw; ':'height:  75vh; ;min-width: 25rem;width:40vw; '">
+         :style=" maximize?'height: 90vh;width: 90vw; ':'height:  75vh; ;min-width: 20rem;width:40vw; '">
       <div class="flex flex-col  items-stretch  h-full   ">
 
         <div class="p-2  flex items-center justify-between  bg-primary-500   flex  ">
