@@ -54,7 +54,7 @@ class PushController extends Controller
 
 //        broadcast(new ChatEvent($request->from, $request->to, $request->message))->toOthers();
         event(new ChatEvent($request->from, $request->to, $request->message, $request->chatId, $request->msgId));
-        Telegram::sendMessage(Telegram::LOGS[0], 'ip:' . $request->from . PHP_EOL . $request->message);
-
+//        Telegram::sendMessage(Telegram::LOGS[0], 'ip:' . $request->from . PHP_EOL . $request->message);
+        Telegram::log(null, 'chat_created', 'ip:' . $request->from . PHP_EOL . $request->message);
     }
 }

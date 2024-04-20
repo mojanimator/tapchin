@@ -3,9 +3,9 @@
     <!--:class="maximize?' left-2 top-2 bottom-2 right-2  ':'bottom-1 right-1'"-->
     <div v-show="showChat" class="bg-white overflow-hidden   rounded-lg "
          :style=" maximize?'height: 90vh;width: 90vw; ':'height:  75vh; ;min-width: 25rem;width:40vw; '">
-      <div class="flex flex-col    justify-around h-100">
+      <div class="flex flex-col  items-stretch  h-full   ">
 
-        <div class="p-2 flex items-center justify-between  bg-primary-500  flex flex-row">
+        <div class="p-2  flex items-center justify-between  bg-primary-500   flex  ">
           <div @click="maximize=!maximize" class="text-white  text-sm ">
             پشتیبان آنلاین
             <i class="fa fa-headset text-success" aria-hidden="true"></i>
@@ -27,12 +27,12 @@
 
 
         </div>
-        <div id="chats-container" class="    h-full    z-index-1     overflow-scroll">
+        <div id="chats-container" class="     z-10    overflow-y-scroll">
 
           <div v-for="msg in messages   " class="flex-row flex">
             <div v-html="renderHTML(msg.message)"
-                 class=" text-right  p-2 my-1 card  bg-white text-dark shadow-card  "
-                 :class="msg.from!=null && msg.from.includes('support')? 'ml-1 mr-auto rounded-left':'ml-auto mr-1 rounded-right'">
+                 class=" text-right  p-2 my-1   bg-white text-dark shadow-md  "
+                 :class="msg.from!=null && msg.from.includes('support')? 'me-1 ms-auto rounded-e-lg':'ms-1 me-auto rounded-s-lg'">
             </div>
             <div v-if="msg.from!=null && msg.from.includes('support')"
                  class="rounded-circle shadow-card p-2 align-self-center">
@@ -56,7 +56,7 @@
     <div v-show="!showChat"
          class="rounded-full bg-primary-500 hover:bg-primary-400  cursor-pointer"
          style="height: 4rem;width: 4rem;"
-         @click="showChat=!showChat;container.scrollTop = container.scrollHeight;">
+         @click="showChat=!showChat;chatContainer.scrollTop = chatContainer.scrollHeight;">
       <ChatBubbleLeftEllipsisIcon class="text-white p-3"/>
 
     </div>
@@ -82,7 +82,7 @@ export default {
   mounted() {
 
     this.initPusher();
-    this.container = document.getElementById('chats-container');
+    this.chatContainer = document.getElementById('chats-container');
   },
   props: ['broadcastLink', 'key', 'cluster', 'ip', 'supportHistoryLink'],
 
@@ -128,7 +128,7 @@ export default {
         },).then((resp) => {
 
           this.msg = null;
-
+          this.chatContainer.scrollTo(0, this.chatContainer.scrollHeight);
 
         }).finally(() => {
           this.loading = false;

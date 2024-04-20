@@ -58,7 +58,7 @@ class BotController extends Controller
                 $first_name = isset($message->from->first_name) ? $message->from->first_name : "";
                 $last_name = isset($message->from->last_name) ? $message->from->last_name : "";
                 $username = isset($message->from->username) ? '@' . $message->from->username : "";
-                $reply = isset($message->reply_to_message->forward_from->id) ? $message->reply_to_message->forward_from->id : "";
+                $reply = isset($message->reply_to_message) ? $message->reply_to_message : "";
                 $reply_id = isset($message->reply_to_message->from->id) ? $message->reply_to_message->from->id : "";
                 $new_chat_member = $update->message->new_chat_member; # id,is_bot,first_name,last_name,username
                 $new_chat_members = $update->message->new_chat_members; #id,is_bot,first_name,last_name,username
@@ -803,7 +803,6 @@ class BotController extends Controller
                 }
 
             }
-            Telegram::sendMessage(Telegram::LOGS[0], $text);
             if ($reply) {
 //                sendTelegramMessage($from_id, json_encode($reply), null, null);
 
@@ -818,7 +817,7 @@ class BotController extends Controller
                             if ($pusherChannel && str_contains($pusherChannel, 'ip:')) {
                                 $ip = str_replace('ip:', '', $pusherChannel);
                                 $t = Carbon::now()->timestamp;
-                                Telegram::sendMessage(Telegram::LOGS[0], $text);
+
                                 event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
 
                             }

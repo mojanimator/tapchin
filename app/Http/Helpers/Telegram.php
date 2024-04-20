@@ -492,6 +492,12 @@ class Telegram
             $isEdit = str_contains($type, 'edited');
             $topic = self::TOPIC_LOGS;
             switch ($type) {
+                case 'chat_created':
+                    $topic = self::TOPIC_CHATS;
+                    $msg = $data . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . config('app.name') . PHP_EOL . $time . PHP_EOL . " ";
+                    break;
                 case 'order_created':
                 case 'order_edited':
                     $cities = City::whereIn('id', [$data->province_id, $data->county_id, $data->district_id])->get();
