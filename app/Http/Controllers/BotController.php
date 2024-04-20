@@ -210,6 +210,26 @@ class BotController extends Controller
                     Telegram::sendMessage($chat_id, " \n آموزش ربات\n" . $this->tut_link, null, $message_id, null);
                     Telegram::logAdmins("■  کاربر [$first_name](tg://user?id=$from_id) ربات دبل چین را استارت زد.", 'MarkDown');
 
+                } elseif ($reply) {
+//                sendTelegramMessage($from_id, json_encode($reply), null, null);
+
+                    $repText = $reply->text;
+                    if ($repText) {
+                        if (str_starts_with($repText, 'ip:')) {
+                            $tmp = explode("\n", $repText);
+                            if (count($tmp) > 1) {
+                                $pusherChannel = $tmp[0];
+                                $txt = $tmp[1];
+                                if ($pusherChannel && str_contains($pusherChannel, 'ip:')) {
+                                    $ip = str_replace('ip:', '', $pusherChannel);
+                                    $t = Carbon::now()->timestamp;
+                                    event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
+
+                                }
+                            }
+
+                        }
+                    }
                 }
 //            elseif ($rank != 'creator' && $rank != 'administrator' && $rank != 'member') {
 //                Telegram::sendMessage($chat_id, "■ برای استفاده از ربات و همچنین حمایت از ما ابتدا وارد کانال\n● $this->channel\n■ شده سپس به ربات برگشته و /start را بزنید.", null, $message_id, json_encode(['KeyboardRemove' => [], 'remove_keyboard' => true]));

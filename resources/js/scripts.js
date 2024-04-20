@@ -51,7 +51,7 @@ window.onload = (event) => {
         }
     } catch (_) {
     }
-    initChat();
+    // initChat();
 
 }
 

@@ -191,7 +191,8 @@
         <ArticleSlider :items="$page.props.articles" :delay="8000"></ArticleSlider>
       </div>
     </div>
-
+    <SupportChat id="support-chat" :ip="$page.props.ip" :broadcast-link="route('chat.broadcast')"
+                 :support-history-link="route('chat.support.history')"/>
   </Scaffold>
 
 </template>
@@ -210,6 +211,7 @@ import InputError from "@/Components/InputError.vue";
 import Slider from "@/Components/Slider.vue";
 import ArticleSlider from "@/Components/ArticleSlider.vue";
 import PartnershipForm from "@/Components/PartnershipForm.vue";
+import SupportChat from "@/Components/SupportChat.vue";
 import vueRecaptcha from 'vue3-recaptcha2';
 import {
   HomeModernIcon,
@@ -278,6 +280,7 @@ export default {
     MapPinIcon,
     ButtonSkew,
     PartnershipForm,
+    SupportChat,
   },
   // mixins: [Mixin],
   setup(props) {

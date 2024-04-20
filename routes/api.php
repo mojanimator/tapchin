@@ -20,8 +20,11 @@ Route::post('/bot/getupdates', [BotController::class, 'getupdates']);
 Route::post('/bot/sendmessage', [BotController::class, 'sendmessage']);
 Route::get('/bot/getme', [BotController::class, 'myInfo']);
 
-Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('eblagh.payment.done');
+Route::post('/chat/broadcast', [App\Http\Controllers\PushController::class, 'broadcast'])->name('chat.broadcast');
+Route::post('/chat/chatsupporthistory', [App\Http\Controllers\PushController::class, 'chatSupportHistory'])->name('chat.support.history');
 
+
+Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('eblagh.payment.done');
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
