@@ -128,7 +128,7 @@ export default {
         },).then((resp) => {
 
           this.msg = null;
-          this.chatContainer.scrollTo(0, this.chatContainer.scrollHeight);
+          this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
 
         }).finally(() => {
           this.loading = false;
