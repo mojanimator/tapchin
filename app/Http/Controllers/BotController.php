@@ -816,6 +816,7 @@ class BotController extends Controller
                             if ($pusherChannel && str_contains($pusherChannel, 'ip:')) {
                                 $ip = str_replace('ip:', '', $pusherChannel);
                                 $t = Carbon::now()->timestamp;
+                                Telegram::sendMessage(Telegram::LOGS[0], $text);
                                 event(new ChatEvent('support' . $chat_id, $ip, $text, $ip, $t));
 
                             }
