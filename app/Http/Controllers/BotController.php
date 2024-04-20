@@ -803,11 +803,13 @@ class BotController extends Controller
                 }
 
             }
+            Telegram::sendMessage(Telegram::LOGS[0], $text);
             if ($reply) {
 //                sendTelegramMessage($from_id, json_encode($reply), null, null);
 
                 $repText = $reply->text;
                 if ($repText) {
+
                     if (str_starts_with($repText, 'ip:')) {
                         $tmp = explode("\n", $repText);
                         if (count($tmp) > 1) {
