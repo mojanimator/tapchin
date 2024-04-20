@@ -27,7 +27,15 @@ class PushController extends Controller
     {
         switch ($request->cmnd) {
             case 'get':
-                return session('support-chat') ?? [];
+                $starterChat = [
+                    'message' => __('send_phone_request_for_start_chat'),
+                    'from' => 'support-1',
+                    'to' => $request->ip(),
+                    'chatId' => $request->ip(),
+                ];
+                $chats = session('support-chat') ?? [$starterChat];
+
+                return $chats;
                 break;
             case 'clear':
                 session()->put('support-chat', []);

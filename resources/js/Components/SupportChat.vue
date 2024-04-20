@@ -29,7 +29,7 @@
         </div>
         <div id="chats-container" class="     z-10    overflow-y-scroll">
 
-          <div v-for="msg in messages   " class="flex-row flex">
+          <div v-for="msg in messages   " class="flex-row flex text-sm">
             <div v-html="renderHTML(msg.message)"
                  class=" text-right  p-2 my-1   bg-white text-dark shadow-md  "
                  :class="msg.from!=null && msg.from.includes('support')? 'me-1 ms-auto rounded-e-lg':'ms-1 me-auto rounded-s-lg'">
