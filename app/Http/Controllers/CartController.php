@@ -497,6 +497,12 @@ class CartController extends Controller
                 $shipping['error_message'] = $shipping['error_message'] ?? $errorMessage;
                 $errors[] = ['key' => 'min-order-weight', 'type' => 'shipping', 'message' => $errorMessage];
             }
+
+            if (is_numeric($shipping['method_id']) && empty($cart->address['lat'] ?? null)) {
+                $errorMessage = sprintf(__('validator.required'), __('location'));
+                $shipping['error_message'] = $shipping['error_message'] ?? $errorMessage;
+                $errors[] = ['key' => 'location', 'type' => 'shipping', 'message' => $errorMessage];
+            }
             $shipments[] = [
 
                 'delivery_timestamp' => $deliveryTimestamp,
