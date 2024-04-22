@@ -153,7 +153,7 @@ export default {
         name: null,
         uploading: false,
         category_id: false,
-        tags: [],
+        tags: null,
 
       }),
       img: null,
