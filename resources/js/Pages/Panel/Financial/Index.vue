@@ -254,7 +254,7 @@
                 <div> {{ d.sheba }}</div>
               </td>
 
-              <td class="px-2 py-4    ">
+              <td class="px-2 py-4    " :class="d.wallet<0?'text-red-500':''">
                 <div> {{ asPrice(d.wallet) }}</div>
               </td>
               <td class="px-2 py-4 flex  ">
