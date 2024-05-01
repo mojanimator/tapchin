@@ -70,13 +70,13 @@ class OrderRequest extends FormRequest
                 'shipping_method_id' => ['nullable', Rule::in($shippingMethods->pluck('id')->merge(1))],
                 'products' => ['required', 'array', 'min:1'],
 
-                'receiver_fullname' => ['required', 'max:200',],
-                'receiver_phone' => ['required', 'max:30',],
-                'address' => ['required', 'max:2048',],
-                'province_id' => ['required', 'numeric', Rule::in(City::where('level', 1)->pluck('id'))],
-                'county_id' => ['required', 'numeric', Rule::in(City::where('level', 2)->pluck('id'))],
+                'receiver_fullname' => [Rule::requiredIf($this->shipping_method_id != 1), 'max:200',],
+                'receiver_phone' => [Rule::requiredIf($this->shipping_method_id != 1), 'max:30',],
+                'address' => [Rule::requiredIf($this->shipping_method_id != 1), 'max:2048',],
+                'province_id' => [Rule::requiredIf($this->shipping_method_id != 1), $this->shipping_method_id == 1 ? 'nullable' : '', 'numeric', Rule::in(City::where('level', 1)->pluck('id'))],
+                'county_id' => [Rule::requiredIf($this->shipping_method_id != 1), $this->shipping_method_id == 1 ? 'nullable' : '', 'numeric', Rule::in(City::where('level', 2)->pluck('id'))],
                 'district_id' => [Rule::requiredIf(count($counties) > 0), Rule::in($counties)],
-                'postal_code' => ['required', 'numeric', 'digits_between:0,20'],
+                'postal_code' => [Rule::requiredIf($this->shipping_method_id != 1), $this->shipping_method_id == 1 ? 'nullable' : '', 'numeric', 'digits_between:0,20'],
                 'location' => ['nullable', "regex:$regexLocation",],
             ]);
 

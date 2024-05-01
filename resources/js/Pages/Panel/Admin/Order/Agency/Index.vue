@@ -218,7 +218,14 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
-
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='payment_method';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('payment_method') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
 
                     <th scope="col" class="px-2 py-3">
                       {{ __('actions') }}
@@ -390,7 +397,9 @@
 
                       </ul>
                     </td>
-
+                    <td class="px-2 py-4    ">
+                      {{ __(d.payment_method) }}
+                    </td>
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
                     </td>

@@ -75,6 +75,32 @@ class Transaction extends Model
         $percent = $agency->order_profit_percent !== null ? floatval($agency->order_profit_percent) : null;
         $percent = $percent !== null ? $percent : ($percents->where('key', "order_percent_level_$agency->level")->first()->value ?? 0);
 
+        if ($order->payment_method == 'local') {
+            $t = Transaction::create([
+                'title' => sprintf(__('debit_agency_order_*_*_*'), number_format($order->total_price), "$agency->name($agency->id)", $order->id),
+                'type' => "debit",
+                'for_type' => 'order',
+                'for_id' => $order->id,
+                'from_type' => 'agency',
+                'from_id' => $agency->id,
+                'to_type' => 'agency',
+                'to_id' => 1,
+                'is_success' => true,
+                'info' => null,
+                'coupon' => null,
+                'payed_at' => Carbon::now(),
+                'amount' => $order->total_price,
+                'pay_id' => null,
+            ]);
+            $agencyF = AgencyFinancial::firstOrNew(['agency_id' => $agency->id]);
+            $agencyF->wallet -= $t->amount;
+            $agencyF->save();
+
+            $t->user = $user;
+            $t->amount = -$t->amount;
+            Telegram::log(null, 'transaction_created', $t);
+        }
+
         if ($percent > 0) {
             $t = Transaction::create([
                 'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, "$agency->name($agency->id)"),

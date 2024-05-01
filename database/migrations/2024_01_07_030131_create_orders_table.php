@@ -50,7 +50,7 @@ return new class extends Migration {
             $table->foreign('shipping_method_id')->references('id')->on('shipping_methods')->onDelete('no action');
             $table->date('delivery_date')->nullable();//deliver|cancel
             $table->string('delivery_timestamp', 15)->nullable();//deliver|cancel
-            $table->enum('pay_type', array_column(Variable::getPaymentMethods(), 'key'))->nullable();//deliver|cancel
+            $table->enum('payment_method', array_column(Variable::getPaymentMethods(), 'key'))->nullable();//deliver|cancel
             $table->timestamp('payed_at')->nullable();
             $table->unsignedInteger('distance')->nullable();
             $table->unsignedInteger('tax_price')->default(0);

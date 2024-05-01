@@ -9,6 +9,7 @@ use App\Models\Admin;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\RepositoryCartItem;
+use App\Models\UserFinancial;
 use App\Models\Variation;
 use App\Models\Repository;
 use App\Models\Setting;
@@ -42,6 +43,7 @@ class CartController extends Controller
         $addressIdx = $request->address_idx;
         $needAddress = false;
         $needSelfReceive = false;
+        $paymentMethod = 'online';
 
         if (($user instanceof Admin) && ($productId || in_array($request->current, ['checkout.payment', 'checkout.shipping'])))
             return response()->json(['message' => __('admin_can_not_order')], Variable::ERROR_STATUS);
@@ -533,7 +535,23 @@ class CartController extends Controller
         $cart->total_price = $cart->total_items_price + $cart->total_shipping_price + $cart->tax_price - $cart->total_discount;
         $cart->need_address = $needAddress;
         $cart->need_self_receive = $needSelfReceive;
-        $cart->payment_methods = collect(Variable::getPaymentMethods())->where('active', true)->all();
+
+        if ($request->payment_method) {
+            $paymentMethod = $request->payment_method;
+        }
+
+        $cart->payment_methods = $user ? collect(Variable::getPaymentMethods())->where('active', true)->map(function ($e) use ($paymentMethod, $user) {
+            if ($paymentMethod == $e ['key'])
+                $e['selected'] = true;
+            else
+                $e['selected'] = false;
+            if ($e ['key'] == 'wallet') {
+                $uf = UserFinancial::where('user_id', $user->id)->first();
+                $e['description'] .= (__('balance') . ' : ' . number_format(($uf->wallet ?? 0) + ($uf->max_debit ?? Setting::getValue("max_debit_$user->role") ?? 0)) . ' ' . __('currency'));
+            }
+            return $e;
+        }) : [];
+        $cart->payment_method = $paymentMethod;
 //        if ($user) {
 //            $res = User::getLocation(Variable::$CITIES);
 //            $addresses = $user->addresses;

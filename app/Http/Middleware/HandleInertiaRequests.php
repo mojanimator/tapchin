@@ -85,6 +85,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'extra' => fn() => $request->session()->get('extra'),
             'pageItems' => Variable::PAGINATE,
+            'user_roles' => Variable::USER_ROLES,
+            'user_statuses' => array_column(Variable::STATUSES, 'name'),
             'cart' => Cart::getData(),
             'cities' => Variable::$CITIES,
             'is_auction' => Setting::getValue('is_auction'),

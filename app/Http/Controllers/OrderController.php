@@ -187,6 +187,8 @@ class OrderController extends Controller
                     if ($status == 'delivered') {
 
                         $data->done_at = Carbon::now();
+                        if ($data->payment_method == 'local')
+                            $data->payed_at = Carbon::now();
                         if ($shipping)
                             $shipping->order_delivered_qty++;
 
@@ -357,6 +359,7 @@ class OrderController extends Controller
 //        $cart = optional($cart)->cart ?? null;
         $user = auth('sanctum')->user();
         $cart = $request->cart;
+        $payMethod = $cart->payment_method;
         if (!$cart) {
             return response()->json(['message' => __('problem_in_create_order'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
@@ -368,7 +371,16 @@ class OrderController extends Controller
         if (count($cart->orders) == 0) {
             return response()->json(['message' => __('cart_is_empty'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
+        if ($payMethod == 'wallet') {
+            $sum = $cart->orders->sum('total_price');
+            $settingDebit = Setting::getValue("max_debit_$user->role") ?? 0;
+            $uf = UserFinancial::firstOrCreate(['user_id' => $user->id], ['wallet' => 0]);
+            $wallet = $uf->wallet ?? 0;
+            $maxDebit = $uf->max_debit ?? $settingDebit;
+            if (($wallet + $maxDebit) - $sum < 0)
+                return response()->json(['message' => sprintf(__('validator.min_wallet'), number_format($sum - ($wallet + $maxDebit)) . " " . __('currency'), $wallet), 'cart' => $cart], Variable::ERROR_STATUS);
 
+        }
 //split cart to each repo
         $orders = collect([]);
         //create order for each repo
@@ -384,7 +396,7 @@ class OrderController extends Controller
                 'postal_code' => $cart->address['postal_code'] ?? null,
                 'address' => $cart->address['address'] ?? null,
                 'location' => ($cart->address['lat'] ?? false) && ($cart->address['lon'] ?? false) ? ($cart->address['lat'] . "," . $cart->address['lon']) : null,
-                'status' => 'pending',
+                'status' => $payMethod == 'local' ? 'processing' : 'pending',
                 'repo_id' => $cart->repo_id,
                 'agency_id' => $cart->agency_id,
                 'total_shipping_price' => $cart->total_shipping_price,
@@ -399,6 +411,7 @@ class OrderController extends Controller
                 'distance' => $cart->distance,
                 'tax_price' => $cart->tax_price,
                 'total_weight' => $cart->total_weight,
+                'payment_method' => $cart->payment_method,
 
             ]);
             if ($order) {
@@ -454,24 +467,27 @@ class OrderController extends Controller
             }
 
         }
+
+
 //        $order_id = Carbon::now()->getTimestampMs();
         $order_ids_string = $orders->pluck('id')->join('-');
         $price = $orders->sum('total_price');
 
         $description = sprintf(__('pay_orders_*_*'), $order_ids_string, $user->phone);
+        $response = ['order_id' => Carbon::now()->getTimestampMs(), 'status' => 'success', 'url' => route('user.panel.order.index')];
 
-        $response = Pay::makeUri($order_ids_string, "{$price}0", $user->fullname, $user->phone, $user->email, $description, optional($user)->id, Variable::$BANK);
+        if ($payMethod == 'online')
+            $response = Pay::makeUri($order_ids_string, "{$price}0", $user->fullname, $user->phone, $user->email, $description, optional($user)->id, Variable::$BANK);
 
         if ($response['status'] != 'success')
             return response()->json(['status' => 'danger', 'message' => $response['message']], Variable::ERROR_STATUS);
-
-        else { //success
+        elseif ($payMethod != 'local') { //success
             foreach ($orders as $o) {
 
                 $t = Transaction::create([
-                    'title' => sprintf(__('pay_orders_*_*'), $o['id'], $user->phone),
+                    'title' => sprintf(($payMethod == 'wallet' ? __('pay_orders_wallet_*_*') : __('pay_orders_*_*')), $o['id'], $user->phone),
                     'type' => "pay",
-                    'pay_gate' => Variable::$BANK,
+                    'pay_gate' => $payMethod == 'online' ? Variable::$BANK : $payMethod,
                     'for_type' => 'order',
                     'for_id' => $o['id'],
                     'from_type' => 'user',
@@ -480,15 +496,19 @@ class OrderController extends Controller
                     'to_id' => 1,
                     'info' => null,
                     'coupon' => null,
-                    'payed_at' => null,
+                    'payed_at' => $payMethod == 'wallet' ? Carbon::now() : null,
                     'amount' => $o['total_price'],
                     'pay_id' => $response['order_id'],
                 ]);
-                Order::where('id', $o['id'])->update(['transaction_id' => $t->id]);
+                Order::where('id', $o['id'])->update(['transaction_id' => $t->id, 'status' => $payMethod == 'wallet' ? 'processing' : 'pending', 'payed_at' => $payMethod == 'wallet' ? Carbon::now() : null]);
 
             }
-            return response(['status' => 'success', 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
+            if ($payMethod == 'wallet') {
+                $uf->wallet -= $price;
+                $uf->save();
+            }
         }
+        return response(['status' => 'success', 'message' => $payMethod == 'online' ? __('redirect_to_payment_page') : __('done_successfully'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
     }
 
     protected

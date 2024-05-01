@@ -15,5 +15,6 @@ class UserFinancial extends Model
         'user_id',
         'card',
         'sheba',
+        'max_debit',
     ];
 }

@@ -41,6 +41,7 @@ class Order extends Model
         'change_price',
         'tax_price',
         'total_weight',
+        'payment_method',
 
     ];
 

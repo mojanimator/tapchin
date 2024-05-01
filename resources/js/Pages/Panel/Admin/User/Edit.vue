@@ -9,7 +9,7 @@
     <template v-slot:content>
       <!-- Content header -->
       <div
-          class="flex items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
+          class="flex   items-center justify-start px-4 py-2 text-primary-500 border-b md:py-4">
         <PencilSquareIcon class="h-7 w-7 mx-3"/>
 
         <h1 class="text-2xl font-semibold">{{ __('edit_user') }}</h1>
@@ -17,9 +17,9 @@
       </div>
 
       <!-- Content -->
-      <div class="px-2  md:px-4">
+      <div class="px-2   md:px-4 mx-auto md:max-w-5xl">
 
-        <div v-if="data && data.id" class="flex flex-col mt-4">
+        <div v-if="data && data.id" class="flex  flex-col mt-4 ">
           <div class="flex text-sm">
             <div class="text-gray-500">{{ __('register_date') }}:</div>
             <div class="text-primary-700 mx-2">{{ toShamsi(data.created_at) }}</div>
@@ -60,7 +60,31 @@
 
               <div class="flex items-center">
 
-                <RadioGroup ref="roleSelector" class="grow" name="role" :items="['active','inactive','block',]"/>
+                <RadioGroup v-model="form.status" ref="statusSelector" class="grow" name="status"
+                            :items="$page.props.user_statuses"/>
+              </div>
+              <div v-if="hasAccess('edit_financial') " class="flex items-center">
+
+                <RadioGroup v-model="form.role" ref="roleSelector" class="grow" name="role"
+                            :items="$page.props.user_roles"/>
+              </div>
+              <div class="my-4" v-if="  form.role=='org'">
+                <TextInput
+                    id="max_debit"
+                    type="number"
+                    :placeholder="`${__('max_debit')} (${__('currency')}) [${__('null=default')}]`"
+                    classes="  "
+                    v-model="form.max_debit"
+                    autocomplete="max_debit"
+                    :error="form.errors.max_debit"
+                >
+                  <template v-slot:prepend>
+                    <div class="  px-3">
+                      <BanknotesIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
               </div>
               <div class="my-4">
                 <TextInput
@@ -111,8 +135,6 @@
                     classes="  "
                     v-model="form.email"
                     autocomplete="email"
-                    v-model:verified="form.email_verified"
-                    :admin="true"
                     :error="form.errors.email"
                 >
                   <template v-slot:prepend>
@@ -127,14 +149,31 @@
               <div class="my-4">
                 <TextInput
                     id="card"
-                    type="text"
+                    type="number"
                     :placeholder="__('card')"
                     classes="  "
                     v-model="form.card"
                     autocomplete="card"
-                    v-model:verified="form.wallet_active"
-                    :admin="true"
                     :error="form.errors.card"
+                >
+                  <template v-slot:prepend>
+                    <div class="p-3">
+                      <CreditCardIcon class="h-5 w-5"/>
+                    </div>
+                  </template>
+
+                </TextInput>
+
+              </div>
+              <div class="my-4">
+                <TextInput
+                    id="sheba"
+                    type="number"
+                    :placeholder="__('sheba')"
+                    classes="  "
+                    v-model="form.sheba"
+                    autocomplete="sheba"
+                    :error="form.errors.sheba"
                 >
                   <template v-slot:prepend>
                     <div class="p-3">
@@ -205,7 +244,7 @@
               </div>
               <div class="    mt-4">
 
-                <PrimaryButton class="w-full  "
+                <PrimaryButton class="w-full flex justify-center items-center"
                                :class="{ 'opacity-25': form.processing }"
                                :disabled="form.processing">
                   <LoadingIcon class="w-4 h-4 mx-3 " v-if="  form.processing"/>
@@ -245,6 +284,7 @@ import {
   AtSymbolIcon,
   PhoneIcon,
   KeyIcon,
+  BanknotesIcon,
 
 } from "@heroicons/vue/24/outline";
 import {QuestionMarkCircleIcon,} from "@heroicons/vue/24/solid";
@@ -280,7 +320,10 @@ export default {
         wallet_active: null,
         email: null,
         card: null,
-        wallet: null,
+        sheba: null,
+        wallet: 0,
+        role: null,
+        max_debit: null,
         password: null,
         status: null,
         _method: 'patch',
@@ -325,6 +368,7 @@ export default {
     AtSymbolIcon,
     PhoneIcon,
     KeyIcon,
+    BanknotesIcon,
 
   },
   created() {
@@ -335,9 +379,9 @@ export default {
     //
     // });
 
-    // console.log(this.data);
+    // console.log(this.form.status);
     this.form.id = this.data.id;
-    this.form.status = this.data.is_block ? 'block' : this.data.is_active ? 'active' : 'inactive';
+    this.form.status = this.data.status;
     this.form.role = this.data.role;
     this.form.fullname = this.data.fullname;
     this.form.phone = this.data.phone;
@@ -345,9 +389,15 @@ export default {
     this.form.phone_verified = this.data.phone_verified;
     this.form.email_verified = this.data.email_verified_at != null ? 1 : 0;
     this.form.wallet_active = this.data.wallet_active ? 1 : 0;
-    this.form.card = this.data.card;
-    this.form.wallet = this.data.wallet;
-    this.$refs.roleSelector.selected = this.form.status;
+    if (this.data.financial) {
+      this.form.card = this.data.financial.card;
+      this.form.sheba = this.data.financial.sheba;
+      this.form.wallet = this.data.financial.wallet;
+      this.form.max_debit = this.data.financial.max_debit;
+
+    }
+    this.$refs.roleSelector.selected = this.form.role;
+    this.$refs.statusSelector.selected = this.form.status;
 
   },
   methods: {
@@ -356,7 +406,8 @@ export default {
 
       // this.form.category_id = this.$refs.categorySelector.selected;
       this.form.clearErrors();
-      this.form.status = this.$refs.roleSelector.selected;
+      // this.form.status = this.$refs.statusSelector.selected;
+      // this.form.role = this.$refs.roleSelector.selected;
 
       // this.isLoading(true, this.form.progress ? this.form.progress.percentage : null);
       // this.images = [];

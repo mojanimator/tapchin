@@ -505,7 +505,7 @@ export default {
       this.data.district_id = address.district_id;
       this.data.lat = address.lat;
       this.data.lon = address.lon;
-      this.data.location = `${address.lat},${address.lon}`;
+      this.data.location = address.lat && address.lon ? `${address.lat},${address.lon}` : null;
       this.data.postal_code = this.f2e(address.postal_code);
       this.data.receiver_fullname = address.receiver_fullname;
       this.data.receiver_phone = address.receiver_phone;

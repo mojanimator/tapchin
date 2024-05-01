@@ -19,10 +19,15 @@
              class="border-b flex flex-col   rounded-lg mx-4 mt-4 p-2 lg:p-4">
           <div class="text-neutral-400 pb-2">{{ __('payment_method') }}</div>
 
-          <div v-for="payment in cart.payment_methods"
-               class="border rounded-md p-4 cursor-pointer hover:bg-neutral-100"
-               :class="{'bg-neutral-100':payment.selected}">
-            <div>{{ payment.name }}</div>
+          <div v-for="(payment,idx) in cart.payment_methods" @click="update({payment_method:payment.key})"
+               class="border flex items-center justify-between p-4 cursor-pointer hover:bg-primary-50 "
+               :class="`${ payment.selected?'bg-primary-100 text-primary-700 ':' '} ${idx==cart.payment_methods.length-1 ?'rounded-b-lg ':' '} ${idx==0 ?'rounded-t-lg ':' '}`">
+            <div class="">
+              <div>{{ payment.name }}</div>
+              <div class="text-xs text-gray-400 ">{{ payment.description }}</div>
+            </div>
+            <CheckCircleIcon v-if="payment.selected" class="w-6 fill-primary-700"/>
+
           </div>
         </div>
         <!--        address section-->
@@ -250,7 +255,7 @@
                          @click="handleNextButtonClick"
                          classes="" class="my-2">
             <span v-if="!loading">   {{
-                page == 'shipping' ? __('order_and_payment') : page == 'payment' ? __('pay') : __('complete_and_add_address')
+                page == 'shipping' ? __('order_and_payment') : page == 'payment' ? cart.payment_method == 'local' ? __('reg_order') : __('pay') : __('complete_and_add_address')
               }}</span>
             <LoadingIcon v-else class="fill-white w-8 mx-auto" ref="loader" type="line-dot"/>
           </PrimaryButton>
@@ -284,6 +289,7 @@ import {
 import {
   PencilIcon,
   ArrowTrendingUpIcon,
+  CheckCircleIcon,
 } from "@heroicons/vue/24/solid";
 import SearchInput from "@/Components/SearchInput.vue";
 import LocationSelector from "@/Components/LocationSelector.vue";
@@ -329,6 +335,7 @@ export default {
     ShoppingBagIcon,
     AddressSelector,
     TextInput,
+    CheckCircleIcon,
   },
   // mixins: [Mixin],
   setup(props) {
@@ -362,6 +369,7 @@ export default {
     },
     update(params = {}) {
       this.isLoading(true);
+      params.payment_method = params.payment_method || (this.cart ? this.cart.payment_method : null);
       params.current = `checkout.${this.page}`;
       this.loading = true;
       window.axios.patch(route('cart.update'), params,

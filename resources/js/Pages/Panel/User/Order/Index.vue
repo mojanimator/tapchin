@@ -205,7 +205,14 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
-
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='payment_method';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('payment_method') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
 
                     <th scope="col" class="px-2 py-3">
                       {{ __('actions') }}
@@ -327,7 +334,9 @@
                       </button>
 
                     </td>
-
+                    <td class="px-2 py-4    ">
+                      {{ __(d.payment_method) }}
+                    </td>
 
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
@@ -337,13 +346,13 @@
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
                       <div
-                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out   hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+                          class=" inline-flex rounded-md shadow-sm transition duration-150 ease-in-out    "
                           role="group">
-                        <Link
-                            type="button" :href="route('user.panel.order.edit',d.id)"
-                            class="inline-block rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
-                            data-te-ripple-init
-                            data-te-ripple-color="light">
+                        <Link v-if="false"
+                              type="button" :href="route('user.panel.order.edit',d.id)"
+                              class="inline-block rounded  bg-blue-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-blue-400   focus:outline-none focus:ring-0  "
+                              data-te-ripple-init
+                              data-te-ripple-color="light">
                           {{ __('details') }}
                         </Link>
                         <Link

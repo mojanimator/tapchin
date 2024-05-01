@@ -45,6 +45,7 @@ class RepositoryOrder extends Model
         'coupon',
         'tax_price',
         'total_weight',
+        'payment_method',
     ];
 
     public function items()

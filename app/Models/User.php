@@ -43,10 +43,9 @@ class User extends Authenticatable
         'wallet_active',
         'password',
         'role',
+        'status',
         'access',
-        'card',
         'notifications',
-        'wallet',
         'meta_wallet',
         'addresses',
         'settings',
@@ -76,6 +75,7 @@ class User extends Authenticatable
         'is_block' => 'boolean',
         'wallet_active' => 'boolean',
         'addresses' => 'array',
+        'access' => 'array',
     ];
 
     public function financial()

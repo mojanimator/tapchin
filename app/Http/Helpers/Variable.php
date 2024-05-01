@@ -44,7 +44,7 @@ class Variable
     const MARKETS = ['bazaar', 'myket', 'playstore', 'site'];
     const GATEWAYS = ['bazaar', 'myket', 'nextpay'];
 
-    const USER_ROLES = ['us'];
+    const USER_ROLES = ['us', 'org'];
     const ADMIN_ROLES = ['god', 'owner', 'admin'];
     const AGENCY_TYPES = [
         ['id' => 0, 'name' => 'central', 'level' => '0'],
@@ -56,7 +56,7 @@ class Variable
     const PRODUCT_UNITS = ['qty', 'kg'/*, 'gr'*/];
 
     const ADMIN_ACCESS = ['all'];
-    const GRADES = ['ممتاز','1', '2' ];
+    const GRADES = ['ممتاز', '1', '2'];
     const PARTNERSHIP_TYPES = [
         ['name' => 'agency', 'color' => 'gray'],
         ['name' => 'farmer', 'color' => 'teal'],
@@ -65,8 +65,8 @@ class Variable
     ];
 
     const  STATUSES = [
-        ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'active', "color" => 'success'],
+        ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'block', "color" => 'danger'],
     ];
     const  USER_STATUSES = [
@@ -124,7 +124,7 @@ class Variable
     const SUCCESS_STATUS = 200;
     const ERROR_STATUS = 422;
 
-    const  TRANSACTION_TYPES = ['pay', 'profit', 'settlement', 'charge', 'shipping'];
+    const  TRANSACTION_TYPES = ['pay', 'profit', 'debit', 'settlement', 'charge', 'shipping'];
     const  FINANCIALS = ['admin' => AdminFinancial::class, 'user' => UserFinancial::class, 'agency' => AgencyFinancial::class];
     const  TRANSACTION_MODELS = ['order' => Order::class, 'repo-order' => RepositoryOrder::class, 'admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
     const  PAYER_TYPES = ['admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
@@ -190,8 +190,9 @@ class Variable
     static function getPaymentMethods()
     {
         return [
-            ['name' => __('online_payment'), 'key' => 'online', 'selected' => true, 'active' => true],
-            ['name' => __('local_payment'), 'key' => 'local', 'selected' => true, 'active' => false]
+            ['name' => __('online_payment'), 'description' => '', 'key' => 'online', 'selected' => true, 'active' => true],
+            ['name' => __('local_payment'), 'description' => '', 'key' => 'local', 'selected' => false, 'active' => true],
+            ['name' => __('wallet_payment'), 'description' => '', 'key' => 'wallet', 'selected' => false, 'active' => true]
         ];
     }
 

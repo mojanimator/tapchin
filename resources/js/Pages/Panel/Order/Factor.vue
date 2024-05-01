@@ -36,7 +36,7 @@
               </div>
               <div v-if="data.delivery_date" class="flex items-center">
                 <div class="font-bold">{{ __('delivery_time') }}:</div>
-                <div class="px-2">{{ toShamsi(data.delivery_date, true) }}</div>
+                <div class="px-2">{{ toShamsi(data.delivery_date, false) }}</div>
                 <div class="px-2">{{ data.delivery_timestamp }}</div>
               </div>
               <div class="text-end w-full ">
@@ -182,7 +182,7 @@
 
         <tr>
           <td colspan="3" class="border text-center p-2">{{
-              `${__('pay_id')}${data.transaction && data.transaction.pay_gate ? `(${data.transaction.pay_gate})` : ''}`
+              `${__('pay_id')}${data.transaction && data.transaction.pay_gate ? `(${__(data.transaction.pay_gate)})` : ` (${__(data.payment_method)}) `}`
             }}
           </td>
           <td colspan="3" class="border text-sm text-center p-2">{{

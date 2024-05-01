@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->nullable()->index();
             $table->bigInteger('wallet')->default(0);
+            $table->unsignedInteger('max_debit')->nullable();
             $table->string('card', 16)->nullable();
             $table->string('sheba', 24)->nullable();
 

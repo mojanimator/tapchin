@@ -211,6 +211,14 @@
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='payment_method';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('payment_method') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
 
 
                     <th scope="col" class="px-2 py-3">
@@ -343,6 +351,9 @@
                     </td>
 
 
+                    <td class="px-2 py-4    ">
+                      {{ __(d.payment_method) }}
+                    </td>
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
                     </td>
@@ -353,11 +364,12 @@
                       <div
                           class=" flex justify-end rounded-md shadow-sm transition duration-150 ease-in-out    focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
                           role="group">
-                        <Link v-if="d.status=='pending'"
-                              type="button" :href="route('admin.panel.order.user.edit',d.id)"
-                              class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
-                              data-te-ripple-init
-                              data-te-ripple-color="light">
+                        <Link
+                            v-if="d.status=='pending' || ((d.status=='processing' || d.status=='ready'|| d.status=='sending')&& d.payment_method=='local')"
+                            type="button" :href="route('admin.panel.order.user.edit',d.id)"
+                            class="inline-block rounded  bg-orange-500 text-white px-6  py-2 text-xs font-medium uppercase leading-normal text-white transition duration-150 ease-in-out hover:bg-orange-400   focus:outline-none focus:ring-0  "
+                            data-te-ripple-init
+                            data-te-ripple-color="light">
                           {{ __('edit') }}
                         </Link>
                         <Link

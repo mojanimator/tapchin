@@ -8,10 +8,12 @@ use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Admin;
 use App\Models\City;
 use App\Models\Hire;
 use App\Models\Notification;
 use App\Models\User;
+use App\Models\UserFinancial;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Inertia\Testing\Concerns\Has;
 
 class UserController extends Controller
 {
@@ -86,93 +89,78 @@ class UserController extends Controller
     {
 
         $id = $request->id;
-        $user = isset($id) ? User::find($id) : auth('sanctum')->user();
+        $user = User::find($id);
         $cmnd = $request->cmnd;
         if (isset($id))
-            $this->authorize('edit', [User::class, $user]);
+            $this->authorize('edit', [Admin::class, $user]);
+        if ($cmnd) {
+            switch ($cmnd) {
+                case   'upload-img':
+                    if (!$request->img) //  add extra image
+                        return response()->json(['errors' => [__('file_not_exists')], 422]);
 
-        switch ($cmnd) {
-            case   'upload-img':
-                if (!$request->img) //  add extra image
-                    return response()->json(['errors' => [__('file_not_exists')], 422]);
-
-                Util::createImage($request->img, Variable::IMAGE_FOLDERS[User::class], $user->id);
+                    Util::createImage($request->img, Variable::IMAGE_FOLDERS[User::class], $user->id);
 //                $user->is_active = false;
 //                $user->save();
-                Telegram::log(null, 'user_edited', $user);
-                return response()->json(['message' => __('updated_successfully')], 200);
-            case 'active':
-            case 'inactive':
-            case 'block':
-                $user->is_block = $cmnd == 'block';
-                $user->is_active = $cmnd == 'active';
-                $user->save();
-                Telegram::log(null, 'user_edited', $user);
-                return response()->json(['message' => __('updated_successfully'), 'is_active' => $user->is_active, 'is_block' => $user->is_block], 200);
-            case 'role-ad':
-            case 'role-us':
-            case 'role-go':
-                if (auth()->user()->role != 'go' && $cmnd == 'role-go')
-                    return response()->json(['message' => __('just_god_can_set_god'), 'role' => $user->role], 422);
-                $user->role = $cmnd == 'role-ad' ? 'ad' : ($cmnd == 'role-go' ? 'go' : 'us');
-                $user->save();
-                return response()->json(['message' => __('updated_successfully'), 'role' => $user->role], 200);
-
-            case 'access':
-
-                if (Hire::isEdited($user->access, $request->accesses)) {
-                    $user->access = join(',', $request->accesses ?? []) ?: null;
-                    $n = Notification::create(
-                        [
-                            'type' => 'access_change',
-                            'subject' => __('your_roles_changed'),
-                            'description' => null,
-                            'owner_id' => $user->id
-                        ],
-                    );
-                    if ($n)
-                        $user->notifications++;
+                    Telegram::log(null, 'user_edited', $user);
+                    return response()->json(['message' => __('updated_successfully')], 200);
+                case 'active':
+                case 'inactive':
+                case 'block':
+                    $user->is_block = $cmnd == 'block';
+                    $user->is_active = $cmnd == 'active';
                     $user->save();
                     Telegram::log(null, 'user_edited', $user);
+                    return response()->json(['message' => __('updated_successfully'), 'is_active' => $user->is_active, 'is_block' => $user->is_block], 200);
+                case 'role-ad':
+                case 'role-us':
+                case 'role-go':
+                    if (auth()->user()->role != 'go' && $cmnd == 'role-go')
+                        return response()->json(['message' => __('just_god_can_set_god'), 'role' => $user->role], 422);
+                    $user->role = $cmnd == 'role-ad' ? 'ad' : ($cmnd == 'role-go' ? 'go' : 'us');
+                    $user->save();
+                    return response()->json(['message' => __('updated_successfully'), 'role' => $user->role], 200);
+
+                case 'access':
 
 
-                }
-                return response()->json(['message' => __('updated_successfully'), 'access' => $user->access,], Variable::SUCCESS_STATUS);
+                    return response()->json(['message' => __('updated_successfully'), 'access' => $user->access,], Variable::SUCCESS_STATUS);
 
-            case 'wallet':
+                case 'wallet':
 
-                $user->wallet = $request->wallet;
-                $user->save();
-                return response()->json(['message' => __('updated_successfully'), 'wallet' => $user->wallet,], Variable::SUCCESS_STATUS);
-            case 'add-address':
-                $address = $request->address;
-                $addresses = $user->addresses ?? [];
-                $addresses[] = $address;
-                $user->update(['addresses' => $addresses]);
-                return response()->json(['message' => __('updated_successfully'), 'addresses' => $user->addresses], Variable::SUCCESS_STATUS);
+                    $user->wallet = $request->wallet;
+                    $user->save();
+                    return response()->json(['message' => __('updated_successfully'), 'wallet' => $user->wallet,], Variable::SUCCESS_STATUS);
+                case 'add-address':
+                    $address = $request->address;
+                    $addresses = $user->addresses ?? [];
+                    $addresses[] = $address;
+                    $user->update(['addresses' => $addresses]);
+                    return response()->json(['message' => __('updated_successfully'), 'addresses' => $user->addresses], Variable::SUCCESS_STATUS);
 
+            }
+        } elseif ($user) {
+
+            UserFinancial::updateOrCreate([('user_id') => $user->id,],
+                collect([
+                    'card' => $request->card,
+                    'sheba' => $request->sheba,
+                    'wallet' => $request->wallet,
+                    'max_debit' => $request->max_debit,
+                ])->merge([])->toArray());
+            if ($request->password)
+                $request->merge(['password' => Hash::make($request->password)]);
+            $user->update($request->except($request->password ? [] : ['password']));
+            $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
+            $user->financial = (object)[
+                'card' => $request->card,
+                'sheba' => $request->sheba,
+                'wallet' => $request->wallet,
+                'max_debit' => $request->max_debit,
+            ];
+            Telegram::log(null, 'user_edited', $user);
+            return back()->with($res);
         }
-        if ($request->password)
-            $user->password = Hash::make($request->password);
-        if ($request->password)
-            $user->password = Hash::make($request->password);
-        if ($request->email && $request->email != $user->email && $request->email_verified)
-            $user->email_verified_at = Carbon::now();
-        if (!$request->email && !$user->email)
-            $user->email_verified_at = null;
-        $user->phone_verified = ($request->phone || $user->phone) && $request->phone_verified;
-        $user->wallet_active = ($request->card || $user->card) && $request->wallet_active;
-        $user->is_block = $request->status == 'block';
-        $user->is_active = $request->status == 'active';
-        $user->fullname = $request->fullname;
-        $user->phone = $request->phone;
-        $user->email = $request->email;
-        $user->card = $request->card;
-        $user->wallet = $request->wallet;
-        $user->save();
-        $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
-        Telegram::log(null, 'user_edited', $user);
-        return back()->with($res);
     }
 
     public function updateLocation(Request $request)

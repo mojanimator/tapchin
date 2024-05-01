@@ -530,6 +530,7 @@ class Telegram
                     $msg .= " کد پستی: " . ($data->postal_code ?? '_') . PHP_EOL;
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= " 👤 " . "دریافت کننده: " . "$data->receiver_fullname ( $data->receiver_phone )" . PHP_EOL;
+                    $msg .= " 💵 " . "روش پرداخت: " . __($data->payment_method) . PHP_EOL;
                     $msg .= " 📅 " . "تحویل: " . ($data->delivery_date ? Jalalian::forge($data->delivery_date)->format('Y/m/d') . " ($data->delivery_timestamp) " : ' در محل ') . PHP_EOL;
                     $msg .= " ➡️ " . "مسافت: " . $data->distance . ' km' . PHP_EOL;
                     $msg .= " ⚓️ " . "وزن: " . floatval($data->total_weight) . ' kg' . PHP_EOL;
@@ -1017,6 +1018,8 @@ class Telegram
                     break;
                 case 'user_edited':
                     $msg .= " 🟧 " . ($admin ? "ادمین *$admin* یک کاربر را ویرایش کرد" : "یک کاربر ویرایش شد") . PHP_EOL;
+
+                    $msg .= " ⭐ " . __($data->role) . PHP_EOL;
                     $msg .= " 👤 " . "نام: " . PHP_EOL;
                     $msg .= $data->fullname . PHP_EOL;
                     $msg .= " 📧 " . "ایمیل: " . PHP_EOL;
@@ -1024,9 +1027,15 @@ class Telegram
                     $msg .= " 📱 " . "شماره تماس" . PHP_EOL;
                     $msg .= $data->phone . PHP_EOL;
                     $msg .= " 💰 " . "کیف پول" . PHP_EOL;
-                    $msg .= $data->wallet . PHP_EOL;
+                    $msg .= $data->financial->wallet . PHP_EOL;
                     $msg .= " 💳 " . "شماره کارت" . PHP_EOL;
-                    $msg .= $data->card . PHP_EOL;
+                    $msg .= $data->financial->card . PHP_EOL;
+                    $msg .= " 💳 " . "شماره شبا" . PHP_EOL;
+                    $msg .= $data->financial->sheba . PHP_EOL;
+                    if ($data->role == 'org') {
+                        $msg .= " 💰 " . "حداکثر بدهی" . PHP_EOL;
+                        $msg .= ($data->financial->max_debit ? number_format($data->financial->max_debit) : __('settings')) . PHP_EOL;
+                    }
                     $msg .= " 🚧 " . "دسترسی" . PHP_EOL;
                     $msg .= join(',', $data->access ?? []) . PHP_EOL;
                     break;

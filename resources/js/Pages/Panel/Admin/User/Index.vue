@@ -398,7 +398,7 @@
                             data-ripple-dark="true"
                         >
                           <input :value="access.role" v-model="d.accesses"
-                                 :checked="  (d.accesses).indexOf(access.role)>-1"
+                                 :checked="  (d.accesses||[]).indexOf(access.role)>-1"
                                  :id="`access${ix}`"
                                  type="checkbox"
                                  class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary-500 checked:bg-primary-500 checked:before:bg-primary-500 hover:before:opacity-10"
@@ -544,7 +544,7 @@ export default {
             this.data = response.data.data;
             this.data.forEach(el => {
               el.selected = false;
-              el.accesses = el.access ? el.access.split(',') : [];
+              el.accesses = el.access || [];
             });
             delete response.data.data;
             this.pagination = response.data;

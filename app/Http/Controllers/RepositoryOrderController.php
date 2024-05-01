@@ -159,7 +159,7 @@ class RepositoryOrderController extends Controller
                 'delivery_date' => $cart->delivery_date,
                 'delivery_timestamp' => $cart->delivery_timestamp,
                 'distance' => $cart->distance,
-
+                'payment_method' => $cart->payment_method,
             ]);
             if ($order) {
                 $items = [];
@@ -246,6 +246,7 @@ class RepositoryOrderController extends Controller
             'total_items_price' => $request->total_items_price,
             'total_items' => $request->total_items,
             'total_price' => $request->total_price,
+
         ]);
 
         if ($orderType == __('external')) {

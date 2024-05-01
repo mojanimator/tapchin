@@ -37,11 +37,13 @@ class UserRequest extends FormRequest
         if (!$this->cmnd)
             $tmp = array_merge($tmp, [
                 'fullname' => ['required', 'max:100', Rule::unique('users', 'fullname')->ignore($this->id)],
-                'card' => ['nullable', 'digits:16', Rule::unique('users', 'card')->ignore($this->id)],
                 'phone' => ['required', 'numeric', 'digits:11', 'regex:/^09[0-9]+$/', Rule::unique('users', 'phone')->ignore($this->id)],
                 'email' => ['nullable', 'email', 'max:100', Rule::unique('users', 'email')->ignore($this->id)],
                 'wallet' => ['numeric', 'gte:0'],
                 'password' => [Rule::requiredIf(!$editMode)],
+                'card' => ['nullable', 'numeric', 'digits:16',],
+                'sheba' => ['nullable', 'numeric', 'digits:24'],
+                'max_debit' => ['nullable', 'integer', 'min:0'],
             ]);
 
 
@@ -77,6 +79,9 @@ class UserRequest extends FormRequest
             'card.unique' => sprintf(__("validator.unique"), __('card')),
 
             'wallet.numeric' => sprintf(__("validator.numeric"), __('wallet')),
+
+            'max_debit.integer' => sprintf(__("validator.numeric"), __('wallet')),
+            'max_debit.min' => sprintf(__("validator.min"), __('debit'), 0),
 
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),

@@ -29,7 +29,7 @@
           <slot name="sidenav"></slot>
         </aside>
         <!--Panel Main Side-->
-        <div id="toggler" class="flex-1 h-screen overflow-x-hidden overflow-y-auto">
+        <div id="toggler" class="flex-1   overflow-x-hidden overflow-y-auto">
           <!-- Navbar -->
           <header class="relative bg-white">
             <div class="flex items-center justify-between p-2 border-b">

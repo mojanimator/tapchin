@@ -249,7 +249,7 @@
               <td
                   class="flex  items-center    text-gray-900  ">
 
-                <div class="px-3 text-xs hover:text-gray-500" :title="d.title">
+                <div class="px-2 py-4  text-xs hover:text-gray-500" :title="d.title">
                   <div class="  font-semibold">{{ cropText(d.title, 50) }}</div>
                 </div>
               </td>

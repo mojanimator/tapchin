@@ -19,7 +19,7 @@
       <!-- Content -->
       <div class="px-2  md:px-4">
 
-        <div v-if="data && data.id" class="flex flex-col mt-4">
+        <div v-if="data && data.id" class="flex flex-col mt-4 ">
           <div class="flex text-sm">
             <div class="text-gray-500">{{ __('register_date') }}:</div>
             <div class="text-primary-700 mx-2">{{ toShamsi(data.created_at) }}</div>
