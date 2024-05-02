@@ -109,7 +109,7 @@ class TransactionController extends Controller
                 'status' => $response['status'] ?? 'danger',
                 'pay_id' => $token ?? '_',
                 'amount' => $transactions->sum('amount') ?? '_',
-                'type' => $transactions->title /*$transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_'*/,
+                'type' => ($transactions[0]->type ?? '') == 'charge' ?   $transactions[0]->title  :($transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_') ,
                 'link' => ($transactions[0]->type ?? '') == 'charge' ? route($transaction->from_type == 'admin' ? 'admin.panel.index' : 'panel.index') : url(''),
                 'message' => $response['message'] ?? '',
             ]);
