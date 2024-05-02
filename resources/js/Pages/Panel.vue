@@ -48,8 +48,16 @@
                 <h6 class="text-xs font-bold   py-2 tracking-wider text-gray-500 uppercase">
                   {{ __('wallet') }}
                 </h6>
-                <span class="text-xl font-semibold"> {{ asPrice(user.wallet) }} {{ __('currency') }}</span>
-
+                <div class="flex items-center">
+                <span class="text-xl font-semibold" :class="{'text-red-500':user.financial.wallet<0}"> {{
+                    asPrice(user.financial.wallet)
+                  }} {{ __('currency') }}</span>
+                  <button
+                      @click="  $refs.payDialog.show ({cmnd:'buy-charge',type:'user',id:user.id,amount:(user.financial.wallet||0)<0?Math.abs(user.financial.wallet||0):0,wallet: user.financial.wallet||0 ,title:__('charge')  }); "
+                      class="mx-1 px-2   text-sm bg-primary-100 text-primary-600 hover:bg-primary-300 cursor-pointer rounded">
+                    {{ __('charge') }}
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -189,8 +197,8 @@
         </div>
 
       </div>
+      <PayDialog ref="payDialog"/>
     </template>
-
 
   </Panel>
 </template>
@@ -226,6 +234,8 @@ import {
 } from "@heroicons/vue/24/outline";
 import {inject, watchEffect} from "vue";
 import Chart from "@/Components/Chart.vue";
+import TextInput from "@/Components/TextInput.vue";
+import PayDialog from "@/Components/PayDialog.vue";
 
 export default {
   setup(props) {
@@ -236,6 +246,7 @@ export default {
   },
   data() {
     return {
+      selected: null,
       open: false,
       isDark: false,
       loading: false,
@@ -253,6 +264,8 @@ export default {
   },
   // emits: ['showToast'],
   components: {
+    PayDialog,
+    TextInput,
     Chart,
     Panel,
     CurrencyDollarIcon,
@@ -265,7 +278,7 @@ export default {
     BellAlertIcon
   },
   mounted() {
-    // console.log(this.$emit('showToast'))
+    // console.log(this.$refs)
 
     // this.showToast('warning', 'hii');
 

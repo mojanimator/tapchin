@@ -124,7 +124,7 @@ class Variable
     const SUCCESS_STATUS = 200;
     const ERROR_STATUS = 422;
 
-    const  TRANSACTION_TYPES = ['pay', 'profit', 'debit', 'settlement', 'charge', 'shipping'];
+    const  TRANSACTION_TYPES = ['pay', 'profit', 'debit', 'settlement', 'charge', 'shipping', 'buy-charge'];
     const  FINANCIALS = ['admin' => AdminFinancial::class, 'user' => UserFinancial::class, 'agency' => AgencyFinancial::class];
     const  TRANSACTION_MODELS = ['order' => Order::class, 'repo-order' => RepositoryOrder::class, 'admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];
     const  PAYER_TYPES = ['admin' => Admin::class, 'user' => User::class, 'agency' => Agency::class];

@@ -16,6 +16,7 @@ use App\Models\Text;
 use App\Models\Ticket;
 use App\Models\Transfer;
 use App\Models\User;
+use App\Models\UserFinancial;
 use App\Models\Video;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Termwind\Components\Dd;
@@ -151,6 +152,7 @@ class UserPolicy
 
                 break;
             case $item instanceof Order  :
+            case $item instanceof UserFinancial  :
                 $res = $item->user_id == $user->id;
 
                 break;

@@ -920,6 +920,7 @@
   "settlement": "تسویه",
   "settlement_*_*_*": "تسویه %s با %s %s",
   "charge_*_*_*": "افزایش اعتبار %s %s %s",
+  "buy_charge_*_*_*": "خرید شارژ %s %s %s",
   "edit_order": "ویرایش سفارش",
   "change_price": "اصلاح قیمت",
   "tax": "مالیات",

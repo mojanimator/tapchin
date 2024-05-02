@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\Pay;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\FinancialRequest;
@@ -106,9 +107,10 @@ class  FinancialController extends Controller
         $amount = $request->amount;
         $type = $request->type;
         $user = $request->user();
+        $userType = $user instanceof Admin ? 'admin' : 'user';
         $data = Variable::FINANCIALS [$type]::where("{$type}_id", $id)->first();
         if (!starts_with($cmnd, 'bulk'))
-            $this->authorize('edit', [Admin::class, $data]);
+            $this->authorize('edit', [get_class($user), $data]);
         if ($type) {
             $model = Variable::TRANSACTION_MODELS[$type]::find($id);
             $modelName = $model->name ?? $model->fullname;
@@ -145,6 +147,7 @@ class  FinancialController extends Controller
 
                 case  'charge' :
 
+
                     $t = Transaction::create([
                         'title' => sprintf(__('charge_*_*_*'), number_format($amount), __($type), "$modelName ($id)"),
                         'type' => 'charge',
@@ -168,6 +171,42 @@ class  FinancialController extends Controller
                         Telegram::log(null, 'transaction_created', $t);
                     }
                     return response()->json(['message' => __('updated_successfully'), 'wallet' => $data->wallet], $successStatus);
+                case 'buy-charge':
+
+                    $description = sprintf(__('buy_charge_*_*_*'), number_format($amount), __($type), "$modelName ($id)");
+
+                    $response = Pay::makeUri(Carbon::now()->getTimestampMs(), "{$amount}0", $user->fullname, $user->phone, $user->email, $description, $user->id, Variable::$BANK);
+                    if ($response['status'] != 'success')
+                        return response()->json(['status' => 'danger', 'message' => $response['message']], Variable::ERROR_STATUS);
+
+                    $t = Transaction::where('for_type', $type)
+                        ->where('type', 'charge')
+                        ->where('for_id', $user->id)
+                        ->where('from_type', $userType)
+                        ->where('from_id', $user->id)
+                        ->where('to_type', 'agency')
+                        ->where('to_id', 1)
+                        ->where('payed_at', null)->first();
+                    if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $amount,]);
+                    else {
+                        $t = Transaction::create([
+                            'title' => $description,
+                            'type' => "charge",
+                            'pay_gate' => Variable::$BANK,
+                            'for_type' => $type,
+                            'for_id' => $user->id,
+                            'from_type' => $userType,
+                            'from_id' => $user->id,
+                            'to_type' => 'agency',
+                            'to_id' => 1,
+                            'info' => null,
+                            'coupon' => null,
+                            'payed_at' => null,
+                            'amount' => $amount,
+                            'pay_id' => $response['order_id'],
+                        ]);
+                    }
+                    return response(['status' => $data->status, 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
 
 
             }

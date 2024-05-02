@@ -77,7 +77,7 @@ class RepositoryOrder extends Model
             case    'pending':
                 return $statuses->whereIn('name', ['canceled']);
             case    'processing':
-                return $statuses->whereIn('name', ['ready', 'refunded']);
+                return $statuses->whereIn('name', $this->payment_method == 'local' ? ['ready', 'canceled'] : ['ready', 'refunded']);
             case    'ready':
                 return $statuses->whereIn('name', ['processing', 'delivered', 'refunded']);
             case    'sending':

@@ -230,9 +230,13 @@ class AdminPolicy
                     $res = $admin->hasAccess('edit_setting');
                     break;
                 case   $item instanceof UserFinancial :
-                case   $item instanceof AdminFinancial :
-                case   $item instanceof AgencyFinancial :
                     $res = $admin->hasAccess('edit_financial');
+                    break;
+                case   $item instanceof AdminFinancial :
+                    $res = $admin->hasAccess('edit_financial', $admin->agency_id);
+                    break;
+                case   $item instanceof AgencyFinancial :
+                    $res = $admin->hasAccess('edit_financial', $item->agency_id);
                     break;
             }
 

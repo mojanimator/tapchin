@@ -8,6 +8,7 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ExchangeController;
+use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\HireController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\MainController;
@@ -190,6 +191,8 @@ Route::group(['prefix' => '', 'namespace' => 'User'], function () {
             []
         );
         Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('user.panel.financial.transaction.search');
+
+        Route::patch('financial/update', [FinancialController::class, 'update'])->name('user.panel.financial.update');
 
     });
 

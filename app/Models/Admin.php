@@ -164,13 +164,17 @@ class Admin extends Authenticatable
         return substr(str_shuffle($original), 0, $length);
     }
 
-    public function hasAccess($item)
+    public function hasAccess($item, $param = null)
     {
         if (in_array($this->role, ['god']))
             return true;
 
-        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order', 'edit_setting', 'edit_financial', 'view_user'])) {
-            return $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
+        $this->access = $this->access ?? [];
+
+        $isCentralOwner = $this->agency_id == 1 && (in_array($this->role, ['owner']) || in_array($item, $this->access));
+
+        if (in_array($item, ['create_pack', 'edit_pack', 'create_product', 'edit_product', 'edit_repository_order', 'edit_setting', 'edit_financial', 'view_user']) && !$param) {
+            return $isCentralOwner;
         }
         if (in_array($item, ['create_repository_order'])) {
             return $this->agency_level < '3' && (in_array($this->role, ['owner']) || in_array($item, $this->access));
@@ -178,7 +182,13 @@ class Admin extends Authenticatable
         if (in_array($item, ['create_variation'])) {
             return $this->agency_level <= '3' && (in_array($this->role, ['owner']) || in_array($item, $this->access));
         }
-        return in_array($this->role, ['owner']) || in_array($item, $this->access ?? []);
+        if ($param) {
+            if ($isCentralOwner) return true;
+
+            if (in_array($item, ['edit_financial']))
+                return (in_array($this->role, ['owner']) || in_array($item, $this->access)) && $this->agency_id == $param;
+        }
+        return in_array($this->role, ['owner']) || in_array($item, $this->access);
     }
 
     public function accesses()
