@@ -45,7 +45,7 @@ class FinancialRequest extends FormRequest
 
         if ($this->cmnd)
             $tmp = array_merge($tmp, [
-                'amount' => ['required', 'integer', 'gt:200'],
+                'amount' => ['required', 'integer', 'gte:100'],
                 'cmnd' => ['required', Rule::in(Variable::TRANSACTION_TYPES)],
                 'type' => ['required', Rule::in(array_keys(Variable::FINANCIALS))],
 
@@ -59,7 +59,7 @@ class FinancialRequest extends FormRequest
         return [
 
 
-            "amount.gt" => sprintf(__("validator.gt"), __('amount'), "200 " . __('currency')),
+            "amount.gte" => sprintf(__("validator.gt"), __('amount'), "100 " . __('currency')),
 
             'type.required' => sprintf(__("validator.required"), __('type')),
             'type.in' => sprintf(__("validator.invalid"), __('type')),
