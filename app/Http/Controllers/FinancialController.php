@@ -180,18 +180,16 @@ class  FinancialController extends Controller
                         return response()->json(['status' => 'danger', 'message' => $response['message']], Variable::ERROR_STATUS);
 
                     $t = Transaction::where('for_type', $type)
-                        ->where('type', 'charge')
+                        ->where('type', 'buy-charge')
                         ->where('for_id', $user->id)
                         ->where('from_type', $userType)
                         ->where('from_id', $user->id)
-                        ->where('to_type', 'agency')
-                        ->where('to_id', 1)
                         ->where('payed_at', null)->first();
                     if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $amount, 'title' => $description, 'pay_gate' => Variable::$BANK,]);
                     else {
                         $t = Transaction::create([
                             'title' => $description,
-                            'type' => "charge",
+                            'type' => "buy-charge",
                             'pay_gate' => Variable::$BANK,
                             'for_type' => $type,
                             'for_id' => $user->id,

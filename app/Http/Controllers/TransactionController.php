@@ -83,7 +83,7 @@ class TransactionController extends Controller
                 $userType = $user instanceof Admin ? 'admin' : 'user';
                 if ($transaction->for_type == 'order') {
                     Order::where('id', $transaction->for_id)->update(['payed_at' => $now, 'status' => 'processing']);
-                } elseif ($transaction->type == 'charge') {
+                } elseif ($transaction->type == 'buy-charge') {
                     $financial = Variable::FINANCIALS [$transaction->for_type]::where("{$transaction->for_type}_id", $transaction->for_id)->firstOrNew();
                     $financial->wallet = ($financial->wallet ?? 0) + $transaction->amount;
                     $financial->{"{$transaction->for_type}_id"} = $transaction->for_id;
@@ -109,8 +109,8 @@ class TransactionController extends Controller
                 'status' => $response['status'] ?? 'danger',
                 'pay_id' => $token ?? '_',
                 'amount' => $transactions->sum('amount') ?? '_',
-                'type' => ($transactions[0]->type ?? '') == 'charge' ?   $transactions[0]->title  :($transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_') ,
-                'link' => ($transactions[0]->type ?? '') == 'charge' ? route($transaction->from_type == 'admin' ? 'admin.panel.index' : 'panel.index') : url(''),
+                'type' => ($transactions[0]->type ?? '') == 'buy-charge' ? $transactions[0]->title : ($transactions->count() > 0 ? (__('order') . " " . $transactions->pluck('for_id')->join(',')) : '_'),
+                'link' => ($transactions[0]->type ?? '') == 'buy-charge' ? route($transaction->from_type == 'admin' ? 'admin.panel.index' : 'panel.index') : url(''),
                 'message' => $response['message'] ?? '',
             ]);
 
