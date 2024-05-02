@@ -187,7 +187,7 @@ class  FinancialController extends Controller
                         ->where('to_type', 'agency')
                         ->where('to_id', 1)
                         ->where('payed_at', null)->first();
-                    if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $amount,]);
+                    if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $amount, 'title' => $description, 'pay_gate' => Variable::$BANK,]);
                     else {
                         $t = Transaction::create([
                             'title' => $description,
