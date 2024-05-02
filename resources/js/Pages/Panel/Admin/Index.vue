@@ -35,9 +35,14 @@
                   <TomanIcon class="h-[1rem] "/>
                 </div>
                 <div class="flex text-sm mx-2">
-                  <div class="font-bold">{{ `${__('debit')}: ` }}</div>
-                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.parent_debit) : 0 }}</div>
-                  <TomanIcon class="h-[1rem] "/>
+                  <!--                  <div class="font-bold">{{ `${__('debit')}: ` }}</div>-->
+                  <!--                  <div class="mx-1 ">{{ agency.financial ? asPrice(agency.financial.parent_debit) : 0 }}</div>-->
+                  <!--                  <TomanIcon class="h-[1rem] "/>-->
+                  <button
+                      @click="  $refs.payDialog.show ({cmnd:'buy-charge',type:'agency',id:agency.id,amount:(agency.financial.wallet||0)<0?Math.abs(agency.financial.wallet||0):0,wallet: agency.financial.wallet||0 ,title:__('charge')  }); "
+                      class="mx-1 px-2   text-sm bg-primary-100 text-primary-600 hover:bg-primary-300 cursor-pointer rounded">
+                    {{ __('charge') }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -262,6 +267,7 @@
         </div>
 
       </div>
+      <PayDialog ref="payDialog"/>
     </template>
 
 
@@ -300,6 +306,7 @@ import {
 import {inject, watchEffect} from "vue";
 import Chart from "@/Components/Chart.vue";
 import TomanIcon from "@/Components/TomanIcon.vue";
+import PayDialog from "@/Components/PayDialog.vue";
 
 export default {
   setup(props) {
@@ -334,6 +341,7 @@ export default {
   },
   // emits: ['showToast'],
   components: {
+    PayDialog,
     TomanIcon,
     Chart,
     Panel,

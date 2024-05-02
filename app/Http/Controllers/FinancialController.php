@@ -108,7 +108,7 @@ class  FinancialController extends Controller
         $type = $request->type;
         $user = $request->user();
         $userType = $user instanceof Admin ? 'admin' : 'user';
-        $data = Variable::FINANCIALS [$type]::where("{$type}_id", $id)->first();
+        $data = Variable::FINANCIALS [$type]::where("{$type}_id", $id)->firstOrCreate(["{$type}_id" => $id]);
         if (!starts_with($cmnd, 'bulk'))
             $this->authorize('edit', [get_class($user), $data]);
         if ($type) {

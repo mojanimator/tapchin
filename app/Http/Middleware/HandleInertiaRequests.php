@@ -46,8 +46,15 @@ class HandleInertiaRequests extends Middleware
     {
         $socials = Setting::where('key', 'like', 'social_%')->get();
         $user = auth('sanctum')->user();
-        if ($user)
+        $agency = null;
+        if ($user) {
             $user->setRelation('financial', $user instanceof Admin ? AdminFinancial::whereAdminId($user->id)->firstOrNew() : UserFinancial::whereUserId($user->id)->firstOrNew());
+            if ($user instanceof Admin) {
+                $agency = Agency::with('financial')->findOrNew($user->agency_id);
+                if (!$agency->getRelation('financial'))
+                    $agency->setRelation('financial', new AgencyFinancial());
+            }
+        }
         Variable::$CITIES = City::orderby('name')->get();
         return array_merge(parent::share($request), [
             'auth' => [
@@ -56,7 +63,7 @@ class HandleInertiaRequests extends Middleware
             'ip' => $request->ip(),
             'accesses' => $user && $user instanceof Admin ? $user->accesses() : [],
             'isAdmin' => $user && $user instanceof Admin,
-            'agency' => $user && $user instanceof Admin ? Agency::with('financial')->findOrNew($user->agency_id) : (object)['financial' => (object)[]],
+            'agency' => $agency,
             'agency_types' => Variable::AGENCY_TYPES,
             'location' => $request->url(),
 //            'user' => optional(auth()->user())->only(['id', 'fullname', 'username',]),
