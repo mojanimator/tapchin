@@ -11,20 +11,20 @@
     </div>
 
     <section
-        class="flex   flex-wrap gap-2 w-full bg-gray-100 rounded-b-2xl shadow-md p-2  px-2 lg:px-4 items-center z-[-10]">
-      <LocationSelector
-          @change="  params.province_id=$event.province_id;params.county_id=$event.county_id;params.district_id=$event.district_id; getData(0);"/>
-
-      <SearchInput class="shrink max-w-xs " v-model="params.search" @search="getData(0)"/>
-
+        class="flex   flex-wrap gap-2 w-full bg-gray-100 rounded-b-2xl shadow-md py-2  px-2 lg:px-4 items-center z-[-10]">
+      <LocationSelector class=""
+                        @change="  params.province_id=$event.province_id;params.county_id=$event.county_id;params.district_id=$event.district_id; getData(0);"/>
       <Selector ref="gradeSelector" v-model="params.grade"
                 :data="$page.props.grades.map(e=>{return{id:e,name:`${__('grade')} ${e}`}})"
                 @update:model-value="getData(0); "
                 :placeholder="__('grade')"
-                class="shrink  "
+                class=" max-w-[10rem] "
                 :id="`grade`">
 
       </Selector>
+      <SearchInput class="shrink max-w-xs " v-model="params.search" @search="getData(0)"/>
+
+
       <swiper
           :modules="[modules[0], modules[2],modules[3],]"
           slides-per-view="auto"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <InputLabel class="my-1  " :for="id" :value="label"/>
+    <InputLabel v-if="label" class="my-1  " :for="id" :value="label"/>
     <div class="flex " :id="`${id}-wrapper`">
          <span v-if="$slots.append"
                class=" flex bg-gray-100  text-gray-500 items-center whitespace-nowrap rounded-s border border-e-0 border-solid border-neutral-300  text-center text-base font-normal leading-[1.6]   dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200"
