@@ -44,6 +44,8 @@
     </svg>
 
     <Footer/>
+    <SupportChat :dir="dir()" id="support-chat" :ip="$page.props.ip" :broadcast-link="route('chat.broadcast')"
+                 :support-history-link="route('chat.support.history')"/>
   </App>
   <!--Footer-->
 </template>
@@ -57,6 +59,7 @@ import Toast from "@/Components/Toast.vue";
 import Dialog from "@/Components/Dialog.vue";
 import Alert from "@/Components/Alert.vue";
 import LoadingIcon from "@/Components/LoadingIcon.vue";
+import SupportChat from "@/Components/SupportChat.vue";
 import mitt from 'mitt'
 import favicon from "@/../images/logo.png";
 import {Dropdown, initTE, Modal} from "tw-elements";
@@ -71,7 +74,7 @@ export default {
   },
   props: ['navbarTheme'],
   components: {
-    Head, Link, Navbar, Footer, Alert, Dialog, Toast, LoadingIcon, App,
+    Head, Link, Navbar, Footer, Alert, Dialog, Toast, LoadingIcon, App, SupportChat,
   },
   mounted() {
 
