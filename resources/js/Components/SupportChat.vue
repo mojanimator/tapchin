@@ -145,12 +145,14 @@ export default {
 
 
 //                Sometimes you may wish to broadcast an event to other connected clients without hitting your Laravel application at all. This can be particularly useful for things like "typing" notifications
-      this.Echo = new Echo({
-        broadcaster: 'pusher',
-        key: import.meta.env.VITE_PUSHER_APP_KEY,
-        cluster: "ap2",
-        forceTLS: true,
-        logToConsole: true,
+
+      if (!window.Echo) {
+        this.Echo = new Echo({
+          broadcaster: 'pusher',
+          key: import.meta.env.VITE_PUSHER_APP_KEY,
+          cluster: "ap2",
+          forceTLS: true,
+          logToConsole: true,
 //                    authEndpoint: '/custom/endpoint/auth',
 //                    authorizer: (channel, options) => {
 //                        return {
@@ -168,62 +170,64 @@ export default {
 //                            }
 //                        };
 //                    },
-      });
+        });
+        window.Echo = this.Echo;
+
 //                this.setPusherEvents();
 
-      this.Echo.channel/*private*/(`support.${this.ip}`)
+        this.Echo.channel/*private*/(`support.${this.ip}`)
 
-          .listen('.chat', (e) => {
+            .listen('.chat', (e) => {
 
-            this.messages.push({
-              message: e.message,
-              from: e.from,
-              to: e.to,
-              chatId: e.chatId,
-            });
-            this.addToHistory(e);
+              this.messages.push({
+                message: e.message,
+                from: e.from,
+                to: e.to,
+                chatId: e.chatId,
+              });
+              this.addToHistory(e);
 
-            if (e.from !== null && e.from.includes('support'))
-              this.supporterName = e.from;
-            // this.container.animate({scrollTop: this.container.prop('scrollHeight') + 100}, 200);
-            if ('Notification' in window) {
+              if (e.from !== null && e.from.includes('support'))
+                this.supporterName = e.from;
+              // this.container.animate({scrollTop: this.container.prop('scrollHeight') + 100}, 200);
+              if ('Notification' in window) {
 
-              if (Notification.permission === "granted") {
+                if (Notification.permission === "granted") {
 
-                let notification = new Notification('پیام از پشتیبان', {
-                  body: e.message, // content for the alert
-                  icon: this.icon // optional image url
-                });
-
-                // link to page on clicking the notification
-                notification.onclick = () => {
-                  window.open(window.location.href);
-                };
-              } else if (Notification.permission !== "denied") {
-
-                Notification.requestPermission().then(permission => {
                   let notification = new Notification('پیام از پشتیبان', {
                     body: e.message, // content for the alert
-                    icon: this.icon  // optional image url
+                    icon: this.icon // optional image url
                   });
 
                   // link to page on clicking the notification
                   notification.onclick = () => {
                     window.open(window.location.href);
                   };
-                });
+                } else if (Notification.permission !== "denied") {
+
+                  Notification.requestPermission().then(permission => {
+                    let notification = new Notification('پیام از پشتیبان', {
+                      body: e.message, // content for the alert
+                      icon: this.icon  // optional image url
+                    });
+
+                    // link to page on clicking the notification
+                    notification.onclick = () => {
+                      window.open(window.location.href);
+                    };
+                  });
+                }
+
+
               }
 
-
-            }
-
-          }).listenForWhisper('typing', () => {
-        console.log('typing');
-      }).subscribed(() => {
-        console.log('subscribed');
-      }).error((e) => {
-        console.log('error: ' + e);
-      })/*.whisper('typing', {
+            }).listenForWhisper('typing', () => {
+          console.log('typing');
+        }).subscribed(() => {
+          console.log('subscribed');
+        }).error((e) => {
+          console.log('error: ' + e);
+        })/*.whisper('typing', {
                     msg: 'typing'
                 })*/;
 
@@ -246,7 +250,7 @@ export default {
 //                        console.log('listen');
 //                        console.log(user);
 //                    })
-
+      }
     },
     leaveChannel() {
       Echo.leaveChannel(`orders.1`);
