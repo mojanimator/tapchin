@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
+use Intervention\Image\Gd\Font;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Browsershot\Exceptions\CouldNotTakeBrowsershot;
 
@@ -88,7 +89,23 @@ class Util
 //        imagetruecolortopalette($source, false, 16);
 
         $imageSave = imagejpeg($source, storage_path("app/public/$type/$name.jpg"), 80);
-
+        if ($name == 'thumb') {
+            if (Storage::exists("public/variations/$folder/thumb.jpg")) {
+                $image = \Intervention\Image\ImageManagerStatic::make(Storage::path("public/variations/$folder/thumb.jpg"));
+                $width = $image->width();
+                $height = $image->height();
+                $font = function (Font $font) {
+                    $fontPath = resource_path('fonts/shabnam/Shabnam.ttf');
+                    $font->file($fontPath);
+                    $font->size(20);
+                    $font->color('fff');
+                    $font->align('left');
+                    $font->valign('middle');
+                };
+                $image->text("dabelchin.com", 20, $height - 20, $font);
+                $image->save(Storage::path("public/variations/$folder/thumb.jpg"));
+            }
+        }
         if ($maxSize) {
             $maxSize = $maxSize * 1024;
             $path = storage_path("app/public/$type/$name.jpg");

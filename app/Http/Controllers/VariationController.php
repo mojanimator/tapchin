@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Intervention\Image\Gd\Font;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class VariationController extends Controller
 {
@@ -192,6 +194,7 @@ class VariationController extends Controller
             if ($data) {
                 if ($request->img) {
                     Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id, 500);
+                
                 } else {
                     $path = Storage::path("public/products/$data->product_id.jpg");
 
