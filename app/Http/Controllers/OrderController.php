@@ -240,6 +240,7 @@ class OrderController extends Controller
                         }
                         $shipping->save();
                     }
+                    Telegram::log(null, 'order_status_edited', $data);
                     return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
 
 

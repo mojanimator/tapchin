@@ -498,6 +498,16 @@ class Telegram
                     $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
                     $msg .= "\xD8\x9C" . PHP_EOL . $time . PHP_EOL . " ";
                     break;
+                case 'order_status_edited':
+                    $topic = self::TOPIC_ORDER;
+                    $msg .= " 🟣 " . "وضعیت سفارش تغییر کرد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
+                    $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
+                    break;
                 case 'order_created':
                 case 'order_edited':
                     $cities = City::whereIn('id', [$data->province_id, $data->county_id, $data->district_id])->get();
