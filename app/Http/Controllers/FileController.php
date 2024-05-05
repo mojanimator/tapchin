@@ -20,11 +20,10 @@ class FileController extends Controller
         $admin = $request->user();
         $card = Image::make(Storage::path('public/files/card.jpg'));
         $agency = Agency::find($admin->agency_id);
-        if (!Storage::exists("public/files/agencies")) {
+        if (!Storage::exists("public/files/agencies"))
             Storage::createDirectory("public/files/agencies");
-            if (!Storage::exists("public/files/agencies/$admin->agency_id"))
-                Storage::createDirectory("public/files/agencies/$admin->agency_id");
-        }
+        if (!Storage::exists("public/files/agencies/$admin->agency_id"))
+            Storage::createDirectory("public/files/agencies/$admin->agency_id");
         $width = $card->width();
         $height = $card->height();
         $font = function (Font $font) {
