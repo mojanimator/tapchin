@@ -89,6 +89,20 @@ class Util
 //        imagetruecolortopalette($source, false, 16);
 
         $imageSave = imagejpeg($source, storage_path("app/public/$type/$name.jpg"), 80);
+
+        if ($maxSize) {
+            $maxSize = $maxSize * 1024;
+            $path = storage_path("app/public/$type/$name.jpg");
+            $img = Image::make($path);
+            while ($img->filesize() >= $maxSize) {
+                $width = $img->width();
+                $img->resize($width - round($width / 4), null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($path);
+                clearstatcache();
+
+            }
+        }
         if ($name == 'thumb') {
             if (Storage::exists("public/variations/$folder/thumb.jpg")) {
                 $image = \Intervention\Image\ImageManagerStatic::make(Storage::path("public/variations/$folder/thumb.jpg"));
@@ -104,19 +118,6 @@ class Util
                 };
                 $image->text("dabelchin.com", 20, $height - 20, $font);
                 $image->save(Storage::path("public/variations/$folder/thumb.jpg"));
-            }
-        }
-        if ($maxSize) {
-            $maxSize = $maxSize * 1024;
-            $path = storage_path("app/public/$type/$name.jpg");
-            $img = Image::make($path);
-            while ($img->filesize() >= $maxSize) {
-                $width = $img->width();
-                $img->resize($width - round($width / 4), null, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save($path);
-                clearstatcache();
-
             }
         }
         imagedestroy($source);
