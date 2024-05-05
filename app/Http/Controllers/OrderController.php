@@ -391,7 +391,7 @@ class OrderController extends Controller
                 'province_id' => $cart->address['province_id'] ?? null,
                 'county_id' => $cart->address['county_id'] ?? null,
                 'district_id' => $cart->address['district_id'] ?? null,
-                'receiver_fullname' => $cart->address['receiver_fullname'] ?? null,
+                'receiver_fullname' => $cart->address['receiver_fullname'] ?? $user->fullname ?? null,
                 'receiver_phone' => $cart->address['receiver_phone'] ?? $user->phone ?? null,
                 'postal_code' => $cart->address['postal_code'] ?? null,
                 'address' => $cart->address['address'] ?? null,
