@@ -40,8 +40,8 @@ class FileController extends Controller
             $font->valign('middle');
         };
         $persian_text = \PersianRender\PersianRender::render("$agency->name");
-        $card->text("$persian_text", $width - 20, $height / 2 + 20, $font);
-        $card->text("$agency->phone", $width - 20, $height / 2 + 70, $font);
+        $card->text("$persian_text", $width - 40, $height / 2 + 20, $font);
+        $card->text("$agency->phone", $width - 40, $height / 2 + 70, $font);
         $card->save(Storage::path("public/files/agencies/$admin->agency_id/card.jpg"));
 
         return Inertia::render('Panel/Admin/File/Index', [
