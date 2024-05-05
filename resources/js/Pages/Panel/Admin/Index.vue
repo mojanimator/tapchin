@@ -170,25 +170,22 @@
 
           </div>
           <!-- items card -->
-          <div :class="cardShadow"
-               class="flex     cursor-pointer   items-center justify-around   bg-white  rounded-lg">
+          <Link :class="cardShadow" :href="route('admin.panel.file.index')"
+                class="flex hover:scale-[101%] transition duration-300 cursor-pointer   items-center justify-around   p-4 bg-white  rounded-lg">
+            <div class="flex flex-col grow">
 
-            <div class="  grow h-full  flex items-stretch  ">
-              <Link v-for="(i,idx) in items" :href="route(`panel.${i.type}.index`)"
-                    class="  flex flex-col  py-6 xl:pt-6 xl:pb-4 items-around justify-around hover:scale-[102%]     px-1  grow text-center hover:bg-gray-100  ">
-                                        <span
-                                            :class="idx==0?'text-pink-500':idx==1?'text-teal-500':idx==2?'text-fuchsia-500':idx==3?'text-primary-500':'text-amber-500'"
-                                            class="  text-xl font-semibold "> {{ i.count }}</span>
-                <span
-                    :class="idx==0?'bg-pink-100 text-pink-500':idx==1?'bg-teal-100 text-teal-500':idx==2?'bg-fuchsia-100 text-fuchsia-500':idx==3?'bg-primary-100 text-primary-500':'bg-amber-100 text-amber-500'"
-                    class="   mx-1 px-2 py-1    text-xs  rounded-md">
-                                   {{ __(i.type) }}
-                                        </span>
-              </Link>
+
+              <div class="justify-around flex  ">
+                <h4 class="  font-bold   py-2 tracking-wider text-gray-500 uppercase">
+                  {{ __('files') }}
+                </h4>
+              </div>
+
             </div>
-
-
-          </div>
+            <div class="flex">
+              <FolderIcon class="w-12 h-12 text-primary-300 "/>
+            </div>
+          </Link>
 
 
         </div>
@@ -302,6 +299,7 @@ import {
   UserIcon,
   BriefcaseIcon,
   IdentificationIcon,
+  FolderIcon,
 } from "@heroicons/vue/24/outline";
 import {inject, watchEffect} from "vue";
 import Chart from "@/Components/Chart.vue";
@@ -353,6 +351,7 @@ export default {
     UserIcon,
     BriefcaseIcon,
     IdentificationIcon,
+    FolderIcon,
   },
   mounted() {
     // console.log(this.$emit('showToast'))

@@ -806,6 +806,7 @@ import {
   CogIcon,
   UserCircleIcon,
   TagIcon,
+  FolderIcon,
 } from "@heroicons/vue/24/outline";
 import {
   QuestionMarkCircleIcon,
@@ -909,6 +910,7 @@ export default {
     UserIcon,
     UGP,
     TagIcon,
+    FolderIcon,
   },
   methods: {
     delay(time) {

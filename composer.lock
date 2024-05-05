@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b806e0d78de5fe7e8a973b4df4242345",
+    "content-hash": "65d7ae1a2ccaf026cac762d5a2c70c71",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -650,6 +650,55 @@
                 }
             ],
             "time": "2023-06-01T07:04:22+00:00"
+        },
+        {
+            "name": "eskandari/persianrender",
+            "version": "0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mahmoud-eskandari/PersianRender.git",
+                "reference": "0eaeac271177e4e0e14cc45b30d3b363bd29b10b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mahmoud-eskandari/PersianRender/zipball/0eaeac271177e4e0e14cc45b30d3b363bd29b10b",
+                "reference": "0eaeac271177e4e0e14cc45b30d3b363bd29b10b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PersianRender\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Mahmoud Eskandari",
+                    "email": "info@webafrooz.com"
+                }
+            ],
+            "description": "PersianRender,Free persian letter conertor for using in php GD, etc.",
+            "homepage": "http://webafrooz.com",
+            "keywords": [
+                "gd",
+                "image",
+                "persian",
+                "persianletter",
+                "render",
+                "text"
+            ],
+            "support": {
+                "issues": "https://github.com/mahmoud-eskandari/PersianRender/issues",
+                "source": "https://github.com/mahmoud-eskandari/PersianRender/tree/0.2"
+            },
+            "time": "2024-03-30T11:15:07+00:00"
         },
         {
             "name": "firebase/php-jwt",
