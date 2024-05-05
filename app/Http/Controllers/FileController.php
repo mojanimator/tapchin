@@ -27,9 +27,11 @@ class FileController extends Controller
         $width = $card->width();
         $height = $card->height();
         $font = function (Font $font) {
-            $fontPath = resource_path('fonts/iransans/iransans.ttf');
-            $fontPath = resource_path('fonts/parastoo/web/Parastoo.ttf');
-            $fontPath = resource_path('fonts/sahel/Sahel.ttf');
+//            $fontPath = resource_path('fonts/iransans/iransans.ttf');
+//            $fontPath = resource_path('fonts/parastoo/web/Parastoo.ttf');
+//            $fontPath = resource_path('fonts/sahel/Sahel.ttf');
+//            $fontPath = resource_path('fonts/samim/Samim.ttf');
+            $fontPath = resource_path('fonts/shabnam/Shabnam-Bold.ttf');
 
             $font->file($fontPath);
             $font->size(30);
