@@ -103,7 +103,7 @@ class Transaction extends Model
 
         if ($percent > 0) {
             $t = Transaction::create([
-                'title' => sprintf(__('profit_order_agency_*_*_*'), floor($percent), $order->id, "$agency->name($agency->id)"),
+                'title' => sprintf(__('profit_order_agency_*_*_*'), floatval($percent), $order->id, "$agency->name($agency->id)"),
                 'type' => "profit",
                 'for_type' => 'order',
                 'for_id' => $order->id,
