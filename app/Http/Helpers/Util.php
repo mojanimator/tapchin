@@ -105,6 +105,7 @@ class Util
         }
         if ($name == 'thumb') {
             if (Storage::exists("public/variations/$folder/thumb.jpg")) {
+
                 $image = \Intervention\Image\ImageManagerStatic::make(Storage::path("public/variations/$folder/thumb.jpg"));
                 $width = $image->width();
                 $height = $image->height();
@@ -112,7 +113,7 @@ class Util
                     $fontPath = resource_path('fonts/shabnam/Shabnam.ttf');
                     $font->file($fontPath);
                     $font->size(max(20, $height / 10));
-                    $font->color('afff');
+                    $font->color(array(200, 255, 255, .8));
                     $font->align('left');
                     $font->valign('bottom');
                 };
