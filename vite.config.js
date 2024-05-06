@@ -18,6 +18,7 @@ export default defineConfig({
         // manifestSRI(),
         VitePWA({
             registerType: 'autoUpdate',
+            manifest: {"theme_color": "#10b981"},
             devOptions: {
                 enabled: true
             }
