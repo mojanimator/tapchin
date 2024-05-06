@@ -18,7 +18,20 @@ export default defineConfig({
         // manifestSRI(),
         VitePWA({
             registerType: 'autoUpdate',
-            manifest: {"theme_color": "#10b981"},
+            manifest: {
+                "theme_color": "#10b981",
+                "icons": [
+                    {
+                        "src": "resources/images/logo.png",
+                        "type": "image/png",
+                        "sizes": "512x512"
+                    }
+                ],
+                "display_override": ["fullscreen", "minimal-ui"],
+                "display": "standalone",
+                "start_url": "https://dabelchin.com",
+                "name": "دبل چین"
+            },
             devOptions: {
                 enabled: true
             }
