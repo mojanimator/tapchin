@@ -30,6 +30,12 @@ export default defineConfig({
                 "display_override": ["fullscreen", "minimal-ui"],
                 "display": "standalone",
                 "start_url": "https://dabelchin.com",
+                // "related_applications": [
+                //     {
+                //         "platform": "play",
+                //         "url": "https://play.google.com/store/apps/details?id=cheeaun.hackerweb"
+                //     }
+                // ],
                 "name": "دبل چین"
             },
             devOptions: {

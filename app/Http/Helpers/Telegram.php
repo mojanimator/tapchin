@@ -508,6 +508,39 @@ class Telegram
                     $msg .= " 🆔 " . "شناسه: " . $data->id . PHP_EOL;
                     $msg .= " 🚥 " . "وضعیت: " . __($data->status) . PHP_EOL;
                     break;
+
+                case 'category_created':
+                case 'category_edited':
+
+                    if ($isCreate)
+                        $msg .= " 👋🏻 " . "دسته بندی ثبت شد" . PHP_EOL;
+                    if ($isEdit)
+                        $msg .= " 👋🏻 " . "دسته بندی ویرایش شد" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    $msg .= " 👤 " . "کاربر: " . PHP_EOL;
+                    $msg .= "$us->fullname ( $us->phone )" . PHP_EOL;
+                    $msg .= "\xD8\x9C" . "➖➖➖➖➖➖➖➖➖➖➖" . PHP_EOL;
+                    function loopPrint($item, &$msg)
+                    {
+
+                        $item = (object)$item;
+                        $space = collect(range(1, $item->level))->map(fn($e) => ' ')->join("");
+                        $msg .= $space . ($item->children ? "🔻" : " ➖ ") . "$item->name" . PHP_EOL;
+                        foreach ($item->children as $child) {
+                            loopPrint($child, $msg);
+
+                        }
+
+                    }
+
+                    if (is_array($data))
+                        foreach ($data as $item) {
+                            loopPrint($item, $msg);
+
+                        }
+
+                    break;
+
                 case 'order_created':
                 case 'order_edited':
                     $cities = City::whereIn('id', [$data->province_id, $data->county_id, $data->district_id])->get();

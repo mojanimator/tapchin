@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FinancialController;
@@ -346,6 +347,19 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
 
         Route::get('file/index', [FileController::class, 'index'])->name('admin.panel.file.index');
 
+        PanelController::makeInertiaRoute('get', 'category/index', 'admin.panel.category.index', 'Panel/Admin/Category/Index',
+            ['categories' => \App\Models\Category::select('id', 'name', 'parent_id')->get()]
+        );
+
+        PanelController::makeInertiaRoute('get', 'category/create', 'admin.panel.category.create', 'Panel/Admin/Category/Create',
+            [], "can:create,App\Models\Admin,App\Models\Category,'1'"
+        );
+
+        Route::get('category/tree', [CategoryController::class, 'getTree'])->name('admin.panel.category.tree');
+        Route::get('category/search', [CategoryController::class, 'searchPanel'])->name('admin.panel.category.search');
+        Route::patch('category/update', [CategoryController::class, 'update'])->name('admin.panel.category.update');
+        Route::post('category/create', [CategoryController::class, 'create'])->name('admin.panel.category.create')->middleware("can:create,App\Models\Admin,App\Models\Category,'1'");
+        Route::get('category/{category}', [CategoryController::class, 'edit'])->name('admin.panel.category.edit');
 
     });
 
