@@ -171,7 +171,7 @@ class ProductController extends Controller
 
 
             if ($data->update($request->all())) {
-                if ($request->category_id != $data->category_id) {
+                if (true) {
                     Variation::where('product_id', $data->id)->update(['category_id' => $request->category_id]);
                 }
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
