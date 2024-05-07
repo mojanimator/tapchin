@@ -170,10 +170,10 @@ class ProductController extends Controller
             ]);
 
 
+            if ($request->category_id != $data->category_id) {
+                Variation::where('product_id', $data->id)->update(['category_id' => $request->category_id]);
+            }
             if ($data->update($request->all())) {
-                if (true) {
-                    Variation::where('product_id', $data->id)->update(['category_id' => $request->category_id]);
-                }
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
 //                dd($request->all());
                 Telegram::log(null, 'product_edited', $data);
