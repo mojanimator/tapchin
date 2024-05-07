@@ -93,10 +93,14 @@ class ProductController extends Controller
         $data = Product::create($request->all());
 
         if ($data) {
+            if ($request->category_id != $data->category_id) {
+                Variation::where('product_id', $data->id)->update(['category_id' => $request->category_id]);
+            }
             Util::createImage($request->img, Variable::IMAGE_FOLDERS[Product::class], $data->id);
 
             $data->img = url("storage/products/$data->id.jpg");
             $res = ['flash_status' => 'success', 'flash_message' => __('created_successfully')];
+
             Telegram::log(null, 'product_created', $data);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
         return to_route('admin.panel.product.index')->with($res);
