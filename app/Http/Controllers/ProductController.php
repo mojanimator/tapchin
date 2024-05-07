@@ -170,7 +170,7 @@ class ProductController extends Controller
             ]);
 
 
-            if ($request->category_id != $data->category_id) {
+            if ($request->category_id && $request->category_id != $data->category_id) {
                 Variation::where('product_id', $data->id)->update(['category_id' => $request->category_id]);
             }
             if ($data->update($request->all())) {
