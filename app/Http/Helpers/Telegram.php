@@ -466,7 +466,7 @@ class Telegram
 
     static function log($to, $type, $data)
     {
-
+        return;
         try {
 
             if ($data instanceof User)
