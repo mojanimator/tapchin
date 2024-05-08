@@ -14,6 +14,11 @@ class SmsHelper
     const  SecretKey = "beheshti009351414815";
     const  LineNumber = "50002015700313";
 
+    const TEMPLATE_REGISTER = "80451";
+    const TEMPLATE_FORGET = "80451";
+    const TEMPLATE_ORDER_STATUS = "81447";
+    const TEMPLATE_NEW_ORDER = "81448";
+    const TEMPLATE_TRANSACTION = "81449";
 
     public static function StringRandom($length = 16)
     {
@@ -41,22 +46,58 @@ class SmsHelper
     }
 
 
-    public function Send($number, $code)
+    public function Send($number, $code, $type = self::TEMPLATE_FORGET)
     {
         try {
             date_default_timezone_set("Asia/Tehran");
             $APIKey = self::APIKey;
             $SecretKey = self::SecretKey;
+
             // message data
+            switch ($type) {
+                case self::TEMPLATE_NEW_ORDER:
+                    $params = [
+                        [
+                            "Parameter" => "order_id",
+                            "ParameterValue" => $code['order_id']
+                        ]
+                    ];
+                    break;
+                case self::TEMPLATE_ORDER_STATUS:
+                    $params = [
+                        [
+                            "Parameter" => "order_id",
+                            "ParameterValue" => $code['order_id']
+                        ], [
+                            "Parameter" => "status",
+                            "ParameterValue" => $code['status']
+                        ]
+                    ];
+                    break;
+                case self::TEMPLATE_TRANSACTION:
+                    $params = [
+                        [
+                            "Parameter" => "amount",
+                            "ParameterValue" => $code['amount']
+                        ], [
+                            "Parameter" => "wallet",
+                            "ParameterValue" => $code['wallet']
+                        ]
+                    ];
+                    break;
+                default:
+                    $params = [
+                        [
+                            "Parameter" => "VerificationCode",
+                            "ParameterValue" => $code['code']
+                        ]
+                    ];
+                    break;
+            }
             $data = array(
-                "ParameterArray" => array(
-                    array(
-                        "Parameter" => "VerificationCode",
-                        "ParameterValue" => $code
-                    )
-                ),
+                "ParameterArray" => $params,
                 "Mobile" => $number,
-                "TemplateId" => "80451"
+                "TemplateId" => $type
             );
 
             $SmsIR_UltraFastSend = (new SmsIR_UltraFastSend($APIKey, $SecretKey))->UltraFastSend($data);

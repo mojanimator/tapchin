@@ -241,6 +241,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $cityProductRestrict,
                         'repo_id' => $repo->id,
+                        'repo_phone' => $repo->phone,
                         'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
@@ -265,6 +266,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $productRestrict,
                         'repo_id' => $repo->id,
+                        'repo_phone' => $repo->phone,
                         'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
@@ -287,6 +289,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $cityRestrict,
                         'repo_id' => $repo->id,
+                        'repo_phone' => $repo->phone,
                         'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
@@ -310,6 +313,7 @@ class CartController extends Controller
                         'cart_item' => $cartItem,
                         'shipping' => clone $noRestrict,
                         'repo_id' => $repo->id,
+                        'repo_phone' => $repo->phone,
                         'repo_location' => $repo->location,
                         'agency_id' => $repo->agency_id,
                         'repo_name' => $repo->name,
@@ -325,6 +329,7 @@ class CartController extends Controller
             //use default shipping (go to repo)
 
             $default = collect(Variable::getDefaultShippingMethods()[0]);
+            $default['repo_phone'] = optional($repo)->phone;
             $default['address'] = optional($repo)->address;
             $default['location'] = optional($repo)->location;
             $default['province_id'] = optional($repo)->province_id;
@@ -357,6 +362,7 @@ class CartController extends Controller
                     'shipping' => clone $default,
                     'repo_name' => $repo->name,
                     'repo_id' => $repo->id,
+                    'repo_phone' => $repo->phone,
                     'repo_location' => $repo->location,
                     'agency_id' => $repo->agency_id,
                     'error_message' => $errorMessage,
@@ -480,6 +486,7 @@ class CartController extends Controller
                 $cart->total_items += $cartItem->qty ?? 0;
                 $totalItems += $cartItem->qty ?? 0;
                 $repoId = $item['repo_id'];
+                $repoPhone = $item['repo_phone'];
                 $visitChecked = $item['visit_checked'];
                 $errorMessage = $item['error_message'] ?? null;
                 $hasAvailableShipping = boolval($item['has_available_shipping']);
@@ -510,6 +517,7 @@ class CartController extends Controller
                 'delivery_timestamp' => $deliveryTimestamp,
                 'delivery_date' => $deliveryDate,
                 'repo_id' => $repoId,
+                'repo_phone' => $repoPhone,
                 'visit_checked' => $visitChecked,
                 'agency_id' => $agencyId,
                 'items' => $items,
@@ -580,6 +588,7 @@ class CartController extends Controller
                 $tmpCart->delivery_timestamp = $shipment['delivery_timestamp'];
                 $tmpCart->delivery_date = $shipment['delivery_date'];
                 $tmpCart->repo_id = $shipment['repo_id'];
+                $tmpCart->repo_phone = $shipment['repo_phone'];
                 $tmpCart->agency_id = $shipment['agency_id'];
                 $tmpCart->distance = $shipment['distance'];
                 $tmpShipments->add($shipment);

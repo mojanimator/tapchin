@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\Pay;
+use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Variable;
 use App\Http\Requests\OrderRequest;
@@ -231,6 +232,9 @@ class OrderController extends Controller
                     }
                     $data->save();
 
+                    if ($status == 'ready') {
+                        $res = (new SmsHelper())->Send("$data->receiver_phone", ['order_id' => $data->id, 'status' => "' " . __($status) . " '"], SmsHelper::TEMPLATE_ORDER_STATUS);
+                    }
                     //change status to done if no shipping order
 
                     if ($shipping) {
@@ -463,6 +467,8 @@ class OrderController extends Controller
                 $orderLog = $order;
 
                 $orderLog->setRelation('items', collect($items)->map(fn($e) => (object)$e));
+
+                $res = (new SmsHelper())->Send("$cart->repo_phone", ['order_id' => $order->id], SmsHelper::TEMPLATE_NEW_ORDER);
 
                 Telegram::log(null, 'order_created', $orderLog);
             }
