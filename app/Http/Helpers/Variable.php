@@ -55,7 +55,14 @@ class Variable
 //        ['name' => 'branch', 'code' => 4],
     ];
     const PRODUCT_UNITS = ['qty', 'kg'/*, 'gr'*/];
+    const MARKET_LINKS = [
 
+        'bazaar' => "https://cafebazaar.ir/app/com.dabel.dabelchin",
+        'myket' => "https://myket.ir/app/com.dabel.dabelchin",
+        'playstore' => "https://play.google.com/store/apps/details?id=com.dabel.dabelchin&hl=fa",
+        'bank' => "https://play.google.com/store/apps/details?id=com.dabel.dabelchin&hl=fa",
+
+    ];
     const ADMIN_ACCESS = ['all'];
     const GRADES = ['ممتاز', '1', '2'];
     const PARTNERSHIP_TYPES = [

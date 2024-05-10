@@ -11,7 +11,6 @@
 |
 */
 
-use Illuminate\Routing\Controllers\Middleware;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
@@ -44,12 +43,6 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-$app->withMiddleware(function (Middleware $middleware) {
-    $middleware->alias([
-        'abilities' => CheckAbilities::class,
-        'ability' => CheckForAnyAbility::class,
-    ]);
-});
 
 
 /*

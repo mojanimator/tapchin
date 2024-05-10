@@ -54,7 +54,7 @@ class UserController extends Controller
             'app_info' => [
                 'version' => Variable::APP_VERSION,
 
-                'contact_links' => [
+                'support_links' => [
                     ['name' => 'پیامک', 'url' => 'sms:00989351414815', 'color' => 0xff7209b7, 'icon' => 'email.png'],
                     ['name' => 'تلگرام', 'url' => 'https://t.me/Lord2095', 'color' => 0xff4477CE, 'icon' => 'telegram.png'],
                     ['name' => 'ایتا', 'url' => 'https://eitaa.com/Dd5055', 'color' => 0xffFF9209, 'icon' => 'eitaa.png'],
@@ -79,12 +79,7 @@ class UserController extends Controller
                     'instagram' => 'https://instagram.com/develowper',
                     'eitaa' => 'https://eitaa.com/vartastudio',
                     'email' => 'moj2raj2@gmail.com',
-                    'market' => [
-                        'bazaar' => Helper::$market_link['bazaar'],
-                        'myket' => Helper::$market_link['myket'],
-                        'playstore' => Helper::$market_link['playstore'],
-                        'bank' => Helper::$market_link['bazaar'],
-                    ]
+                    'market' => Variable::MARKET_LINKS
                 ],
                 'questions' => [
                     [
@@ -115,26 +110,8 @@ class UserController extends Controller
                 ],
 
             ],
-            'marketing' => [
-                'title' => str_replace(['b', 'a'], $percents->map(function ($e) {
-                    return round($e * 100);
-                })->toArray(), "در صورت استفاده دیگران از کد دعوت شما، خریدار a درصد تخفیف گرفته، همچنین b درصد از مبلغ خرید به حساب شما واریز می شود"),
-                'commission' => $percents[0] * 100,
-                'discount' => $percents[1] * 100,
-                'messages' => [
-                    "🧮دنبال سیگنال های 📊بورسی،💶کریپتو،💰فارکس هستی؟
-📈نمیدونی چه زمانی خرید و فروش کنی؟📉
-💡اخبار و آموزش های ترید رو لازم داری؟💡
-🚦من بهت ابلاغیه من رو پیشنهاد میکنم.🚦
-ابلاغیه من💵همیار تجارت شما
-لینک دانلود:
- *
-کد تخفیف * درصدی مخصوص شما: *
-",
 
-                ]
-            ],
-            'ticket_statuses' => Helper::$TICKET_STATUSES,
+            'ticket_statuses' => Variable::TICKET_STATUSES,
             'keys' => [
                 'bazaar' => env('BAZAAR_RSA'),
                 'myket' => env('MYKET_RSA'),
