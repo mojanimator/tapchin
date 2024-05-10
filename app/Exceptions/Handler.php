@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use App\Http\Helpers\Telegram;
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -50,5 +52,16 @@ class Handler extends ExceptionHandler
 //                Telegram::logAdmins(print_r([$e->getMessage(), $e->getLine(), $e->getFile()], true), null, Telegram::TOPIC_BUGS);
 
         });
+    }
+
+    public function render($request, $exception)
+    {
+        if ($exception instanceof AuthorizationException) {
+            return response()->json([
+                'message' => __('first_login_or_register')
+            ], 401);
+        }
+
+        return parent::render($request, $exception);
     }
 }
