@@ -31,10 +31,12 @@ class SmsHelper
         DB::table('sms_verify')->where('phone', $phone)->delete();
     }
 
-    public static function addCode($phone, $code)
+    public static function addCode($phone, $code, $limit = 1)
     {
+        if (DB::table('sms_verify')->where('phone', $phone)->where('created_at', '>', Carbon::now()->subMinutes($limit))->exists())
+            return 'repeat';
         self::deleteCode($phone);
-        DB::table('sms_verify')->insert(
+        return DB::table('sms_verify')->insert(
             ['code' => $code, 'phone' => $phone]
         );
     }
