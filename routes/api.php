@@ -43,7 +43,6 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
         Route::post('logout', 'AppAPIController@logout');
-        Route::get('getuser', 'AppAPIController@getUser');
         Route::get('like', 'AppAPIController@like');
         Route::get('settings', [UserController::class, 'settings'])->name('api.user.settings');
         Route::post('logout', [UserController::class, 'logout']);
