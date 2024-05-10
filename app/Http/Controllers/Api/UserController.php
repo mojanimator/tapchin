@@ -6,6 +6,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Util;
+use App\Http\Helpers\Variable;
+use App\Models\Cart;
+use App\Models\Pack;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
@@ -19,8 +23,9 @@ class UserController extends Controller
 {
     protected function settings(Request $request)
     {
-        $percents = Setting::whereIn('id', [1, 2])->pluck('value');
         $hides = ['myket' => false, 'bazaar' => false, 'playstore' => false, 'bank' => false];
+        $socials = Setting::where('key', 'like', 'social_%')->get();
+
         return response()->json([
 //            'payment' => null,
 
@@ -29,24 +34,26 @@ class UserController extends Controller
 
 
             'hides' => $hides,
-            'categories' => [],
-            'admins' => collect(Helper::$admins)->map(function ($el, $idx) {
-                return ['id' => $idx, 'name' => $el['name']];
-            })->values(),
-            'types' => [],
-            'plans' => Helper::$plans,
-            'links' => Link::where('is_active', true)->orderBy('id', 'ASC')->get(),
+            'cart' => Cart::getData(),
+            'cities' => Variable::$CITIES,
+            'is_auction' => Setting::getValue('is_auction'),
+            'units' => Variable::PRODUCT_UNITS,
+            'packs' => Pack::get(),
+            'grades' => Variable::GRADES,
+            'products' => Product::select('id', 'name')->whereStatus('active')->orderBy('order_count', 'DESC')->get(),
+            'user_location' => User::getLocation(Variable::$CITIES),
+            'socials' => [
+                'whatsapp' => "https://wa.me/" . optional($socials->where('key', 'social_whatsapp')->first())->value,
+                'telegram' => "https://t.me/" . optional($socials->where('key', 'social_telegram')->first())->value,
+                'phone' => optional($socials->where('key', 'social_phone')->first())->value,
+                'email' => optional($socials->where('key', 'social_email')->first())->value,
+                'address' => optional($socials->where('key', 'social_address')->first())->value,
+            ],
+
 
             'app_info' => [
-                'version' => Helper::$APP_VERSION,
-                'vip_links' => [
-                    ['name' => 'پیامک', 'url' => 'sms:00989018945844', 'color' => 0xff7209b7, 'icon' => 'email.png'],
+                'version' => Variable::APP_VERSION,
 
-//                    ['name' => 'تلگرام', 'url' => 'https://t.me/m_rajabi98', 'color' => 0xff4477CE, 'icon' => 'telegram.png'],
-//                    ['name' => 'ایتا', 'url' => 'https://eitaa.com/m_rajabi98', 'color' => 0xffFF9209, 'icon' => 'eitaa.png'],
-                    ['name' => 'تلگرام', 'url' => 'https://t.me/develowper', 'color' => 0xff4477CE, 'icon' => 'telegram.png'],
-                    ['name' => 'ایتا', 'url' => 'https://eitaa.com/vartastudio', 'color' => 0xffFF9209, 'icon' => 'eitaa.png'],
-                ],
                 'contact_links' => [
                     ['name' => 'پیامک', 'url' => 'sms:00989351414815', 'color' => 0xff7209b7, 'icon' => 'email.png'],
                     ['name' => 'تلگرام', 'url' => 'https://t.me/Lord2095', 'color' => 0xff4477CE, 'icon' => 'telegram.png'],

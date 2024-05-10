@@ -39,6 +39,7 @@ class Variable
 {
 
 
+    const APP_VERSION = 1;
     const LANGS = ['fa', 'en', 'ar'];
 
     const MARKETS = ['bazaar', 'myket', 'playstore', 'site'];

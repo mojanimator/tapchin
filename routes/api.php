@@ -25,7 +25,7 @@ Route::post('/chat/broadcast', [App\Http\Controllers\PushController::class, 'bro
 Route::post('/chat/chatsupporthistory', [App\Http\Controllers\PushController::class, 'chatSupportHistory'])->name('chat.support.history');
 
 
-Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('eblagh.payment.done');
+Route::any('payment/done', [TransactionController    ::class, 'payDone'])->name('api.user.payment.done');
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -37,7 +37,7 @@ Route::prefix('v1')->group(function () {
     Route::get('payment/bazaar/token', [PaymentController::class, 'getBazaarToken'])->name('v2.payment.bazaar.token');
 
 
-    Route::any('payment/done', [PaymentController::class, 'payDone'])->name('eblagh.payment.done');
+    Route::any('payment/done', [PaymentController::class, 'payDone'])->name('api.user.payment.done');
 
 
     Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
@@ -45,31 +45,31 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', 'AppAPIController@logout');
         Route::get('getuser', 'AppAPIController@getUser');
         Route::get('like', 'AppAPIController@like');
-        Route::get('settings', [UserController::class, 'settings'])->name('eblagh.settings');
+        Route::get('settings', [UserController::class, 'settings'])->name('api.user.settings');
         Route::post('logout', [UserController::class, 'logout']);
-        Route::get('user/info', [UserController::class, 'info'])->name('eblagh.user.info');
+        Route::get('user/info', [UserController::class, 'info'])->name('api.user.info');
 
-        Route::post('payment/create', [PaymentController::class, 'create'])->name('eblagh.payment.create');
-        Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('eblagh.payment.transaction.search');
-        Route::post('payment/buy', [PaymentController::class, 'buy'])->name('eblagh.payment.buy');
-        Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('eblagh.user.password.change');
-        Route::post('user/updateemail', [UserController::class, 'updateEmail'])->name('eblagh.user.email.update');
-        Route::post('user/updateavatar', [UserController::class, 'updateAvatar'])->name('eblagh.user.avatar.update');
-        Route::post('user/update', [UserController::class, 'update'])->name('eblagh.user.update');
-        Route::post('user/bookmark', [UserController::class, 'bookmark'])->name('eblagh.user.bookmark');
+        Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
+        Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('api.user.payment.transaction.search');
+        Route::post('payment/buy', [PaymentController::class, 'buy'])->name('api.user.payment.buy');
+        Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('api.user.user.password.change');
+        Route::post('user/updateemail', [UserController::class, 'updateEmail'])->name('api.user.user.email.update');
+        Route::post('user/updateavatar', [UserController::class, 'updateAvatar'])->name('api.user.user.avatar.update');
+        Route::post('user/update', [UserController::class, 'update'])->name('api.user.user.update');
+        Route::post('user/bookmark', [UserController::class, 'bookmark'])->name('api.user.user.bookmark');
 
-        Route::get('sms/activation', [UserController::class, 'sendActivationCode'])->name('eblagh.sms.activation')->middleware('throttle:sms_limit');
+        Route::get('sms/activation', [UserController::class, 'sendActivationCode'])->name('api.user.sms.activation')->middleware('throttle:sms_limit');
 
-        Route::get('tutorial/search', [TutorialController::class, 'searchApi'])->name('eblagh.api.tutorial.search');
+        Route::get('tutorial/search', [TutorialController::class, 'searchApi'])->name('api.user.api.user.tutorial.search');
 
     });
     Route::middleware('throttle:sms_limit')->group(function () {
-        Route::post('user/register', [UserController::class, 'register'])->name('v2.api.user.register');
-        Route::post('user/forget', [UserController::class, 'forget'])->name('v2.api.user.forget');
-        Route::post('user/preAuth', [UserController::class, 'preAuth'])->name('v2.api.user.preAuth');
-        Route::post('user/login', [UserController::class, 'login'])->name('v2.api.user.login');
-        Route::post('/adv/click', [AdvController::class, 'click'])->name('api.adv.click');
-        Route::get('/adv/search', [AdvController::class, 'search'])->name('api.adv.search');
+        Route::post('user/register', [UserController::class, 'register'])->name('v2.api.user.user.register');
+        Route::post('user/forget', [UserController::class, 'forget'])->name('v2.api.user.user.forget');
+        Route::post('user/preAuth', [UserController::class, 'preAuth'])->name('v2.api.user.user.preAuth');
+        Route::post('user/login', [UserController::class, 'login'])->name('v2.api.user.user.login');
+        Route::post('/adv/click', [AdvController::class, 'click'])->name('api.user.adv.click');
+        Route::get('/adv/search', [AdvController::class, 'search'])->name('api.user.adv.search');
 
     });
 });
