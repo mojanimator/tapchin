@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function () {
     Route::any('payment/done', [PaymentController::class, 'payDone'])->name('eblagh.payment.done');
 
 
-    Route::middleware(['auth:sanctum', 'scopes:user'])->group(function () {
+    Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
         Route::post('logout', 'AppAPIController@logout');
         Route::get('getuser', 'AppAPIController@getUser');
