@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
+use App\Models\Adv;
 use App\Models\Cart;
 use App\Models\City;
 use App\Models\Pack;
