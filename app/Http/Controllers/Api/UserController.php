@@ -8,6 +8,7 @@ use App\Http\Helpers\SmsHelper;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Models\Cart;
+use App\Models\City;
 use App\Models\Pack;
 use App\Models\Product;
 use App\Models\Setting;
@@ -25,7 +26,7 @@ class UserController extends Controller
     {
         $hides = ['myket' => false, 'bazaar' => false, 'playstore' => false, 'bank' => false];
         $socials = Setting::where('key', 'like', 'social_%')->get();
-
+        Variable::$CITIES = City::orderby('name')->get();
         return response()->json([
 //            'payment' => null,
 
