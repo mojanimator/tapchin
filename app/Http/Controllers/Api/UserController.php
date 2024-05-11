@@ -360,10 +360,10 @@ class UserController extends Controller
         $user_sms = DB::table('sms_verify')->where('phone', $request->phone);
         if ($user_sms->where('code', $request->password)->exists() || password_verify($request->password, $user->password)) {
             $user->tokens()->delete();
-            $user->token = $user->createToken($user->id, ['user'])->accessToken;
             if ($request->push_id)
                 $user->push_id = $request->push_id;
             $user->save();
+            $user->token = $user->createToken($user->id, ['user'])->plainTextToken;
             $user->status = 'success';
             $user->message = 'خوش آمدید';
             $user_sms->delete();
