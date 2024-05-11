@@ -118,6 +118,11 @@ class UserController extends Controller
                 'bazaar' => env('BAZAAR_RSA'),
                 'myket' => env('MYKET_RSA'),
             ],
+            'dates' => [
+                'years' => range(1420, 1330),
+                'days' => range(1, 31),
+                'months' => range(1, 12),
+            ],
             'adv' => [
                 'type' => [
                     'standard' => 'tapsell',//
@@ -157,11 +162,7 @@ class UserController extends Controller
 
                 ],
                 'data' => Adv::where('is_active', true)->get(),
-                'dates' => [
-                    'years' => range(1420, 1330),
-                    'days' => range(1, 31),
-                    'months' => range(1, 12),
-                ],
+
 
             ],
 
