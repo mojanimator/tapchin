@@ -53,5 +53,15 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+        RateLimiter::for('sms_limit', function (Request $request) {
+
+            $key = 'sms' . optional($request->user())->id ?: $request->ip();
+
+            return Limit::perMinute(10)->by($key)->response(function ($request, $headers) {
+                $seconds = $headers['Retry-After'] ? intval($headers['Retry-After'] / 60) : 60;
+
+                return response()->json(['errors' => ['phone' => [sprintf(__('sms_rate_limit'), $seconds)]]], 429);
+            });
+        });
     }
 }
