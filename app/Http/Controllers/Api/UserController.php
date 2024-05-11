@@ -340,10 +340,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/',
         ], [
-            'phone.required' => 'شماره تماس نمی تواند خالی باشد',
-            'phone.numeric' => 'شماره تماس باید عدد باشد',
-            'phone.digits' => 'شماره تماس  11 رقم و با 09 شروع شود',
-            'phone.regex' => 'شماره تماس  11 رقم و با 09 شروع شود',
+            'phone.required' => sprintf(__("validator.required"), __('phone')),
+            'phone.numeric' => sprintf(__("validator.numeric"), __('phone')),
+            'phone.digits' => sprintf(__("validator.digits"), __('phone'), 11),
+            'phone.regex' => sprintf(__("validator.digits"), __('phone'), 11),
 
         ]);
         if ($validator->fails()) {
