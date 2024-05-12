@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\VariationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -43,10 +44,12 @@ Route::prefix('v1')->group(function () {
     Route::get('settings', [UserController::class, 'settings'])->name('api.user.settings');
     Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
-        Route::post('logout', 'AppAPIController@logout');
-        Route::get('like', 'AppAPIController@like');
         Route::post('logout', [UserController::class, 'logout']);
         Route::get('user/info', [UserController::class, 'info'])->name('api.user.info');
+
+        Route::get('/variation/search', [VariationController::class, 'search'])->name('variation.search');
+        Route::get('/variation/{id}/{name}', [VariationController::class, 'view'])->name('variation.view');
+
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
         Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('api.user.payment.transaction.search');
