@@ -28,6 +28,7 @@ class UserController extends Controller
         $hides = ['myket' => false, 'bazaar' => false, 'playstore' => false, 'bank' => false];
         $socials = Setting::where('key', 'like', 'social_%')->get();
         Variable::$CITIES = City::orderby('name')->get();
+        Variable::$CITIES->prepend(new City(['name' => __('all'), 'id' => 0]));
         return response()->json([
 //            'payment' => null,
 
