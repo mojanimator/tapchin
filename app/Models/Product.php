@@ -21,7 +21,8 @@ class Product extends Model
         'description',
     ];
     protected $casts = [
-
+        'order_count' => "integer",
+        'rate' => "integer",
     ];
 
 }
