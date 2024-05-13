@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariationController;
 use Illuminate\Http\Request;
@@ -49,6 +50,8 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/variation/search', [VariationController::class, 'search'])->name('variation.search');
         Route::get('/variation/{id}/{name}', [VariationController::class, 'view'])->name('variation.view');
+
+        Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
