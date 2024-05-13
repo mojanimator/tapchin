@@ -26,7 +26,7 @@ class UserController extends Controller
     protected function settings(Request $request)
     {
         $hides = ['myket' => false, 'bazaar' => false, 'playstore' => false, 'bank' => false];
-        $socials = Setting::where('key', 'like', 'social_%')->get();
+        $settings = Setting::get();
         Variable::$CITIES = City::orderby('name')->get();
         Variable::$CITIES->prepend(new City(['name' => __('all_provinces'), 'id' => 0, 'level' => 1]));
         Variable::$CITIES->prepend(new City(['name' => __('all_counties'), 'id' => 0, 'level' => 2]));
@@ -41,24 +41,23 @@ class UserController extends Controller
             'hides' => $hides,
             'cart' => Cart::getData(),
             'cities' => Variable::$CITIES,
-            'is_auction' => Setting::getValue('is_auction'),
             'units' => Variable::PRODUCT_UNITS,
             'packs' => Pack::get(),
             'grades' => Variable::GRADES,
             'products' => Product::select('id', 'name')->whereStatus('active')->orderBy('order_count', 'DESC')->get(),
             'user_location' => User::getLocation(Variable::$CITIES),
             'socials' => [
-                'whatsapp' => "https://wa.me/" . optional($socials->where('key', 'social_whatsapp')->first())->value,
-                'telegram' => "https://t.me/" . optional($socials->where('key', 'social_telegram')->first())->value,
-                'phone' => optional($socials->where('key', 'social_phone')->first())->value,
-                'email' => optional($socials->where('key', 'social_email')->first())->value,
-                'address' => optional($socials->where('key', 'social_address')->first())->value,
+                'whatsapp' => "https://wa.me/" . optional($settings->where('key', 'social_whatsapp')->first())->value,
+                'telegram' => "https://t.me/" . optional($settings->where('key', 'social_telegram')->first())->value,
+                'phone' => optional($settings->where('key', 'social_phone')->first())->value,
+                'email' => optional($settings->where('key', 'social_email')->first())->value,
+                'address' => optional($settings->where('key', 'social_address')->first())->value,
             ],
 
 
             'app_info' => [
                 'version' => Variable::APP_VERSION,
-
+                'is_auction' => $settings->where('key', 'is_auction')->first()->value ?? false,
                 'support_links' => [
                     ['name' => 'پیامک', 'url' => 'sms:00989351414815', 'color' => 0xff7209b7, 'icon' => 'email.png'],
                     ['name' => 'تلگرام', 'url' => 'https://t.me/Lord2095', 'color' => 0xff4477CE, 'icon' => 'telegram.png'],
