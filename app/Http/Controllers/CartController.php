@@ -124,7 +124,8 @@ class CartController extends Controller
         $taxPercent = Setting::getValue('tax_percent') ?? 0;
 
         //add/remove/update an item
-        if ($productId && (is_int(intVal($qty)))) {
+        $qty = intVal($qty);
+        if ($productId) {
 
             $cartItem = $cartItems->where('variation_id', $productId)->first();
             $product = optional($cartItem)->getRelation('product') ?? Variation::find($productId);
