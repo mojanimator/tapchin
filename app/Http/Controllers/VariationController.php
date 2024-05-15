@@ -67,7 +67,6 @@ class VariationController extends Controller
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
 
-        Telegram::sendMessage(Telegram::LOGS[0], print_r($parentIds, true));
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
