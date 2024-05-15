@@ -67,6 +67,7 @@ class VariationController extends Controller
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
 
+        Telegram::sendMessage(Telegram::LOGS[0], print_r($parentIds, true));
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
@@ -194,7 +195,7 @@ class VariationController extends Controller
             if ($data) {
                 if ($request->img) {
                     Util::createImage($request->img, Variable::IMAGE_FOLDERS[Variation::class], 'thumb', $data->id, 500);
-                
+
                 } else {
                     $path = Storage::path("public/products/$data->product_id.jpg");
 
