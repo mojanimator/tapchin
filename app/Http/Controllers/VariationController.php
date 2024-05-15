@@ -57,7 +57,7 @@ class VariationController extends Controller
 
         $search = $request->search;
         $inShop = $request->in_shop;
-        $parentIds = is_array($request->parent_ids) ? $request->parent_ids : explode(',', $request->parent_ids);
+        $parentIds = $request->parent_ids ? (is_array($request->parent_ids) ? $request->parent_ids : explode(',', $request->parent_ids)) : null;
         $districtId = $request->district_id;
         $countyId = $request->county_id;
         $provinceId = $request->province_id;
