@@ -195,6 +195,7 @@ class CartController extends Controller
             $cartItem->total_discount = $isAuctionItem ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
             $cartItem->total_price = $itemTotalPrice;
             $cartItem->total_weight = $cartItem->qty * $product->weight;
+            $cartItem->per_weight_price = round($itemTotalPrice / $cartItem->total_weight);
             $cart->total_items_price += $itemTotalPrice;
             $cart->total_items_discount += $cartItem->total_discount;
             $cart->total_weight += $cartItem->total_weight;
