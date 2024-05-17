@@ -323,13 +323,14 @@ export default {
                 return Math.round(elapsed / msPerMinute) + ` ${this.__('minute')} ${this.__('ago')}`;
             } else if (elapsed < msPerDay) {
                 return Math.round(elapsed / msPerHour) + ` ${this.__('hour')} ${this.__('ago')}`;
-            } else if (elapsed < msPerMonth) {
-                return '' + Math.round(elapsed / msPerDay) + ` ${this.__('day')} ${this.__('ago')}`;
-            } else if (elapsed < msPerYear) {
-                return '' + Math.round(elapsed / msPerMonth) + ` ${this.__('month')} ${this.__('ago')}`;
-            } else {
-                return '' + Math.round(elapsed / msPerYear) + ` ${this.__('year')} ${this.__('ago')}`;
-            }
+            } else return '';
+            // else if (elapsed < msPerMonth) {
+            //     return '' + Math.round(elapsed / msPerDay) + ` ${this.__('day')} ${this.__('ago')}`;
+            // } else if (elapsed < msPerYear) {
+            //     return '' + Math.round(elapsed / msPerMonth) + ` ${this.__('month')} ${this.__('ago')}`;
+            // } else {
+            //     return '' + Math.round(elapsed / msPerYear) + ` ${this.__('year')} ${this.__('ago')}`;
+            // }
         }
     },
 
