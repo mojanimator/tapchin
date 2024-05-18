@@ -44,7 +44,10 @@
     </svg>
 
     <Footer/>
-    <SupportChat :dir="dir()" id="support-chat" :ip="$page.props.ip" :broadcast-link="route('chat.broadcast')"
+
+    <SupportChat v-if="route().current('/') || route().current('shop.index')" :dir="dir()" id="support-chat"
+                 :ip="$page.props.ip"
+                 :broadcast-link="route('chat.broadcast')"
                  :support-history-link="route('chat.support.history')"/>
   </App>
   <!--Footer-->

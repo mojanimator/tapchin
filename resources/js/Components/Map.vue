@@ -280,7 +280,8 @@ export default {
       //add your api key
       var params = {
         headers: {
-          'Api-Key': import.meta.env.VITE_MAP_SERVICE_API
+          'Api-Key': import.meta.env.VITE_MAP_SERVICE_API,
+
         },
 
       };

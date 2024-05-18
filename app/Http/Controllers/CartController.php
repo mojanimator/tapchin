@@ -8,6 +8,7 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Admin;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
 use App\Models\RepositoryCartItem;
 use App\Models\UserFinancial;
 use App\Models\Variation;
@@ -90,6 +91,7 @@ class CartController extends Controller
             'last_activity' => Carbon::now(),
             'order_id' => null,
         ]);
+
         //set cart address
         $addresses = $user->addresses ?? [];
         //clear address
@@ -176,7 +178,7 @@ class CartController extends Controller
         $errors = $cart->errors ?? [];
         foreach ($cartItems as $cartItem) {
 //            dd($cartItems);
-            $product = $cartItem->getRelation('product');
+            $product = $cartItem->getRelation('product') ?? (object)['in_shop' => 0, 'name' => '', 'min_allowed' => 0, 'auction_price' => 0, 'price' => 0, 'weight' => 0,];
             if (($cartItem->qty ?? 0) > ($product->in_shop ?? 0)) {
 //                $cartItem->qty = $product->in_shop;
 //                $cartItem->save();
@@ -195,7 +197,7 @@ class CartController extends Controller
             $cartItem->total_discount = $isAuctionItem ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
             $cartItem->total_price = $itemTotalPrice;
             $cartItem->total_weight = $cartItem->qty * $product->weight;
-            $cartItem->per_weight_price = round($itemTotalPrice / $cartItem->total_weight);
+            $cartItem->per_weight_price = $cartItem->total_weight ? round($itemTotalPrice / $cartItem->total_weight) : 0;
             $cart->total_items_price += $itemTotalPrice;
             $cart->total_items_discount += $cartItem->total_discount;
             $cart->total_weight += $cartItem->total_weight;
@@ -481,7 +483,7 @@ class CartController extends Controller
                 $cartItem = $item['cart_item'];
                 $repoLocation = $item['repo_location'];
                 $distance = Util::distance($cart->address['lat'] ?? null, $cart->address['lon'] ?? null, explode(',', $repoLocation)[0] ?? null, explode(',', $repoLocation)[1] ?? null, 'k');
-                $product = $cartItem->getRelation('product');
+                $product = $cartItem->getRelation('product') ?? new Variation;
                 $totalWeight += $product->weight * $cartItem->qty;
                 $totalShippingPrice += ($product->weight * $cartItem->qty * ($item['shipping']['per_weight_price'] ?? 0));
                 $basePrice = $basePrice > 0 ? $basePrice : ($item['shipping']['base_price'] ?? 0) + ($distance * ($item['shipping']['per_distance_price'] ?? 0));
