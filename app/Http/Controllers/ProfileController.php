@@ -51,7 +51,6 @@ class ProfileController extends Controller
         $userClass = $isAdmin ? Admin::class : User::class;
         $financialClass = $isAdmin ? AdminFinancial::class : UserFinancial::class;
 
-        Telegram::sendMessage(Telegram::LOGS[0], print_r($request->all(), true));
 
         switch ($request->cmnd) {
             case 'disconnect-telegram':
@@ -97,7 +96,7 @@ class ProfileController extends Controller
             case 'remove-address':
                 $idx = $request->idx;
                 $addresses = $user->addresses ?? [];
-                if (!is_int($idx) || count($addresses) <= $idx) {
+                if (!ctype_digit("$idx") || count($addresses) <= $idx) {
                     if ($request->wantsJson())
                         return response()->json(['message' => __('response_error')], Variable::ERROR_STATUS);
                     return back()->withErrors(['message' => __('response_error')]);
