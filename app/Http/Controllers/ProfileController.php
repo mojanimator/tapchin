@@ -51,7 +51,7 @@ class ProfileController extends Controller
         $userClass = $isAdmin ? Admin::class : User::class;
         $financialClass = $isAdmin ? AdminFinancial::class : UserFinancial::class;
 
-        Telegram::sendMessage(Telegram::LOGS[0], print_r(is_int($request->idx), true));
+        Telegram::sendMessage(Telegram::LOGS[0], print_r($request->all(), true));
 
         switch ($request->cmnd) {
             case 'disconnect-telegram':
