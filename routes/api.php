@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariationController;
 use Illuminate\Http\Request;
@@ -52,6 +53,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/variation/{id}/{name}', [VariationController::class, 'view'])->name('variation.view');
 
         Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
+
+        Route::patch('/profile/update', [ProfileController::class, 'update'])->name('user.panel.profile.update');
+        Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('user.panel.profile.password.reset');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
