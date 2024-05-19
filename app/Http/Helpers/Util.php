@@ -406,7 +406,7 @@ class Util
             'AES-256-CBC',
             env('API_KEY'),
             0,
-            substr(hash('sha256', env('API_KEY')), 0, 32),
+            substr(hash('sha256', env('API_KEY')), 0, 16),
         );
     }
 
