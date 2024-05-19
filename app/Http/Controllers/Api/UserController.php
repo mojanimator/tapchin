@@ -15,7 +15,9 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
+use Faker\Extension\Helper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -36,7 +38,14 @@ class UserController extends Controller
 
 //            'payment' => auth()->id() == 1 ? 'bazaar' : 'bank',
             'payment' => in_array($request->market, ['bank', 'bazaar'/*, 'myket'*/]) ? 'bank' : $request->market,
-
+            'map' => [
+                'type' => 'neshan',
+                'neshan' => [
+                    'geo' => 'https://api.neshan.org/v1/search',
+                    'rgeo' => 'https://api.neshan.org/v5/reverse',
+                    'api' => Util::encrypt(env('vite_map_service_api'))
+                ]
+            ],
 
             'hides' => $hides,
             'cart' => Cart::getData(),

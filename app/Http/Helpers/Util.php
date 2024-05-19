@@ -399,5 +399,16 @@ class Util
 
     }
 
+    public static function encrypt($str)
+    {
+        return openssl_encrypt(
+            $str,
+            'AES-256-CBC',
+            env('API_KEY'),
+            0,
+            substr(hash('sha256', env('API_KEY')), 0, 32),
+        );
+    }
+
 
 }
