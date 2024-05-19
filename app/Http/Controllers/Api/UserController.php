@@ -174,7 +174,7 @@ class UserController extends Controller
     function info(Request $request)
     {
 
-        $user = auth()->user() ?: auth('eblagh-api')->user();
+        $user = auth('sanctum')->user() ?: auth('api')->user();
         if ($user) {
             $user->status = 'success';
         }
