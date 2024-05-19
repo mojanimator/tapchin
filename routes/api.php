@@ -43,8 +43,8 @@ Route::prefix('v1')->group(function () {
     Route::any('payment/done', [PaymentController::class, 'payDone'])->name('api.user.payment.done');
 
 
-    Route::get('settings', [UserController::class, 'settings'])->name('api.user.settings');
     Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+        Route::get('settings', [UserController::class, 'settings'])->name('api.user.settings');
 
         Route::post('logout', [UserController::class, 'logout']);
         Route::get('user/info', [UserController::class, 'info'])->name('api.user.info');
