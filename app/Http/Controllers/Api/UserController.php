@@ -42,7 +42,7 @@ class UserController extends Controller
 
                 'geo' => 'https://api.neshan.org/v1/search',
                 'rgeo' => 'https://api.neshan.org/v5/reverse',
-                'api' => Util::encrypt(env('vite_map_service_api'))
+                'api' => Util::encrypt(env('VITE_MAP_SERVICE_API'))
 
             ],
 
