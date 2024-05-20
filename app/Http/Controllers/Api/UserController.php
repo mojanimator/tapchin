@@ -39,12 +39,11 @@ class UserController extends Controller
 //            'payment' => auth()->id() == 1 ? 'bazaar' : 'bank',
             'payment' => in_array($request->market, ['bank', 'bazaar'/*, 'myket'*/]) ? 'bank' : $request->market,
             'map' => [
-                'type' => 'neshan',
-                'neshan' => [
-                    'geo' => 'https://api.neshan.org/v1/search',
-                    'rgeo' => 'https://api.neshan.org/v5/reverse',
-                    'api' => Util::encrypt(env('vite_map_service_api'))
-                ]
+
+                'geo' => 'https://api.neshan.org/v1/search',
+                'rgeo' => 'https://api.neshan.org/v5/reverse',
+                'api' => Util::encrypt(env('vite_map_service_api'))
+
             ],
 
             'hides' => $hides,
