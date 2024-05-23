@@ -83,6 +83,7 @@ class VariationController extends Controller
                 $data->province_id = $repository->province_id;
                 $data->county_id = $repository->county_id;
                 $data->district_id = $repository->district_id;
+                $data->url = route('variation.view', ['id' => $data->id, 'name' => $data->name]);
             }
             return response()->json($data);
         }
