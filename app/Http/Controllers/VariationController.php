@@ -55,6 +55,7 @@ class VariationController extends Controller
 //        DB::statement("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));");
 //        $user = auth()->user();
 
+        $id = $request->id;
         $search = $request->search;
         $inShop = $request->in_shop;
         $parentIds = $request->parent_ids ? (is_array($request->parent_ids) ? $request->parent_ids : explode(',', $request->parent_ids)) : null;
@@ -66,6 +67,10 @@ class VariationController extends Controller
         $dir = $request->dir ?? 'DESC';
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
+
+        if ($id) {
+            return response()->json(Variation::find($id));
+        }
 
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
