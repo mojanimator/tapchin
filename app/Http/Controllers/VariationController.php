@@ -69,19 +69,20 @@ class VariationController extends Controller
         $grade = $request->grade;
 
         if ($id) {
-            $data=Variation::with('repository')->find($id);
-            $repository=$data->getRelation('repository')??new Repository;
+            $data = Variation::with('repository')->find($id);
+            $repository = $data->getRelation('repository') ?? new Repository;
 
-            $data->repo_name=$repository->name;
-            if($data) {
+            if ($data) {
                 $data->gallery = Variation::getImages($data->id, false);
-                $product=Product::find($data->product_id)??new Product;
-                $data->description=$data->description??$product->description;
-                $data->order_count= $product->order_count??0;
-                $data->rate= $product->rate??0;
-                $data->province_id= $repository->province_id;
-                $data->county_id= $repository->county_id;
-                $data->district_id= $repository->district_id;
+                $product = Product::find($data->product_id) ?? new Product;
+                $data->description = $data->description ?? $product->description;
+                $data->order_count = $product->order_count ?? 0;
+                $data->rate = $product->rate ?? 0;
+                $data->repo_name = $repository->name;
+                $data->repo_address = $repository->address;
+                $data->province_id = $repository->province_id;
+                $data->county_id = $repository->county_id;
+                $data->district_id = $repository->district_id;
             }
             return response()->json();
         }
