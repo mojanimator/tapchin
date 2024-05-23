@@ -79,6 +79,7 @@ class VariationController extends Controller
                 $data->order_count = $product->order_count ?? 0;
                 $data->rate = $product->rate ?? 0;
                 $data->repo_name = $repository->name;
+                $data->repo_phone = $repository->phone?? Agency::first($repository->agency_id)->phone??null;
                 $data->repo_address = $repository->address;
                 $data->province_id = $repository->province_id;
                 $data->county_id = $repository->county_id;
