@@ -84,7 +84,7 @@ class VariationController extends Controller
                 $data->county_id = $repository->county_id;
                 $data->district_id = $repository->district_id;
             }
-            return response()->json();
+            return response()->json($data);
         }
 
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
