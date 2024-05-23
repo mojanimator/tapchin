@@ -194,6 +194,8 @@ class CartController extends Controller
 
             $itemTotalPrice = $cartItem->qty * ($isAuctionItem ? $product->auction_price : $product->price);
 //            $cartItem->save();
+            $cartItem->url = $product->id ? route('variation.view', ['id' => $product->id, 'name' => $product->name]) : route('/');
+            $cartItem->gallery = $product->id ? Variation::getImages($product->id) : null;
             $cartItem->total_discount = $isAuctionItem ? ($cartItem->qty * ($product->price - $product->auction_price)) : 0;
             $cartItem->total_price = $itemTotalPrice;
             $cartItem->total_weight = $cartItem->qty * $product->weight;
