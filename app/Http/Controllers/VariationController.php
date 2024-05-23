@@ -68,8 +68,25 @@ class VariationController extends Controller
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
 
+        if ($id) {
+            $data=Variation::with('repository')->find($id);
+            $repository=$data->getRelation('repository')??new Repository;
 
-        $query = Variation::join('repositories', function ($join) use ($id, $inShop, $parentIds, $countyId, $districtId, $provinceId) {
+            $data->repo_name=$repository->name;
+            if($data) {
+                $data->gallery = Variation::getImages($data->id, false);
+                $product=Product::find($data->product_id)??new Product;
+                $data->description=$data->description??$product->description;
+                $data->order_count= $product->order_count??0;
+                $data->rate= $product->rate??0;
+                $data->province_id= $repository->province_id;
+                $data->county_id= $repository->county_id;
+                $data->district_id= $repository->district_id;
+            }
+            return response()->json();
+        }
+
+        $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
                 ->where('repositories.is_shop', true)
@@ -80,19 +97,19 @@ class VariationController extends Controller
                 })->where(function ($query) use ($parentIds) {
                     if ($parentIds && is_array($parentIds) && count($parentIds) > 0)
                         $query->whereIntegerInRaw('variations.product_id', $parentIds);
-                })->where(function ($query) use ($provinceId, $id) {
-                    if (!$id && $provinceId === null)
+                })->where(function ($query) use ($provinceId) {
+                    if ($provinceId === null)
                         $query->where('repositories.id', 0);
                     elseif ($provinceId)
                         $query->where('repositories.province_id', $provinceId);
-                })->where(function ($query) use ($countyId, $districtId, $id) {
+                })->where(function ($query) use ($countyId, $districtId) {
 
-                    if (!$id && $countyId === null)
+                    if ($countyId === null)
                         $query->where('repositories.id', 0);
                     elseif ($countyId && intval($districtId) === 0)
                         $query->whereJsonContains('repositories.cities', intval($countyId));
-                })->where(function ($query) use ($districtId, $id) {
-                    if (!$id && $districtId === null)
+                })->where(function ($query) use ($districtId) {
+                    if ($districtId === null)
                         $query->where('repositories.id', 0);
                     elseif ($districtId)
                         $query->whereJsonContains('repositories.cities', intval($districtId));
@@ -118,9 +135,7 @@ class VariationController extends Controller
             ->orderBy("variations.$orderBy", $dir)//
             //            ->orderByRaw("IF(articles.charge >= articles.view_fee, articles.view_fee, articles.id) DESC")
         ;
-        if ($id) {
-            $query->where('variations.id', $id);
-        }
+
         if ($search)
             $query->where('variations.name', 'like', "%$search%");
         if ($grade)
