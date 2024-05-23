@@ -69,7 +69,7 @@ class VariationController extends Controller
         $grade = $request->grade;
 
         if ($id) {
-            return response()->json(Variation::find($id));
+            return response()->json(Variation::with('repository')->find($id));
         }
 
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
