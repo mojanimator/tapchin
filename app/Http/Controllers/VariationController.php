@@ -68,9 +68,6 @@ class VariationController extends Controller
         $paginate = $request->paginate ?: 24;
         $grade = $request->grade;
 
-        if ($id) {
-            return response()->json(Variation::with('repository')->find($id));
-        }
 
         $query = Variation::join('repositories', function ($join) use ($inShop, $parentIds, $countyId, $districtId, $provinceId) {
             $join->on('variations.repo_id', '=', 'repositories.id')
@@ -121,7 +118,9 @@ class VariationController extends Controller
             ->orderBy("variations.$orderBy", $dir)//
             //            ->orderByRaw("IF(articles.charge >= articles.view_fee, articles.view_fee, articles.id) DESC")
         ;
-
+        if ($id) {
+            $query->where('variations.id', $id);
+        }
         if ($search)
             $query->where('variations.name', 'like', "%$search%");
         if ($grade)
