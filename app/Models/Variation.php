@@ -32,14 +32,18 @@ class Variation extends Model
         'min_allowed',
     ];
 
-    public static function getImages($id)
+    public static function getImages($id, $fixedLen = true)
     {
 
-        $images = array_fill(0, Variable::VARIATION_IMAGE_LIMIT, null);
+        $images = $fixedLen ? array_fill(0, Variable::VARIATION_IMAGE_LIMIT, null) : [];
         if (!$id) return $images;
         $allFiles = Storage::allFiles("public/" . Variable::IMAGE_FOLDERS[Variation::class] . "/$id");
+
         foreach ($allFiles as $idx => $path) {
-            $images[$idx] = route('storage.variations') . "/$id/" . basename($path, ""); //suffix=format
+            if ($fixedLen)
+                $images[$idx] = route('storage.variations') . "/$id/" . basename($path, ""); //suffix=format
+            else
+                $images[] = route('storage.variations') . "/$id/" . basename($path, ""); //suffix=format
         }
 
         return $images;
