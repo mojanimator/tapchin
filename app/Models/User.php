@@ -83,7 +83,7 @@ class User extends Authenticatable
     {
         $settings = $this->settings ?? [];
         if (!$pendingOrders && !$readyOrders) {
-            $orders = Order::where('user_id', $this->id)->whereIn('status', ['pending', 'ready'])->select('id', 'status');
+            $orders = Order::where('user_id', $this->id)->whereIn('status', ['pending', 'ready'])->select('id', 'status')->get();
             $settings['pending_orders'] = $orders->where('status', 'pending')->count();
             $settings['ready_orders'] = $orders->where('status', 'ready')->count();
         } elseif ($pendingOrders) {
