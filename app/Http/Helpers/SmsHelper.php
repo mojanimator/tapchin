@@ -50,6 +50,7 @@ class SmsHelper
 
     public function Send($number, $code, $type = self::TEMPLATE_FORGET)
     {
+        return true;
         try {
             date_default_timezone_set("Asia/Tehran");
             $APIKey = self::APIKey;
