@@ -1241,6 +1241,7 @@ class Telegram
                         $msg .= print_r($data, true);
             }
             $msg .= PHP_EOL . "🅳🅰🅱🅴🅻🅲🅷🅸🅽";
+            $to = Telegram::LOGS[0];
             if ($to) {
                 self::sendMessage($to, $msg, null);
 //                Bale::sendMessage($to, $msg, null);
