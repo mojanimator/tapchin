@@ -71,6 +71,7 @@ class TransactionController extends Controller
             $response = Pay::confirmPay($request);
 
 //            Telegram::sendMessage(Telegram::LOGS[0], print_r(Transaction::first()));
+            $pendingOrders = 0;
             $transactions = (!empty($response) && $response['status'] == 'success') ? Transaction::where('pay_id', $response['order_id'])->get() : collect([]);
             $now = Carbon::now();
             foreach ($transactions as $transaction) {
@@ -83,6 +84,7 @@ class TransactionController extends Controller
                 $userType = $user instanceof Admin ? 'admin' : 'user';
                 if ($transaction->for_type == 'order') {
                     Order::where('id', $transaction->for_id)->update(['payed_at' => $now, 'status' => 'processing']);
+                    $pendingOrders--;
                 } elseif ($transaction->type == 'buy-charge') {
                     $financial = Variable::FINANCIALS [$transaction->for_type]::where("{$transaction->for_type}_id", $transaction->for_id)->firstOrNew();
                     $financial->wallet = ($financial->wallet ?? 0) + $transaction->amount;
@@ -93,7 +95,8 @@ class TransactionController extends Controller
                 $transaction->user = $user;
                 Telegram::log(null, 'transaction_created', $transaction);
             }
-
+            if ($pendingOrders)
+                $user->updatePendingOrders($pendingOrders);
             return Inertia::render('Invoice', [
                 'lang' =>
                     [

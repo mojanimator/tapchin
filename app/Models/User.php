@@ -79,6 +79,22 @@ class User extends Authenticatable
         'settings' => 'array',
     ];
 
+    public function updatePendingOrders($pendingOrders = null)
+    {
+        $settings = $this->settings ?? [];
+        if (!$pendingOrders) {
+            $pendingOrders = Order::where('user_id', $this->id)->where('status', 'pending')->count();
+            $settings['pending_orders'] = $pendingOrders;
+        } else {
+            $settings['pending_orders'] = ($settings['pending_orders'] ?? 0) + $pendingOrders;
+            if ($settings['pending_orders'] < 0)
+                $settings['pending_orders'] = 0;
+        }
+        $this->settings = $settings;
+        $this->save();
+
+    }
+
     public function financial()
     {
         return $this->hasOne(UserFinancial::class, 'user_id');
