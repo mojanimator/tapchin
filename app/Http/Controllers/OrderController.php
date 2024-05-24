@@ -246,8 +246,7 @@ class OrderController extends Controller
                         }
                         $shipping->save();
                     }
-                    if($beforeStatus=='pending')
-                    $user->updatePendingOrders();
+                    $user->updateOrderNotifications();
                     Telegram::log(null, 'order_status_edited', $data);
                     return response()->json(['message' => __('updated_successfully'), 'status' => $data->status, 'statuses' => $data->getAvailableStatuses()], $successStatus);
 
@@ -522,7 +521,7 @@ class OrderController extends Controller
                 $uf->save();
             }
             if ($pendingOrders) {
-               $user->updatePendingOrders($pendingOrders);
+               $user->updateOrderNotifications($pendingOrders);
             }
         }
         return response(['status' => 'success', 'message' => $payMethod == 'online' ? __('redirect_to_payment_page') : __('done_successfully'), 'url' => $response['url'], 'user' => $user], Variable::SUCCESS_STATUS);

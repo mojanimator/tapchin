@@ -96,7 +96,7 @@ class TransactionController extends Controller
                 Telegram::log(null, 'transaction_created', $transaction);
             }
             if ($pendingOrders)
-                $user->updatePendingOrders($pendingOrders);
+                $user->updateOrderNotifications($pendingOrders);
             return Inertia::render('Invoice', [
                 'lang' =>
                     [
