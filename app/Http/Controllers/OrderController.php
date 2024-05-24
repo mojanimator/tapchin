@@ -365,6 +365,7 @@ class OrderController extends Controller
         $user = auth('sanctum')->user();
         $cart = $request->cart;
         $payMethod = $cart->payment_method;
+        $pendingOrders = 0;
         if (!$cart) {
             return response()->json(['message' => __('problem_in_create_order'), 'cart' => $cart], Variable::ERROR_STATUS);
         }
@@ -427,6 +428,8 @@ class OrderController extends Controller
                     'user_id' => $cart->user_id,
                     'agency_id' => $cart->agency_id]);
 
+                if ($payMethod == 'online')
+                    $pendingOrders++;
                 $items = [];
                 $shippings = [];
                 foreach ($cart->shipments as $shipment) {
@@ -514,8 +517,14 @@ class OrderController extends Controller
                 $uf->wallet -= $price;
                 $uf->save();
             }
+            if ($pendingOrders) {
+                $settings = $user->settings ?? [];
+                $settings['pending_orders'] = ($settings['pending_orders'] ?? 0) + $pendingOrders;
+                $user->settings = $settings;
+                $user->save();
+            }
         }
-        return response(['status' => 'success', 'message' => $payMethod == 'online' ? __('redirect_to_payment_page') : __('done_successfully'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
+        return response(['status' => 'success', 'message' => $payMethod == 'online' ? __('redirect_to_payment_page') : __('done_successfully'), 'url' => $response['url'], 'user' => $user], Variable::SUCCESS_STATUS);
     }
 
     protected
