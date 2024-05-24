@@ -76,6 +76,7 @@ class User extends Authenticatable
         'wallet_active' => 'boolean',
         'addresses' => 'array',
         'access' => 'array',
+        'settings' => 'array',
     ];
 
     public function financial()
