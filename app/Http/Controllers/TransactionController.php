@@ -281,6 +281,7 @@ class TransactionController extends Controller
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
+        $type = $request->type;
         $query = Transaction::query()->select('*');
         $agencies = [];
 
@@ -288,29 +289,37 @@ class TransactionController extends Controller
             $myAgency = Agency::find($userAdmin->agency_id);
 //            $agencies = $userAdmin->allowedAgencies($myAgency)->select('id', 'name')->get();
             $agencyIds = $userAdmin->allowedAgencies($myAgency)->pluck('id');
-            $query->orWhere(function ($query) use ($agencyIds, $search) {
+            $query->orWhere(function ($query) use ($agencyIds, $search, $type) {
                 $query->where('from_type', 'agency')->whereIntegerInRaw('from_id', $agencyIds)->whereNotNull('payed_at');;
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $search) {
+            })->orWhere(function ($query) use ($agencyIds, $search, $type) {
                 $query->where('to_type', 'agency')->whereIntegerInRaw('to_id', $agencyIds)->whereNotNull('payed_at');;
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search) {
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $type) {
                 $query->where('from_type', 'admin')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search) {
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $type) {
                 $query->where('to_type', 'admin')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
@@ -318,15 +327,19 @@ class TransactionController extends Controller
                     });
             });
         } else {
-            $query->orWhere(function ($query) use ($userAdmin, $search) {
+            $query->orWhere(function ($query) use ($userAdmin, $search, $type) {
                 $query->where('from_type', 'user')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($userAdmin, $search) {
+            })->orWhere(function ($query) use ($userAdmin, $search, $type) {
                 $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');
+                if ($type)
+                    $query->where('type', $type);
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
