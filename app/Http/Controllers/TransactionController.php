@@ -288,29 +288,52 @@ class TransactionController extends Controller
             $myAgency = Agency::find($userAdmin->agency_id);
 //            $agencies = $userAdmin->allowedAgencies($myAgency)->select('id', 'name')->get();
             $agencyIds = $userAdmin->allowedAgencies($myAgency)->pluck('id');
-            $query->orWhere(function ($query) use ($agencyIds) {
+            $query->orWhere(function ($query) use ($agencyIds, $search) {
                 $query->where('from_type', 'agency')->whereIntegerInRaw('from_id', $agencyIds)->whereNotNull('payed_at');;
-            })->orWhere(function ($query) use ($agencyIds) {
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
+            })->orWhere(function ($query) use ($agencyIds, $search) {
                 $query->where('to_type', 'agency')->whereIntegerInRaw('to_id', $agencyIds)->whereNotNull('payed_at');;
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin) {
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search) {
                 $query->where('from_type', 'admin')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin) {
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search) {
                 $query->where('to_type', 'admin')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
             });
         } else {
-            $query->orWhere(function ($query) use ($userAdmin) {
-                $query->where('from_type', 'user')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
-            })->orWhere(function ($query) use ($userAdmin) {
-                $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
+            $query->orWhere(function ($query) use ($userAdmin, $search) {
+                $query->where('from_type', 'user')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
+            })->orWhere(function ($query) use ($userAdmin, $search) {
+                $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');
+                if ($search)
+                    $query->where(function ($query) use ($search) {
+                        $query->orWhere('title', 'like', "%$search%")
+                            ->orWhere('pay_id', 'like', "%$search%");
+                    });
             });
         }
-        if ($search)
-        $query->where('title', 'like', "%$search%");
-//        if ($search)
-//            $query->where(function ($query) use ($search) {
-//                $query->orWhere('title', 'like', "%$search%")
-//                    ->orWhere('pay_id', 'like', "%$search%");
-//            });
 
 
         return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($agencies, $userAdmin) {
