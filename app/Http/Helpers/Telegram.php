@@ -1231,6 +1231,7 @@ class Telegram
 
                     break;
                 case 'error':
+                    $topic = self::TOPIC_BUGS;
                     $msg = ' 📛 ' . ' خطای سیستم ' . PHP_EOL . $data;
                     break;
                 default :

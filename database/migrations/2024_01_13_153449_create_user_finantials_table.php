@@ -14,7 +14,9 @@ return new class extends Migration {
     {
         Schema::create('user_financials', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->unsignedBigInteger('user_id')->nullable()->index();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('no action');
+
             $table->bigInteger('wallet')->default(0);
             $table->unsignedInteger('max_debit')->nullable();
             $table->string('card', 16)->nullable();

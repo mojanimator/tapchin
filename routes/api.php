@@ -3,10 +3,12 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariationController;
+use App\Http\Helpers\Telegram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('senderror', [\App\Http\Controllers\Controller::class, 'sendError']);
+Route::post('senderror', function ($request) {
+    Telegram::log(null, 'error', $request->message);
+});
 Route::post('/bot/getupdates', [BotController::class, 'getupdates']);
 Route::post('/bot/sendmessage', [BotController::class, 'sendmessage']);
 Route::get('/bot/getme', [BotController::class, 'myInfo']);
