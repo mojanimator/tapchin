@@ -69,7 +69,14 @@ class Util
             $image_base64 = base64_decode($image_parts[1]);
             $source = imagecreatefromstring($image_base64);
         } else {
-            $source = imagecreatefromstring("data:image/jpeg;base64," . base64_encode(file_get_contents($img)));
+            $ext = $img->extension();
+            if (preg_match('/jpg|jpeg/i', $ext)) {
+                $source = imagecreatefromjpeg($img);
+            } else if (preg_match('/png/i', $ext)) {
+                $source = imagecreatefrompng($img);
+            } else if (preg_match('/gif/i', $ext)) {
+                $source = imagecreatefromgif($img);
+            }
 
         }
         if (!Storage::exists("public/$type")) {
@@ -414,6 +421,5 @@ class Util
             substr(env('API_KEY'), -16),
         );
     }
-
 
 }
