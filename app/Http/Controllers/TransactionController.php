@@ -122,6 +122,14 @@ class TransactionController extends Controller
 
     }
 
+    /**
+     * @param mixed $target
+     * @param $query
+     * @param mixed $search
+     * @return void
+     */
+
+
     private function getCafeBazaarDiscountPayload($data)
     {
         $payload = [
@@ -281,45 +289,55 @@ class TransactionController extends Controller
         $dir = $request->dir ?: 'DESC';
         $paginate = $request->paginate ?: 24;
         $status = $request->status;
-        $type = $request->type;
+        $target = $request->target;
         $query = Transaction::query()->select('*');
         $agencies = [];
+
+        protected
+        function fiters(mixed $target, $query, mixed $search): void
+        {
+            if ($target == 'wallet')
+                $query->whereIn('type', ['settlement', 'charge']);
+            if ($target == 'order')
+                $query->where(['for_type' => 'order']);
+            if ($search)
+                $query->where(function ($query) use ($search) {
+                    $query->orWhere('title', 'like', "%$search%")
+                        ->orWhere('pay_id', 'like', "%$search%");
+                });
+        }
 
         if ($userAdmin instanceof Admin) {
             $myAgency = Agency::find($userAdmin->agency_id);
 //            $agencies = $userAdmin->allowedAgencies($myAgency)->select('id', 'name')->get();
             $agencyIds = $userAdmin->allowedAgencies($myAgency)->pluck('id');
-            $query->orWhere(function ($query) use ($agencyIds, $search, $type) {
+            $query->orWhere(function ($query) use ($agencyIds, $search, $target) {
                 $query->where('from_type', 'agency')->whereIntegerInRaw('from_id', $agencyIds)->whereNotNull('payed_at');;
-                if ($type)
-                    $query->where('type', $type);
+
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $search, $type) {
+            })->orWhere(function ($query) use ($agencyIds, $search, $target) {
                 $query->where('to_type', 'agency')->whereIntegerInRaw('to_id', $agencyIds)->whereNotNull('payed_at');;
-                if ($type)
-                    $query->where('type', $type);
+
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $type) {
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $target) {
                 $query->where('from_type', 'admin')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');;
-                if ($type)
-                    $query->where('type', $type);
+
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
                             ->orWhere('pay_id', 'like', "%$search%");
                     });
-            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $type) {
+            })->orWhere(function ($query) use ($agencyIds, $userAdmin, $search, $target) {
                 $query->where('to_type', 'admin')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
-                if ($type)
-                    $query->where('type', $type);
+
                 if ($search)
                     $query->where(function ($query) use ($search) {
                         $query->orWhere('title', 'like', "%$search%")
@@ -327,24 +345,12 @@ class TransactionController extends Controller
                     });
             });
         } else {
-            $query->orWhere(function ($query) use ($userAdmin, $search, $type) {
+            $query->orWhere(function ($query) use ($userAdmin, $search, $target) {
                 $query->where('from_type', 'user')->where('from_id', $userAdmin->id)->whereNotNull('payed_at');
-                if ($type)
-                    $query->where('type', $type);
-                if ($search)
-                    $query->where(function ($query) use ($search) {
-                        $query->orWhere('title', 'like', "%$search%")
-                            ->orWhere('pay_id', 'like', "%$search%");
-                    });
-            })->orWhere(function ($query) use ($userAdmin, $search, $type) {
+                fiters($target, $query, $search);
+            })->orWhere(function ($query) use ($userAdmin, $search, $target) {
                 $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');
-                if ($type)
-                    $query->where('type', $type);
-                if ($search)
-                    $query->where(function ($query) use ($search) {
-                        $query->orWhere('title', 'like', "%$search%")
-                            ->orWhere('pay_id', 'like', "%$search%");
-                    });
+                fiters($target, $query, $search);
             });
         }
 
@@ -355,7 +361,6 @@ class TransactionController extends Controller
                     return $item;
                     if ($userAdmin instanceof Admin)
                         $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
-
 
                 }
 
