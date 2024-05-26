@@ -306,8 +306,8 @@ class TransactionController extends Controller
         }
         if ($search)
             $query = $query->where(function ($query) use ($search) {
-                $query->orWhere('title', 'like', "%$search%")
-                    ->orWhere('pay_id', 'like', "%$search%");
+                $query->orWhere('title', 'like', "%$search%");
+//                    ->orWhere('pay_id', 'like', "%$search%")
             });
 
 
