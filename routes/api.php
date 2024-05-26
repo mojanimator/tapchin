@@ -57,6 +57,8 @@ Route::prefix('v1')->group(function () {
         Route::patch('/profile/update', [ProfileController::class, 'update'])->name('user.panel.profile.update');
         Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('user.panel.profile.password.reset');
 
+        Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('user.panel.financial.transaction.search');
+
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
         Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('api.user.payment.transaction.search');
@@ -70,6 +72,7 @@ Route::prefix('v1')->group(function () {
         Route::get('sms/activation', [UserController::class, 'sendActivationCode'])->name('api.user.sms.activation')->middleware('throttle:sms_limit');
 
         Route::get('tutorial/search', [TutorialController::class, 'searchApi'])->name('api.user.api.user.tutorial.search');
+
 
     });
     Route::middleware('throttle:sms_limit')->group(function () {
