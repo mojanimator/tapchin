@@ -293,7 +293,7 @@ class TransactionController extends Controller
         $query = Transaction::query()->select('*');
         $agencies = [];
 
-        protected
+
         function fiters(mixed $target, $query, mixed $search): void
         {
             if ($target == 'wallet')
