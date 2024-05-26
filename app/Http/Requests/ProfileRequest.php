@@ -131,7 +131,7 @@ class ProfileRequest extends FormRequest
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),
             'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
-            'img.size' => sprintf(__("validator.max_size_current"), __("image"), Variable::SITE_IMAGE_LIMIT_MB, round(($this->file('img')->getSize() ?? 0) / (1024 * 1024))),
+            'img.size' => sprintf(__("validator.max_size_current"), __("image"), Variable::SITE_IMAGE_LIMIT_MB, ceil(($this->file('img')->getSize() ?? 0) / (1024 * 1024))),
             'img.mimes' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
 
             'password.required' => sprintf(__("validator.required"), __('password')),
