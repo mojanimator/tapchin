@@ -304,10 +304,11 @@ class TransactionController extends Controller
                 $query->where('to_type', 'user')->where('to_id', $userAdmin->id)->whereNotNull('payed_at');;
             });
         }
+//        $query->orWhere('title', 'like', "%$search%");
         if ($search)
-            $query = $query->where(function ($query) use ($search) {
-                $query->orWhere('title', 'like', "%$search%");
-//                    ->orWhere('pay_id', 'like', "%$search%")
+            $query->where(function ($query) use ($search) {
+                $query->orWhere('title', 'like', "%$search%")
+                    ->orWhere('pay_id', 'like', "%$search%");
             });
 
 
