@@ -59,7 +59,7 @@ class ProfileRequest extends FormRequest
         if ($this->cmnd == 'upload-img')
             $tmp = array_merge($tmp, [
                 'img' => $this->file('img') ?
-                    ['required', 'size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'mimes:jpeg,png,jpg'] :
+                    ['required', 'size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024 * 1024, 'mimes:jpeg,png,jpg'] :
                     ['required', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::BANNER_ALLOWED_MIMES)],
 
             ]);
