@@ -128,6 +128,7 @@
   "validator.required": "%s ضروری است",
   "validator.invalid": "%s نامعتبر است",
   "validator.max_size": "حداکثر حجم مجاز %s %s مگابایت است",
+  "validator.max_size_current": "حداکثر حجم مجاز %s %s مگابایت است. حجم فعلی: %s مگابایت",
   "validator.invalid_format": "فرمت %s نامعتبر است. فرمت های مجاز: %s",
   "validator.starts_with": "%s با %s شروع شود",
   "validator.min": "حداقل مقدار مجاز %s %s است",
