@@ -69,7 +69,7 @@ class Util
             $image_base64 = base64_decode($image_parts[1]);
             $source = imagecreatefromstring($image_base64);
         } else {
-            $source = imagecreatefromstring(base64_encode(file_get_contents($img)));
+            $source = imagecreatefromstring("data:image/jpeg;base64," . base64_encode(file_get_contents($img)));
 
         }
         if (!Storage::exists("public/$type")) {
