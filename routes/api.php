@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariationController;
@@ -58,6 +59,10 @@ Route::prefix('v1')->group(function () {
         Route::patch('/profile/reset-password', [ProfileController::class, 'resetPassword'])->name('user.panel.profile.password.reset');
 
         Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('user.panel.financial.transaction.search');
+
+        Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
+        Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
+        Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
