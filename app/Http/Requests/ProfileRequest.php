@@ -58,7 +58,9 @@ class ProfileRequest extends FormRequest
 
         if ($this->cmnd == 'upload-img')
             $tmp = array_merge($tmp, [
-                'img' => ['required', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::BANNER_ALLOWED_MIMES)],
+                'img' => $this->file('img') ?
+                    ['required', 'size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'mimes:jpeg,png,jpg'] :
+                    ['required', 'base64_image_size:' . Variable::SITE_IMAGE_LIMIT_MB * 1024, 'base64_image_mime:' . implode(",", Variable::BANNER_ALLOWED_MIMES)],
 
             ]);
         if ($this->cmnd == 'password-reset') {
@@ -129,6 +131,8 @@ class ProfileRequest extends FormRequest
             'img.required' => sprintf(__("validator.required"), __('image')),
             'img.base64_image_size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),
             'img.base64_image_mime' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
+            'img.size' => sprintf(__("validator.max_size"), __("image"), Variable::SITE_IMAGE_LIMIT_MB),
+            'img.mimes' => sprintf(__("validator.invalid_format"), __("image"), implode(",", Variable::BANNER_ALLOWED_MIMES)),
 
             'password.required' => sprintf(__("validator.required"), __('password')),
             'password.regex' => sprintf(__("validator.password_regex"),),
