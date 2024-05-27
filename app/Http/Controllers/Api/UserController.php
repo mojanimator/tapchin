@@ -181,7 +181,7 @@ class UserController extends Controller
     function info(Request $request)
     {
 
-        $user = auth('sanctum')->user() ?: auth('api')->user();
+        $user = auth('sanctum')->user()->load('financial');
         if ($user) {
             $user->status = 'success';
         }
