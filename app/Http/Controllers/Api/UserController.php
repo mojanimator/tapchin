@@ -182,9 +182,9 @@ class UserController extends Controller
     {
 
         $user = auth('sanctum')->user()->load('financial');
-//        if ($user) {
-//            $user->status = 'success';
-//        }
+        if ($user) {
+            $user->result = 'success';
+        }
         return $user;
     }
 
