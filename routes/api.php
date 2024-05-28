@@ -67,6 +67,7 @@ Route::prefix('v1')->group(function () {
         Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
         Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
         Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
+        Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('user.panel.order.factor');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
