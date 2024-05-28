@@ -93,15 +93,15 @@ class Variable
     ];
     const  ORDER_STATUSES = [
 
-        ["name" => 'request', "color" => 'violet'],
-        ["name" => 'pending', "color" => 'danger'],
-        ["name" => 'processing', "color" => 'orange'],
-        ["name" => 'ready', "color" => 'green'],
-        ["name" => 'sending', "color" => 'blue'],
-        ["name" => 'delivered', "color" => 'gray'],
-        ["name" => 'canceled', "color" => 'gray'],
-        ["name" => 'rejected', "color" => 'gray'],
-        ["name" => 'refunded', "color" => 'gray'],
+        ["name" => 'request', "color" => 'violet', 'color_code' => '#8B5CF6'],
+        ["name" => 'pending', "color" => 'danger', 'color_code' => '#E37285'],
+        ["name" => 'processing', "color" => 'orange', 'color_code' => '#F97316'],
+        ["name" => 'ready', "color" => 'green', 'color_code' => '#22C55E'],
+        ["name" => 'sending', "color" => 'blue', 'color_code' => '#3B82F6'],
+        ["name" => 'delivered', "color" => 'gray', 'color_code' => '#6B7280'],
+        ["name" => 'canceled', "color" => 'gray', 'color_code' => '#6B7280'],
+        ["name" => 'rejected', "color" => 'gray', 'color_code' => '#6B7280'],
+        ["name" => 'refunded', "color" => 'gray', 'color_code' => '#6B7280'],
     ];
     const  SHIPPING_STATUSES = [
 
