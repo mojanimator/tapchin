@@ -123,6 +123,7 @@ class UserController extends Controller
             ],
 
             'ticket_statuses' => Variable::TICKET_STATUSES,
+            'order_statuses' => Variable::ORDER_STATUSES,
             'keys' => [
                 'bazaar' => env('BAZAAR_RSA'),
                 'myket' => env('MYKET_RSA'),
