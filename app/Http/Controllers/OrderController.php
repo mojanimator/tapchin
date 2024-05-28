@@ -39,7 +39,7 @@ class OrderController extends Controller
     public function factor(Request $request, $id)
     {
         $user = $request->user();
-
+        return $user;
         $data = Order::with('items')->find($id);
 
         $this->authorize('edit', [get_class($user), $data]);
