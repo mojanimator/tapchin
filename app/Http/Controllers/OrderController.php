@@ -39,7 +39,7 @@ class OrderController extends Controller
     public function factor(Request $request, $id)
     {
         $user = $request->user();
-        return $user;
+
         $data = Order::with('items')->find($id);
 
         $this->authorize('edit', [get_class($user), $data]);
@@ -70,9 +70,7 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-        if ($request->wantsJson()) {
-            return $data;
-        }
+       
         return Inertia::render('Panel/Order/Factor', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
