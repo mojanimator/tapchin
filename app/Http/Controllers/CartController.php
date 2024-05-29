@@ -178,7 +178,7 @@ class CartController extends Controller
         $errors = $cart->errors ?? [];
         foreach ($cartItems as $cartItem) {
 //            dd($cartItems);
-            $product = $cartItem->getRelation('product') ?? (object)['in_shop' => 0, 'name' => '', 'min_allowed' => 0, 'auction_price' => 0, 'price' => 0, 'weight' => 0,];
+            $product = $cartItem->getRelation('product') ?? (object)['id' => 0, 'in_shop' => 0, 'name' => '', 'min_allowed' => 0, 'auction_price' => 0, 'price' => 0, 'weight' => 0,];
             if (($cartItem->qty ?? 0) > ($product->in_shop ?? 0)) {
 //                $cartItem->qty = $product->in_shop;
 //                $cartItem->save();

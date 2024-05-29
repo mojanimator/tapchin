@@ -38,11 +38,11 @@ class OrderController extends Controller
 
     public function factor(Request $request, $id)
     {
-        $user = $request->user();
+        $user = $request->user() ?? User::find($request->user_id);
 
         $data = Order::with('items')->find($id);
 
-        $this->authorize('edit', [get_class($user), $data]);
+//        $this->authorize('edit', [get_class($user), $data]);
 
         $agency = Agency::find($data->agency_id);
 
@@ -70,14 +70,25 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-        if ($request->api) {
-            return view('api.factor')->with([
-                'statuses' => Variable::STATUSES,
-                'data' => $data,
-                'error_message' => __('order_not_found'),
-            ]);
-        }
+//        if ($request->api) {
+//            return view('api.factor')->with([
+//                'statuses' => Variable::STATUSES,
+//                'data' => $data,
+//                'error_message' => __('order_not_found'),
+//            ]);
+//        }
         return Inertia::render('Panel/Order/Factor', [
+            'langs' => Variable::LANGS,
+            'cities' => City::select('id', 'name')->get(),
+            'language' => function () {
+                if (!file_exists(lang_path('/' . app()->getLocale() . '.json'))) {
+                    return [];
+                }
+                return json_decode(file_get_contents(
+                        lang_path(
+                            app()->getLocale() . '.json'))
+                    , true);
+            },
             'statuses' => Variable::STATUSES,
             'data' => $data,
             'error_message' => __('order_not_found'),
