@@ -42,7 +42,7 @@
             font-display: swap;
         }
     </style>
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{--    <script src="https://cdn.tailwindcss.com"></script>--}}
     @vite('resources/css/app.css')
     @yield('styles')
     <!-- Scripts -->
