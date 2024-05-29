@@ -71,7 +71,7 @@ class OrderController extends Controller
             'address' => $data->address,
         ];
         if ($request->api) {
-            return view('factor')->with([
+            return view('api.factor')->with([
                 'statuses' => Variable::STATUSES,
                 'data' => $data,
                 'error_message' => __('order_not_found'),
