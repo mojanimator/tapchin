@@ -743,7 +743,7 @@ class OrderController extends Controller
             return $paginated->getCollection()->transform(
                 function ($item) {
                     $item->statuses = $item->getAvailableStatuses();
-                    $item->isPayable = !$item->payed_at && in_array($item->status, ['pending', 'ready']);
+                    $item->is_payable = !$item->payed_at && in_array($item->status, ['pending', 'ready', 'shipping']);
                     return $item;
                 }
 
