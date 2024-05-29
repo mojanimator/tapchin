@@ -157,11 +157,14 @@ class OrderController extends Controller
                 $t = Transaction::where('for_type', 'order')
                     ->where('for_id', $data->id)
                     ->where('from_type', 'user')
-                    ->where('from_id', $user->id);
-                if ($t) $t->update(collect(['pay_id' => $response['order_id'], 'amount' => $data->total_price,])
-                    ->merge(['payed_at' => $payMethod == 'wallet' ? $now : null])
-                    ->merge(['pay_gate' => $payMethod == 'online' ? Variable::$BANK : $payMethod])
-                    ->toArray());
+                    ->where('from_id', $user->id)->first();
+                if ($t) {
+                    $t->pay_id = $response['order_id'];
+                    $t->amount = $data->total_price;
+                    $t->payed_at = $payMethod == 'wallet' ? $now : null;
+                    $t->pay_gate = $payMethod == 'online' ? Variable::$BANK : $payMethod;
+                    $t->save();
+                }
                 if (!$t) {
                     $t = Transaction::create([
                         'title' => sprintf(__('pay_orders_*_*'), $data->id, $user->phone),
