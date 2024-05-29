@@ -77,7 +77,7 @@ class OrderController extends Controller
         ];
         if ($request->api) {
             $res = array_merge($res, [
-                'from' => null,
+                'from' => 'api',
                 'langs' => Variable::LANGS,
                 'cities' => City::select('id', 'name')->get(),
                 'language' => function () {
