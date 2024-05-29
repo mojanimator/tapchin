@@ -77,14 +77,24 @@ class TransactionController extends Controller
             foreach ($transactions as $transaction) {
                 $transaction->info = $response['info'];
                 $transaction->payed_at = $now;
+                $transaction->pay_gate = Variable::$BANK;
                 $status = 'success';
                 $token = $response['order_id'];
                 $user = Variable::TRANSACTION_MODELS[$transaction->from_type]::select('id', 'fullname', 'phone')->find($transaction->from_id);
                 $user_id = $transaction->user_id;
                 $userType = $user instanceof Admin ? 'admin' : 'user';
                 if ($transaction->for_type == 'order') {
-                    Order::where('id', $transaction->for_id)->update(['payed_at' => $now, 'status' => 'processing']);
-                    $pendingOrders--;
+                    $orders = Order::where('id', $transaction->for_id)->get();
+                    foreach ($orders as $order) {
+                        $order->payed_at = $now;
+                        $order->payment_method = 'online';
+                        if ($order->status == 'pending') {
+                            $pendingOrders--;
+                            $order->status = 'processing';
+                        }
+                        $order->save();
+                    }
+
                 } elseif ($transaction->type == 'buy-charge') {
                     $financial = Variable::FINANCIALS [$transaction->for_type]::where("{$transaction->for_type}_id", $transaction->for_id)->firstOrNew();
                     $financial->wallet = ($financial->wallet ?? 0) + $transaction->amount;

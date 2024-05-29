@@ -133,28 +133,40 @@ class OrderController extends Controller
         $data = Order::find($request->id);
         if (!$data || $data->user_id != $user->id)
             return response()->json(['message' => __('order_not_found'), 'status' => $data->status,], $errorStatus);
-
         switch ($request->cmnd) {
             case 'pay':
                 if (!$data->isPayable())
                     return response()->json(['message' => __('order_not_in_pay_status'), 'status' => $data->status,], $errorStatus);
-                $method = $request->payment_method ?? 'online';
+                $now = Carbon::now();
+                $payMethod = $request->payment_method ?? 'online';
                 $description = sprintf(__('pay_orders_*_*'), $data->id, $user->phone);
+                $response = ['order_id' => Carbon::now()->getTimestampMs(), 'status' => 'success', 'url' => route('user.panel.order.index')];
 
+                if ($payMethod == 'wallet') {
+                    $sum = $data->total_price;
+                    $settingDebit = Setting::getValue("max_debit_$user->role") ?? 0;
+                    $uf = UserFinancial::firstOrCreate(['user_id' => $user->id], ['wallet' => 0]);
+                    $wallet = $uf->wallet ?? 0;
+                    $maxDebit = $uf->max_debit ?? $settingDebit;
+                    if (($wallet + $maxDebit) - $sum < 0)
+                        return response()->json(['message' => sprintf(__('validator.min_wallet'), number_format($sum - ($wallet + $maxDebit)) . " " . __('currency'), $wallet), 'cart' => $cart], Variable::ERROR_STATUS);
 
-
-                $response = Pay::makeUri(Carbon::now()->getTimestampMs(), "{$data->total_price}0", $user->fullname, $user->phone, $user->email, $description, $user->id, Variable::$BANK);
+                } else
+                    $response = Pay::makeUri(Carbon::now()->getTimestampMs(), "{$data->total_price}0", $user->fullname, $user->phone, $user->email, $description, $user->id, Variable::$BANK);
 
                 $t = Transaction::where('for_type', 'order')
                     ->where('for_id', $data->id)
                     ->where('from_type', 'user')
                     ->where('from_id', $user->id);
-                if ($t) $t->update(['pay_id' => $response['order_id'], 'amount' => $data->total_price,]);
+                if ($t) $t->update(collect(['pay_id' => $response['order_id'], 'amount' => $data->total_price,])
+                    ->merge(['payed_at' => $payMethod == 'wallet' ? $now : null])
+                    ->merge(['pay_gate' => $payMethod == 'online' ? Variable::$BANK : $payMethod])
+                    ->toArray());
                 if (!$t) {
                     $t = Transaction::create([
                         'title' => sprintf(__('pay_orders_*_*'), $data->id, $user->phone),
                         'type' => "pay",
-                        'pay_gate' => Variable::$BANK,
+                        'pay_gate' => $payMethod == 'online' ? Variable::$BANK : $payMethod,
                         'for_type' => 'order',
                         'for_id' => $data->id,
                         'from_type' => 'user',
@@ -163,11 +175,22 @@ class OrderController extends Controller
                         'to_id' => 1,
                         'info' => null,
                         'coupon' => null,
-                        'payed_at' => null,
+                        'payed_at' => $payMethod == 'wallet' ? $now : null,
                         'amount' => $data->total_price,
                         'pay_id' => $response['order_id'],
                     ]);
                 }
+                if ($payMethod == 'wallet') {
+                    $uf->wallet -= $data->total_price;
+                    $uf->save();
+                    $user->updateOrderNotifications();
+                    $data->payed_at = $now;
+                    $data->payment_method = 'wallet';
+                    $data->transaction_id = $t->id;
+                    $data->status = $data->status == 'pending' ? 'processing' : $data->status;
+                    $data->save();
+                }
+
                 return response(['status' => $data->status, 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
 
                 break;
