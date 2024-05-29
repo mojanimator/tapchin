@@ -36,7 +36,7 @@ use Morilog\Jalali\Jalalian;
 class OrderController extends Controller
 {
 
-    public function fa(Request $request, $id)
+    public function factor(Request $request, $id)
     {
         $user = $request->user();
 
