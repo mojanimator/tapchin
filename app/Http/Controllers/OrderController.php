@@ -192,6 +192,7 @@ class OrderController extends Controller
                     $data->transaction_id = $t->id;
                     $data->status = $data->status == 'pending' ? 'processing' : $data->status;
                     $data->save();
+                    return response(['status' => $data->status, 'wallet' => $uf->wallet ?? 0, 'message' => __('payed_successfully'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
                 }
 
                 return response(['status' => $data->status, 'message' => __('redirect_to_payment_page'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
