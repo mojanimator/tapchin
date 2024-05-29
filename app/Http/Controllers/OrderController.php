@@ -38,13 +38,13 @@ class OrderController extends Controller
 
     public function factor(Request $request, $id)
     {
-        $user = $request->user() ?? User::find($request->user_id);
+        $user = $request->user();
 
         $data = Order::with('items')->find($id);
 
         $this->authorize('edit', [get_class($user), $data]);
 
-        $agency = Agency::find($data->agency_id);
+        $agency = Agency::findOrNew($data->agency_id ?? null);
 
         if ($agency && !$agency->address)
             $agency->address = optional(Agency::find($agency->parent_id))->address;
