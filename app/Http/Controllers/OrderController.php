@@ -36,7 +36,7 @@ use Morilog\Jalali\Jalalian;
 class OrderController extends Controller
 {
 
-    public function factor(Request $request, $id)
+    public function fa(Request $request, $id)
     {
         $user = $request->user();
 
@@ -70,7 +70,6 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-       
         return Inertia::render('Panel/Order/Factor', [
             'statuses' => Variable::STATUSES,
             'data' => $data,
