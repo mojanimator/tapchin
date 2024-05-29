@@ -46,6 +46,9 @@ class Order extends Model
         'payment_method',
 
     ];
+    protected $casts = [
+        'is_payable' => 'boolean',
+    ];
 
     public function store(OrderRequest $request)
     {
