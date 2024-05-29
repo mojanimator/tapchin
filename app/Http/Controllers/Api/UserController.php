@@ -127,6 +127,7 @@ class UserController extends Controller
             'ticket_statuses' => Variable::TICKET_STATUSES,
             'order_statuses' => collect(Variable::ORDER_STATUSES)->map(function ($e) {
                 $e['id'] = $e['name'];
+                $e['name'] = __($e['name']);
                 return $e;
             }),
             'keys' => [
