@@ -244,7 +244,7 @@ export default {
       window.print();
     },
     supportPrint() {
-      return window.print;
+      return this.$page.props.api && window.print;
     }
 
   }
