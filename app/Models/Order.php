@@ -36,6 +36,7 @@ class Order extends Model
         'shipping_id',
         'shipping_method_id',
         'done_at',
+        'payed_at',
         'distance',
         'coupon',
         'change_price',
