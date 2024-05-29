@@ -70,8 +70,8 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-        if ($request->wantsJson()) {
             return response()->json(['data' => $data]);
+        if ($request->wantsJson()) {
         }
         return Inertia::render('Panel/Order/Factor', [
             'statuses' => Variable::STATUSES,
