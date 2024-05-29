@@ -46,7 +46,7 @@ class UserController extends Controller
                 'api' => Util::encrypt(env('VITE_MAP_SERVICE_API')),
             ],
 
-            'max_debits' => $settings->where('key', 'like', 'max_debit%')->only(['key', 'value'])->map(fn($e) => [$e['key'] => $e['value']])->values()->flatten(),
+            'max_debits' => $settings->where('key', 'like', 'max_debit%'),
             'hides' => $hides,
             'cart' => Cart::getData(),
             'cities' => Variable::$CITIES,
