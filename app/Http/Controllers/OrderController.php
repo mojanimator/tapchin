@@ -70,29 +70,28 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-//        if ($request->api) {
-//            return view('api.factor')->with([
-//                'statuses' => Variable::STATUSES,
-//                'data' => $data,
-//                'error_message' => __('order_not_found'),
-//            ]);
-//        }
-        return Inertia::render('Panel/Order/Factor', [
-            'langs' => Variable::LANGS,
-            'cities' => City::select('id', 'name')->get(),
-            'language' => function () {
-                if (!file_exists(lang_path('/' . app()->getLocale() . '.json'))) {
-                    return [];
-                }
-                return json_decode(file_get_contents(
-                        lang_path(
-                            app()->getLocale() . '.json'))
-                    , true);
-            },
+        $res = [
             'statuses' => Variable::STATUSES,
             'data' => $data,
             'error_message' => __('order_not_found'),
-        ]);
+        ];
+        if ($request->api) {
+            $res = array_merge($res, [
+                'langs' => Variable::LANGS,
+                'cities' => City::select('id', 'name')->get(),
+                'language' => function () {
+                    if (!file_exists(lang_path('/' . app()->getLocale() . '.json'))) {
+                        return [];
+                    }
+                    return json_decode(file_get_contents(
+                            lang_path(
+                                app()->getLocale() . '.json'))
+                        , true);
+                },
+
+            ]);
+        }
+        return Inertia::render('Panel/Order/Factor', $res);
     }
 
     public function edit(Request $request, $id)
