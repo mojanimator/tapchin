@@ -38,7 +38,7 @@ class UserController extends Controller
 
 //            'payment' => auth()->id() == 1 ? 'bazaar' : 'bank',
             'payment' => in_array($request->market, ['bank', 'bazaar'/*, 'myket'*/]) ? 'bank' : $request->market,
-            'payment_methods' => collect(Variable::getPaymentMethods())->where('active', true)->where('key', '!=', 'local')->toArray(),
+            'payment_methods' => collect(Variable::getPaymentMethods())->where('active', true)->where('key', '!=', 'local')->values(),
             'map' => [
 
                 'geo' => 'https://api.neshan.org/v1/search',
