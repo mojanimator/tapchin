@@ -198,7 +198,7 @@
 
         </tbody>
       </table>
-      <div class="w-full flex py-2">
+      <div v-if="supportPrint()" class="w-full flex py-2">
         <button
             type="button" @click="print"
             class="flex mx-1 rounded  bg-indigo-500 text-white px-6  py-2 text-xs font-medium   leading-normal text-white transition duration-150 ease-in-out hover:bg-indigo-400   focus:outline-none focus:ring-0  "
@@ -242,7 +242,11 @@ export default {
   methods: {
     print() {
       window.print();
+    },
+    supportPrint() {
+      return window.print;
     }
+
   }
 
 }
