@@ -42,7 +42,7 @@ class OrderController extends Controller
 
         $data = Order::with('items')->find($id);
 
-//        $this->authorize('edit', [get_class($user), $data]);
+        $this->authorize('edit', [get_class($user), $data]);
 
         $agency = Agency::find($data->agency_id);
 
