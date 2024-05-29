@@ -125,7 +125,10 @@ class UserController extends Controller
             ],
 
             'ticket_statuses' => Variable::TICKET_STATUSES,
-            'order_statuses' => Variable::ORDER_STATUSES,
+            'order_statuses' => collect(Variable::ORDER_STATUSES)->map(function ($e) {
+                $e['id'] = $e['name'];
+                return $e;
+            }),
             'keys' => [
                 'bazaar' => env('BAZAAR_RSA'),
                 'myket' => env('MYKET_RSA'),
