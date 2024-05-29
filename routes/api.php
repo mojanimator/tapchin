@@ -64,7 +64,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('transaction/search', [TransactionController::class, 'searchPanel'])->name('user.panel.financial.transaction.search');
 
-        Route::get('order/factor/{order}', [OrderController::class, 'factor'])->name('user.panel.order.factor');
+        Route::get('order/f/{order}', [OrderController::class, 'factor'])->name('user.panel.order.factor');
         Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
         Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
         Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
