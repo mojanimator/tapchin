@@ -110,4 +110,9 @@ class Order extends Model
                 return $statuses->whereIn('name', []);
         }
     }
+
+    public function isPayable()
+    {
+        !$this->payed_at && in_array($this->status, ['pending', 'ready', 'shipping']);
+    }
 }
