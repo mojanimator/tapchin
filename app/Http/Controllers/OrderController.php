@@ -70,8 +70,12 @@ class OrderController extends Controller
             'postal_code' => $data->postal_code,
             'address' => $data->address,
         ];
-            return response()->json(['data' => $data]);
-        if ($request->wantsJson()) {
+        if ($request->api) {
+            return view('factor')->with([
+                'statuses' => Variable::STATUSES,
+                'data' => $data,
+                'error_message' => __('order_not_found'),
+            ]);
         }
         return Inertia::render('Panel/Order/Factor', [
             'statuses' => Variable::STATUSES,
