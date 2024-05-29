@@ -598,7 +598,10 @@ class OrderController extends Controller
             $agencyIds = $agencies->pluck('id');
         }
         if ($search)
-            $query = $query->whereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
+            $query = $query->where(function ($query) use ($search) {
+                $query->orWhereIn('status', collect(Variable::ORDER_STATUSES)->filter(fn($e) => str_contains(__($e['name']), $search))->pluck('name'));
+                $query->orWhere('id', 'like', "$search%");
+            });
         if ($status)
             $query = $query->where('status', $status);
 
