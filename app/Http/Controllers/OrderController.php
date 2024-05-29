@@ -588,6 +588,8 @@ class OrderController extends Controller
                         $item->statuses = $item->getAvailableStatuses();
                         $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
                     }
+                    $item->is_payable = !$item->payed_at && in_array($item->status, ['pending', 'ready', 'shipping']);
+
                     if ($timeout && $item->status == 'pending')
                         $item->pay_timeout = ($t = $now->diffInMinutes($item->created_at->addMinutes($timeout), false)) > 0 ? "$t " . __('minute') : null;
 
