@@ -136,10 +136,12 @@ class OrderController extends Controller
 
         switch ($request->cmnd) {
             case 'pay':
-                if ($data->status != 'pending')
+                if (!$data->isPayable())
                     return response()->json(['message' => __('order_not_in_pay_status'), 'status' => $data->status,], $errorStatus);
-
+                $method = $request->payment_method ?? 'online';
                 $description = sprintf(__('pay_orders_*_*'), $data->id, $user->phone);
+
+
 
                 $response = Pay::makeUri(Carbon::now()->getTimestampMs(), "{$data->total_price}0", $user->fullname, $user->phone, $user->email, $description, $user->id, Variable::$BANK);
 
@@ -588,7 +590,7 @@ class OrderController extends Controller
                         $item->statuses = $item->getAvailableStatuses();
                         $item->setRelation('agency', $agencies->where('id', $item->agency_id)->first());
                     }
-                    $item->is_payable = !$item->payed_at && in_array($item->status, ['pending', 'ready', 'shipping']);
+                    $item->is_payable = $item->isPayable();
 
                     if ($timeout && $item->status == 'pending')
                         $item->pay_timeout = ($t = $now->diffInMinutes($item->created_at->addMinutes($timeout), false)) > 0 ? "$t " . __('minute') : null;
@@ -745,7 +747,7 @@ class OrderController extends Controller
             return $paginated->getCollection()->transform(
                 function ($item) {
                     $item->statuses = $item->getAvailableStatuses();
-                    $item->is_payable = !$item->payed_at && in_array($item->status, ['pending', 'ready', 'shipping']);
+                    $item->is_payable = $item->isPayable();
                     return $item;
                 }
 
