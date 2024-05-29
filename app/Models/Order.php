@@ -113,6 +113,6 @@ class Order extends Model
 
     public function isPayable()
     {
-        !$this->payed_at && in_array($this->status, ['pending', 'ready', 'shipping']);
+        return !$this->payed_at && in_array($this->status, ['pending', 'ready', 'shipping']);
     }
 }
