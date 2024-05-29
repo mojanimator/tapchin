@@ -45,7 +45,7 @@ class UserController extends Controller
                 'rgeo' => 'https://api.neshan.org/v5/reverse',
                 'api' => Util::encrypt(env('VITE_MAP_SERVICE_API')),
             ],
-
+            'max_debits' => $settings->where('key', 'like', 'max_debit%')->get(),
             'hides' => $hides,
             'cart' => Cart::getData(),
             'cities' => Variable::$CITIES,
