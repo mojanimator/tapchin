@@ -121,6 +121,7 @@ class ProfileController extends Controller
 
         $res = ['extra' => ['wallet_active' => $user->wallet_active], 'flash_status' => 'success', 'flash_message' => __('updated_successfully')];
         Telegram::log(null, 'user_edited', $user);
+        SmsHelper::deleteCode($user->phone);
         if ($request->wantsJson()) {
             return response()->json(['status' => 'success', 'message' => __('updated_successfully')]);
         }
