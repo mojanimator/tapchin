@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
@@ -74,7 +75,7 @@ Route::prefix('v1')->group(function () {
         Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('api.user.payment.transaction.search');
         Route::post('payment/buy', [PaymentController::class, 'buy'])->name('api.user.payment.buy');
 
-        Route::get('sms/activation', [UserController::class, 'sendActivationCode'])->name('api.user.sms.activation')->middleware('throttle:sms_limit');
+        Route::post('sms/send', [MainController::class, 'sendSms'])->name('sms.send.verification');
 
         Route::get('tutorial/search', [TutorialController::class, 'searchApi'])->name('api.user.api.user.tutorial.search');
 
