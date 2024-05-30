@@ -194,7 +194,7 @@ class OrderController extends Controller
                     $data->save();
                     Telegram::log(null, 'transaction_created', $t);
                     Telegram::log(null, 'order_status_edited', $data);
-                    return response(['status' => $data->status, 'payed_at' => $now, 'wallet' => $uf->wallet ?? 0, 'message' => __('payed_successfully'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
+                    return response(['status' => $data->status, 'payed_at' => Carbon::now('Asia/Tehran'), 'wallet' => $uf->wallet ?? 0, 'message' => __('payed_successfully'), 'url' => $response['url']], Variable::SUCCESS_STATUS);
 
                 }
 
