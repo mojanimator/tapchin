@@ -73,11 +73,6 @@ Route::prefix('v1')->group(function () {
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
         Route::get('payment/transactions/search', [PaymentController::class, 'transactions'])->name('api.user.payment.transaction.search');
         Route::post('payment/buy', [PaymentController::class, 'buy'])->name('api.user.payment.buy');
-        Route::post('user/changepassword', [UserController::class, 'changePassword'])->name('api.user.user.password.change');
-        Route::post('user/updateemail', [UserController::class, 'updateEmail'])->name('api.user.user.email.update');
-        Route::post('user/updateavatar', [UserController::class, 'updateAvatar'])->name('api.user.user.avatar.update');
-        Route::post('user/update', [UserController::class, 'update'])->name('api.user.user.update');
-        Route::post('user/bookmark', [UserController::class, 'bookmark'])->name('api.user.user.bookmark');
 
         Route::get('sms/activation', [UserController::class, 'sendActivationCode'])->name('api.user.sms.activation')->middleware('throttle:sms_limit');
 
