@@ -163,13 +163,13 @@ class OrderController extends Controller
                     $t->amount = $data->total_price;
                     $t->payed_at = $payMethod == 'wallet' ? $now : null;
                     $t->pay_gate = $payMethod == 'online' ? Variable::$BANK : $payMethod;
-                    $t->title = sprintf(($payMethod == 'wallet' ? __('pay_orders_wallet*_*') : __('pay_orders_*_*')), $data->id, $user->phone);
+                    $t->title = sprintf(($payMethod == 'wallet' ? __('pay_orders_wallet_*_*') : __('pay_orders_*_*')), $data->id, $user->phone);
 
                     $t->save();
                 }
                 if (!$t) {
                     $t = Transaction::create([
-                        'title' => sprintf(($payMethod == 'wallet' ? __('pay_orders_wallet*_*') : __('pay_orders_*_*')), $data->id, $user->phone),
+                        'title' => sprintf(($payMethod == 'wallet' ? __('pay_orders_wallet_*_*') : __('pay_orders_*_*')), $data->id, $user->phone),
                         'type' => "pay",
                         'pay_gate' => $payMethod == 'online' ? Variable::$BANK : $payMethod,
                         'for_type' => 'order',
