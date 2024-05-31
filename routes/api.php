@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BotController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -69,6 +70,8 @@ Route::prefix('v1')->group(function () {
         Route::get('order/search', [OrderController::class, 'searchPanel'])->name('user.panel.order.search');
         Route::patch('order/update', [OrderController::class, 'userUpdate'])->name('user.panel.order.update');
         Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
+
+        Route::patch('financial/update', [FinancialController::class, 'update'])->name('user.panel.financial.update');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
