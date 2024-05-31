@@ -8,6 +8,7 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VariationController;
 use App\Http\Helpers\Telegram;
@@ -72,6 +73,10 @@ Route::prefix('v1')->group(function () {
         Route::get('order/{order}', [OrderController::class, 'edit'])->name('user.panel.order.edit');
 
         Route::patch('financial/update', [FinancialController::class, 'update'])->name('user.panel.financial.update');
+
+        Route::get('ticket/search', [TicketController::class, 'searchPanel'])->name('panel.ticket.search');
+        Route::patch('ticket/update', [TicketController::class, 'update'])->name('panel.ticket.update');
+        Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.ticket.edit');
 
 
         Route::post('payment/create', [PaymentController::class, 'create'])->name('api.user.payment.create');
