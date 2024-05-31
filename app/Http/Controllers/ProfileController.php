@@ -82,7 +82,7 @@ class ProfileController extends Controller
                 $user->save();
                 $res = ['flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                 if ($request->wantsJson())
-                    return response()->json(['status' => 'success', 'message' => __('updated_successfully'), 'addresses' => $addresses], Variable::SUCCESS_STATUS);
+                    return response()->json(['status' => 'success', 'message' => __('updated_successfully'),], Variable::SUCCESS_STATUS);
 
                 return back()->with($res);
             case 'add-address':
