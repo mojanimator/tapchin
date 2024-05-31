@@ -28,7 +28,7 @@ class MainController extends Controller
         if (SmsHelper::checkRepeatedSMS("$request->phone", 5))
             return response(['message' => sprintf(__('you_received_sms_in_n_minutes'), 5),], 401);
         $code = Util::generateRandomNumber(5);
-        $res = (new SmsHelper())->Send("$request->phone", ['code' => "$code"], SmsHelper::TEMPLATE_REGISTER);
+        $res = (new SmsHelper())->Send("$request->phone", ['code' => "$code"], SmsHelper::TEMPLATE_FORGET);
         if ($res) {
             SmsHelper::addCode($request->phone, $code);
             return response(['message' => __('sms_send_to_phone')]);
