@@ -74,6 +74,7 @@ Route::prefix('v1')->group(function () {
 
         Route::patch('financial/update', [FinancialController::class, 'update'])->name('user.panel.financial.update');
 
+        Route::post('ticket/create', [TicketController::class, 'create'])->name('panel.ticket.create');
         Route::get('ticket/search', [TicketController::class, 'searchPanel'])->name('panel.ticket.search');
         Route::patch('ticket/update', [TicketController::class, 'update'])->name('panel.ticket.update');
         Route::get('ticket/{ticket}', [TicketController::class, 'edit'])->name('panel.ticket.edit');
