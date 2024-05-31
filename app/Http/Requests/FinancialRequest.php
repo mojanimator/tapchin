@@ -59,6 +59,7 @@ class FinancialRequest extends FormRequest
         return [
 
 
+            "amount.required" => sprintf(__("validator.required")),
             "amount.gte" => sprintf(__("validator.gt"), __('amount'), "100 " . __('currency')),
 
             'type.required' => sprintf(__("validator.required"), __('type')),
