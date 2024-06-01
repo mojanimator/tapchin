@@ -19,6 +19,8 @@ class Ticket extends Model
         'from_type',
         'to_id',
         'to_type',
+        'from_notification',
+        'to_notification',
         'created_at',
         'updated_at',
     ];

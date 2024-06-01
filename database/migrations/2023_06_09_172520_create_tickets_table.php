@@ -25,7 +25,8 @@ return new class extends Migration {
             $table->enum('from_type', array_keys(Variable::PAYER_TYPES))->nullable()->index();
             $table->unsignedBigInteger('to_id')->index();
             $table->enum('to_type', array_keys(Variable::PAYER_TYPES))->nullable()->index();
-
+            $table->boolean('from_notification')->default(false);
+            $table->boolean('to_notification')->default(false);
             $table->timestamps();
 
 
