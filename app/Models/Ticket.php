@@ -40,7 +40,8 @@ class Ticket extends Model
      * @var array
      */
     protected $casts = [
-
+        'from_notification' => 'boolean',
+        'to_notification' => 'boolean',
     ];
 
     public function chats()
