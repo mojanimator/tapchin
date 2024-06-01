@@ -192,7 +192,22 @@ class TicketController extends Controller
         if ($search)
             $query = $query->where('subject', 'like', "%$search%");
 
-        return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
+
+        return tap($query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page), function ($paginated) use ($user) {
+            return $paginated->getCollection()->transform(
+                function ($item) use ($user) {
+
+                    if ($user instanceof Admin)
+                        $item->notify_me = ($user->from_type == 'admin' && $user->from_id == $user->id && $user->from_notification) || ($user->to_type == 'admin' && $user->to_id == $user->id && $user->to_notification);
+                    if ($user instanceof User)
+                        $item->notify_me = ($user->from_type == 'user' && $user->from_id == $user->id && $user->from_notification) || ($user->to_type == 'user' && $user->to_id == $user->id && $user->to_notification);
+
+
+                    return $item;
+                }
+
+            );
+        });
     }
 
     public function chats(Request $request)
