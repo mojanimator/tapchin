@@ -82,6 +82,8 @@ class TicketController extends Controller
                     if ($data->to_id == $user->id && $data->to_type == 'user')
                         $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
 
+                    if ($request->wantsJson())
+                        return response()->json(['message' => __('updated_successfully'), 'status' => 'success']);
                     break;
                 case 'del-chat':
                     $data = Ticket::whereId($request->ticket_id)->with('chats.owner:id,fullname,role')->first();
