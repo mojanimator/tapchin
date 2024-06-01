@@ -208,7 +208,7 @@ class TicketController extends Controller
                     if ($user instanceof User)
                         $item->notify_me = ($user->from_type == 'user' && $user->from_id == $user->id && $user->from_notification) || ($user->to_type == 'user' && $user->to_id == $user->id && $user->to_notification);
 
-
+                    $item->notify_me = true;
                     return $item;
                 }
 
