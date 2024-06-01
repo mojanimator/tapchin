@@ -85,6 +85,7 @@ class UserController extends Controller
                 'links' => [
                     'app' => '',
                     'comments' => '',
+                    'policy' => url('policy'),
                     'aparat' => 'https://www.aparat.com/vartastudio',
                     'site' => 'https://t.me/boorsaman',
                     'telegram' => 'https://t.me/develowper',
