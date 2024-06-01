@@ -271,7 +271,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'fullname' => 'required|string|min:3|max:50',
-            'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:eblagh_users,phone',
+            'phone' => 'required|numeric|digits:11|regex:/^09[0-9]+$/' . '|unique:users,phone',
             'phone_verify' => ['required', Rule::exists('sms_verify', 'code')->where(function ($query) use ($request) {
                 return $query->where('phone', $request->phone);
             }),],
