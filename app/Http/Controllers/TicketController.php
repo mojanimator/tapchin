@@ -141,6 +141,8 @@ class TicketController extends Controller
                         Variable::PAYER_TYPES[$data->from_type]::where('id', $data->from_id)->increment('notifications');
                     }
                     Telegram::log(null, 'ticket_updated', $data);
+                    if ($request->wantsJson())
+                        return response()->json(['status' => 'success', 'message' => __('updated_successfully')]);
                     return back()->with($res);
 
 
