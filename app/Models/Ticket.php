@@ -24,6 +24,7 @@ class Ticket extends Model
         'to_notification',
         'created_at',
         'updated_at',
+        'notify_me',
     ];
 
     /**
