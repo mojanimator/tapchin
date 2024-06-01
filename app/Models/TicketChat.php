@@ -36,8 +36,8 @@ class TicketChat extends Model
      * @var array
      */
     protected $casts = [
-        'user_seen' => 'boolean',
-        'admin_seen' => 'boolean'
+        'from_seen' => 'boolean',
+        'to_seen' => 'boolean',
     ];
 
     public function owner()
