@@ -32,12 +32,12 @@ class TicketController extends Controller
             if ($data->to_id == $user->id && $data->to_type == 'admin')
                 $data->chats()->where(['to_seen' => false, 'from_type' => 'admin'])->update(['to_seen' => true]);
 
-        } else
+        } else {
             if ($data->from_id == $user->id && $data->from_type == 'user')
                 $data->chats()->where(['from_seen' => false, 'from_type' => 'user'])->update(['from_seen' => true]);
-        if ($data->to_id == $user->id && $data->to_type == 'user')
-            $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
-
+            if ($data->to_id == $user->id && $data->to_type == 'user')
+                $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
+        }
         $attachments = array_map(fn($e) => basename($e), File::glob(Storage::path("public/" . Variable::IMAGE_FOLDERS[Ticket::class]) . "/$data->id/*"));
 
         return Inertia::render('Panel/Ticket/Edit', [
@@ -71,16 +71,22 @@ class TicketController extends Controller
                     return back()->with($res);
                 case  'seen':
                     if ($user instanceof Admin) {
-                        if ($data->from_id == $user->id && $data->from_type == 'admin')
-                            $data->chats()->where(['from_seen' => false, 'from_type' => 'admin'])->update(['from_seen' => true]);
-                        if ($data->to_id == $user->id && $data->to_type == 'admin')
-                            $data->chats()->where(['to_seen' => false, 'from_type' => 'admin'])->update(['to_seen' => true]);
+                        if ($data->from_id == $user->id && $data->from_type == 'admin') {
 
-                    } else
-                        if ($data->from_id == $user->id && $data->from_type == 'user')
+                            $data->chats()->where(['from_seen' => false, 'from_type' => 'admin'])->update(['from_seen' => true]);
+                        }
+                        if ($data->to_id == $user->id && $data->to_type == 'admin') {
+                            $data->chats()->where(['to_seen' => false, 'from_type' => 'admin'])->update(['to_seen' => true]);
+                        }
+                    } else {
+                        if ($data->from_id == $user->id && $data->from_type == 'user') {
                             $data->chats()->where(['from_seen' => false, 'from_type' => 'user'])->update(['from_seen' => true]);
-                    if ($data->to_id == $user->id && $data->to_type == 'user')
-                        $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
+                        }
+                        if ($data->to_id == $user->id && $data->to_type == 'user') {
+                            $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
+                        }
+                    }
+                    $data->setNotify($user, 'seen');
 
                     if ($request->wantsJson())
                         return response()->json(['message' => __('updated_successfully'), 'status' => 'success']);
@@ -126,7 +132,7 @@ class TicketController extends Controller
                         if ($item)
                             Util::createFile($item, Variable::IMAGE_FOLDERS[Ticket::class] . "/$data->id", "$ticketChat->id-$idx");
                     $data->updated_at = Carbon::now();
-                    $data->save();
+                    $data->setNotify($user, 'add-chat');
                     $res = ['chats' => $data->chats, 'status' => $data->status, 'flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                     if ($data->isResponse($user)) {
                         Notification::create([

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Nette\Utils\Type;
 
 class Ticket extends Model
 {
@@ -63,5 +64,40 @@ class Ticket extends Model
                 ||
                 ($this->from_type == 'admin' && $this->to_type == 'admin' && $me->agency_id == 1)
             );
+    }
+
+    function setNotify($user, $type = null)
+    {
+        if ($user instanceof Admin) {
+            if ($this->from_id == $user->id && $this->from_type == 'admin') {
+                if ($type == 'add-chat')
+                    $this->to_notification = true;
+                if ($type == 'seen')
+                    $this->from_notification = false;
+            }
+            if ($this->to_id == $user->id && $this->to_type == 'admin') {
+                if ($type == 'add-chat')
+                    $this->from_notification = true;
+                if ($type == 'seen')
+                    $this->to_notification = false;
+
+            }
+        } else {
+            if ($this->from_id == $user->id && $this->from_type == 'user') {
+                if ($type == 'add-chat')
+                    $this->to_notification = true;
+                if ($type == 'seen')
+                    $this->from_notification = false;
+
+            }
+            if ($this->to_id == $user->id && $this->to_type == 'user') {
+                if ($type == 'add-chat')
+                    $this->from_notification = true;
+                if ($type == 'seen')
+                    $this->to_notification = false;
+
+            }
+        }
+        $this->save();
     }
 }
