@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\SmsHelper;
+use App\Http\Helpers\Telegram;
 use App\Http\Helpers\Util;
 use App\Http\Helpers\Variable;
 use App\Models\Adv;
@@ -315,12 +316,10 @@ class UserController extends Controller
             return response()->json(['status' => 'error', 'message' => $validator->errors()], 401);
         }
         $input = $request->all();
-        $input['market'] = empty($input['push_id']) ? 'bank' : $input['market'];
         $input['password'] = Hash::make($input['password']);
         $input['role'] = 'us';
-        $input['score'] = 0;
         $input['phone_verified'] = true;
-        $input['ref_id'] = User::makeRefCode();
+        $input['ref_id'] = User::makeRefCode($input['phone']);
         $input['remember_token'] = bin2hex(openssl_random_pseudo_bytes(30));
 
         $user = User::create($input);
@@ -330,8 +329,8 @@ class UserController extends Controller
         $user->save();
         $message = 'به ابلاغیه من خوش آمدید!' /*. PHP_EOL . 'لینک تایید ایمیل به ایمیل شما ارسال شد'*/
         ;
-        DB::table('sms_verify')->where('phone', $request->phone)->delete();
-        Telegram::log(Helper::$TELEGRAM_GROUP_ID, 'user_created', $user);
+        SmsHelper::deleteCode($request->phone);
+        Telegram::log(null, 'user_created', $user);
 
 //        Mail::to($request->email)->queue(new RegisterEditUserMail($input['remember_token'], 'register'));
         return response()->json(['status' => 'success', 'message' => $message, 'token' => $token]);
