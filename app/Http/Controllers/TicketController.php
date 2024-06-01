@@ -204,9 +204,9 @@ class TicketController extends Controller
                 function ($item) use ($user) {
 
                     if ($user instanceof Admin)
-                        $item->notify_me = ($user->from_type == 'admin' && $user->from_id == $user->id && $user->from_notification) || ($user->to_type == 'admin' && $user->to_id == $user->id && $user->to_notification);
+                        $item->notify_me = ($item->from_type == 'admin' && $item->from_id == $user->id && $item->from_notification) || ($item->to_type == 'admin' && $item->to_id == $user->id && $item->to_notification);
                     if ($user instanceof User)
-                        $item->notify_me = ($user->from_type == 'user' && $user->from_id == $user->id) || ($user->to_type == 'user' && $user->to_id == $user->id && $user->to_notification);
+                        $item->notify_me = ($item->from_type == 'user' && $item->from_id == $user->id && $item->from_notification) || ($item->to_type == 'user' && $item->to_id == $user->id && $item->to_notification);
 
                     return $item;
                 }
