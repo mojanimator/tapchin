@@ -14,6 +14,7 @@ class TicketChat extends Model
     protected $fillable = [
         'from_id',
         'from_type',
+        'to_type',
         'ticket_id',
         'message',
         'from_seen',
