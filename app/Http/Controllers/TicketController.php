@@ -227,6 +227,12 @@ class TicketController extends Controller
 
             Telegram::log(null, 'ticket_created', $ticket);
         } else    $res = ['flash_status' => 'danger', 'flash_message' => __('response_error')];
+        if ($request->wantsJson())
+            return response()->json([
+                'status' => 'success',
+                'message' => __('created_successfully'),
+                'ticket' => $ticket
+            ]);
         return to_route("$fromType.panel.ticket.index")->with($res);
     }
 }
