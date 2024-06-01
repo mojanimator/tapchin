@@ -69,7 +69,20 @@ class TicketController extends Controller
                     $data->save();
                     $res = ['status' => 'closed', 'flash_status' => 'success', 'flash_message' => __('updated_successfully')];
                     return back()->with($res);
+                case  'seen':
+                    if ($user instanceof Admin) {
+                        if ($data->from_id == $user->id && $data->from_type == 'admin')
+                            $data->chats()->where(['from_seen' => false, 'from_type' => 'admin'])->update(['from_seen' => true]);
+                        if ($data->to_id == $user->id && $data->to_type == 'admin')
+                            $data->chats()->where(['to_seen' => false, 'from_type' => 'admin'])->update(['to_seen' => true]);
 
+                    } else
+                        if ($data->from_id == $user->id && $data->from_type == 'user')
+                            $data->chats()->where(['from_seen' => false, 'from_type' => 'user'])->update(['from_seen' => true]);
+                    if ($data->to_id == $user->id && $data->to_type == 'user')
+                        $data->chats()->where(['to_seen' => false, 'from_type' => 'user'])->update(['to_seen' => true]);
+
+                    break;
                 case 'del-chat':
                     $data = Ticket::whereId($request->ticket_id)->with('chats.owner:id,fullname,role')->first();
                     $chats = $data->getRelation('chats');
@@ -174,6 +187,23 @@ class TicketController extends Controller
         }
         if ($search)
             $query = $query->where('subject', 'like', "%$search%");
+
+        return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
+    }
+
+    public function chats(Request $request)
+    {
+        $user = $request->user();
+        $ticketId = $request->id;
+        $search = $request->search;
+        $page = $request->page ?: 1;
+        $orderBy = $request->order_by ?: 'id';
+        $dir = $request->dir ?: 'DESC';
+        $paginate = $request->paginate ?: 24;
+
+        $query = TicketChat::query()->where('ticket_id', $ticketId);
+        $query = $query->select();
+
 
         return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
     }
