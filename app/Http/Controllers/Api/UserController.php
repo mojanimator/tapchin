@@ -309,6 +309,7 @@ class UserController extends Controller
 
             'password.required' => 'رمزعبور ضروری است',
             'password.min' => 'طول رمزعبور حداقل 6 باشد',
+            'password_verify.required' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password_verify.same' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password.regex' => 'طول رمزعبور حداقل 6 و شامل حروف و عدد باشد',
         ]);
