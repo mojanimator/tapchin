@@ -307,8 +307,9 @@ class UserController extends Controller
             'phone_verify.required_if' => 'کد تایید شماره همراه ضروری است',
             'phone_verify.exists' => 'کد تایید شماره همراه نامعتبر است',
 
-            'password.required' => 'رمزعبور ضروری است',
+            'password.required' => sprintf(__("validator.required"), __('password')),
             'password.min' => 'طول رمزعبور حداقل 6 باشد',
+            'password.confirmed' => sprintf(__("validator.password_confirmed"),),
             'password_verify.required' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password_verify.same' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password.regex' => sprintf(__("validator.password_regex"),),
