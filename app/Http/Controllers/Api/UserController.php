@@ -314,7 +314,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['status' => 'error', 'message' => $validator->errors()], 401);
+            return response()->json(['status' => 'error', 'errors' => $validator->errors()], 401);
         }
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
