@@ -87,7 +87,7 @@ class UserController extends Controller
                     'comments' => '',
                     'policy' => url('policy'),
                     'aparat' => 'https://www.aparat.com/vartastudio',
-                    'site' => 'https://t.me/boorsaman',
+                    'site' => 'https://dabelchin.com',
                     'telegram' => 'https://t.me/develowper',
                     'telegram_vip' => 'https://t.me/+cXQvLp3cHCcwMzdk',
                     'telegram_bot' => 'https://t.me/hamsignal_bot',
