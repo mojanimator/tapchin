@@ -277,7 +277,7 @@ class UserController extends Controller
             }),],
 //            'password' => 'required|regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
             'password' => ['required', 'min:6', 'confirmed', 'regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/'],
-            'password_verify' => 'required|same:password',
+//            'password_verify' => 'required|same:password',
         ], [
             'fullname.required' => 'نام ضروری است',
             'fullname.string' => 'نام نمی تواند عدد باشد',
@@ -310,8 +310,8 @@ class UserController extends Controller
             'password.required' => sprintf(__("validator.required"), __('password')),
             'password.min' => 'طول رمزعبور حداقل 6 باشد',
             'password.confirmed' => sprintf(__("validator.password_confirmed"),),
-            'password_verify.required' => 'رمزعبور با تایید رمز عبور یکسان نیست',
-            'password_verify.same' => 'رمزعبور با تایید رمز عبور یکسان نیست',
+            'password_confirmation.required' => 'رمزعبور با تایید رمز عبور یکسان نیست',
+            'password_confirmation.same' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password.regex' => sprintf(__("validator.password_regex"),),
 
         ]);
