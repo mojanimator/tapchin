@@ -198,7 +198,7 @@ class UserController extends Controller
 
         if (!$user)
             return response()->json(['status' => 'error', 'message' => 'کاربر یافت نشد'], 200);
-        if (!$user->is_active)
+        if ($user->status != 'active')
             return response()->json(['status' => 'error', 'message' => 'کاربر غیر فعال شده است'], 200);
 
         $code = Util::generateRandomNumber(5);
