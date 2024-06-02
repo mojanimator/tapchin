@@ -276,7 +276,7 @@ class UserController extends Controller
                 return $query->where('phone', $request->phone);
             }),],
 //            'password' => 'required|regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
-            'password' => ['required', 'min:6', 'confirmed', 'regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/'],
+            'password' => ['required', 'min:6', 'regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/', 'confirmed',],
 //            'password_verify' => 'required|same:password',
         ], [
             'fullname.required' => 'نام ضروری است',
