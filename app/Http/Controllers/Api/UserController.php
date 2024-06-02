@@ -85,7 +85,7 @@ class UserController extends Controller
                 'links' => [
                     'app' => '',
                     'comments' => '',
-                    'policy' => url('policy'),
+                    'policy' => "https://qr-image-creator.com/wallpapers/policy/%D8%AF%D8%A8%D9%84%20%DA%86%DB%8C%D9%86",
                     'aparat' => 'https://www.aparat.com/dabel.media',
                     'site' => url(''),
                     'telegram' => 'https://t.me/Lord2095',
