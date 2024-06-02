@@ -325,16 +325,16 @@ class UserController extends Controller
 
         $user = User::create($input);
 //        $user->market = isset($input['market']) ? $input['market'] : null;
-        $token = $user->createToken($user->id, ['user'])->accessToken;
+        $user->token = $user->createToken($user->id, ['user'])->plainTextToken;
         $user->expires_at = null;
         $user->save();
-        $message = 'به ابلاغیه من خوش آمدید!' /*. PHP_EOL . 'لینک تایید ایمیل به ایمیل شما ارسال شد'*/
+        $message = 'به دبل چین خوش آمدید!' /*. PHP_EOL . 'لینک تایید ایمیل به ایمیل شما ارسال شد'*/
         ;
         SmsHelper::deleteCode($request->phone);
         Telegram::log(null, 'user_created', $user);
 
 //        Mail::to($request->email)->queue(new RegisterEditUserMail($input['remember_token'], 'register'));
-        return response()->json(['status' => 'success', 'message' => $message, 'token' => $token]);
+        return response()->json(['status' => 'success', 'message' => $message, 'token' => $user->token]);
     }
 
 
