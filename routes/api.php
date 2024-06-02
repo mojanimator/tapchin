@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('v1')->group(function () {
 
-    Route::get('payment/bazaar/token', [PaymentController::class, 'getBazaarToken'])->name('v2.payment.bazaar.token');
+    Route::get('payment/bazaar/token', [PaymentController::class, 'getBazaarToken'])->name('payment.bazaar.token');
 
 
     Route::any('payment/done', [PaymentController::class, 'payDone'])->name('api.user.payment.done');
@@ -92,10 +92,10 @@ Route::prefix('v1')->group(function () {
 
     });
     Route::middleware('throttle:sms_limit')->group(function () {
-        Route::post('user/register', [UserController::class, 'register'])->name('v2.api.user.user.register');
-        Route::post('user/forget', [UserController::class, 'forget'])->name('v2.api.user.user.forget');
-        Route::post('user/preAuth', [UserController::class, 'preAuth'])->name('v2.api.user.user.preAuth');
-        Route::post('user/login', [UserController::class, 'login'])->name('v2.api.user.user.login');
+        Route::post('user/register', [UserController::class, 'register'])->name('api.user.user.register');
+        Route::post('user/forget', [UserController::class, 'forget'])->name('api.user.user.forget');
+        Route::post('user/preAuth', [UserController::class, 'preAuth'])->name('api.user.user.preAuth');
+        Route::post('user/login', [UserController::class, 'login'])->name('api.user.user.login');
         Route::post('/adv/click', [AdvController::class, 'click'])->name('api.user.adv.click');
         Route::get('/adv/search', [AdvController::class, 'search'])->name('api.user.adv.search');
 

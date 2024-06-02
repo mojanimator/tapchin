@@ -276,7 +276,7 @@ class UserController extends Controller
                 return $query->where('phone', $request->phone);
             }),],
 //            'password' => 'required|regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/',
-            'password' => 'required|min:6',
+            'password' => ['required', 'min:6', 'confirmed', 'regex:/^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x]).*$/'],
             'password_verify' => 'required|same:password',
         ], [
             'fullname.required' => 'نام ضروری است',
@@ -311,7 +311,8 @@ class UserController extends Controller
             'password.min' => 'طول رمزعبور حداقل 6 باشد',
             'password_verify.required' => 'رمزعبور با تایید رمز عبور یکسان نیست',
             'password_verify.same' => 'رمزعبور با تایید رمز عبور یکسان نیست',
-            'password.regex' => 'طول رمزعبور حداقل 6 و شامل حروف و عدد باشد',
+            'password.regex' => sprintf(__("validator.password_regex"),),
+
         ]);
 
         if ($validator->fails()) {
