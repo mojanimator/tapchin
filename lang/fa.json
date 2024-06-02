@@ -137,7 +137,7 @@
   "validator.unique": " %s تکراری است",
   "validator.digits": "تعداد ارقام %s %s باشد",
   "validator.numeric": "%s عددی باشد",
-  "validator.password_regex": "رمزعبور شامل حروف و اعداد باشد",
+  "validator.password_regex": "رمزعبور شامل حروف انگلیسی و اعداد باشد",
   "validator.password_confirmed": "رمزعبور و تکرار آن یکسان باشد",
   "validator.key_contains": "کلید تنها شامل حروف کوچک انگلیسی و خط تیره بین کلمات باشد",
   "validator.recaptcha": "لطفا تیک من ربات نیستم را بزنید",
