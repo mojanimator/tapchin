@@ -14,8 +14,9 @@ class SmsHelper
     const  SecretKey = "beheshti009351414815";
     const  LineNumber = "50002015700313";
 
-    const TEMPLATE_REGISTER = "80451";
-    const TEMPLATE_FORGET = "80451";
+//    const TEMPLATE_REGISTER = "80451";
+    const TEMPLATE_REGISTER = "81822";
+    const TEMPLATE_FORGET = "81822";
     const TEMPLATE_ORDER_STATUS = "81447";
     const TEMPLATE_NEW_ORDER = "81448";
     const TEMPLATE_TRANSACTION = "81449";
@@ -93,6 +94,10 @@ class SmsHelper
                         [
                             "Parameter" => "VerificationCode",
                             "ParameterValue" => $code['code']
+                        ] ,
+                        [
+                            "Parameter" => "hashCode",
+                            "ParameterValue" => env('SMS_HASH_CODE')
                         ]
                     ];
                     break;
