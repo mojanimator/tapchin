@@ -940,5 +940,6 @@
   "all_counties": "همه شهرها",
   "all_districts": "همه مناطق",
   "payed_successfully": "پرداخت با موفقیت انجام شد",
+  "*_will_change_to_*": "%s به %s تغییر خواهد کرد",
   "": ""
 }

@@ -40,6 +40,7 @@ return new class extends Migration {
 //            $table->boolean('is_private')->default(false); //just sell to agencies
             $table->enum('agency_level', array_column(Variable::AGENCY_TYPES, 'level'))->nullable();
             $table->enum('unit', Variable::PRODUCT_UNITS)->default(Variable::PRODUCT_UNITS[0]);
+            $table->enum('status', array_column(Variable::VARIATION_STATUSES, 'name'))->default(array_column(Variable::VARIATION_STATUSES, 'name')[0]);
 
             $table->longText('description')->nullable();
             $table->timestamps();

@@ -29,7 +29,11 @@ class VariationController extends Controller
     {
         $admin = $request->user();
         return Inertia::render('Panel/Admin/Variation/Index', [
-            'agencyRepositories' => $admin->allowedAgencies(Agency::find($admin->agency_id))->with('repositories:id,name,agency_id')->select('id', 'name')->get()
+            'agencyRepositories' => $admin->allowedAgencies(Agency::find($admin->agency_id))->with('repositories:id,name,agency_id')->select('id', 'name')->get(),
+            'variation_statuses' => collect(Variable::VARIATION_STATUSES)->map(function ($e) {
+                $e['message'] = sprintf(__('*_will_change_to_*'), __('status'), __($e['name']));
+                return $e;
+            }),
         ]);
 
     }
@@ -79,7 +83,7 @@ class VariationController extends Controller
                 $data->order_count = $product->order_count ?? 0;
                 $data->rate = $product->rate ?? 0;
                 $data->repo_name = $repository->name;
-                $data->repo_phone = $repository->phone?? Agency::first($repository->agency_id)->phone??null;
+                $data->repo_phone = $repository->phone ?? Agency::first($repository->agency_id)->phone ?? null;
                 $data->repo_address = $repository->address;
                 $data->province_id = $repository->province_id;
                 $data->county_id = $repository->county_id;
@@ -93,6 +97,7 @@ class VariationController extends Controller
             $join->on('variations.repo_id', '=', 'repositories.id')
                 ->where('repositories.status', 'active')
                 ->where('repositories.is_shop', true)
+                ->where('variations.status', 'active')
                 ->where('variations.agency_level', '3')
                 ->where(function ($query) use ($inShop) {
                     if ($inShop)
@@ -266,6 +271,7 @@ class VariationController extends Controller
             $query = $query->where('status', $status);
         if ($grade)
             $query = $query->where('grade', $grade);
+
 
         return $query->orderBy($orderBy, $dir)->paginate($paginate, ['*'], 'page', $page);
 
@@ -608,7 +614,20 @@ class VariationController extends Controller
                     return response()->json(['message' => __('updated_successfully'),], $successStatus);
 
                     break;
-                case 'copy-variation':
+                case 'status':
+                    $request->validate(
+                        [
+                            'status' => ['required', Rule::in(array_column(Variable::VARIATION_STATUSES, 'name'))],
+                        ],
+                        [
+                            'status.required' => sprintf(__('validator.required'), __('status')),
+                            'status.in' => sprintf(__('validator.invalid'), __('status')),
+
+                        ],
+                    );
+                    $data->status = $request->status;
+                    $data->save();
+                    return response()->json(['message' => __('updated_successfully'), 'status' => $data->status,], $successStatus);
 
                     break;
             }

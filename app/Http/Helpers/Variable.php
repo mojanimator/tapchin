@@ -77,6 +77,10 @@ class Variable
         ["name" => 'inactive', "color" => 'gray'],
         ["name" => 'block', "color" => 'danger'],
     ];
+    const  VARIATION_STATUSES = [
+        ["name" => 'active', "color" => 'success'],
+        ["name" => 'inactive', "color" => 'gray'],
+    ];
     const  USER_STATUSES = [
         ["name" => 'active', "color" => 'success'],
         ["name" => 'inactive', "color" => 'gray'],

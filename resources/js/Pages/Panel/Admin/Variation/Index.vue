@@ -107,6 +107,21 @@
                        class="  w-fit   p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
                        :placeholder="__('search')">
               </div>
+              <div class="relative  ">
+                <div class="inline-flex" role="group">
+
+                  <div v-for="(s,idx) in $page.props.variation_statuses"
+                       type="button" @click="params.status=s.name;params.page=1;getData()"
+                       class="inline-block   border-2 w-16 p-2  text-center text-xs font-medium uppercase leading-normal  transition duration-150 ease-in-out hover:border-primary-accent-200   focus:border-primary-accent-200 focus:bg-secondary-50/50 focus:outline-none focus:ring-0 active:border-primary-accent-200 motion-reduce:transition-none dark:border-primary-400 dark:text-primary-300 dark:hover:bg-blue-950 dark:focus:bg-blue-950"
+                       :class="`bg-${s.color}-200 cursor-pointer ${idx==0?'rounded-s-lg':idx==$page.props.variation_statuses.length-1?'rounded-e-lg':''} border-dark-500 ${s.name==params.status?  `text-white bg-${s.color}-500` :`text-gray-400 bg-white`}`"
+                       data-twe-ripple-init
+                       data-twe-ripple-color="light">
+                    {{ __(s.name) }}
+                  </div>
+
+
+                </div>
+              </div>
             </div>
             <div class="flex-grow   w-full">
 
@@ -217,6 +232,14 @@
                         @click="params.order_by='is_private';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
                       <div class="flex items-center justify-center">
                         <span class="px-2">    {{ __('repository_special') }} </span>
+                        <ArrowsUpDownIcon class="w-4 h-4 "/>
+                      </div>
+                    </th>
+                    <th scope="col"
+                        class="px-2 py-3   cursor-pointer duration-300 hover:text-gray-500 hover:scale-[99%]"
+                        @click="params.order_by='status';params.dir=params.dir=='ASC'? 'DESC':'ASC'; params.page=1;getData()">
+                      <div class="flex items-center justify-center">
+                        <span class="px-2">    {{ __('status') }} </span>
                         <ArrowsUpDownIcon class="w-4 h-4 "/>
                       </div>
                     </th>
@@ -347,7 +370,7 @@
                                 <XMarkIcon class="w-8 h-6 my-2 "/>
                               </div>
                               <select class="grow rounded-e border-400 cursor-pointer" name=""
-                                      @change="($e)=>{log(d.agency_id);d.new_repo_id=$e.target.value;}"
+                                      @change="($e)=>{ d.new_repo_id=$e.target.value;}"
                                       :id=" `selectRepo${d.id}` " v-model="d.new_repo_id">
                                 <option class="text-start rounded p-2 m-2"
                                         v-for="d in filteredRepositories[d.agency_id] "
@@ -477,7 +500,34 @@
                     <td v-if="false" class="px-2 py-4    ">
                       {{ d.is_private ? __('internal') : __('public') }}
                     </td>
+                    <td class="px-2 py-4    " data-te-dropdown-ref>
+                      <button
+                          :id="`dropdownStatusSetting${d.id}`"
+                          data-te-dropdown-toggle-ref
+                          aria-expanded="false"
+                          data-te-ripple-init
+                          data-te-ripple-color="light"
+                          class="  min-w-[5rem]  py-2  cursor-pointer items-center text-center rounded-md  "
+                          :class="`bg-${getStatus('variation_statuses', d.status).color}-100 hover:bg-${getStatus('variation_statuses', d.status).color}-200 text-${getStatus('variation_statuses', d.status).color}-500`">
+                        {{ getStatus('variation_statuses', d.status).name }}
+                      </button>
+                      <ul :ref="`statusMenu${d.id}`" data-te-dropdown-menu-ref
+                          class="  absolute z-[1000]  m-0 hidden   list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-center text-base shadow-lg [&[data-te-dropdown-show]]:block"
+                          tabindex="-1" role="menu" aria-orientation="vertical" aria-label="User menu"
+                          :aria-labelledby="`dropdownStatusSetting${d.id}`">
 
+                        <li v-for="(s,ix) in $page.props.variation_statuses" role="menuitem"
+                            @click="showDialog('danger',s.message,__('accept'),edit,{'idx':idx,'id':d.id,'cmnd':'status','status':s.name}) "
+                            class="   cursor-pointer   text-sm   transition-colors hover:bg-gray-100">
+                          <div class="flex items-center justify-center    px-6 py-2   "
+                               :class="` hover:bg-gray-200 text-${s.color}-500`">
+                            {{ __(s.name) }}
+                          </div>
+                          <hr class="border-gray-200 ">
+                        </li>
+
+                      </ul>
+                    </td>
 
                     <td class="px-2 py-4">
                       <!-- Actions Group -->
@@ -823,6 +873,7 @@ export default {
       selected: null,
       selectedParams: null,
       params: {
+        status: 'active',
         page: 1,
         search: null,
         paginate: this.$page.props.pageItems[0],
@@ -912,8 +963,8 @@ export default {
             this.setTableHeight();
             this.$nextTick(() => {
 
-              // this.initTableDropdowns();
-              // this.initTableModals();
+              this.initTableDropdowns();
+              this.initTableModals();
 
             });
 
@@ -969,9 +1020,9 @@ export default {
 
             if (response.data.status) {
               this.data[params.idx].status = response.data.status;
-            } else {
-              this.getData();
             }
+            this.getData();
+
             this.selected = null;
 
 
