@@ -627,6 +627,7 @@ class VariationController extends Controller
                     );
                     $data->status = $request->status;
                     $data->save();
+                    Telegram::log(null, 'variation_status_edited', (object)['id' => $data->id, 'name' => $data->name, 'status' => $data->status]);
                     return response()->json(['message' => __('updated_successfully'), 'status' => $data->status,], $successStatus);
 
                     break;
